@@ -3,6 +3,7 @@ from pathlib import Path
 from niyet.allocator import allocate
 from niyet.baselines import random_capacity, topic_capacity, unconstrained_best_match
 from niyet.benchmark import load_benchmark
+from niyet.optimizer import global_allocate
 from niyet.metrics import (
     intent_coverage,
     mean_gold_relevance,
@@ -20,6 +21,7 @@ methods = {
     "topic_capacity": topic_capacity(matches, benchmark.responders),
     "unconstrained_best": unconstrained_best_match(matches),
     "capacity_pair_score": allocate(matches, benchmark.responders),
+    "global_pair_score": global_allocate(matches, benchmark.responders),
 }
 
 print("method                 coverage  gold  load_gini  overload")

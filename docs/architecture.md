@@ -34,3 +34,11 @@ The next version will add:
 ## Outcome signal
 
 The target product signal is not a click. We want to collect whether the interaction was useful or resolved the original intent. That outcome can later become a training label for the matching model.
+
+## Global allocation prototype
+
+A greedy allocator can make a locally good choice that hurts the rest of the batch. For example, one responder may be the best match for two intents while a second responder is almost as good for only one of them. Assigning the first responder too early can waste the second intent.
+
+The current global prototype expands each responder into a number of slots equal to their attention budget and solves one maximum-utility assignment across the batch. Dummy slots allow an intent to stay unassigned when no candidate passes the minimum score.
+
+This step works after candidate retrieval. It is not meant to compare every user with every open intent on the platform. A production version would first retrieve a small candidate set, then run allocation on that set.

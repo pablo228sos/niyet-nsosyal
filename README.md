@@ -15,9 +15,9 @@ The current work is intentionally narrow. We are first testing whether capacity-
 
 ## Current prototype
 
-The repository starts with a small deterministic allocation core. Each candidate match has a relevance score, a willingness score and an expected response score. Each responder also has a daily attention limit. The allocator assigns responders to open intents while respecting those limits.
+The repository currently has two allocation methods. The first is a greedy capacity-aware baseline. The second solves the candidate set as one assignment problem, so using the strongest responder for one intent does not accidentally leave another intent with a very weak match.
 
-This is not the final ranking model. It is a baseline we can test and replace.
+Each candidate match has a relevance score, a willingness score and an expected response score. Each responder also has a daily attention limit. Both methods respect those limits. The global method is still an early prototype and will be tested on a larger human-reviewed benchmark before we treat it as a project result.
 
 ## Planned evaluation
 
@@ -26,7 +26,8 @@ We plan to compare:
 1. random routing
 2. topic similarity only
 3. greedy best-match routing
-4. NIYET capacity-aware allocation
+4. capacity-aware pair-score routing
+5. NIYET global allocation
 
 The main product metrics are intent coverage, relevant match rate and responder load concentration. Model metrics will be added once the intent classifier and matching benchmark are ready.
 
