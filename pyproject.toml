@@ -7,7 +7,7 @@ name = "niyet"
 version = "0.1.0"
 description = "Capacity-aware interaction allocation prototype for NSosyal"
 requires-python = ">=3.11"
-dependencies = ["scipy>=1.11"]
+dependencies = ["scipy>=1.11", "scikit-learn>=1.5"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
