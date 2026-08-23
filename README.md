@@ -26,7 +26,7 @@ The web prototype calls the Python pipeline in `api/`. The current deployed path
 
 - word and character TF-IDF with Logistic Regression for response-needed detection
 - word and character TF-IDF with Logistic Regression for four-way intent classification
-- character TF-IDF for responder retrieval
+- character TF-IDF for responder retrieval, with explicit opt-in topics weighted above free profile prose
 - explicit interaction willingness as a hard eligibility constraint
 - session-level remaining responder capacity
 - bounded global assignment across the current matching window
@@ -51,7 +51,7 @@ This is a transparent baseline. It is not a calibrated probability and the weigh
 
 Responder capacity is expanded into assignment slots. Dummy assignments allow an open request to remain unmatched instead of forcing a weak route. The minimum score threshold is applied before optimization.
 
-The main prototype now keeps multiple unresolved requests in a short matching window. When another request enters, the batch is allocated again under the same session capacity. This makes the shared-capacity behavior part of the product flow, not only a separate experiment.
+The main prototype keeps multiple unresolved requests in a short matching window. When another request enters, the batch is allocated again under the same session capacity. This makes the shared-capacity behavior part of the product flow, not only a separate experiment.
 
 ## Data
 
@@ -77,13 +77,17 @@ Four-way intent baseline on the current grouped controlled data:
 
 - Macro F1: about 0.872
 
-Lexical retrieval on the draft 32-query matching benchmark:
+Current lexical retrieval on the draft 32-query matching benchmark:
 
-- Precision@3: 0.4375
-- Recall@3: 0.7969
-- NDCG@3: 0.8079
+- explicit topic text weight: 0.80
+- free profile text weight: 0.20
+- Precision@3: 0.4687
+- Recall@3: 0.8438
+- NDCG@3: 0.8384
 
-The matching benchmark also exposes a real tradeoff between coverage and average match quality. We keep the full threshold sweep under `experiments/` instead of selecting only the setting where global allocation looks strongest.
+At similarity floor 0.02 on the same draft labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total draft relevance from 45 to 51. Mean relevance changes from 2.14 to 2.04 on the 0-3 draft scale. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
+
+The full sensitivity table is kept under `experiments/` rather than selecting only settings where global allocation looks strongest.
 
 ## Evaluation
 
