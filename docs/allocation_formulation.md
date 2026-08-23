@@ -1,65 +1,67 @@
 # Allocation formulation
 
-NIYET does not claim a new optimization algorithm. The current prototype uses a standard linear assignment solver after candidate retrieval. Our contribution is the product formulation around limited responder capacity and the way this step is connected to response-seeking social posts.
+NIYET does not claim a new optimization algorithm. The prototype uses a standard linear assignment solver after retrieval and eligibility filtering. Our contribution is the social-product formulation around competing response-seeking requests and limited willing responder capacity.
 
 ## Inputs
 
-For one bounded allocation window:
+For one bounded matching window:
 
-- open response-seeking intents `i`
-- eligible responders `j`
-- responder capacity `c_j`
+- open response-seeking requests `i`
+- responder candidates `j`
+- remaining responder capacity `c_j`
 - candidate edge utility `u_ij`
 
-An edge is created only after:
+An edge exists only when:
 
-1. the post passes the response-needed gate
-2. the user confirms the interaction intent
-3. the responder has opted into that intent type
-4. the responder has remaining attention capacity
-5. topic relevance clears the retrieval quality floor
+1. the request is activated in NIYET, either by the response-needed gate plus author confirmation or by manual user activation
+2. the responder is active
+3. the responder has remaining capacity
+4. the responder accepts the confirmed interaction type
+5. topic relevance clears the retrieval-quality floor
 
-An invalid edge is not passed to the optimizer.
+Invalid edges are removed before optimization.
 
 ## Development edge utility
 
-The current transparent baseline uses three normalized signals:
+Willingness is a hard eligibility condition in the current implementation. All candidates that reach scoring are already willing to receive that intent type, so willingness is not useful as a ranking feature today.
 
-`u_ij = (topic_relevance + willingness + availability) / 3`
+The current utility is:
 
-This is a development utility, not a calibrated probability.
+```text
+u_ij = (topic_relevance + availability) / 2
+```
 
-In the current prototype:
+where:
 
-- `topic_relevance` comes from the deployed lexical retrieval baseline
-- `willingness` is explicit compatibility with the requested interaction type
-- `availability` is remaining attention slots divided by the daily budget
+- `topic_relevance` is the current retrieval similarity
+- `availability` is remaining responder slots divided by the configured budget
 
-The equal weights are intentional. We do not have outcome data that would justify learned weights yet. A later production version can calibrate the utility from accepted, skipped, useful and resolved outcomes.
+Both values are normalized to 0-1.
+
+This is a development utility, not a calibrated response probability. Equal weights are used because the prototype does not yet have enough real Accepted, Skipped, Useful or Resolved outcomes to justify learned weights.
 
 ## Assignment objective
 
 The allocator chooses binary assignments `x_ij`:
 
-`maximize sum(u_ij * x_ij)`
+```text
+maximize sum(u_ij * x_ij)
+```
 
 subject to:
 
-`sum_j x_ij <= 1` for each open intent
+```text
+sum_j x_ij <= 1       for each open request i
+sum_i x_ij <= c_j     for each responder j
+x_ij = 0              for invalid or below-threshold edges
+x_ij in {0, 1}
+```
 
-`sum_i x_ij <= c_j` for each responder
+Responder capacity is represented as repeated assignment slots. Dummy columns with zero utility allow a request to remain unmatched.
 
-`x_ij = 0` for any edge that failed eligibility or the quality threshold
+## Why batch allocation matters
 
-`x_ij in {0, 1}`
-
-The current implementation represents responder capacity as repeated assignment slots and uses SciPy's linear assignment solver. Dummy columns with zero utility allow an intent to remain unmatched.
-
-## Why batch allocation can matter
-
-A greedy method can make the best local choice and still reduce the total quality of the batch.
-
-Example:
+A greedy method can make the best local choice and still reduce the total utility of the window.
 
 | | R1 | R2 |
 | --- | ---: | ---: |
@@ -68,24 +70,32 @@ Example:
 
 Both responders have capacity 1.
 
-A greedy choice can spend R1 on I1 and leave I2 with R2. Global assignment instead gives R2 to I1 and R1 to I2.
+Greedy can assign R1 to I1 and leave I2 with R2. Batch assignment can give R2 to I1 and reserve R1 for I2.
 
-This example is a unit test of the allocation logic. It is not evidence that real social interaction improves by the same amount.
+This table is a unit-test example. It explains the optimization problem but is not a real-world effect-size claim.
 
 ## Threshold rule
 
-Quality thresholds must be applied before optimization.
+Minimum-quality rules are applied before optimization.
 
-If a below-threshold edge is allowed to influence the assignment and removed only afterwards, it can block a different valid solution. The regression test in `tests/test_optimizer.py` covers this case.
+If a weak edge is allowed to influence the assignment and removed only after the solver runs, it can block a different valid solution. `tests/test_optimizer.py` contains a regression case for this failure mode.
 
-The runtime also applies a topic-relevance floor before allocation. This was added after the first matching benchmark draft showed that a global optimizer can increase coverage by spreading weak candidates if retrieval is too permissive.
+The runtime also applies a topic-relevance floor before creating allocation edges. Our first matching benchmark draft showed why this matters: a global optimizer can increase coverage by distributing weak matches when retrieval is too permissive.
+
+## Stateful prototype capacity
+
+The main web prototype keeps open requests and responder state in browser session storage. Each API call includes the current responder state.
+
+Accept reduces remaining capacity. Pause disables that responder. Skip excludes a responder for the current request and reallocates the open window.
+
+This makes capacity persistent across sequential actions within one demo session. It is intentionally not described as production persistence.
 
 ## Scaling boundary
 
 The dense assignment solver is not intended to run over the complete NSosyal network.
 
-The production sequence is:
+```text
+retrieval -> bounded candidate graph -> allocation
+```
 
-`retrieval -> small eligible candidate graph -> allocation`
-
-The current dense implementation is suitable for bounded batches. Larger windows can use a sparse min-cost-flow formulation without changing the product-level constraints.
+The current implementation is appropriate for small matching windows after retrieval. Larger production windows can use sparse min-cost flow or smaller topic/time buckets without changing the product-level constraints.
