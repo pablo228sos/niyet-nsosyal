@@ -66,7 +66,7 @@ The main prototype keeps multiple unresolved requests in a short matching window
 - `matching_benchmark_v1_draft.json`: 32-query responder-matching benchmark draft
 - annotation and review templates
 
-The matching benchmark remains marked `team_review_pending` until the registered team reviews and freezes the relevance labels. Development numbers are not presented as NSosyal field performance.
+Two team members independently reviewed all 256 query-responder relevance pairs. Exact agreement was 243/256 (94.92%) and quadratic weighted Cohen's kappa was 0.9756. Thirteen disagreements are awaiting adjudication by the third team member before a frozen reviewed benchmark is committed. Development numbers are not presented as NSosyal field performance.
 
 ## Current development checks
 
@@ -86,7 +86,7 @@ Retrieval on the same draft 32-query x 8-responder benchmark:
 | Weighted lexical TF-IDF | 0.4687 | 0.8438 | 0.8384 |
 | ModernBERT-TR-Embed | **0.5312** | **0.9427** | **0.8968** |
 
-The semantic result was produced by `experiments/evaluate_modernbert_retrieval.py` in GitHub Actions using the external Yildiz Technical University COSMOS model. These are our measurements on the project benchmark, not copied model-card scores. They remain DEVELOPMENT ONLY until the relevance labels are frozen.
+The semantic result was produced by `experiments/evaluate_modernbert_retrieval.py` in GitHub Actions using the external Yildiz Technical University COSMOS model. These are our measurements on the project benchmark, not copied model-card scores. They remain DEVELOPMENT ONLY until the 13 review disagreements are adjudicated and the benchmark is frozen.
 
 At lexical similarity floor 0.02 on the same draft labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total draft relevance from 45 to 51. Mean relevance changes from 2.14 to 2.04 on the 0-3 draft scale. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
 
@@ -144,7 +144,7 @@ python experiments/evaluate_modernbert_retrieval.py
 ## Current limitations
 
 - classification and matching data are controlled development data
-- matching labels still need team review before they become a frozen evaluation set
+- 13 human-review disagreements remain before the matching benchmark is frozen
 - responder profiles are synthetic prototype profiles
 - browser-session capacity is not a production persistence layer
 - the semantic model is evaluated offline but is not yet the deployed Vercel retriever
