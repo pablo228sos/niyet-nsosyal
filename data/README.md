@@ -42,7 +42,7 @@ This gate runs before four-way intent classification. It prevents normal posts f
 
 ### `responder_profiles_v1.json`
 
-Eight synthetic responder profiles used by the prototype and matching benchmark. Profiles include topic areas, allowed interaction types and attention capacity.
+Eight synthetic responder profiles used by the prototype and matching benchmark. Profiles include explicit topic areas, allowed interaction types and attention capacity.
 
 They are synthetic product fixtures. They are not real NSosyal accounts.
 
@@ -50,30 +50,50 @@ They are synthetic product fixtures. They are not real NSosyal accounts.
 
 First 32-query Turkish matching benchmark draft.
 
-Each query contains a 0-3 relevance grade for every responder profile. The grade reflects both topical suitability and whether the responder accepts that interaction type.
-
-Current status: `team_review_pending`.
+Each query contains a 0-3 relevance grade for every responder profile. Current status: `team_review_pending`.
 
 Results from this file remain development results until the team reviews and freezes the labels.
 
-### `matching_review_template.csv`
+### Blind matching review
 
-Small example of the matching-review table format. Reviewer labels are blank.
-
-For a full blind review sheet, use:
+Generate two separate blind sheets:
 
 ```bash
-python scripts/export_matching_review.py --output matching_review_v1.csv
+python scripts/export_matching_review.py --reviewer A --output reviewer_a.csv
+python scripts/export_matching_review.py --reviewer B --output reviewer_b.csv
 ```
 
-The exporter creates all query-responder pairs without copying the draft relevance grades into the review sheet. This lets a second reviewer label the pairs without seeing the current benchmark answer.
-
-Scale:
+Each reviewer fills only the `relevance` column with:
 
 - 0: incompatible
 - 1: weak
 - 2: good
 - 3: excellent
+
+The reviewer files do not contain the draft benchmark grades.
+
+After both independent passes:
+
+```bash
+python scripts/merge_matching_reviews.py reviewer_a.csv reviewer_b.csv --output adjudication.csv
+```
+
+This reports exact agreement and quadratic weighted Cohen's kappa. Rows where reviewers agree receive an automatic `final_relevance`; disagreements are left blank for third-person adjudication.
+
+After every disagreement has a final grade:
+
+```bash
+python scripts/freeze_matching_benchmark.py \
+  --benchmark data/matching_benchmark_v1_draft.json \
+  --adjudication adjudication.csv \
+  --output data/matching_benchmark_v1_reviewed.json
+```
+
+The frozen output is a new version. Do not overwrite the draft source file.
+
+### `matching_review_template.csv`
+
+Small documentation example of the matching-review format. Use the exporter above for the complete reviewer sheets.
 
 ### `toy_benchmark.json`
 
@@ -81,9 +101,17 @@ Small machine-readable fixture used to test benchmark code and allocation metric
 
 ### `usability_results_template.csv`
 
-Blank result sheet for the usability protocol in `docs/usability_test_protocol.md`.
+Blank result sheet for the six-task protocol in `docs/usability_test_protocol.md`.
 
-It stores anonymous participant IDs and task-level results only. Participant names are not required.
+It stores anonymous participant IDs, task completion, time, wrong clicks, hints and clarity ratings. Participant names are not required.
+
+After the sessions:
+
+```bash
+python scripts/summarize_usability.py usability_results.csv
+```
+
+The summary reports task-level completion without hints, median task time and clarity ratings. Observed confusions should still be reviewed qualitatively before deciding UI changes.
 
 ## Label convention
 
@@ -101,3 +129,5 @@ Runtime enums use lowercase serialized values internally. The annotation validat
 6. External model benchmark scores are not copied into DRSK results.
 7. A development result becomes a report result only after the corresponding labels and data version are frozen for that experiment.
 8. Synthetic responder profiles are never described as real platform users.
+9. Reviewer sheets are kept separate until both independent passes are complete.
+10. Reviewed labels are frozen into a new benchmark version rather than silently replacing the development draft.
