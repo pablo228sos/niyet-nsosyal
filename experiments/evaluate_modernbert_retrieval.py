@@ -58,6 +58,7 @@ def main() -> None:
     precision_values: list[float] = []
     recall_values: list[float] = []
     ndcg_values: list[float] = []
+    rankings: dict[str, list[str]] = {}
 
     for q_index, query in enumerate(benchmark["queries"]):
         intent = IntentType(query["intent"])
@@ -71,6 +72,7 @@ def main() -> None:
             key=lambda r_index: similarities[q_index, r_index],
             reverse=True,
         )
+        rankings[query["id"]] = [responders[r_index]["id"] for r_index in ranked]
         top = ranked[:TOP_K]
 
         top_grades = [
@@ -102,6 +104,7 @@ def main() -> None:
     }
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
+    print("RANKINGS_JSON=" + json.dumps(rankings, ensure_ascii=False, separators=(",", ":")))
     if benchmark["review_status"] != "reviewed":
         print("\nDEVELOPMENT ONLY: freeze reviewed labels before using these metrics as final competition results.")
 
