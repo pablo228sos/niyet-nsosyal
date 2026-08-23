@@ -4,13 +4,13 @@ Purpose: test whether a user understands NIYET inside the NSosyal-style feed wit
 
 Target: 6 to 10 participants for the first competition test.
 
-Time per participant: about 5 to 7 minutes.
+Time per participant: about 6 to 8 minutes.
 
 The test should use the deployed prototype on the participant's own phone or laptop when possible.
 
 ## Before the test
 
-Do not explain what ASK, FEEDBACK, COLLABORATE or DISCUSS mean before the participant sees the interface.
+Do not explain ASK, FEEDBACK, COLLABORATE or DISCUSS before the participant sees the interface.
 
 Tell the participant only:
 
@@ -20,7 +20,7 @@ Record:
 
 - device type
 - language used: EN or TR
-- whether the participant has used social media daily in the last month
+- approximate daily social-media use
 
 Do not collect names, account handles or private messages.
 
@@ -38,11 +38,6 @@ Success condition:
 - understands that NIYET does not need to route it
 - publishes without trying to force an intent
 
-Observe:
-
-- whether NIYET staying out of the flow is clear
-- whether the user waits for an AI panel that never appears
-
 ### Task 2: Ask for help
 
 Instruction:
@@ -55,13 +50,7 @@ Success condition:
 - participant understands the suggested intent
 - participant confirms or changes the intent
 - participant uses Route with NIYET
-- responder preview becomes understandable
-
-Observe:
-
-- whether the user understands that routing is optional
-- whether the user mistakes a development score for a probability
-- whether the user understands why a responder was selected
+- responder preview is understandable
 
 ### Task 3: Correct the model
 
@@ -74,29 +63,44 @@ Success condition:
 - participant finds the intent choices without help
 - understands that their choice overrides the suggestion
 
-### Task 4: Responder control
+### Task 4: Recover from a missed activation
 
 Instruction:
 
-"You are now the responder. You do not want more requests today. Stop new routing requests."
+"Imagine this post really needs a response, but NIYET did not activate automatically. Turn NIYET on for this post yourself."
 
 Success condition:
 
-- participant finds the routing switch
-- understands attention budget and pause state
+- participant finds the manual `Use NIYET anyway` path
+- participant can choose an intent and continue routing
 
-### Task 5: Technical transparency
+This specifically tests the correction path for a false-negative response gate.
+
+### Task 5: Responder control
 
 Instruction:
 
-"Find the technical information about why the last route was produced."
+"You are now the responder. Accept the current request, then stop new routing requests."
 
 Success condition:
 
-- participant finds Technical details
-- understands that the displayed numerical values are development diagnostics, not calibrated probabilities
+- participant finds Accept
+- understands that remaining session capacity changes
+- participant finds the routing switch and pauses new requests
 
-This task is mainly for jury/demo transparency. It does not have to be a primary consumer action.
+### Task 6: Explainability
+
+Instruction:
+
+"Why did NIYET choose this responder? Find the information in the interface."
+
+Success condition:
+
+- participant finds the match explanation / Technical details
+- can describe the reason in their own words
+- understands that numerical values are development diagnostics, not calibrated probabilities
+
+This task is mainly for transparency and the technical demo. It does not need to be a primary consumer action.
 
 ## Metrics
 
@@ -111,7 +115,7 @@ For every task record:
 After all tasks ask three 1-5 questions:
 
 1. "I understood when NIYET would become active."
-2. "I understood that I could control or stop routing."
+2. "I understood that I could correct or stop NIYET."
 3. "I understood why a responder was selected."
 
 Then ask:
@@ -120,11 +124,7 @@ Then ask:
 
 ## Result table
 
-Use one row per participant:
-
-| ID | Device | Lang | T1 | T2 | T3 | T4 | T5 | Hints | Main confusion |
-| --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- |
-| P01 | | | | | | | | | |
+Use `data/usability_results_template.csv`. Use anonymous IDs such as P01, P02 and P03.
 
 Do not place participant names in the public repository.
 
@@ -143,4 +143,4 @@ For each change record:
 
 `Observed problem -> design change -> reason`
 
-This creates a direct evidence chain for the UI/UX section of the Technical Report.
+The final report should include actual completion rates and the main fixes made because of observed behavior. Positive comments alone are not a usability result.
