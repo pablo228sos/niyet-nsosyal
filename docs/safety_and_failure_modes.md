@@ -1,97 +1,137 @@
 # Safety and failure modes
 
-NIYET is allowed to be wrong. The product flow should make a wrong match easy to ignore and should not turn model confidence into forced contact between users.
+NIYET is allowed to be wrong. The product should make a wrong suggestion easy to correct and should never turn model relevance into forced contact.
 
-## Main risks
+## Unwanted contact
 
-### Unwanted contact
+A relevant user may still not want routed requests.
 
-A user may be relevant to a request but may not want to receive it.
+Current prototype controls:
+
+- interaction type must be enabled for the responder
+- responder can Skip
+- responder can Pause within the current browser session
+- no automatic direct message is sent
+
+Production requirements:
+
+- platform-level opt-in state
+- block lists
+- per-topic controls
+- cooldowns and rate limits
+
+## Responder overload
+
+A small number of active responders can attract too many requests.
+
+Current prototype controls:
+
+- explicit remaining capacity
+- batch allocation across competing requests
+- Accept consumes a session slot
+- Pause removes the responder from later session calls
+- exhausted capacity removes the responder from the candidate graph
+
+The current capacity state is a browser-session prototype, not a production database. A real deployment must persist capacity centrally so multiple devices and concurrent requests see the same state.
+
+## False response detection
+
+A response-needed model can make both kinds of mistakes.
+
+False positive:
+
+- author dismisses the NIYET suggestion
+
+False negative:
+
+- author can manually choose `Use NIYET anyway`
+- a confirmed intent override activates routing even when the binary gate predicted NONE
+
+## Bad expertise inference
+
+Posting about a topic does not prove expertise.
 
 Controls:
-- responder routing is opt-in
-- users can pause routing completely
-- daily attention budget
-- per-topic preferences
-- accept/skip before a conversation starts
-- cooldown after repeated skips
 
-### Responder overload
+- responder profiles describe topics they are willing to receive, not verified expert status
+- follower count is not treated as expertise
+- no `expert` badge is inferred by NIYET
+- future outcome history should only influence ranking after enough interactions exist
 
-The best-known responders can receive too many requests.
+## Harassment and unsafe matching
 
-Controls:
-- hard attention budgets
-- batch allocation instead of independent top-1 routing
-- load metrics
-- cooldowns
-- availability signal
+Routing can create a new path for unwanted interaction.
 
-### Bad expertise inference
+Production requirements:
 
-Posting about a topic does not automatically make someone an expert.
-
-Controls:
-- use `capability` as a probabilistic signal, not a verified credential
-- let users add/remove topics they are willing to help with
-- use outcome history only after enough interactions exist
-- do not show labels such as "expert" unless NSosyal has an independent verification process
-
-### Harassment and unsafe matching
-
-Routing can create a new path for unwanted interactions.
-
-Controls:
 - blocked users can never be matched
-- safety/moderation filters run before allocation
-- users can report a routed request
-- no automatic direct message before the responder accepts
-- repeated negative feedback can lower routing eligibility
+- platform moderation rules run before routing
+- report controls remain available on routed content
+- repeated negative feedback can lower eligibility
 
-### Sensitive inference
+The standalone prototype does not claim to reproduce NSosyal's complete moderation or abuse-prevention stack.
 
-A model could infer health, politics, religion or other sensitive traits from posts even when matching does not need them.
+## Sensitive inference
 
-Controls:
-- do not use sensitive traits as matching features
-- match on the text/topic needed for the current request
-- keep the feature set documented
-- avoid storing extra inferred profile attributes
+Matching does not need health, politics, religion or other sensitive personal traits.
 
-### Gaming the system
+Rules:
 
-Users may phrase ordinary promotional content as a help request to get extra distribution.
+- sensitive traits are not matching features
+- use only the current request, broad opted-in topics and capacity state
+- do not infer hidden personal profile attributes for routing
+- document any future feature added to the candidate model
 
-Controls:
+## Gaming the routing layer
+
+A user may phrase promotional content as a help request to gain extra distribution.
+
+Possible controls:
+
 - response-needed gate
-- spam/moderation signals before routing
-- per-author rate limits
-- outcome and skip signals
-- repeated low-value routing can reduce eligibility
+- per-author request limits
+- spam and moderation signals
+- skip and outcome feedback
+- lower eligibility after repeated low-value routing
 
-### False sense of guaranteed help
+These are production safeguards unless explicitly implemented in the current prototype.
 
-A high match score does not mean a response will happen.
+## Weak matches
+
+A global optimizer cannot fix a poor candidate graph. If weak candidates enter allocation, it can increase coverage by distributing bad matches.
+
+Current controls:
+
+- retrieval before allocation
+- minimum topic-relevance floor
+- minimum edge utility
+- dummy unmatched assignments
+- full threshold-sensitivity experiment instead of reporting only the best-looking setting
+
+## False sense of certainty
+
+Similarity and development utility do not guarantee that someone will answer.
 
 Controls:
-- no promise of a guaranteed reply in the UI
-- show routing as a suggestion
-- allow an intent to remain unmatched when all candidates are weak
+
+- no `93% match` style probability in the user-facing UI
+- technical values are marked as development diagnostics
+- requests can remain unmatched
+- offline relevance is never described as response probability
 
 ## Data minimization
 
-The MVP does not need private messages, contact lists, phone numbers or sensitive profile fields.
+The prototype needs only:
 
-For the prototype we only need:
-- post text or a derived embedding
-- confirmed intent type
-- broad help topics
-- responder opt-in and attention budget
-- candidate scores
-- outcome labels
+- request text
+- confirmed intent
+- broad responder topic profile
+- interaction-type willingness
+- current session capacity
+- candidate similarity and utility
 
-A production integration should define retention periods and access rules with the platform team.
+It does not require private messages, phone numbers, contact lists or sensitive inferred attributes.
 
-## Product safety rule
+## Product rule
 
-The allocator never bypasses user consent. Relevance decides who may be a good candidate. Consent decides whether an interaction can start.
+Relevance can decide who is a candidate. Consent and available capacity decide whether routing is allowed.
