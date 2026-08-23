@@ -9,7 +9,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from niyet.allocator import allocate
-from niyet.metrics import intent_coverage
 from niyet.optimizer import global_allocate
 from niyet.types import CandidateMatch, Intent, IntentType, Responder
 
@@ -20,6 +19,8 @@ RESPONDER_PATH = ROOT / "data" / "responder_profiles_v1.json"
 RELEVANT_GRADE = 2
 TOP_K = 3
 SIMILARITY_FLOORS = (0.00, 0.02, 0.04, 0.06, 0.08, 0.10)
+TOPIC_WEIGHT = 0.80
+PROFILE_WEIGHT = 0.20
 
 
 @dataclass(frozen=True)
@@ -33,6 +34,7 @@ class QueryRow:
 @dataclass(frozen=True)
 class ResponderRow:
     responder: Responder
+    topic_text: str
     profile_text: str
 
 
@@ -59,16 +61,19 @@ def load_data() -> tuple[dict, list[QueryRow], list[ResponderRow]]:
             attention_budget=1,
             active=True,
         )
-        document = f"{item['profile_text']} Konular: {', '.join(item['topics'])}"
-        responders.append(ResponderRow(responder, document))
+        responders.append(
+            ResponderRow(
+                responder=responder,
+                topic_text=" ".join(item["topics"]),
+                profile_text=item["profile_text"],
+            )
+        )
 
     return benchmark, queries, responders
 
 
-def lexical_similarity_matrix(
-    queries: list[QueryRow], responders: list[ResponderRow]
-) -> np.ndarray:
-    texts = [query.text for query in queries] + [item.profile_text for item in responders]
+def char_tfidf_similarity(queries: list[str], documents: list[str]) -> np.ndarray:
+    texts = [*queries, *documents]
     vectorizer = TfidfVectorizer(
         analyzer="char_wb",
         ngram_range=(3, 5),
@@ -76,8 +81,21 @@ def lexical_similarity_matrix(
     )
     matrix = vectorizer.fit_transform(texts)
     q_matrix = matrix[: len(queries)]
-    r_matrix = matrix[len(queries) :]
-    return cosine_similarity(q_matrix, r_matrix)
+    d_matrix = matrix[len(queries) :]
+    return cosine_similarity(q_matrix, d_matrix)
+
+
+def lexical_similarity_matrix(
+    queries: list[QueryRow], responders: list[ResponderRow]
+) -> np.ndarray:
+    query_texts = [query.text for query in queries]
+    topic_similarity = char_tfidf_similarity(
+        query_texts, [item.topic_text for item in responders]
+    )
+    profile_similarity = char_tfidf_similarity(
+        query_texts, [item.profile_text for item in responders]
+    )
+    return TOPIC_WEIGHT * topic_similarity + PROFILE_WEIGHT * profile_similarity
 
 
 def ndcg_at_k(grades: list[int], ideal_grades: list[int], k: int) -> float:
@@ -175,23 +193,16 @@ def build_batch(
     return intents, responder_objects, matches
 
 
-def assignment_gold(assignments, query_by_id: dict[str, QueryRow]) -> tuple[float, int]:
-    grades = [
-        query_by_id[item.intent_id].relevance[item.responder_id]
-        for item in assignments
-    ]
-    if not grades:
-        return 0.0, 0
-    return float(np.mean(grades)), int(sum(grades))
-
-
 def allocation_sweep(
     queries: list[QueryRow],
     responders: list[ResponderRow],
     similarities: np.ndarray,
 ) -> None:
     query_by_id = {query.id: query for query in queries}
-    batch_ranges = [range(start, min(start + 8, len(queries))) for start in range(0, len(queries), 8)]
+    batch_ranges = [
+        range(start, min(start + 8, len(queries)))
+        for start in range(0, len(queries), 8)
+    ]
 
     print("\nAllocation sensitivity")
     print("floor,method,coverage,mean_gold,total_gold")
@@ -226,7 +237,9 @@ def allocation_sweep(
         for name in ("greedy", "global"):
             values = aggregate[name]
             grades = values["grades"]
-            coverage = values["covered"] / values["intents"] if values["intents"] else 0.0
+            coverage = (
+                values["covered"] / values["intents"] if values["intents"] else 0.0
+            )
             mean_gold = float(np.mean(grades)) if grades else 0.0
             total_gold = int(sum(grades))
             print(f"{floor:.2f},{name},{coverage:.4f},{mean_gold:.4f},{total_gold}")
@@ -244,6 +257,7 @@ def main() -> None:
 
     print(f"queries: {len(queries)}")
     print(f"responders: {len(responders)}")
+    print(f"retrieval_weights: topics={TOPIC_WEIGHT:.2f},profile={PROFILE_WEIGHT:.2f}")
     print(f"precision@{TOP_K}: {precision:.4f}")
     print(f"recall@{TOP_K}: {recall:.4f}")
     print(f"ndcg@{TOP_K}: {ndcg:.4f}")
