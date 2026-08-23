@@ -39,6 +39,7 @@ def load_benchmark(path: str | Path) -> Benchmark:
             topics=tuple(item["topics"]),
             willing_intents=tuple(IntentType(kind) for kind in item["willing_intents"]),
             attention_budget=item.get("attention_budget", 1),
+            active=item.get("active", True),
         )
         for item in raw["responders"]
     )
@@ -55,7 +56,8 @@ def load_benchmark(path: str | Path) -> Benchmark:
                     responder_id=item["responder_id"],
                     topic_relevance=float(item["topic_relevance"]),
                     willingness=float(item["willingness"]),
-                    response_probability=float(item["response_probability"]),
+                    availability=float(item["availability"]),
+                    eligible=bool(item.get("eligible", True)),
                 ),
                 gold_relevance=gold_relevance,
             )

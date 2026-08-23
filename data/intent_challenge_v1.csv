@@ -1,0 +1,49 @@
+example_id,text,source_type,source_group,label_a,label_b,final_label,notes
+ask_debug_1,"deploy'dan sonra endpoint 500 dönüyor ama localde temiz. prod loglarında ilk neye bakardınız",team_written,ask_debug,ASK,,ASK,challenge seed; team review pending
+ask_debug_2,"local çalışıyor prod patlıyor. config mi env mi derken kayboldum, nereden debug etmeye başlamak mantıklı",team_written,ask_debug,ASK,,ASK,challenge seed; team review pending
+ask_esp_1,"ya bu esp32 durduk yere reset atıyor, serialda brownout görüyorum. güç tarafında ne ölçeyim önce",team_written,ask_esp,ASK,,ASK,challenge seed; team review pending
+ask_esp_2,"ESP resetlenip duruyor ve brownout yazıyor. besleme mi regülatör mü nasıl ayırırım",team_written,ask_esp,ASK,,ASK,challenge seed; team review pending
+ask_stats_1,"iki grubun ortalamasını karşılaştıracağım ama dağılım baya bozuk. direkt t-test yapmak saçma mı",team_written,ask_stats,ASK,,ASK,challenge seed; team review pending
+ask_stats_2,"veri normal görünmüyor, iki grup için hangi testi seçmem gerektiğinden emin değilim",team_written,ask_stats,ASK,,ASK,challenge seed; team review pending
+ask_git_3,"rebase sonrası üç commit kaybolmuş gibi görünüyor, reflog var. güvenli şekilde geri almak için sıra ne",team_written,ask_git_hard,ASK,,ASK,challenge seed; team review pending
+ask_git_4,"reflog'da eski head'i görüyorum ama branch'i bozmadan commitleri kurtarmak istiyorum",team_written,ask_git_hard,ASK,,ASK,challenge seed; team review pending
+ask_sensor_3,"su üstünde sensör verisi bazen 20 cm birden zıplıyor. median filtre koymak sorunu saklar mı yoksa önce montajı mı düzeltmek lazım",team_written,ask_sensor_hard,ASK,,ASK,challenge seed; team review pending
+ask_sensor_4,"ölçüm spike'ları var ama bunun yazılım mı mekanik mi olduğunu ayıramıyorum. nasıl test ederdiniz",team_written,ask_sensor_hard,ASK,,ASK,challenge seed; team review pending
+ask_ml_1,"small dataset + Turkish text. embedding fine-tune etmek mi yoksa önce tf-idf baseline kurmak mı daha mantıklı",team_written,ask_ml_hard,ASK,,ASK,challenge seed; team review pending
+ask_ml_2,"Türkçe veri az. direkt transformer'a girmek istemiyorum, sağlam bir baseline için ne kurardınız",team_written,ask_ml_hard,ASK,,ASK,challenge seed; team review pending
+feedback_landing_3,"landing'i baya sadeleştirdim ama hala bir şey oturmuyor. ilk 5 saniyede size ne yanlış geliyor",team_written,feedback_landing_hard,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_landing_4,"şu sayfayı ilk kez görseniz nerede takılırdınız, özellikle hero kısmını merak ediyorum",team_written,feedback_landing_hard,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_pitch_3,"pitch'in ilk 20 saniyesini kestim. problem gerçekten anlaşılıyor mu yoksa çok hızlı mı geçiyorum",team_written,feedback_pitch_hard,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_pitch_4,"sunum girişini kısalttık, dışarıdan dinleyince ne yaptığımız net geliyor mu",team_written,feedback_pitch_hard,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_ui_3,"accept ile skip'i böyle yan yana koyduk. yanlış tıklama riski var mı sizce",team_written,feedback_ui_hard,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_ui_4,"request card aksiyonları bu halde. hierarchy yeterince açık mı",team_written,feedback_ui_hard,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_repo_1,"repo'yu ilk kez açan biri olsanız README'den neyin eksik olduğunu söylerdiniz",team_written,feedback_repo,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_repo_2,"README'yi sade tuttuk ama proje akışı anlaşılmıyor olabilir. neresi eksik kalıyor",team_written,feedback_repo,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_model_1,"confusion matrix'i rapora böyle koymayı düşünüyoruz. sizce okuyunca hata tipi anlaşılıyor mu",team_written,feedback_model,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_model_2,"bu model sonuç tablosunda baseline farkı yeterince görünür mü",team_written,feedback_model,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_name_1,"DRSK adı kalıp NIYET'i engine olarak anlatsak branding fazla karışık gelir mi",team_written,feedback_name,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+feedback_name_2,"proje DRSK, algoritma NIYET diye iki isim kullanıyoruz. dışarıdan bakınca kafa karıştırıyor mu",team_written,feedback_name,FEEDBACK,,FEEDBACK,challenge seed; team review pending
+collab_hack_3,"yarın hackathon var, frontend bende. FastAPI tarafına el atacak biri çıkarsa birlikte girelim",team_written,collab_hack_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_hack_4,"hackathon için backend'i tek başıma yetiştiremiyorum. Python/FastAPI bilen biri ekip olmak ister mi",team_written,collab_hack_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_cv_1,"robot hazır ama vision tarafı boş kaldı. object detection bilen biri projeye dahil olmak isterse yazsın",team_written,collab_cv_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_cv_2,"computer vision kısmını birlikte geliştirecek birini arıyoruz, özellikle detection tecrübesi olan",team_written,collab_cv_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_research_3,"küçük bir Turkish NLP benchmark çıkarıyoruz. annotation ve stats tarafına katılacak 1 kişi arıyoruz",team_written,collab_research_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_research_4,"Türkçe NLP datası üzerinde çalışıyoruz, etiketleme protokolünü beraber kuracak biri varsa konuşalım",team_written,collab_research_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_design_3,"backend çalışıyor ama ürün hala mühendis ekranı gibi. UI tarafını sahiplenmek isteyen biriyle beraber ilerleyelim",team_written,collab_design_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_design_4,"projede tasarım tarafı boş. product/UI ilgilenen biri ekibe katılırsa ciddi hızlanırız",team_written,collab_design_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_study_3,"SAT'e tek çalışınca düzen tutmuyor. haftada iki kez aynı denemeyi çözecek 2-3 kişi var mı",team_written,collab_study_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_study_4,"küçük SAT study group kuralım diyorum, düzenli gelecek birkaç kişi arıyorum",team_written,collab_study_hard,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_video_1,"demo çekimini tek kişi yapmak zor. montaj ve screen recording'i birlikte çıkaracak biri var mı",team_written,collab_video,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+collab_video_2,"proje demosu için video hazırlıyoruz, edit tarafında beraber çalışacak birine ihtiyacımız var",team_written,collab_video,COLLABORATE,,COLLABORATE,challenge seed; team review pending
+discuss_feed_3,"sosyal ağda en iyi feed gerçekten en çok tıklananı gösteren feed midir",team_written,discuss_feed_hard,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_feed_4,"algoritma watch time yerine conversation quality optimize etse sizce kullanıcı davranışı nasıl değişir",team_written,discuss_feed_hard,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_ai_1,"AI moderation'da son kararın modelde olması sizce hiçbir zaman kabul edilebilir mi",team_written,discuss_ai_hard,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_ai_2,"moderasyon modeli sadece öneri mi vermeli yoksa bazı durumlarda direkt karar da verebilmeli mi",team_written,discuss_ai_hard,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_open_1,"küçük ekip için open source model kullanmak mı API almak mı uzun vadede daha mantıklı sizce",team_written,discuss_open_hard,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_open_2,"startup ilk günden modeli kendi host etmeli mi yoksa API ile başlayıp sonra mı taşımalı",team_written,discuss_open_hard,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_fair_1,"follower sayısını ranking'den çıkarınca feed daha adil olur mu yoksa kalite sinyali kaybolur mu",team_written,discuss_fairness,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_fair_2,"popularity signal hiç kullanılmasa yeni hesaplar kazanır ama discovery kalitesi düşer mi",team_written,discuss_fairness,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_privacy_1,"insanları doğru eşleştirmek için platformun ne kadar profile data bilmesi makul",team_written,discuss_privacy,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_privacy_2,"matching kalitesi ile data minimization arasında sizce nerede çizgi çekilmeli",team_written,discuss_privacy,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_school_1,"okul projelerinde çalışan demo mu daha değerli yoksa daha özgün ama yarım kalmış research fikri mi",team_written,discuss_school,DISCUSS,,DISCUSS,challenge seed; team review pending
+discuss_school_2,"yarışma jürisi sizce execution'a mı innovation'a mı daha fazla ağırlık vermeli",team_written,discuss_school,DISCUSS,,DISCUSS,challenge seed; team review pending

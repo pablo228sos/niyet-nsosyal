@@ -1,3 +1,5 @@
+import pytest
+
 from niyet.allocator import allocate
 from niyet.optimizer import global_allocate
 from niyet.types import CandidateMatch, IntentType, Responder
@@ -47,3 +49,30 @@ def test_global_allocator_can_leave_low_quality_match_unassigned():
     result = global_allocate(matches, responders, min_score=0.5)
 
     assert result == []
+
+
+def test_threshold_is_applied_before_optimization():
+    responders = [
+        Responder("r1", ("x",), (IntentType.ASK,), 1),
+        Responder("r2", ("x",), (IntentType.ASK,), 1),
+    ]
+    matches = [
+        CandidateMatch("i1", "r1", 0.99, 0.99, 0.99),
+        CandidateMatch("i1", "r2", 0.91, 0.91, 0.91),
+        CandidateMatch("i2", "r1", 0.90, 0.90, 0.90),
+        CandidateMatch("i2", "r2", 0.89, 0.89, 0.89),
+    ]
+
+    result = global_allocate(matches, responders, min_score=0.90)
+
+    assert {(item.intent_id, item.responder_id) for item in result} == {
+        ("i1", "r2"),
+        ("i2", "r1"),
+    }
+
+
+def test_global_allocator_rejects_invalid_threshold():
+    responders = [Responder("r1", ("x",), (IntentType.ASK,), 1)]
+
+    with pytest.raises(ValueError):
+        global_allocate([], responders, min_score=1.1)

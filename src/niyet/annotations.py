@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-ALLOWED_LABELS = {"ask", "feedback", "collaborate", "discuss"}
+ALLOWED_LABELS = {"ASK", "FEEDBACK", "COLLABORATE", "DISCUSS"}
 ALLOWED_SOURCE_TYPES = {"public", "team_written", "controlled_seed"}
 REQUIRED_COLUMNS = (
     "example_id",
@@ -25,6 +25,10 @@ class AnnotationProblem:
     message: str
 
 
+def _normalize_label(value: str) -> str:
+    return value.strip().upper()
+
+
 def validate_annotation_file(path: str | Path) -> list[AnnotationProblem]:
     problems: list[AnnotationProblem] = []
     seen_ids: set[str] = set()
@@ -39,9 +43,9 @@ def validate_annotation_file(path: str | Path) -> list[AnnotationProblem]:
             text = row["text"].strip()
             source_type = row["source_type"].strip()
             source_group = row["source_group"].strip()
-            label_a = row["label_a"].strip()
-            label_b = row["label_b"].strip()
-            final_label = row["final_label"].strip()
+            label_a = _normalize_label(row["label_a"])
+            label_b = _normalize_label(row["label_b"])
+            final_label = _normalize_label(row["final_label"])
 
             if not example_id:
                 problems.append(AnnotationProblem(row_number, "missing example_id"))

@@ -1,0 +1,5 @@
+example_id,text,source_type,source_group,label_a,label_b,final_label,notes
+example_ask,"ESP32 kartım bağlantıyı sürekli kaybediyor. İlk olarak neyi kontrol etmeliyim?",team_written,example_ask,ask,ask,ask,format example only
+example_feedback,"Bu onboarding ekranında sizce en kafa karıştırıcı kısım hangisi?",team_written,example_feedback,feedback,feedback,feedback,format example only
+example_collab,"Robotik projemiz için computer vision bilen bir ekip arkadaşı arıyoruz.",team_written,example_collab,collaborate,collaborate,collaborate,format example only
+example_discuss,"Sizce küçük veri setlerinde klasik TF-IDF hâlâ güçlü bir baseline mı?",team_written,example_discuss,discuss,discuss,discuss,format example only

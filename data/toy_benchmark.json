@@ -63,22 +63,22 @@
     }
   ],
   "matches": [
-    {"intent_id": "pid-help", "responder_id": "r1", "topic_relevance": 0.98, "willingness": 0.95, "response_probability": 0.90, "gold_relevance": 3},
-    {"intent_id": "pid-help", "responder_id": "r4", "topic_relevance": 0.82, "willingness": 0.90, "response_probability": 0.76, "gold_relevance": 2},
-    {"intent_id": "pid-help", "responder_id": "r2", "topic_relevance": 0.31, "willingness": 0.70, "response_probability": 0.65, "gold_relevance": 0},
+    {"intent_id": "pid-help", "responder_id": "r1", "topic_relevance": 0.98, "willingness": 0.95, "availability": 0.90, "gold_relevance": 3},
+    {"intent_id": "pid-help", "responder_id": "r4", "topic_relevance": 0.82, "willingness": 0.90, "availability": 0.76, "gold_relevance": 2},
+    {"intent_id": "pid-help", "responder_id": "r2", "topic_relevance": 0.31, "willingness": 0.70, "availability": 0.65, "gold_relevance": 0},
 
-    {"intent_id": "python-help", "responder_id": "r2", "topic_relevance": 0.97, "willingness": 0.95, "response_probability": 0.91, "gold_relevance": 3},
-    {"intent_id": "python-help", "responder_id": "r4", "topic_relevance": 0.42, "willingness": 0.75, "response_probability": 0.62, "gold_relevance": 1},
+    {"intent_id": "python-help", "responder_id": "r2", "topic_relevance": 0.97, "willingness": 0.95, "availability": 0.91, "gold_relevance": 3},
+    {"intent_id": "python-help", "responder_id": "r4", "topic_relevance": 0.42, "willingness": 0.75, "availability": 0.62, "gold_relevance": 1},
 
-    {"intent_id": "ui-feedback", "responder_id": "r3", "topic_relevance": 0.99, "willingness": 0.95, "response_probability": 0.88, "gold_relevance": 3},
-    {"intent_id": "ui-feedback", "responder_id": "r2", "topic_relevance": 0.46, "willingness": 0.72, "response_probability": 0.66, "gold_relevance": 1},
+    {"intent_id": "ui-feedback", "responder_id": "r3", "topic_relevance": 0.99, "willingness": 0.95, "availability": 0.88, "gold_relevance": 3},
+    {"intent_id": "ui-feedback", "responder_id": "r2", "topic_relevance": 0.46, "willingness": 0.72, "availability": 0.66, "gold_relevance": 1},
 
-    {"intent_id": "robot-collab", "responder_id": "r1", "topic_relevance": 0.95, "willingness": 0.94, "response_probability": 0.86, "gold_relevance": 3},
-    {"intent_id": "robot-collab", "responder_id": "r4", "topic_relevance": 0.91, "willingness": 0.92, "response_probability": 0.84, "gold_relevance": 3},
-    {"intent_id": "robot-collab", "responder_id": "r2", "topic_relevance": 0.25, "willingness": 0.55, "response_probability": 0.51, "gold_relevance": 0},
+    {"intent_id": "robot-collab", "responder_id": "r1", "topic_relevance": 0.95, "willingness": 0.94, "availability": 0.86, "gold_relevance": 3},
+    {"intent_id": "robot-collab", "responder_id": "r4", "topic_relevance": 0.91, "willingness": 0.92, "availability": 0.84, "gold_relevance": 3},
+    {"intent_id": "robot-collab", "responder_id": "r2", "topic_relevance": 0.25, "willingness": 0.55, "availability": 0.51, "gold_relevance": 0},
 
-    {"intent_id": "ml-discuss", "responder_id": "r2", "topic_relevance": 0.94, "willingness": 0.91, "response_probability": 0.82, "gold_relevance": 3},
-    {"intent_id": "ml-discuss", "responder_id": "r4", "topic_relevance": 0.88, "willingness": 0.90, "response_probability": 0.79, "gold_relevance": 3},
-    {"intent_id": "ml-discuss", "responder_id": "r3", "topic_relevance": 0.28, "willingness": 0.66, "response_probability": 0.58, "gold_relevance": 0}
+    {"intent_id": "ml-discuss", "responder_id": "r2", "topic_relevance": 0.94, "willingness": 0.91, "availability": 0.82, "gold_relevance": 3},
+    {"intent_id": "ml-discuss", "responder_id": "r4", "topic_relevance": 0.88, "willingness": 0.90, "availability": 0.79, "gold_relevance": 3},
+    {"intent_id": "ml-discuss", "responder_id": "r3", "topic_relevance": 0.28, "willingness": 0.66, "availability": 0.58, "gold_relevance": 0}
   ]
 }

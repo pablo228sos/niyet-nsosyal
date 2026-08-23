@@ -1,0 +1,97 @@
+example_id,text,source_type,source_group,label_a,label_b,final_label,notes
+ask_wifi_1,ESP32 kartım Wi-Fi bağlantısını birkaç dakikada bir kaybediyor. Nereden kontrol etmeye başlamalıyım?,controlled_seed,ask_wifi,ASK,,ASK,draft seed; team review pending
+ask_wifi_2,ESP32 bağlantısı durmadan kopuyor. Güç kaynağını mı yoksa kodu mu önce test etmeliyim?,controlled_seed,ask_wifi,ASK,,ASK,draft seed; team review pending
+ask_python_1,Python'da bu fonksiyon bazen None döndürüyor ama nedenini bulamadım. Hangi kısmı kontrol etmeliyim?,controlled_seed,ask_python,ASK,,ASK,draft seed; team review pending
+ask_python_2,Fonksiyonumun bazı girdilerde None vermesinin sebebini nasıl bulabilirim?,controlled_seed,ask_python,ASK,,ASK,draft seed; team review pending
+ask_git_1,Yanlışlıkla main branch'e commit attım. Commit'i kaybetmeden yeni bir branch'e nasıl taşıyabilirim?,controlled_seed,ask_git,ASK,,ASK,draft seed; team review pending
+ask_git_2,Main'e yaptığım son commit'i yeni branch'e almak istiyorum. En güvenli yol nedir?,controlled_seed,ask_git,ASK,,ASK,draft seed; team review pending
+ask_math_1,"Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",controlled_seed,ask_math,ASK,,ASK,draft seed; team review pending
+ask_math_2,Soruyu çözüyorum ama burada kombinasyon seçilmesinin nedenini anlayamadım. Açıklayabilir misiniz?,controlled_seed,ask_math,ASK,,ASK,draft seed; team review pending
+ask_robot_1,Çizgi izleyen robotum virajlarda sürekli taşıyor. PID ayarına hangi parametreden başlamalıyım?,controlled_seed,ask_robot,ASK,,ASK,draft seed; team review pending
+ask_robot_2,PID kullanan line follower virajda savruluyor. Önce P mi D mi değiştirmek daha mantıklı?,controlled_seed,ask_robot,ASK,,ASK,draft seed; team review pending
+ask_camera_1,Kamerada düşük ışıkta görüntü çok gürültülü oluyor. Yazılımla azaltmak için hangi yöntemi deneyebilirim?,controlled_seed,ask_camera,ASK,,ASK,draft seed; team review pending
+ask_camera_2,Gece çekiminde görüntüde ciddi noise var. Basit bir görüntü işleme çözümü önerir misiniz?,controlled_seed,ask_camera,ASK,,ASK,draft seed; team review pending
+ask_sql_1,Bu sorgu 200 bin satırda çok yavaşlıyor. İlk bakmam gereken index hangisi?,controlled_seed,ask_sql,ASK,,ASK,draft seed; team review pending
+ask_sql_2,SQL sorgum veri büyüyünce yavaşladı. Execution plan dışında neyi kontrol etmeliyim?,controlled_seed,ask_sql,ASK,,ASK,draft seed; team review pending
+ask_css_1,Mobilde bu kartlar üst üste biniyor. Grid yapısında hatayı nasıl bulabilirim?,controlled_seed,ask_css,ASK,,ASK,draft seed; team review pending
+ask_css_2,Desktop'ta düzgün olan grid telefonda bozuluyor. Responsive kısmı nereden debug etmeliyim?,controlled_seed,ask_css,ASK,,ASK,draft seed; team review pending
+ask_battery_1,18650 pillerle yaptığım pakette voltaj normal ama yük altında aniden düşüyor. Sebebi ne olabilir?,controlled_seed,ask_battery,ASK,,ASK,draft seed; team review pending
+ask_battery_2,Pil paketi boşta iyi görünüyor fakat motor çalışınca voltaj çöküyor. Neyi ölçmem gerekir?,controlled_seed,ask_battery,ASK,,ASK,draft seed; team review pending
+ask_linux_1,Ubuntu'da servis reboot sonrası başlamıyor ama elle başlatınca çalışıyor. systemd tarafında neyi kontrol etmeliyim?,controlled_seed,ask_linux,ASK,,ASK,draft seed; team review pending
+ask_linux_2,Servisim manuel çalışıyor fakat açılışta ayağa kalkmıyor. systemd için hangi loglara bakmalıyım?,controlled_seed,ask_linux,ASK,,ASK,draft seed; team review pending
+ask_api_1,API isteğim tarayıcıda CORS hatası veriyor ama Postman'de çalışıyor. Bunu doğru şekilde nasıl çözebilirim?,controlled_seed,ask_api,ASK,,ASK,draft seed; team review pending
+ask_api_2,Postman'de çalışan endpoint frontend'de CORS yüzünden patlıyor. Backend'de hangi header'ları kontrol etmeliyim?,controlled_seed,ask_api,ASK,,ASK,draft seed; team review pending
+ask_sensor_1,Ultrasonik sensör suya yakınken kararsız ölçüm veriyor. Filtreleme mi yoksa montaj açısı mı daha önemli?,controlled_seed,ask_sensor,ASK,,ASK,draft seed; team review pending
+ask_sensor_2,Sensör okumaları sürekli zıplıyor. Önce mekanik yerleşimi mi yazılımsal filtreyi mi değiştirmeliyim?,controlled_seed,ask_sensor,ASK,,ASK,draft seed; team review pending
+feedback_landing_1,Yeni projemiz için bu landing page'i hazırladım. İlk bakışta en zayıf tarafı sizce ne?,controlled_seed,feedback_landing,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_landing_2,Ana sayfanın bu taslağını yaptım. Kullanıcı gözüyle en önce neyi değiştirirdiniz?,controlled_seed,feedback_landing,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_pitch_1,60 saniyelik proje sunum metnim bu. Sizce problem kısmı yeterince net mi?,controlled_seed,feedback_pitch,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_pitch_2,Pitch'in girişini kısalttım. Problemi ilk 15 saniyede anlayabiliyor musunuz?,controlled_seed,feedback_pitch,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_logo_1,NIYET için iki logo taslağı hazırladım. Hangisi daha güvenilir bir ürün hissi veriyor?,controlled_seed,feedback_logo,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_logo_2,"Bu iki logodan hangisi sosyal medya ürünü için daha uygun görünüyor, neden?",controlled_seed,feedback_logo,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_poster_1,Bilim fuarı posteri için bu yerleşimi kullandım. Bilgi sırası anlaşılır mı?,controlled_seed,feedback_poster,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_poster_2,Poster taslağımda göz ilk nereye gidiyor? Hiyerarşide neyi düzeltmeliyim?,controlled_seed,feedback_poster,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_resume_1,CV'min proje bölümünü yeniden yazdım. Fazla uzun veya belirsiz kalan yer var mı?,controlled_seed,feedback_resume,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_resume_2,Bu CV bölümünü daha kısa tuttum. Deneyim gerçekten anlaşılır oluyor mu?,controlled_seed,feedback_resume,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_ui_1,Bildirim kartını böyle tasarladım. Accept ve Skip butonlarının yeri sizce doğru mu?,controlled_seed,feedback_ui,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_ui_2,"Yardım isteği kartındaki aksiyonlar anlaşılır mı, yoksa butonları değiştirmeli miyiz?",controlled_seed,feedback_ui,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_report_1,Teknik raporun problem bölümünü bu şekilde yazdık. Kanıt ile yorum arasındaki fark net mi?,controlled_seed,feedback_report,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_report_2,Problem tanımı taslağımızda fazla iddialı bir cümle görüyor musunuz?,controlled_seed,feedback_report,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_video_1,Demo videonun ilk 20 saniyesi böyle. Projenin ne yaptığını yeterince hızlı anlatıyor mu?,controlled_seed,feedback_video,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_video_2,Bu demo açılışı sizce yavaş mı kalıyor? İlk hangi sahneyi keserdiniz?,controlled_seed,feedback_video,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_prototype_1,Prototipte intent seçimini bu ekrana koyduk. Kullanıcı için gereksiz bir adım gibi geliyor mu?,controlled_seed,feedback_prototype,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_prototype_2,Intent onay ekranını test ediyoruz. Akışı yavaşlatan bir şey görüyor musunuz?,controlled_seed,feedback_prototype,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_chart_1,Sonuçları bu grafikte gösterdim. Baseline ile farkı okumak kolay mı?,controlled_seed,feedback_chart,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_chart_2,Bu chart'ta NIYET ve baseline karşılaştırması ilk bakışta anlaşılır mı?,controlled_seed,feedback_chart,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_email_1,Mentöre göndereceğim bu kısa açıklamayı yazdım. Tonu fazla resmi olmuş mu?,controlled_seed,feedback_email,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_email_2,Bu mesajı mentöre atmayı düşünüyorum. Kısa ve net geliyor mu?,controlled_seed,feedback_email,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_research_1,Araştırma sorumuzu bu şekilde daralttık. Ölçülebilir ve test edilebilir duruyor mu?,controlled_seed,feedback_research,FEEDBACK,,FEEDBACK,draft seed; team review pending
+feedback_research_2,"Bu research question sizce hâlâ fazla geniş mi, nereden daraltırdınız?",controlled_seed,feedback_research,FEEDBACK,,FEEDBACK,draft seed; team review pending
+collaborate_hackathon_1,Hafta sonu hackathonu için backend bilen bir ekip arkadaşı arıyoruz. İlgilenen var mı?,controlled_seed,collaborate_hackathon,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_hackathon_2,Hackathon takımımıza FastAPI bilen bir kişi daha lazım. Birlikte çalışmak isteyen yazabilir.,controlled_seed,collaborate_hackathon,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_robotics_1,Teknofest projemizde görüntü işleme kısmını birlikte geliştirecek bir ekip arkadaşı arıyoruz.,controlled_seed,collaborate_robotics,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_robotics_2,Robotik projemiz için computer vision tarafına katkı verecek biriyle ekip olmak istiyoruz.,controlled_seed,collaborate_robotics,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_research_1,Türkçe sosyal medya verisi üzerine küçük bir araştırma yapıyoruz. Veri analizi bilen biri katılmak ister mi?,controlled_seed,collaborate_research,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_research_2,Sosyal medya araştırmamıza istatistik tarafında destek olacak bir ekip arkadaşı arıyoruz.,controlled_seed,collaborate_research,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_design_1,Açık kaynak projemiz için UI tasarımını beraber geliştirecek bir tasarımcı arıyoruz.,controlled_seed,collaborate_design,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_design_2,"Frontend hazır, ama tasarım tarafını birlikte götürecek biri olursa çok iyi olur.",controlled_seed,collaborate_design,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_study_1,SAT için haftada iki kez birlikte deneme çözecek küçük bir çalışma grubu kurmak istiyorum.,controlled_seed,collaborate_study,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_study_2,Düzenli SAT çalışmak için 3-4 kişilik grup kuruyoruz. Katılmak isteyen var mı?,controlled_seed,collaborate_study,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_startup_1,Öğrenciler için küçük bir SaaS fikrimiz var. MVP'yi birlikte çıkaracak frontend geliştirici arıyoruz.,controlled_seed,collaborate_startup,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_startup_2,MVP aşamasındaki projemize React bilen bir ekip arkadaşı arıyoruz.,controlled_seed,collaborate_startup,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_event_1,Okulda teknoloji etkinliği düzenliyoruz. Organizasyon ekibine iki gönüllü daha arıyoruz.,controlled_seed,collaborate_event,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_event_2,Teknoloji günü için program ve kayıt işlerini birlikte yürütecek gönüllüler arıyoruz.,controlled_seed,collaborate_event,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_open_source_1,Türkçe NLP için açık kaynak veri aracı geliştiriyoruz. Katkı vermek isteyen Python geliştiricileri arıyoruz.,controlled_seed,collaborate_open_source,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_open_source_2,Open source NLP aracımıza kod katkısı yapacak kişilerle küçük bir ekip kuruyoruz.,controlled_seed,collaborate_open_source,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_music_1,Kısa film projesi için müzik yapabilecek biriyle beraber çalışmak istiyoruz.,controlled_seed,collaborate_music,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_music_2,Öğrenci kısa filmimize soundtrack hazırlamak isteyen bir müzisyen arıyoruz.,controlled_seed,collaborate_music,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_drone_1,FPV drone projesinde mekanik tasarımı birlikte yapacak CAD bilen biri lazım.,controlled_seed,collaborate_drone,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_drone_2,Drone ekibimize CAD tarafını üstlenecek bir ekip arkadaşı arıyoruz.,controlled_seed,collaborate_drone,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_community_1,Yeni başlayanlar için haftalık yazılım buluşması başlatıyoruz. Organizasyonda beraber çalışacak kişiler arıyoruz.,controlled_seed,collaborate_community,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_community_2,Haftalık coding meetup için içerik ve organizasyonu birlikte yapacak gönüllüler lazım.,controlled_seed,collaborate_community,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_dataset_1,Türkçe intent datasetini iki kişi bağımsız etiketleyeceğiz. İkinci annotator olarak katılmak isteyen var mı?,controlled_seed,collaborate_dataset,COLLABORATE,,COLLABORATE,draft seed; team review pending
+collaborate_dataset_2,Veri setimizin kontrolü için bağımsız etiketleme yapabilecek bir ekip arkadaşı arıyoruz.,controlled_seed,collaborate_dataset,COLLABORATE,,COLLABORATE,draft seed; team review pending
+discuss_opensource_1,Sizce küçük ekipler için açık kaynak model kullanmak uzun vadede daha mantıklı mı?,controlled_seed,discuss_opensource,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_opensource_2,Küçük bir startup için open source model mi yoksa API kullanmak mı daha sürdürülebilir sizce?,controlled_seed,discuss_opensource,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_school_1,Okullarda yapay zeka araçlarının kullanımına sınır koymak sizce doğru mu?,controlled_seed,discuss_school,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_school_2,"Sizce öğrencilerin AI araçlarını kullanması yasaklanmalı mı, yoksa nasıl bir sınır olmalı?",controlled_seed,discuss_school,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_social_1,Sosyal ağlar beğeni sayısını gizlese kullanıcı davranışı gerçekten değişir mi?,controlled_seed,discuss_social,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_social_2,Like sayılarının görünmemesi sizce sosyal medyayı daha sağlıklı yapar mı?,controlled_seed,discuss_social,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_privacy_1,Kişiselleştirme ile mahremiyet arasında sizce doğru denge nerede olmalı?,controlled_seed,discuss_privacy,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_privacy_2,Daha iyi öneriler için ne kadar kullanıcı verisi toplamak kabul edilebilir sizce?,controlled_seed,discuss_privacy,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_remote_1,Uzaktan çalışma genç ekiplerde verimi artırıyor mu yoksa iletişimi mi bozuyor?,controlled_seed,discuss_remote,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_remote_2,Küçük ekiplerde remote çalışmanın artıları sizce eksilerinden fazla mı?,controlled_seed,discuss_remote,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_university_1,Üniversite seçiminde sıralama mı yoksa bölümün kültürü mü daha önemli sizce?,controlled_seed,discuss_university,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_university_2,İki üniversite arasında kalınca ranking'e ne kadar ağırlık vermek gerekir?,controlled_seed,discuss_university,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_hardware_1,"Projelerde hazır modül kullanmak öğrenmeyi azaltır mı, yoksa zamanı doğru kullanmak mı olur?",controlled_seed,discuss_hardware,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_hardware_2,Bir öğrenci projesinde her şeyi sıfırdan yapmak mı daha değerli, hazır modül kullanmak mı?,controlled_seed,discuss_hardware,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_ai_art_1,AI ile üretilen görseller tasarım yarışmalarında ayrı kategoride mi değerlendirilmeli?,controlled_seed,discuss_ai_art,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_ai_art_2,Sizce AI görselleri insan tasarımıyla aynı kategoride yarışmalı mı?,controlled_seed,discuss_ai_art,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_algorithms_1,Sosyal medya algoritmaları kronolojik akıştan gerçekten daha iyi bir deneyim sunuyor mu?,controlled_seed,discuss_algorithms,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_algorithms_2,Kronolojik feed mi kişiselleştirilmiş feed mi sizce kullanıcı için daha iyi?,controlled_seed,discuss_algorithms,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_moderation_1,"Topluluk moderasyonunda otomasyon ne kadar karar vermeli, nerede insan devreye girmeli?",controlled_seed,discuss_moderation,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_moderation_2,"AI moderation son kararı verebilir mi, yoksa sadece insan moderatöre yardımcı mı olmalı?",controlled_seed,discuss_moderation,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_competition_1,Teknoloji yarışmalarında çalışan prototip mi yoksa araştırma yeniliği mi daha ağır basmalı?,controlled_seed,discuss_competition,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_competition_2,Bir proje yarışmasında sizce teknik yenilik mi ürünün gerçekten çalışması mı daha önemli?,controlled_seed,discuss_competition,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_attention_1,Sosyal ağlar ekran süresini değil faydalı etkileşimi optimize etse kullanım nasıl değişirdi?,controlled_seed,discuss_attention,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_attention_2,Feed algoritmalarının watch time yerine yararlı konuşmaları hedeflemesi sizce mümkün mü?,controlled_seed,discuss_attention,DISCUSS,,DISCUSS,draft seed; team review pending

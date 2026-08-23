@@ -1,0 +1,97 @@
+example_id,text,source_type,source_group,label_a,label_b,final_label,notes
+response_001,ESP32 kartım Wi-Fi bağlantısını birkaç dakikada bir kaybediyor. Nereden kontrol etmeye başlamalıyım?,controlled_seed,resp_ask_wifi,RESPONSE,,RESPONSE,draft seed; team review pending
+response_002,Python'da bu fonksiyon bazen None döndürüyor ama nedenini bulamadım. Hangi kısmı kontrol etmeliyim?,controlled_seed,resp_ask_python,RESPONSE,,RESPONSE,draft seed; team review pending
+response_003,Yanlışlıkla main branch'e commit attım. Commit'i kaybetmeden yeni bir branch'e nasıl taşıyabilirim?,controlled_seed,resp_ask_git,RESPONSE,,RESPONSE,draft seed; team review pending
+response_004,"Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",controlled_seed,resp_ask_math,RESPONSE,,RESPONSE,draft seed; team review pending
+response_005,Çizgi izleyen robotum virajlarda sürekli taşıyor. PID ayarına hangi parametreden başlamalıyım?,controlled_seed,resp_ask_robot,RESPONSE,,RESPONSE,draft seed; team review pending
+response_006,Kamerada düşük ışıkta görüntü çok gürültülü oluyor. Yazılımla azaltmak için hangi yöntemi deneyebilirim?,controlled_seed,resp_ask_camera,RESPONSE,,RESPONSE,draft seed; team review pending
+response_007,Bu sorgu 200 bin satırda çok yavaşlıyor. İlk bakmam gereken index hangisi?,controlled_seed,resp_ask_sql,RESPONSE,,RESPONSE,draft seed; team review pending
+response_008,Mobilde bu kartlar üst üste biniyor. Grid yapısında hatayı nasıl bulabilirim?,controlled_seed,resp_ask_css,RESPONSE,,RESPONSE,draft seed; team review pending
+response_009,18650 pillerle yaptığım pakette voltaj normal ama yük altında aniden düşüyor. Sebebi ne olabilir?,controlled_seed,resp_ask_battery,RESPONSE,,RESPONSE,draft seed; team review pending
+response_010,Ubuntu'da servis reboot sonrası başlamıyor ama elle başlatınca çalışıyor. systemd tarafında neyi kontrol etmeliyim?,controlled_seed,resp_ask_linux,RESPONSE,,RESPONSE,draft seed; team review pending
+response_011,API isteğim tarayıcıda CORS hatası veriyor ama Postman'de çalışıyor. Bunu doğru şekilde nasıl çözebilirim?,controlled_seed,resp_ask_api,RESPONSE,,RESPONSE,draft seed; team review pending
+response_012,Ultrasonik sensör suya yakınken kararsız ölçüm veriyor. Filtreleme mi yoksa montaj açısı mı daha önemli?,controlled_seed,resp_ask_sensor,RESPONSE,,RESPONSE,draft seed; team review pending
+response_013,Yeni projemiz için bu landing page'i hazırladım. İlk bakışta en zayıf tarafı sizce ne?,controlled_seed,resp_feedback_landing,RESPONSE,,RESPONSE,draft seed; team review pending
+response_014,60 saniyelik proje sunum metnim bu. Sizce problem kısmı yeterince net mi?,controlled_seed,resp_feedback_pitch,RESPONSE,,RESPONSE,draft seed; team review pending
+response_015,NIYET için iki logo taslağı hazırladım. Hangisi daha güvenilir bir ürün hissi veriyor?,controlled_seed,resp_feedback_logo,RESPONSE,,RESPONSE,draft seed; team review pending
+response_016,Bilim fuarı posteri için bu yerleşimi kullandım. Bilgi sırası anlaşılır mı?,controlled_seed,resp_feedback_poster,RESPONSE,,RESPONSE,draft seed; team review pending
+response_017,CV'min proje bölümünü yeniden yazdım. Fazla uzun veya belirsiz kalan yer var mı?,controlled_seed,resp_feedback_resume,RESPONSE,,RESPONSE,draft seed; team review pending
+response_018,Bildirim kartını böyle tasarladım. Accept ve Skip butonlarının yeri sizce doğru mu?,controlled_seed,resp_feedback_ui,RESPONSE,,RESPONSE,draft seed; team review pending
+response_019,Teknik raporun problem bölümünü bu şekilde yazdık. Kanıt ile yorum arasındaki fark net mi?,controlled_seed,resp_feedback_report,RESPONSE,,RESPONSE,draft seed; team review pending
+response_020,Demo videonun ilk 20 saniyesi böyle. Projenin ne yaptığını yeterince hızlı anlatıyor mu?,controlled_seed,resp_feedback_video,RESPONSE,,RESPONSE,draft seed; team review pending
+response_021,Prototipte intent seçimini bu ekrana koyduk. Kullanıcı için gereksiz bir adım gibi geliyor mu?,controlled_seed,resp_feedback_prototype,RESPONSE,,RESPONSE,draft seed; team review pending
+response_022,Sonuçları bu grafikte gösterdim. Baseline ile farkı okumak kolay mı?,controlled_seed,resp_feedback_chart,RESPONSE,,RESPONSE,draft seed; team review pending
+response_023,Mentöre göndereceğim bu kısa açıklamayı yazdım. Tonu fazla resmi olmuş mu?,controlled_seed,resp_feedback_email,RESPONSE,,RESPONSE,draft seed; team review pending
+response_024,Araştırma sorumuzu bu şekilde daralttık. Ölçülebilir ve test edilebilir duruyor mu?,controlled_seed,resp_feedback_research,RESPONSE,,RESPONSE,draft seed; team review pending
+response_025,Hafta sonu hackathonu için backend bilen bir ekip arkadaşı arıyoruz. İlgilenen var mı?,controlled_seed,resp_collab_hackathon,RESPONSE,,RESPONSE,draft seed; team review pending
+response_026,Teknofest projemizde görüntü işleme kısmını birlikte geliştirecek bir ekip arkadaşı arıyoruz.,controlled_seed,resp_collab_robotics,RESPONSE,,RESPONSE,draft seed; team review pending
+response_027,Türkçe sosyal medya verisi üzerine küçük bir araştırma yapıyoruz. Veri analizi bilen biri katılmak ister mi?,controlled_seed,resp_collab_research,RESPONSE,,RESPONSE,draft seed; team review pending
+response_028,Açık kaynak projemiz için UI tasarımını beraber geliştirecek bir tasarımcı arıyoruz.,controlled_seed,resp_collab_design,RESPONSE,,RESPONSE,draft seed; team review pending
+response_029,SAT için haftada iki kez birlikte deneme çözecek küçük bir çalışma grubu kurmak istiyorum.,controlled_seed,resp_collab_study,RESPONSE,,RESPONSE,draft seed; team review pending
+response_030,Öğrenciler için küçük bir SaaS fikrimiz var. MVP'yi birlikte çıkaracak frontend geliştirici arıyoruz.,controlled_seed,resp_collab_startup,RESPONSE,,RESPONSE,draft seed; team review pending
+response_031,Okulda teknoloji etkinliği düzenliyoruz. Organizasyon ekibine iki gönüllü daha arıyoruz.,controlled_seed,resp_collab_event,RESPONSE,,RESPONSE,draft seed; team review pending
+response_032,Türkçe NLP için açık kaynak veri aracı geliştiriyoruz. Katkı vermek isteyen Python geliştiricileri arıyoruz.,controlled_seed,resp_collab_open,RESPONSE,,RESPONSE,draft seed; team review pending
+response_033,Kısa film projesi için müzik yapabilecek biriyle beraber çalışmak istiyoruz.,controlled_seed,resp_collab_music,RESPONSE,,RESPONSE,draft seed; team review pending
+response_034,FPV drone projesinde mekanik tasarımı birlikte yapacak CAD bilen biri lazım.,controlled_seed,resp_collab_drone,RESPONSE,,RESPONSE,draft seed; team review pending
+response_035,Yeni başlayanlar için haftalık yazılım buluşması başlatıyoruz. Organizasyonda beraber çalışacak kişiler arıyoruz.,controlled_seed,resp_collab_community,RESPONSE,,RESPONSE,draft seed; team review pending
+response_036,Türkçe intent datasetini iki kişi bağımsız etiketleyeceğiz. İkinci annotator olarak katılmak isteyen var mı?,controlled_seed,resp_collab_dataset,RESPONSE,,RESPONSE,draft seed; team review pending
+response_037,Sizce küçük ekipler için açık kaynak model kullanmak uzun vadede daha mantıklı mı?,controlled_seed,resp_discuss_open,RESPONSE,,RESPONSE,draft seed; team review pending
+response_038,Okullarda yapay zeka araçlarının kullanımına sınır koymak sizce doğru mu?,controlled_seed,resp_discuss_school,RESPONSE,,RESPONSE,draft seed; team review pending
+response_039,Sosyal ağlar beğeni sayısını gizlese kullanıcı davranışı gerçekten değişir mi?,controlled_seed,resp_discuss_social,RESPONSE,,RESPONSE,draft seed; team review pending
+response_040,Kişiselleştirme ile mahremiyet arasında sizce doğru denge nerede olmalı?,controlled_seed,resp_discuss_privacy,RESPONSE,,RESPONSE,draft seed; team review pending
+response_041,Uzaktan çalışma genç ekiplerde verimi artırıyor mu yoksa iletişimi mi bozuyor?,controlled_seed,resp_discuss_remote,RESPONSE,,RESPONSE,draft seed; team review pending
+response_042,Üniversite seçiminde sıralama mı yoksa bölümün kültürü mü daha önemli sizce?,controlled_seed,resp_discuss_university,RESPONSE,,RESPONSE,draft seed; team review pending
+response_043,"Projelerde hazır modül kullanmak öğrenmeyi azaltır mı, yoksa zamanı doğru kullanmak mı olur?",controlled_seed,resp_discuss_hardware,RESPONSE,,RESPONSE,draft seed; team review pending
+response_044,AI ile üretilen görseller tasarım yarışmalarında ayrı kategoride mi değerlendirilmeli?,controlled_seed,resp_discuss_aiart,RESPONSE,,RESPONSE,draft seed; team review pending
+response_045,Sosyal medya algoritmaları kronolojik akıştan gerçekten daha iyi bir deneyim sunuyor mu?,controlled_seed,resp_discuss_alg,RESPONSE,,RESPONSE,draft seed; team review pending
+response_046,"Topluluk moderasyonunda otomasyon ne kadar karar vermeli, nerede insan devreye girmeli?",controlled_seed,resp_discuss_moder,RESPONSE,,RESPONSE,draft seed; team review pending
+response_047,Teknoloji yarışmalarında çalışan prototip mi yoksa araştırma yeniliği mi daha ağır basmalı?,controlled_seed,resp_discuss_comp,RESPONSE,,RESPONSE,draft seed; team review pending
+response_048,Sosyal ağlar ekran süresini değil faydalı etkileşimi optimize etse kullanım nasıl değişirdi?,controlled_seed,resp_discuss_attn,RESPONSE,,RESPONSE,draft seed; team review pending
+none_project_1,Bugün prototipin ilk çalışan sürümünü çıkardık. Ekran görüntülerini akşam paylaşacağım.,controlled_seed,none_project,NONE,,NONE,draft seed; team review pending
+none_project_2,Projenin backend kısmını bugün bitirdik. Yarın testlere geçiyoruz.,controlled_seed,none_project,NONE,,NONE,draft seed; team review pending
+none_photo_1,Sabah kampüste çektiğim birkaç fotoğrafı bırakıyorum.,controlled_seed,none_photo,NONE,,NONE,draft seed; team review pending
+none_photo_2,Bugünkü yürüyüşten birkaç kare.,controlled_seed,none_photo,NONE,,NONE,draft seed; team review pending
+none_release_1,v0.3 yayınlandı. Bu sürümde loglama ve hata mesajlarını düzenledik.,controlled_seed,none_release,NONE,,NONE,draft seed; team review pending
+none_release_2,Yeni sürümü repoya attık. Küçük performans düzeltmeleri var.,controlled_seed,none_release,NONE,,NONE,draft seed; team review pending
+none_event_1,Yarın saat 18.00'de okulun teknoloji kulübü buluşması var.,controlled_seed,none_event,NONE,,NONE,draft seed; team review pending
+none_event_2,Cumartesi günü açık kaynak topluluğunun aylık buluşması yapılacak.,controlled_seed,none_event,NONE,,NONE,draft seed; team review pending
+none_achievement_1,Bugün ilk kez 5 kilometreyi durmadan koştum.,controlled_seed,none_achievement,NONE,,NONE,draft seed; team review pending
+none_achievement_2,Takım olarak bölge finaline kalmayı başardık.,controlled_seed,none_achievement,NONE,,NONE,draft seed; team review pending
+none_course_1,Makine öğrenmesi kursunda bugün üçüncü haftayı tamamladım.,controlled_seed,none_course,NONE,,NONE,draft seed; team review pending
+none_course_2,Bu hafta SQL dersinin normalizasyon bölümünü bitirdim.,controlled_seed,none_course,NONE,,NONE,draft seed; team review pending
+none_hardware_1,Yeni sensör kartı bugün geldi. Hafta sonu robota takacağım.,controlled_seed,none_hardware,NONE,,NONE,draft seed; team review pending
+none_hardware_2,Motor sürücü kartını değiştirdik ve kablolamayı yeniden yaptık.,controlled_seed,none_hardware,NONE,,NONE,draft seed; team review pending
+none_travel_1,İstanbul'a sabah erken vardım. Şehir bugün oldukça sakin.,controlled_seed,none_travel,NONE,,NONE,draft seed; team review pending
+none_travel_2,Hafta sonu Kapadokya'daydık, hava beklediğimden daha serindi.,controlled_seed,none_travel,NONE,,NONE,draft seed; team review pending
+none_article_1,Türkçe NLP üzerine okuduğum güzel bir makaleyi kaydettim.,controlled_seed,none_article,NONE,,NONE,draft seed; team review pending
+none_article_2,Bugün recommender systems hakkında uzun bir yazı okudum.,controlled_seed,none_article,NONE,,NONE,draft seed; team review pending
+none_tutorial_1,FastAPI ile basit bir endpoint oluşturma notlarımı paylaştım.,controlled_seed,none_tutorial,NONE,,NONE,draft seed; team review pending
+none_tutorial_2,Git rebase için hazırladığım kısa notları repoya ekledim.,controlled_seed,none_tutorial,NONE,,NONE,draft seed; team review pending
+none_music_1,Bu hafta en çok dinlediğim albüm yine aynı oldu.,controlled_seed,none_music,NONE,,NONE,draft seed; team review pending
+none_music_2,Yeni çıkan parçayı sabah beri birkaç kez dinledim.,controlled_seed,none_music,NONE,,NONE,draft seed; team review pending
+none_book_1,Bu ay ikinci kitabımı bitirdim.,controlled_seed,none_book,NONE,,NONE,draft seed; team review pending
+none_book_2,Dün gece başladığım kitabın ilk yüz sayfasını okudum.,controlled_seed,none_book,NONE,,NONE,draft seed; team review pending
+none_exam_1,Bugünkü deneme sınavı beklediğimden daha uzun sürdü.,controlled_seed,none_exam,NONE,,NONE,draft seed; team review pending
+none_exam_2,Matematik sınavı bugün öğleden sonra yapılacak.,controlled_seed,none_exam,NONE,,NONE,draft seed; team review pending
+none_weather_1,Bugün şehirde hava bir anda soğudu.,controlled_seed,none_weather,NONE,,NONE,draft seed; team review pending
+none_weather_2,Sabah yağmur vardı, öğleden sonra güneş açtı.,controlled_seed,none_weather,NONE,,NONE,draft seed; team review pending
+none_news_1,Yeni Python sürümü bugün yayınlandı.,controlled_seed,none_news,NONE,,NONE,draft seed; team review pending
+none_news_2,Üniversitenin yeni laboratuvarı bu hafta açıldı.,controlled_seed,none_news,NONE,,NONE,draft seed; team review pending
+none_worklog_1,Bugün veri temizleme scriptini yeniden yazdım ve iki hatayı kapattım.,controlled_seed,none_worklog,NONE,,NONE,draft seed; team review pending
+none_worklog_2,Akşam boyunca test dosyalarını düzenledim.,controlled_seed,none_worklog,NONE,,NONE,draft seed; team review pending
+none_design_1,Ana sayfanın yeni taslağını bugün Figma'ya aktardım.,controlled_seed,none_design,NONE,,NONE,draft seed; team review pending
+none_design_2,Mobil görünüm için yeni kart bileşenlerini çizdim.,controlled_seed,none_design,NONE,,NONE,draft seed; team review pending
+none_dataset_1,Datasetin ilk 100 satırını bugün temizledik.,controlled_seed,none_dataset,NONE,,NONE,draft seed; team review pending
+none_dataset_2,Etiketleme dosyasını dört sınıfa göre yeniden düzenledik.,controlled_seed,none_dataset,NONE,,NONE,draft seed; team review pending
+none_competition_1,Teknik rapor teslimine iki gün kaldı.,controlled_seed,none_competition,NONE,,NONE,draft seed; team review pending
+none_competition_2,Yarışmanın mentorluk aşaması gelecek hafta başlayacak.,controlled_seed,none_competition,NONE,,NONE,draft seed; team review pending
+none_food_1,Bugün ilk kez evde ramen yaptım.,controlled_seed,none_food,NONE,,NONE,draft seed; team review pending
+none_food_2,Öğle arasında yeni açılan yerde yemek yedik.,controlled_seed,none_food,NONE,,NONE,draft seed; team review pending
+none_sports_1,Akşam antrenmanında şut çalıştık.,controlled_seed,none_sports,NONE,,NONE,draft seed; team review pending
+none_sports_2,Bugünkü maç 2-1 bitti.,controlled_seed,none_sports,NONE,,NONE,draft seed; team review pending
+none_code_1,Allocator için yeni testleri main branch'e ekledim.,controlled_seed,none_code,NONE,,NONE,draft seed; team review pending
+none_code_2,API tarafındaki validation kodunu bugün commit ettim.,controlled_seed,none_code,NONE,,NONE,draft seed; team review pending
+none_status_1,Uzun bir günden sonra sonunda eve geldim.,controlled_seed,none_status,NONE,,NONE,draft seed; team review pending
+none_status_2,Bugün çoğu zamanı bilgisayar başında geçirdim.,controlled_seed,none_status,NONE,,NONE,draft seed; team review pending
+none_community_1,Topluluğun bu haftaki özetini kanala bıraktım.,controlled_seed,none_community,NONE,,NONE,draft seed; team review pending
+none_community_2,Yeni üyeler için kaynak listesini sabitledik.,controlled_seed,none_community,NONE,,NONE,draft seed; team review pending

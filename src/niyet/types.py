@@ -26,6 +26,7 @@ class Responder:
     topics: tuple[str, ...]
     willing_intents: tuple[IntentType, ...]
     attention_budget: int = 1
+    active: bool = True
 
 
 @dataclass(frozen=True)
@@ -34,4 +35,5 @@ class CandidateMatch:
     responder_id: str
     topic_relevance: float
     willingness: float
-    response_probability: float
+    availability: float
+    eligible: bool = True

@@ -22,11 +22,19 @@ def allocate(
     max_responders_per_intent: int = 1,
 ) -> list[Assignment]:
     """Greedy capacity-aware baseline used by the first prototype."""
-    budgets = {responder.id: responder.attention_budget for responder in responders}
+    budgets = {
+        responder.id: max(0, responder.attention_budget)
+        for responder in responders
+        if responder.active
+    }
     responder_load = defaultdict(int)
     intent_load = defaultdict(int)
 
-    ranked = sorted(matches, key=pair_score, reverse=True)
+    ranked = sorted(
+        (match for match in matches if match.eligible),
+        key=pair_score,
+        reverse=True,
+    )
     assignments: list[Assignment] = []
 
     for match in ranked:

@@ -4,17 +4,21 @@ from .types import CandidateMatch
 
 
 def pair_score(match: CandidateMatch) -> float:
-    """Score one candidate edge before capacity constraints are applied."""
+    """Return the current development utility for one eligible edge.
+
+    Willingness is enforced before ranking. For candidates that reach this
+    function, willingness is therefore a hard compatibility constraint rather
+    than a useful ranking signal. The current utility averages topical
+    relevance and remaining availability. These are transparent development
+    signals, not learned production weights or calibrated probabilities.
+    """
     values = (
         match.topic_relevance,
-        match.willingness,
-        match.response_probability,
+        match.availability,
     )
     if any(value < 0 or value > 1 for value in values):
         raise ValueError("match scores must be between 0 and 1")
+    if not 0 <= match.willingness <= 1:
+        raise ValueError("willingness must be between 0 and 1")
 
-    return (
-        0.45 * match.topic_relevance
-        + 0.25 * match.willingness
-        + 0.30 * match.response_probability
-    )
+    return sum(values) / len(values)

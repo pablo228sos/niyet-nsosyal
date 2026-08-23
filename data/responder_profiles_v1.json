@@ -1,0 +1,74 @@
+[
+  {
+    "id": "r_control",
+    "display_name": "Control Systems Volunteer",
+    "topics": ["robotics", "PID", "control systems", "embedded systems"],
+    "profile_text": "Robotik, PID kontrol, motor sürme, sensör kalibrasyonu ve gömülü sistemler üzerine çalışıyorum.",
+    "willing_intents": ["ask", "collaborate", "discuss"],
+    "daily_budget": 2,
+    "remaining_slots": 1
+  },
+  {
+    "id": "r_backend",
+    "display_name": "Backend Builder",
+    "topics": ["Python", "FastAPI", "APIs", "databases"],
+    "profile_text": "Python, FastAPI, REST API, PostgreSQL, backend hata ayıklama ve deployment konularında yardımcı olabilirim.",
+    "willing_intents": ["ask", "collaborate", "feedback"],
+    "daily_budget": 3,
+    "remaining_slots": 2
+  },
+  {
+    "id": "r_product",
+    "display_name": "Product Designer",
+    "topics": ["UI", "UX", "onboarding", "accessibility"],
+    "profile_text": "UI ve UX, onboarding akışları, erişilebilirlik, prototip ve kullanılabilirlik testleri üzerine çalışıyorum.",
+    "willing_intents": ["feedback", "collaborate", "discuss"],
+    "daily_budget": 3,
+    "remaining_slots": 2
+  },
+  {
+    "id": "r_ml",
+    "display_name": "ML / NLP Builder",
+    "topics": ["machine learning", "NLP", "embeddings", "evaluation"],
+    "profile_text": "Makine öğrenmesi, Türkçe NLP, embedding modelleri, sınıflandırma ve model değerlendirme üzerine çalışıyorum.",
+    "willing_intents": ["ask", "feedback", "collaborate", "discuss"],
+    "daily_budget": 2,
+    "remaining_slots": 1
+  },
+  {
+    "id": "r_frontend",
+    "display_name": "Frontend Builder",
+    "topics": ["React", "JavaScript", "CSS", "responsive design"],
+    "profile_text": "React, JavaScript, CSS, responsive arayüzler ve frontend performansı üzerine çalışıyorum.",
+    "willing_intents": ["ask", "feedback", "collaborate"],
+    "daily_budget": 2,
+    "remaining_slots": 2
+  },
+  {
+    "id": "r_research",
+    "display_name": "Research Reviewer",
+    "topics": ["research", "statistics", "experiments", "technical writing"],
+    "profile_text": "Araştırma tasarımı, deney planı, istatistik, teknik rapor ve kaynak değerlendirmesi konularında geri bildirim veriyorum.",
+    "willing_intents": ["feedback", "discuss", "collaborate"],
+    "daily_budget": 2,
+    "remaining_slots": 1
+  },
+  {
+    "id": "r_visual",
+    "display_name": "Visual Designer",
+    "topics": ["branding", "visual design", "presentation", "motion"],
+    "profile_text": "Marka, görsel tasarım, sunum, motion ve arayüz hiyerarşisi üzerine çalışıyorum.",
+    "willing_intents": ["feedback", "collaborate"],
+    "daily_budget": 2,
+    "remaining_slots": 1
+  },
+  {
+    "id": "r_hardware",
+    "display_name": "Hardware Builder",
+    "topics": ["electronics", "sensors", "power", "microcontrollers"],
+    "profile_text": "Elektronik, ESP32, sensörler, güç sistemleri, ölçüm ve mikrodenetleyici tabanlı prototipler üzerine çalışıyorum.",
+    "willing_intents": ["ask", "collaborate", "discuss"],
+    "daily_budget": 2,
+    "remaining_slots": 2
+  }
+]

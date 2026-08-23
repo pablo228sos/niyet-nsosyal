@@ -16,12 +16,17 @@ def _capacity_greedy(
     rank_key: Callable[[CandidateMatch], float],
     max_responders_per_intent: int = 1,
 ) -> list[Assignment]:
-    budgets = {responder.id: responder.attention_budget for responder in responders}
+    budgets = {
+        responder.id: max(0, responder.attention_budget)
+        for responder in responders
+        if responder.active
+    }
     responder_load = defaultdict(int)
     intent_load = defaultdict(int)
     assignments: list[Assignment] = []
 
-    for match in sorted(matches, key=rank_key, reverse=True):
+    eligible_matches = (match for match in matches if match.eligible)
+    for match in sorted(eligible_matches, key=rank_key, reverse=True):
         if match.responder_id not in budgets:
             continue
         if responder_load[match.responder_id] >= budgets[match.responder_id]:
@@ -45,7 +50,7 @@ def random_capacity(
     seed: int = 7,
     max_responders_per_intent: int = 1,
 ) -> list[Assignment]:
-    shuffled = list(matches)
+    shuffled = [match for match in matches if match.eligible]
     random.Random(seed).shuffle(shuffled)
     order = {id(match): len(shuffled) - index for index, match in enumerate(shuffled)}
     return _capacity_greedy(
@@ -75,6 +80,8 @@ def unconstrained_best_match(
 ) -> list[Assignment]:
     best_by_intent: dict[str, CandidateMatch] = {}
     for match in matches:
+        if not match.eligible:
+            continue
         previous = best_by_intent.get(match.intent_id)
         if previous is None or pair_score(match) > pair_score(previous):
             best_by_intent[match.intent_id] = match

@@ -1,0 +1,9 @@
+pair_id,intent_id,intent_type,intent_text,responder_id,responder_profile,topic_fit,willingness,availability,label_a,label_b,final_relevance,notes
+pair_001,intent_001,ASK,"Çizgi izleyen robotum virajlardan sonra salınıyor. PID konusunda nereden başlamalıyım?",responder_001,"Robotics student; PID control; embedded systems",high,yes,available,,,,
+pair_002,intent_001,ASK,"Çizgi izleyen robotum virajlardan sonra salınıyor. PID konusunda nereden başlamalıyım?",responder_002,"Frontend developer; product design",low,yes,available,,,,
+pair_003,intent_002,COLLABORATE,"Küçük bir FastAPI projesi için backend tarafında birlikte çalışacak ekip arkadaşı arıyoruz.",responder_003,"Python; FastAPI; PostgreSQL",high,yes,available,,,,
+pair_004,intent_002,COLLABORATE,"Küçük bir FastAPI projesi için backend tarafında birlikte çalışacak ekip arkadaşı arıyoruz.",responder_004,"Python beginner; currently not looking for collaboration",medium,no,available,,,,
+pair_005,intent_003,FEEDBACK,"Mobil onboarding akışımızda hangi ekran gereksiz görünüyor?",responder_005,"Product designer; UX research; mobile apps",high,yes,available,,,,
+pair_006,intent_003,FEEDBACK,"Mobil onboarding akışımızda hangi ekran gereksiz görünüyor?",responder_006,"Backend engineer; distributed systems",low,yes,busy,,,,
+pair_007,intent_004,DISCUSS,"Sizce küçük Türkçe veri setlerinde TF-IDF mi embedding tabanlı retrieval mı daha mantıklı?",responder_007,"NLP; information retrieval; Turkish language models",high,yes,available,,,,
+pair_008,intent_004,DISCUSS,"Sizce küçük Türkçe veri setlerinde TF-IDF mi embedding tabanlı retrieval mı daha mantıklı?",responder_008,"Computer vision; object detection",low,yes,available,,,,
