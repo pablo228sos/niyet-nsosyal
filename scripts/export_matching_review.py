@@ -16,6 +16,7 @@ def main() -> None:
     parser.add_argument("--benchmark", type=Path, default=DEFAULT_BENCHMARK)
     parser.add_argument("--responders", type=Path, default=DEFAULT_RESPONDERS)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--reviewer", default="reviewer")
     args = parser.parse_args()
 
     benchmark = json.loads(args.benchmark.read_text(encoding="utf-8"))
@@ -35,9 +36,8 @@ def main() -> None:
                 "responder_name",
                 "responder_profile",
                 "willing_for_intent",
-                "label_a",
-                "label_b",
-                "final_relevance",
+                "reviewer_id",
+                "relevance",
                 "notes",
             ]
         )
@@ -63,14 +63,16 @@ def main() -> None:
                         "yes"
                         if query["intent"] in responder["willing_intents"]
                         else "no",
-                        "",
-                        "",
+                        args.reviewer,
                         "",
                         "",
                     ]
                 )
 
-    print(f"wrote {pair_index} blind review pairs to {args.output}")
+    print(
+        f"wrote {pair_index} blind review pairs for {args.reviewer} "
+        f"to {args.output}"
+    )
 
 
 if __name__ == "__main__":
