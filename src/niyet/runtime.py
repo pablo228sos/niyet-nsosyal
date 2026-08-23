@@ -11,7 +11,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .classifier import build_tfidf_baseline, load_labeled_texts
 from .optimizer import global_allocate
 from .scoring import pair_score
-from .types import CandidateMatch, Intent, IntentType, Responder
+from .types import CandidateMatch, IntentType, Responder
+
+
+TOPIC_RETRIEVAL_WEIGHT = 0.80
+PROFILE_RETRIEVAL_WEIGHT = 0.20
 
 
 @dataclass(frozen=True)
@@ -202,6 +206,27 @@ class NiyetRuntime:
             matrix[: len(queries)], matrix[len(queries) :]
         )
 
+    def _responder_similarity_matrix(
+        self,
+        queries: list[str],
+        responders: list[RuntimeResponder],
+    ):
+        """Lexical deployment baseline with explicit topics as the main signal.
+
+        Topic lists are user-controlled, high-confidence routing metadata. Free
+        profile prose is useful context but can contain generic words such as
+        "prototype" that should not outrank an explicit topic like FastAPI or
+        PID. The fixed weighting is a transparent baseline and is not learned.
+        """
+        topic_documents = [" ".join(item.responder.topics) for item in responders]
+        profile_documents = [item.profile_text for item in responders]
+        topic_similarity = self._similarity_matrix(queries, topic_documents)
+        profile_similarity = self._similarity_matrix(queries, profile_documents)
+        return (
+            TOPIC_RETRIEVAL_WEIGHT * topic_similarity
+            + PROFILE_RETRIEVAL_WEIGHT * profile_similarity
+        )
+
     def route(
         self,
         text: str,
@@ -210,7 +235,7 @@ class NiyetRuntime:
         responder_state: dict | None = None,
         exclude_responder_ids: tuple[str, ...] = (),
         min_similarity: float = 0.06,
-        min_score: float = 0.38,
+        min_score: float = 0.25,
     ) -> RouteDecision:
         request_id = f"demo-{uuid4().hex[:10]}"
         decisions = self.route_many(
@@ -234,7 +259,7 @@ class NiyetRuntime:
         *,
         responder_state: dict | None = None,
         min_similarity: float = 0.06,
-        min_score: float = 0.38,
+        min_score: float = 0.25,
     ) -> list[RouteDecision]:
         if not 0.0 <= min_similarity <= 1.0:
             raise ValueError("min_similarity must be between 0 and 1")
@@ -301,12 +326,8 @@ class NiyetRuntime:
                 for item in prepared
             ]
 
-        documents = [
-            f"{item.profile_text} Konular: {', '.join(item.responder.topics)}"
-            for item in active_responders
-        ]
-        similarities = self._similarity_matrix(
-            [item["text"] for item in routable], documents
+        similarities = self._responder_similarity_matrix(
+            [item["text"] for item in routable], active_responders
         )
 
         matches: list[CandidateMatch] = []
