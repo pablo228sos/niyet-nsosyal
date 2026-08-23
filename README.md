@@ -22,18 +22,20 @@ Prototype: https://niyet-nsosyal.vercel.app/
 
 Allocation lab: https://niyet-nsosyal.vercel.app/lab
 
-The web prototype calls the Python pipeline in `api/`. The current deployed path uses lightweight models that can be reproduced directly from this repository:
+The web prototype calls the Python pipeline in `api/`. The current deployed path stays lightweight and reproducible:
 
 - word and character TF-IDF with Logistic Regression for response-needed detection
 - word and character TF-IDF with Logistic Regression for four-way intent classification
-- character TF-IDF for responder retrieval, with explicit opt-in topics weighted above free profile prose
+- weighted character TF-IDF for deployed responder retrieval
 - explicit interaction willingness as a hard eligibility constraint
 - session-level remaining responder capacity
 - bounded global assignment across the current matching window
 
 The browser keeps a small session state for the prototype and passes it to the API on each routing call. Accept decreases the matched responder's remaining capacity for later calls in that browser session. Pause removes the responder from subsequent allocation until resumed. This is a prototype session mechanism, not a production database.
 
-ModernBERT-TR-Embed is included as an optional offline Turkish semantic-retrieval candidate. We only treat it as a model choice after comparing it on the same fixed matching benchmark as the lexical baseline.
+The interface supports English and Turkish, including dynamic routing states. Desktop and mobile expose both the author and responder sides of the flow. The primary navigation is a small functional concept shell rather than a set of decorative controls.
+
+ModernBERT-TR-Embed is evaluated offline as the leading Turkish semantic-retrieval candidate. It is not loaded into the public Vercel runtime yet because deployment cost and latency should be considered separately from retrieval quality.
 
 ## Allocation model
 
@@ -77,15 +79,16 @@ Four-way intent baseline on the current grouped controlled data:
 
 - Macro F1: about 0.872
 
-Current lexical retrieval on the draft 32-query matching benchmark:
+Retrieval on the same draft 32-query x 8-responder benchmark:
 
-- explicit topic text weight: 0.80
-- free profile text weight: 0.20
-- Precision@3: 0.4687
-- Recall@3: 0.8438
-- NDCG@3: 0.8384
+| Retriever | Precision@3 | Recall@3 | NDCG@3 |
+| --- | ---: | ---: | ---: |
+| Weighted lexical TF-IDF | 0.4687 | 0.8438 | 0.8384 |
+| ModernBERT-TR-Embed | **0.5312** | **0.9427** | **0.8968** |
 
-At similarity floor 0.02 on the same draft labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total draft relevance from 45 to 51. Mean relevance changes from 2.14 to 2.04 on the 0-3 draft scale. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
+The semantic result was produced by `experiments/evaluate_modernbert_retrieval.py` in GitHub Actions using the external Yildiz Technical University COSMOS model. These are our measurements on the project benchmark, not copied model-card scores. They remain DEVELOPMENT ONLY until the relevance labels are frozen.
+
+At lexical similarity floor 0.02 on the same draft labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total draft relevance from 45 to 51. Mean relevance changes from 2.14 to 2.04 on the 0-3 draft scale. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
 
 The full sensitivity table is kept under `experiments/` rather than selecting only settings where global allocation looks strongest.
 
@@ -131,10 +134,11 @@ python experiments/evaluate_matching_draft.py
 python experiments/benchmark_scaling.py
 ```
 
-Optional semantic retrieval dependencies:
+Semantic retrieval comparison:
 
 ```bash
 python -m pip install -e '.[embeddings]'
+python experiments/evaluate_modernbert_retrieval.py
 ```
 
 ## Current limitations
@@ -143,6 +147,7 @@ python -m pip install -e '.[embeddings]'
 - matching labels still need team review before they become a frozen evaluation set
 - responder profiles are synthetic prototype profiles
 - browser-session capacity is not a production persistence layer
+- the semantic model is evaluated offline but is not yet the deployed Vercel retriever
 - offline relevance is not the same as a real response or resolved interaction
 
 These limits are kept explicit because the current goal is a reproducible prototype whose claims match what is actually implemented.
