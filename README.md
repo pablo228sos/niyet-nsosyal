@@ -63,12 +63,13 @@ The main prototype keeps multiple unresolved requests in a short matching window
 - `intent_seed_v1.csv`: controlled ASK / FEEDBACK / COLLABORATE / DISCUSS development data
 - `intent_challenge_v1.csv`: shorter, conversational and code-switched Turkish examples
 - `responder_profiles_v1.json`: synthetic responder profiles for the prototype
-- `matching_benchmark_v1_draft.json`: 32-query responder-matching benchmark draft
+- `matching_benchmark_v1_draft.json`: original 32-query matching draft
+- `matching_benchmark_v1_reviewed.json`: frozen human-reviewed benchmark
 - annotation and review templates
 
-Two team members independently reviewed all 256 query-responder relevance pairs. Exact agreement was 243/256 (94.92%) and quadratic weighted Cohen's kappa was 0.9756. Thirteen disagreements are awaiting adjudication by the third team member before a frozen reviewed benchmark is committed. Development numbers are not presented as NSosyal field performance.
+Two team members independently reviewed all 256 query-responder relevance pairs. Exact agreement was 243/256 (94.92%) and quadratic weighted Cohen's kappa was 0.9756. The third team member adjudicated all 13 disagreements. The resulting `v1-reviewed` benchmark is now frozen. No participant names are stored.
 
-## Current development checks
+## Current checks
 
 Response-needed model on the controlled grouped development split:
 
@@ -79,18 +80,18 @@ Four-way intent baseline on the current grouped controlled data:
 
 - Macro F1: about 0.872
 
-Retrieval on the same draft 32-query x 8-responder benchmark:
+Retrieval on the frozen 32-query x 8-responder human-reviewed benchmark:
 
 | Retriever | Precision@3 | Recall@3 | NDCG@3 |
 | --- | ---: | ---: | ---: |
-| Weighted lexical TF-IDF | 0.4687 | 0.8438 | 0.8384 |
-| ModernBERT-TR-Embed | **0.5312** | **0.9427** | **0.8968** |
+| Weighted lexical TF-IDF | 0.4688 | 0.8438 | 0.8450 |
+| ModernBERT-TR-Embed | **0.5417** | **0.9583** | **0.9025** |
 
-The semantic result was produced by `experiments/evaluate_modernbert_retrieval.py` in GitHub Actions using the external Yildiz Technical University COSMOS model. These are our measurements on the project benchmark, not copied model-card scores. They remain DEVELOPMENT ONLY until the 13 review disagreements are adjudicated and the benchmark is frozen.
+The ModernBERT ranking order was produced by the fixed GitHub Actions experiment using the Yildiz Technical University COSMOS model. Final metrics above are computed against the frozen adjudicated human labels, not draft labels or copied model-card scores.
 
-At lexical similarity floor 0.02 on the same draft labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total draft relevance from 45 to 51. Mean relevance changes from 2.14 to 2.04 on the 0-3 draft scale. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
+At lexical similarity floor 0.02 on the frozen labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total reviewed relevance from 45 to 52. Mean assigned relevance is 2.08 for global versus 2.14 for greedy, showing the expected coverage-quality tradeoff rather than hiding it. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
 
-The full sensitivity table is kept under `experiments/` rather than selecting only settings where global allocation looks strongest.
+Human usability testing is documented separately. Eight real participants completed the initial six-task study, which exposed a mobile responder-side dead end. A five-session targeted retest after the responsive fix raised responder-control completion from 0/3 phone sessions to 2/2 mobile sessions. The remaining explainability-discoverability issue is kept explicit rather than presented as solved.
 
 ## Evaluation
 
@@ -134,20 +135,15 @@ python experiments/evaluate_matching_draft.py
 python experiments/benchmark_scaling.py
 ```
 
-Semantic retrieval comparison:
-
-```bash
-python -m pip install -e '.[embeddings]'
-python experiments/evaluate_modernbert_retrieval.py
-```
+Semantic retrieval comparison requires the optional embedding dependencies and is intentionally kept outside the lightweight deployed runtime.
 
 ## Current limitations
 
-- classification and matching data are controlled development data
-- 13 human-review disagreements remain before the matching benchmark is frozen
+- classification data are controlled development data
 - responder profiles are synthetic prototype profiles
 - browser-session capacity is not a production persistence layer
 - the semantic model is evaluated offline but is not yet the deployed Vercel retriever
 - offline relevance is not the same as a real response or resolved interaction
+- usability samples are small prototype studies, not population estimates
 
 These limits are kept explicit because the current goal is a reproducible prototype whose claims match what is actually implemented.
