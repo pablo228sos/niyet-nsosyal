@@ -1,104 +1,122 @@
 # Product flow
 
-The product should feel like a small extension of posting and replying, not a separate matching app.
+NIYET is designed as a small extension of posting and replying, not as a separate matching application.
 
-## 1. Author creates a normal post
+## 1. Author writes a normal post
 
-The user writes a post in the existing composer.
+The user writes in the existing composer.
 
-NIYET runs the response-needed gate in the background.
+The response-needed model runs first.
 
-If the post looks like a normal update, nothing changes. The post is published normally.
+If the post looks like a normal update, NIYET stays out of the flow. The interface still offers a small manual `Use NIYET anyway` path so a false negative does not block the user.
 
-If the post appears to seek a response, the composer shows a small suggestion before publishing:
+If the post appears to seek a response, NIYET suggests one of four intents:
 
-`Bu gönderi için yanıt mı arıyorsun?`
+- ASK
+- FEEDBACK
+- COLLABORATE
+- DISCUSS
 
-Suggested intent:
-- Yardım iste
-- Geri bildirim iste
-- Birlikte çalışacak kişi ara
-- Tartışma başlat
+The author can accept the suggestion, change it or dismiss NIYET.
 
-The user can accept, change or dismiss the suggestion.
+## 2. Confirmed request enters the matching window
 
-## 2. Intent becomes eligible for routing
+A confirmed request joins the current open-request window.
 
-After confirmation, the request enters the open-intent queue.
+The window matters because several requests can compete for the same willing responders. NIYET does not immediately lock the locally best responder for every request independently.
 
-The platform does not send it to every relevant user. Candidate retrieval narrows the pool first.
+Candidate retrieval first narrows the pool.
 
-Before scoring, the system removes:
-- users who did not opt in
-- blocked relationships
-- users outside their current attention budget
-- candidates that fail safety rules
+Before allocation, the runtime removes:
 
-## 3. Candidate allocation
+- inactive responders
+- responders with no remaining session capacity
+- responders who do not accept the confirmed intent type
+- responders explicitly skipped for this request
+- candidates below the current topic-relevance floor
 
-The allocator receives a bounded set of open intents and candidate responders.
+## 3. Requests are allocated together
 
-Instead of taking the best responder for each post independently, NIYET allocates the batch together. This avoids spending the same scarce responder on a request that had an almost equally good alternative while another request has no alternative.
+When a new confirmed request enters the window, the current unresolved requests are allocated again under one shared responder state.
 
-An intent may remain unmatched when every eligible candidate is weak.
+This is the product-level reason for the global allocator. If two requests both prefer the same responder but one has a strong alternative and the other does not, batch allocation can use the scarce responder where it matters more.
+
+A request may stay unmatched when no valid candidate clears the quality rules.
 
 ## 4. Responder sees a request card
 
-The request appears as a suggestion, not as an automatic direct message.
+The routed request appears as a suggestion, not as an automatic direct message.
 
-The card should show:
-- original post text
-- intent type
-- topic
-- why the request was suggested
-- `Yanıtla`
-- `Geç`
-- `Bu konuda istek alma`
+The prototype shows:
 
-We should not show a fake precision such as `93% match` to the user. Model scores are internal ranking signals, not a guarantee of usefulness.
+- original request text
+- confirmed intent type
+- matched responder profile
+- plain-language match reasons
+- Accept
+- Skip
+- Pause routing
 
-## 5. Interaction happens in normal NSosyal surfaces
+Development similarity and utility values are hidden behind Technical details and are clearly labeled as diagnostics, not probabilities.
 
-If the responder accepts, they reply through the normal post/reply flow. NIYET does not need a separate messaging system.
+## 5. Responder actions change later allocation
 
-## 6. Outcome feedback
+The live prototype keeps a small browser-session state.
 
-After a response, the author can give a lightweight outcome signal:
-- Faydalı oldu
-- Sorunum çözüldü
-- İlgili değildi
+### Accept
 
-The responder can also say that the request was not relevant to their interests.
+Accept decreases that responder's remaining slots for later routing calls and removes the current request from the open window.
 
-These signals can later improve matching. They should not be required to publish or reply.
+### Skip
+
+Skip excludes the current responder from that request and reallocates the remaining window. It does not consume capacity.
+
+### Pause
+
+Pause makes the matched responder inactive in later routing calls within the session. Resume re-enables the responder if capacity remains.
+
+This session mechanism demonstrates stateful capacity. A real production integration would move the same state into platform storage rather than relying on the browser.
+
+## 6. Interaction stays in normal NSosyal surfaces
+
+If a responder accepts, the actual conversation can continue in the normal reply or messaging surface. NIYET does not need to create a second social network.
+
+## 7. Outcome feedback
+
+Useful and Resolved are intended future learning signals. The current prototype demonstrates routing-state actions, while persistent long-term outcome collection remains production work.
 
 ## Correction points
 
-A model can be wrong at several stages. The interface should make correction cheap:
-- wrong response-needed detection: dismiss suggestion
-- wrong intent type: change it before publishing
-- wrong responder topic: skip and adjust topic preference
-- bad match: mark not relevant
-- too many requests: lower attention budget or pause routing
+The interface is designed so model mistakes are recoverable:
 
-## Accessibility requirements for the prototype
+- false positive response detection: dismiss NIYET
+- false negative response detection: manually activate NIYET
+- wrong intent: change it before routing
+- poor responder: Skip and reallocate
+- too many requests: Pause routing
+- exhausted attention: capacity reaches zero for later session calls
 
-- all actions work with keyboard only
+## Accessibility requirements
+
+- keyboard access for every action
 - visible focus state
-- semantic button labels, not icon-only controls
-- intent is never communicated only by color
-- minimum readable contrast for text and controls
-- status changes announced to screen readers
+- semantic button and form labels
+- no critical state communicated by color alone
+- screen-reader status announcements
+- reduced-motion support
+- responsive desktop and mobile layouts
 - no forced time limit for accepting a request
-- reduced-motion preference respected for optional animation
 
 ## Usability test tasks
 
-We can test the flow with five short tasks:
-1. publish a help-seeking post and correct the detected intent
-2. publish a normal update without enabling NIYET
-3. accept a routed request and reply
-4. skip an irrelevant request and change topic preferences
-5. pause incoming NIYET requests
+The prepared usability test checks whether a participant can:
 
-For each task we record completion, errors, time, one short difficulty rating and comments. We should fix clear usability problems before the final presentation and keep both positive and negative test feedback.
+1. publish a normal update without accidentally activating NIYET
+2. route a help-seeking post
+3. correct the suggested intent
+4. manually activate NIYET after a normal-post decision
+5. accept or skip a routed request
+6. pause incoming routing
+7. understand why a match was suggested
+
+We record task completion, time, wrong clicks, facilitator hints and the main point of confusion. Results are only reported after real participants complete the protocol.
