@@ -50,9 +50,9 @@ They are synthetic product fixtures. They are not real NSosyal accounts.
 
 First 32-query Turkish matching benchmark draft.
 
-Each query contains a 0-3 relevance grade for every responder profile. Current status: `team_review_pending`.
+Each query contains a 0-3 relevance grade for every responder profile. The committed draft file is still marked `team_review_pending` because we do not overwrite development labels in place.
 
-Results from this file remain development results until the team reviews and freezes the labels.
+Two team members have now independently reviewed all 256 pairs. Their ratings agreed on 243/256 pairs (94.92%) with quadratic weighted Cohen's kappa = 0.9756. Thirteen disagreements remain for third-person adjudication. After adjudication, a new `matching_benchmark_v1_reviewed.json` will be committed and all retrieval/allocation metrics will be rerun on that frozen version.
 
 ### Blind matching review
 
