@@ -1,44 +1,74 @@
-# Architecture notes
+# Architecture
 
-The first version separates the system into five steps.
+NIYET is split into small stages so classification, retrieval and allocation can be tested independently.
 
-1. Detect whether a post is asking for a response and assign an intent type.
-2. Retrieve a small set of potentially relevant responders.
-3. Score each intent-responder pair in both directions.
-4. Allocate limited responder attention across open intents.
-5. Record the outcome after the interaction.
+## Live request path
 
-We keep intent detection and allocation separate on purpose. This lets us test whether a better allocation strategy helps even before the classifier is mature.
+1. The response-needed gate decides whether the post should enter NIYET.
+2. If needed, the intent classifier suggests ASK, FEEDBACK, COLLABORATE or DISCUSS.
+3. The author confirms or corrects the intent. A user can also activate NIYET manually when the gate misses a request.
+4. Confirmed requests enter a short open-request matching window.
+5. Responder retrieval creates a bounded candidate graph.
+6. Hard eligibility checks remove inactive responders, exhausted capacity and unsupported intent types.
+7. A minimum topic-relevance floor removes weak retrieval edges.
+8. The remaining open requests are allocated together under shared responder capacity.
+9. Accept, Skip and Pause update the browser-session prototype state used by later routing calls.
 
-## Pair score
+The main prototype and the Allocation Lab both call the Python allocation code. The Lab exposes controlled benchmark batches, while the main product keeps unresolved user requests in its own short matching window.
 
-The first baseline uses three factors:
+## Current candidate utility
 
-- topic relevance
-- responder willingness
-- expected response probability
+Willingness is currently a hard eligibility constraint. A responder who does not accept an interaction type never reaches ranking.
 
-The score is only used for ordering candidate edges. Capacity is handled by the allocator, not hidden inside the score.
+For an eligible candidate edge, the development utility is:
 
-## Constraints
+```text
+utility = (topic relevance + availability) / 2
+```
 
-The initial allocator respects one hard constraint: a responder cannot receive more assignments than their attention budget.
+`topic relevance` comes from the deployed lexical retrieval baseline.
 
-The next version will add:
+`availability` is the responder's remaining session slots divided by the configured daily budget.
 
-- opt-in and blocking rules
-- minimum compatibility threshold
-- repeat-invitation cooldown
-- fairness penalty for repeated exposure
+The value is a development utility, not a response probability. The equal weighting is deliberately simple until real outcome data exists.
 
-## Outcome signal
+## Capacity state
 
-The target product signal is not a click. We want to collect whether the interaction was useful or resolved the original intent. That outcome can later become a training label for the matching model.
+The competition prototype uses browser-session state rather than a production database.
 
-## Global allocation prototype
+The browser sends a responder-state object with each routing request. The API validates that state against the configured responder profiles and uses the remaining slots as allocation capacity.
 
-A greedy allocator can make a locally good choice that hurts the rest of the batch. For example, one responder may be the best match for two intents while a second responder is almost as good for only one of them. Assigning the first responder too early can waste the second intent.
+- Accept reduces the matched responder's remaining slots for later calls in that browser session.
+- Pause makes the responder inactive for later calls.
+- Resume re-enables the responder when capacity remains.
+- Skip excludes the current responder for that open request and triggers reallocation.
 
-The current global prototype expands each responder into a number of slots equal to their attention budget and solves one maximum-utility assignment across the batch. Dummy slots allow an intent to stay unassigned when no candidate passes the minimum score.
+This is enough to demonstrate stateful shared capacity without claiming production persistence.
 
-This step works after candidate retrieval. It is not meant to compare every user with every open intent on the platform. A production version would first retrieve a small candidate set, then run allocation on that set.
+## Global allocation
+
+A greedy allocator chooses the best available edge one at a time. That can be suboptimal when several requests compete for the same responders.
+
+NIYET expands responder capacity into assignment slots and solves one bounded maximum-utility assignment across the current request window. Dummy assignments allow a request to remain unmatched instead of forcing a weak route.
+
+Quality thresholds are applied before optimization. Invalid edges never influence the assignment matrix.
+
+## Scaling boundary
+
+We do not run one dense assignment over every NSosyal user.
+
+The intended production sequence is:
+
+```text
+response gate
+-> intent confirmation
+-> candidate retrieval
+-> eligibility and quality filtering
+-> bounded allocation window
+```
+
+The current dense solver is suitable for small bounded windows. A larger production graph could use sparse min-cost flow or smaller topic/time buckets while preserving the same capacity and consent constraints.
+
+## Outcome path
+
+Accepted, Skipped, Useful and Resolved are useful future learning signals. The current live prototype implements routing-state actions, while long-term outcome storage and model calibration remain production work.
