@@ -48,19 +48,28 @@ They are synthetic product fixtures. They are not real NSosyal accounts.
 
 ### `matching_benchmark_v1_draft.json`
 
-First 32-query Turkish matching benchmark draft.
+Original 32-query Turkish matching benchmark draft. It is retained for provenance and is not overwritten.
 
-Each query contains a 0-3 relevance grade for every responder profile. The committed draft file is still marked `team_review_pending` because we do not overwrite development labels in place.
+### `matching_benchmark_v1_reviewed.json`
 
-Two team members have now independently reviewed all 256 pairs. Their ratings agreed on 243/256 pairs (94.92%) with quadratic weighted Cohen's kappa = 0.9756. Thirteen disagreements remain for third-person adjudication. After adjudication, a new `matching_benchmark_v1_reviewed.json` will be committed and all retrieval/allocation metrics will be rerun on that frozen version.
+Frozen human-reviewed version of the same 32-query x 8-responder benchmark.
+
+Two team members independently reviewed all 256 query-responder pairs without seeing each other's ratings. Their ratings agreed on 243/256 pairs (94.92%) with quadratic weighted Cohen's kappa = 0.9756. The third team member adjudicated all 13 disagreements. The frozen file records only final relevance grades and aggregate review metadata; reviewer names are not stored.
+
+Final frozen-label retrieval results:
+
+| Retriever | Precision@3 | Recall@3 | NDCG@3 |
+| --- | ---: | ---: | ---: |
+| Weighted lexical TF-IDF | 0.4688 | 0.8438 | 0.8450 |
+| ModernBERT-TR-Embed | 0.5417 | 0.9583 | 0.9025 |
 
 ### Blind matching review
 
 Generate two separate blind sheets:
 
 ```bash
-python scripts/export_matching_review.py --reviewer A --output reviewer_a.csv
-python scripts/export_matching_review.py --reviewer B --output reviewer_b.csv
+python scripts/export_matching_review.py --reviewer R1 --output reviewer_R1.csv
+python scripts/export_matching_review.py --reviewer R2 --output reviewer_R2.csv
 ```
 
 Each reviewer fills only the `relevance` column with:
@@ -75,7 +84,7 @@ The reviewer files do not contain the draft benchmark grades.
 After both independent passes:
 
 ```bash
-python scripts/merge_matching_reviews.py reviewer_a.csv reviewer_b.csv --output adjudication.csv
+python scripts/merge_matching_reviews.py reviewer_R1.csv reviewer_R2.csv --output adjudication.csv
 ```
 
 This reports exact agreement and quadratic weighted Cohen's kappa. Rows where reviewers agree receive an automatic `final_relevance`; disagreements are left blank for third-person adjudication.
@@ -103,7 +112,7 @@ Small machine-readable fixture used to test benchmark code and allocation metric
 
 Blank result sheet for the six-task protocol in `docs/usability_test_protocol.md`.
 
-It stores anonymous participant IDs, task completion, time, wrong clicks, hints and clarity ratings. Participant names are not required.
+It stores anonymous participant IDs such as `P01`, task completion, time, wrong clicks, hints and clarity ratings. Participant names are not required or stored.
 
 After the sessions:
 
