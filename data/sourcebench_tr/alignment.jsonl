@@ -1,0 +1,4 @@
+{"id":"alignment-001","claim":"Çalışmaya 120 kişi katıldı.","passage":"Araştırma toplam 120 katılımcıyla yürütüldü.","label":"SUPPORTED","language":"tr","origin":"team-authored-development-example"}
+{"id":"alignment-002","claim":"Müdahale sonucu kesin olarak iyileştirir.","passage":"Müdahale bazı katılımcılarda iyileşmeyle ilişkili olabilir.","label":"PARTIALLY_SUPPORTED","language":"tr","origin":"team-authored-development-example"}
+{"id":"alignment-003","claim":"Katılım oranı yüzde 40'tı.","passage":"Katılım oranı yüzde 12 olarak ölçüldü.","label":"CONFLICTING","language":"tr","origin":"team-authored-development-example"}
+{"id":"alignment-004","claim":"Yeni yöntem enerji tüketimini azaltır.","passage":"Belge yalnızca yöntem kurulum adımlarını açıklıyor.","label":"INSUFFICIENT","language":"tr","origin":"team-authored-development-example"}
