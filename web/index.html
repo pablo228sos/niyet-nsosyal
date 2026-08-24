@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=ui-polish-1">
-  <link rel="stylesheet" href="/live.css?v=ui-polish-1">
+  <link rel="stylesheet" href="/styles.css?v=ui-polish-3">
+  <link rel="stylesheet" href="/live.css?v=ui-polish-3">
 </head>
 <body>
   <svg class="sr-only" aria-hidden="true">
@@ -28,6 +28,7 @@
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V4m0 0L8.5 7.5M12 4l3.5 3.5M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
+  <a class="skip-link" href="#feedTop" data-i18n="skipToFeed">Skip to feed</a>
 
   <header class="product-nav">
     <a class="product-wordmark" href="/" aria-label="DRSK home">
@@ -179,10 +180,10 @@
                 <div class="media-caption"><span data-i18n="demoMedia">PID response trace · demo media</span><span>v0.4</span></div>
               </div>
               <div class="post-actions">
-                <button class="post-action" type="button"><svg><use href="#i-reply"></use></svg><span>18</span></button>
-                <button class="post-action" type="button"><svg><use href="#i-repeat"></use></svg><span>7</span></button>
-                <button class="post-action" type="button"><svg><use href="#i-heart"></use></svg><span>84</span></button>
-                <button class="post-action" type="button"><svg><use href="#i-share"></use></svg></button>
+                <button class="post-action" type="button" aria-label="Reply" data-i18n-aria="reply"><svg aria-hidden="true"><use href="#i-reply"></use></svg><span>18</span></button>
+                <button class="post-action" type="button" aria-label="Repost" data-i18n-aria="repost"><svg aria-hidden="true"><use href="#i-repeat"></use></svg><span>7</span></button>
+                <button class="post-action" type="button" aria-label="Like" data-i18n-aria="like"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>84</span></button>
+                <button class="post-action" type="button" aria-label="Share" data-i18n-aria="share"><svg aria-hidden="true"><use href="#i-share"></use></svg></button>
               </div>
             </div>
           </div>
@@ -196,10 +197,10 @@
               <p class="post-copy" data-i18n="post2Copy">Looking for one frontend developer for a weekend prototype. React is enough. Small team, clear scope.</p>
               <div class="niyet-tag"><span class="niyet-dot"></span><span data-i18n="routed">Routed with NIYET</span></div>
               <div class="post-actions">
-                <button class="post-action" type="button"><svg><use href="#i-reply"></use></svg><span>11</span></button>
-                <button class="post-action" type="button"><svg><use href="#i-repeat"></use></svg><span>5</span></button>
-                <button class="post-action" type="button"><svg><use href="#i-heart"></use></svg><span>32</span></button>
-                <button class="post-action" type="button"><svg><use href="#i-share"></use></svg></button>
+                <button class="post-action" type="button" aria-label="Reply" data-i18n-aria="reply"><svg aria-hidden="true"><use href="#i-reply"></use></svg><span>11</span></button>
+                <button class="post-action" type="button" aria-label="Repost" data-i18n-aria="repost"><svg aria-hidden="true"><use href="#i-repeat"></use></svg><span>5</span></button>
+                <button class="post-action" type="button" aria-label="Like" data-i18n-aria="like"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>32</span></button>
+                <button class="post-action" type="button" aria-label="Share" data-i18n-aria="share"><svg aria-hidden="true"><use href="#i-share"></use></svg></button>
               </div>
             </div>
           </div>
@@ -278,6 +279,6 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><span id="toastText">Done</span></div>
-  <script src="/app.js?v=ui-polish-2" defer></script>
+  <script src="/app.js?v=ui-polish-3" defer></script>
 </body>
 </html>
