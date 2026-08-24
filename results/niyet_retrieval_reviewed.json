@@ -1,7 +1,7 @@
 {
   "dataset_version": "v1-reviewed",
-  "generated_at": "2026-08-24T14:39:41.478394+00:00",
-  "git_commit": "930396f9bc7398759bfabb0cce788be881026118",
+  "generated_at": "2026-08-24T14:55:32.530355+00:00",
+  "git_commit": "35e7d60df2a22ebf061d3639f66f0ad505eb3368",
   "metrics": {
     "ndcg_at_3": 0.845,
     "precision_at_3": 0.4688,

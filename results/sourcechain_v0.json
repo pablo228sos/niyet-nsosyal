@@ -119,8 +119,25 @@
   "dataset_sha256": "d8cb5633f58fe4554685bfeba31fe28a9921849ebd9fd29c831542bf16f4e99b",
   "dataset_version": "SOURCEBENCH-TR-v0-development",
   "development_only": true,
-  "generated_at": "2026-08-24T14:39:41.478394+00:00",
-  "git_commit": "930396f9bc7398759bfabb0cce788be881026118",
+  "generated_at": "2026-08-24T14:55:32.530355+00:00",
+  "git_commit": "35e7d60df2a22ebf061d3639f66f0ad505eb3368",
+  "metrics": {
+    "alignment": {
+      "accuracy": 0.75,
+      "correct": 3,
+      "total": 4
+    },
+    "distortion": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "total": 5
+    },
+    "statement_type": {
+      "accuracy": 1.0,
+      "correct": 6,
+      "total": 6
+    }
+  },
   "parameters": {
     "alignment": "lexical_structured_v0",
     "distortion": "structured_rules_v0",
