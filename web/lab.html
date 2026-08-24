@@ -3,41 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f9fc">
-  <meta name="description" content="NIYET allocation lab for comparing routing strategies">
-  <title>NIYET Allocation Lab</title>
+  <meta name="theme-color" content="#f6f8fa">
+  <meta name="description" content="DRSK / NIYET Allocation Lab: Benchmarking and comparing routing strategies">
+  <title>DRSK / NIYET Allocation Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=ui-polish-3">
-  <link rel="stylesheet" href="/lab.css?v=ui-polish-3">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=ui-rescue-1">
+  <link rel="stylesheet" href="/lab.css?v=ui-rescue-1">
 </head>
 <body class="lab-body">
-  <main class="lab-shell">
-    <nav class="lab-topbar" aria-label="Product navigation">
-      <a class="product-wordmark" href="/">
-        <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span><strong>DRSK</strong><small>Evidence-aware social coordination</small></span>
-      </a>
-      <div class="lab-nav-links">
-        <a href="/">Feed</a>
-        <a href="/#evidenceCard">Evidence</a>
-        <a class="active" href="/lab">Allocation Lab</a>
-      </div>
-      <span class="prototype-mark">Research prototype</span>
+  
+  <!-- Product Navigation -->
+  <header class="product-nav">
+    <a class="product-wordmark" href="/" aria-label="DRSK home">
+      <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>
+        <strong>DRSK</strong>
+        <small data-i18n="productDescriptor">Hybrid Social Intelligence</small>
+      </span>
+    </a>
+    
+    <nav class="product-links" aria-label="Product navigation">
+      <a href="/" data-i18n="feed">Feed</a>
+      <a href="/#evidenceCard" data-i18n="evidenceNav">Evidence</a>
+      <a class="active" href="/lab" data-i18n="allocationLab">Allocation Lab</a>
     </nav>
+    
+    <div class="nav-actions">
+      <span class="prototype-mark" data-i18n="researchPrototype">Research prototype</span>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-shell">
     <header class="lab-header">
-      <a class="back-link" href="/">← Back to feed</a>
+      <a class="back-link" href="/" data-i18n="backToFeed">← Back to feed</a>
       <div class="lab-brand">
         <div class="mini-orb" aria-hidden="true"></div>
         <div>
           <span class="eyebrow">DRSK / NIYET</span>
-          <h1>Allocation Lab</h1>
-          <p>Same requests. Same responder capacity. Different allocation strategies.</p>
+          <h1 data-i18n="labTitle">Allocation Lab</h1>
+          <p data-i18n="labSub">Same requests. Same responder capacity. Different allocation strategies.</p>
         </div>
       </div>
       <div class="lab-status-row">
-        <span class="lab-badge">Development benchmark</span>
+        <span class="lab-badge" data-i18n="devBenchmark">Development benchmark</span>
         <span class="pipeline-state" id="labApiStatus">checking API</span>
       </div>
     </header>
@@ -45,24 +59,24 @@
     <section class="lab-explainer">
       <div>
         <span class="step-index">01</span>
-        <strong>Retrieve</strong>
-        <p>Only responders who accept the intent and pass the topic floor enter the candidate graph.</p>
+        <strong data-i18n="stepRetrieve">Retrieve</strong>
+        <p data-i18n="stepRetrieveSub">Only responders who accept the intent and pass the topic floor enter the candidate graph.</p>
       </div>
       <div>
         <span class="step-index">02</span>
-        <strong>Constrain</strong>
-        <p>Each responder has one slot in this lab, so requests compete for limited attention.</p>
+        <strong data-i18n="stepConstrain">Constrain</strong>
+        <p data-i18n="stepConstrainSub">Each responder has one slot in this lab, so requests compete for limited attention.</p>
       </div>
       <div>
         <span class="step-index">03</span>
-        <strong>Allocate</strong>
-        <p>Greedy chooses locally. Global assignment evaluates the batch together.</p>
+        <strong data-i18n="stepAllocate">Allocate</strong>
+        <p data-i18n="stepAllocateSub">Greedy chooses locally. Global assignment evaluates the batch together.</p>
       </div>
     </section>
 
     <section class="lab-controls" aria-labelledby="controlsTitle">
       <div>
-        <span class="eyebrow" id="controlsTitle">Experiment controls</span>
+        <span class="eyebrow" id="controlsTitle" data-i18n="expControls">Experiment controls</span>
         <div class="batch-tabs" id="batchTabs" role="group" aria-label="Benchmark batch">
           <button class="active" type="button" data-batch="0">Batch 1</button>
           <button type="button" data-batch="1">Batch 2</button>
@@ -71,15 +85,15 @@
         </div>
       </div>
       <label class="floor-control" for="floorRange">
-        <span><strong>Topic floor</strong><output id="floorValue">0.06</output></span>
+        <span><strong data-i18n="topicFloor">Topic floor</strong><output id="floorValue">0.06</output></span>
         <input id="floorRange" type="range" min="0" max="0.12" step="0.02" value="0.06">
-        <small>Weak retrieval edges are removed before optimization.</small>
+        <small data-i18n="floorSub">Weak retrieval edges are removed before optimization.</small>
       </label>
     </section>
 
     <section class="result-summary" id="summary" aria-live="polite">
       <div class="summary-copy">
-        <span class="eyebrow">What changed?</span>
+        <span class="eyebrow" data-i18n="whatChanged">What changed?</span>
         <h2 id="summaryTitle">Running the same batch through both methods...</h2>
         <p id="summaryText">The comparison uses draft relevance labels and is not a production claim.</p>
       </div>
@@ -90,10 +104,10 @@
       <article class="method-card" id="greedyCard">
         <div class="method-head">
           <div>
-            <span class="method-kicker">Baseline</span>
-            <h2>Capacity-aware greedy</h2>
+            <span class="method-kicker" data-i18n="baseline">Baseline</span>
+            <h2 data-i18n="greedyTitle">Capacity-aware greedy</h2>
           </div>
-          <span class="method-chip">local choice</span>
+          <span class="method-chip" data-i18n="localChoice">local choice</span>
         </div>
         <div class="metric-grid" id="greedyMetrics"></div>
         <div class="assignment-list" id="greedyAssignments"></div>
@@ -103,9 +117,9 @@
         <div class="method-head">
           <div>
             <span class="method-kicker niyet-kicker">NIYET</span>
-            <h2>Global allocation</h2>
+            <h2 data-i18n="globalTitle">Global allocation</h2>
           </div>
-          <span class="method-chip niyet-chip">batch choice</span>
+          <span class="method-chip niyet-chip" data-i18n="batchChoice">batch choice</span>
         </div>
         <div class="metric-grid" id="globalMetrics"></div>
         <div class="assignment-list" id="globalAssignments"></div>
@@ -115,12 +129,12 @@
     <section class="lab-note">
       <div class="note-mark">i</div>
       <div>
-        <strong>How to read this lab</strong>
-        <p>The benchmark is currently marked <code>team_review_pending</code>. Relevance grades are development labels. The lab makes the algorithm, tradeoffs and failure cases inspectable without presenting draft labels as field performance.</p>
+        <strong data-i18n="noteTitle">How to read this lab</strong>
+        <p data-i18n="noteBody">The benchmark is currently marked <code>team_review_pending</code>. Relevance grades are development labels. The lab makes the algorithm, tradeoffs and failure cases inspectable without presenting draft labels as field performance.</p>
       </div>
     </section>
   </main>
 
-  <script src="/lab.js?v=ui-polish-3" defer></script>
+  <script src="/lab.js?v=ui-rescue-1" defer></script>
 </body>
 </html>

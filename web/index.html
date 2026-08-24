@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f4f6fb">
-  <meta name="description" content="DRSK / NIYET concept integration for NSosyal">
-  <title>DRSK / NIYET - NSosyal Concept Integration</title>
+  <meta name="theme-color" content="#f6f8fa">
+  <meta name="description" content="DRSK — Hybrid Social Intelligence: Evidence Verification and Attention Routing for NSosyal">
+  <title>DRSK — Hybrid Social Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=ui-polish-3">
-  <link rel="stylesheet" href="/live.css?v=ui-polish-3">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=ui-rescue-1">
+  <link rel="stylesheet" href="/live.css?v=ui-rescue-1">
 </head>
 <body>
   <svg class="sr-only" aria-hidden="true">
@@ -28,19 +28,26 @@
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V4m0 0L8.5 7.5M12 4l3.5 3.5M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
+  
   <a class="skip-link" href="#feedTop" data-i18n="skipToFeed">Skip to feed</a>
 
+  <!-- Top Product Navigation Bar -->
   <header class="product-nav">
     <a class="product-wordmark" href="/" aria-label="DRSK home">
       <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span><strong>DRSK</strong><small data-i18n="productDescriptor">Evidence-aware social coordination</small></span>
+      <span>
+        <strong>DRSK</strong>
+        <small data-i18n="productDescriptor">Hybrid Social Intelligence</small>
+      </span>
     </a>
+    
     <nav class="product-links" aria-label="Product navigation" data-i18n-aria="productNav">
       <a class="active" href="#feedTop" data-i18n="feed">Feed</a>
       <a href="#evidenceCard" data-i18n="evidenceNav">Evidence</a>
       <a href="/lab" data-i18n="allocationLab">Allocation Lab</a>
       <button id="openTechnical" type="button" data-i18n="technical">Technical</button>
     </nav>
+    
     <div class="nav-actions">
       <span class="prototype-mark" data-i18n="researchPrototype">Research prototype</span>
       <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
@@ -50,12 +57,19 @@
     </div>
   </header>
 
+  <!-- App Shell: 3 Column Layout -->
   <div class="app-shell">
+    
+    <!-- Left Navigation Rail -->
     <aside class="left-rail" aria-label="Primary navigation" data-i18n-aria="primaryNav">
       <div class="ns-brand">
         <div class="ns-mark" aria-hidden="true">N</div>
-        <div class="ns-brand-copy"><strong>NSosyal</strong><span>concept integration</span></div>
+        <div class="ns-brand-copy">
+          <strong>NSosyal</strong>
+          <span>Concept Integration</span>
+        </div>
       </div>
+      
       <nav class="nav-list">
         <button class="nav-item active" type="button"><svg class="nav-icon"><use href="#i-home"></use></svg><span class="nav-label" data-i18n="feed">Feed</span></button>
         <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-search"></use></svg><span class="nav-label" data-i18n="explore">Explore</span></button>
@@ -63,21 +77,30 @@
         <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-message"></use></svg><span class="nav-label" data-i18n="messages">Messages</span></button>
         <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-user"></use></svg><span class="nav-label" data-i18n="profile">Profile</span></button>
       </nav>
+      
       <button class="compose-main" type="button"><span data-i18n="compose">Post</span></button>
+      
       <div class="layer-card">
         <div class="layer-row">
           <div class="mini-orb" aria-hidden="true"></div>
-          <div class="layer-copy"><strong>DRSK / NIYET</strong><span data-i18n="layerSub">interaction layer</span></div>
+          <div class="layer-copy">
+            <strong>DRSK / NIYET</strong>
+            <span data-i18n="layerSub">interaction layer</span>
+          </div>
         </div>
         <p class="layer-note" data-i18n="layerNote">Concept integration for NSosyal. Research prototype.</p>
       </div>
     </aside>
 
+    <!-- Center Feed Column -->
     <main class="feed-column" id="feedTop">
+      
+      <!-- Feed Topbar -->
       <header class="feed-header">
         <div class="feed-topline">
           <div class="feed-title" data-i18n="feed">Feed</div>
           <div class="header-actions">
+            <button class="reset-demo" id="resetDemo" type="button" data-i18n="reset">Reset demo</button>
             <span class="pipeline-state" id="pipelineState">checking pipeline</span>
             <span class="demo-badge" data-i18n="concept">Concept prototype</span>
           </div>
@@ -88,19 +111,30 @@
         </div>
       </header>
 
+      <!-- DRSK Hero Bridge Banner -->
       <section class="feed-hero" aria-labelledby="feedHeroTitle">
         <div class="hero-copy">
           <span class="hero-kicker"><i aria-hidden="true"></i><span data-i18n="heroKicker">Context before reaction</span></span>
           <h1 id="feedHeroTitle" data-i18n="heroTitle">A social feed that can trace evidence and route human attention.</h1>
-          <p data-i18n="heroText">DRSK connects SOURCECHAIN verification with NIYET coordination—without hiding uncertainty or pretending development signals are probabilities.</p>
+          <p data-i18n="heroText">DRSK connects SOURCECHAIN verification with NIYET coordination—without hiding uncertainty or presenting development signals as probabilities.</p>
         </div>
         <div class="system-bridge" aria-label="DRSK system layers" data-i18n-aria="systemLayers">
-          <div class="system-node sourcechain-node"><span>SOURCECHAIN</span><strong data-i18n="verifyClaims">Verify claims</strong></div>
-          <div class="bridge-line" aria-hidden="true"><i></i><b>DRSK</b></div>
-          <div class="system-node niyet-node"><span>NIYET</span><strong data-i18n="routeAttention">Route attention</strong></div>
+          <div class="system-node sourcechain-node">
+            <span>SOURCECHAIN</span>
+            <strong data-i18n="verifyClaims">Verify claims</strong>
+          </div>
+          <div class="bridge-line" aria-hidden="true">
+            <b>DRSK</b>
+            <i></i>
+          </div>
+          <div class="system-node niyet-node">
+            <span>NIYET</span>
+            <strong data-i18n="routeAttention">Route attention</strong>
+          </div>
         </div>
       </section>
 
+      <!-- Post Composer -->
       <section class="composer" aria-labelledby="composerLabel">
         <div class="composer-grid">
           <div class="avatar" aria-hidden="true">AB</div>
@@ -110,16 +144,21 @@
             <div class="demo-prompts" aria-label="Demo prompts" data-i18n-aria="demoPrompts">
               <button class="demo-chip" type="button" data-demo="help" data-i18n="demoHelp">Try: ask for help</button>
               <button class="demo-chip" type="button" data-demo="collab" data-i18n="demoCollab">Try: find a collaborator</button>
+              <button class="demo-chip" type="button" data-demo="claim" data-i18n="demoClaim">Try: check claim & distortions</button>
               <button class="demo-chip" type="button" data-demo="normal" data-i18n="demoNormal">Try: normal post</button>
             </div>
           </div>
         </div>
 
-        <div class="intent-panel ai-surface" id="intentPanel" aria-live="polite">
+        <!-- Intent Suggestion Panel (NIYET) -->
+        <div class="intent-panel" id="intentPanel" aria-live="polite">
           <div class="intent-head">
             <div class="intent-brand">
               <div class="mini-orb" aria-hidden="true"></div>
-              <div><strong data-i18n="intentTitle">This post may need a human response</strong><span data-i18n="intentSub">NIYET suggests an intent. You confirm before routing.</span></div>
+              <div>
+                <strong data-i18n="intentTitle">This post may need a human response</strong>
+                <span data-i18n="intentSub">NIYET suggests an intent. You confirm before routing.</span>
+              </div>
             </div>
             <span class="confidence" data-i18n="modelSuggestion">model suggestion</span>
           </div>
@@ -139,12 +178,19 @@
           </div>
         </div>
 
+        <!-- Dynamic Route Result Bar -->
         <div class="route-result" id="routeResult" aria-live="polite"></div>
 
+        <!-- Evidence Check Card (SOURCECHAIN) -->
         <section class="evidence-card" id="evidenceCard" hidden aria-labelledby="evidenceHeading">
           <button class="evidence-summary" id="evidenceToggle" type="button" aria-expanded="false" aria-controls="evidenceDetails">
-            <span class="evidence-status-mark" aria-hidden="true">i</span>
-            <span><strong id="evidenceHeading" data-i18n="evidenceTitle">Evidence check</strong><small id="evidenceStatus" data-i18n="evidenceWaiting">Not checked</small></span>
+            <div class="evidence-summary-main">
+              <span class="evidence-status-mark" aria-hidden="true">i</span>
+              <div>
+                <strong id="evidenceHeading" data-i18n="evidenceTitle">Evidence check</strong>
+                <small id="evidenceStatus" data-i18n="evidenceWaiting">Not checked</small>
+              </div>
+            </div>
             <span class="evidence-toggle-label" data-i18n="showEvidence">Show evidence</span>
           </button>
           <div class="evidence-details" id="evidenceDetails" hidden>
@@ -153,11 +199,12 @@
             <div class="evidence-list" id="evidenceList"></div>
             <div class="resolution-row">
               <span id="resolutionStatus"></span>
-              <button class="soft-btn ask-person-btn" id="askPerson" type="button" data-i18n="askPerson">Ask a relevant person</button>
+              <button class="ask-person-btn" id="askPerson" type="button" data-i18n="askPerson">Ask a relevant person</button>
             </div>
           </div>
         </section>
 
+        <!-- Composer Bottom Toolbar -->
         <div class="composer-meta">
           <div class="composer-tools" aria-label="Post tools" data-i18n-aria="postTools">
             <button class="icon-btn" type="button" aria-label="Media" data-i18n-aria="media"><svg><use href="#i-image"></use></svg></button>
@@ -168,39 +215,59 @@
         </div>
       </section>
 
+      <!-- Feed Posts Container -->
       <div id="feedPosts">
+        <!-- Seeded Post 1 -->
         <article class="post-card">
           <div class="post-grid">
             <div class="avatar green" aria-hidden="true">DA</div>
             <div>
-              <div class="post-head"><span class="post-name">Deniz A.</span><span class="post-handle">@deniz.control</span><span class="post-time">· 12m</span></div>
+              <div class="post-head">
+                <span class="post-name">Deniz A.</span>
+                <span class="post-handle">@deniz.control</span>
+                <span class="post-time">· 12m</span>
+              </div>
               <p class="post-copy" data-i18n="post1Copy">We finally got the robot stable on straight lines. Turns are still the hard part. Testing a new PID profile tonight.</p>
               <div class="media-card">
-                <div class="robot-visual"><div class="signal-line" aria-hidden="true"><svg viewBox="0 0 500 80" preserveAspectRatio="none"><path d="M0 55 C40 20 55 65 90 40 S140 18 170 45 S230 67 260 36 S325 20 350 44 S420 57 500 31" fill="none" stroke="rgba(40,100,255,.65)" stroke-width="3" stroke-linecap="round"/></svg></div></div>
-                <div class="media-caption"><span data-i18n="demoMedia">PID response trace · demo media</span><span>v0.4</span></div>
+                <div class="robot-visual">
+                  <div class="signal-line" aria-hidden="true">
+                    <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+                      <path d="M0 55 C40 20 55 65 90 40 S140 18 170 45 S230 67 260 36 S325 20 350 44 S420 57 500 31" fill="none" stroke="rgba(37,99,235,.75)" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="media-caption">
+                  <span data-i18n="demoMedia">PID response trace · demo media</span>
+                  <span>v0.4</span>
+                </div>
               </div>
               <div class="post-actions">
-                <button class="post-action" type="button" aria-label="Reply" data-i18n-aria="reply"><svg aria-hidden="true"><use href="#i-reply"></use></svg><span>18</span></button>
-                <button class="post-action" type="button" aria-label="Repost" data-i18n-aria="repost"><svg aria-hidden="true"><use href="#i-repeat"></use></svg><span>7</span></button>
-                <button class="post-action" type="button" aria-label="Like" data-i18n-aria="like"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>84</span></button>
-                <button class="post-action" type="button" aria-label="Share" data-i18n-aria="share"><svg aria-hidden="true"><use href="#i-share"></use></svg></button>
+                <button class="post-action" data-action="reply" type="button" aria-label="Reply" data-i18n-aria="reply"><svg aria-hidden="true"><use href="#i-reply"></use></svg><span>18</span></button>
+                <button class="post-action" data-action="repost" type="button" aria-label="Repost" data-i18n-aria="repost"><svg aria-hidden="true"><use href="#i-repeat"></use></svg><span>7</span></button>
+                <button class="post-action" data-action="like" type="button" aria-label="Like" data-i18n-aria="like"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>84</span></button>
+                <button class="post-action" data-action="share" type="button" aria-label="Share" data-i18n-aria="share"><svg aria-hidden="true"><use href="#i-share"></use></svg></button>
               </div>
             </div>
           </div>
         </article>
 
+        <!-- Seeded Post 2 (NIYET Routed) -->
         <article class="post-card">
           <div class="post-grid">
             <div class="avatar alt" aria-hidden="true">MK</div>
             <div>
-              <div class="post-head"><span class="post-name">Mert K.</span><span class="post-handle">@mert.dev</span><span class="post-time">· 38m</span></div>
+              <div class="post-head">
+                <span class="post-name">Mert K.</span>
+                <span class="post-handle">@mert.dev</span>
+                <span class="post-time">· 38m</span>
+              </div>
               <p class="post-copy" data-i18n="post2Copy">Looking for one frontend developer for a weekend prototype. React is enough. Small team, clear scope.</p>
               <div class="niyet-tag"><span class="niyet-dot"></span><span data-i18n="routed">Routed with NIYET</span></div>
               <div class="post-actions">
-                <button class="post-action" type="button" aria-label="Reply" data-i18n-aria="reply"><svg aria-hidden="true"><use href="#i-reply"></use></svg><span>11</span></button>
-                <button class="post-action" type="button" aria-label="Repost" data-i18n-aria="repost"><svg aria-hidden="true"><use href="#i-repeat"></use></svg><span>5</span></button>
-                <button class="post-action" type="button" aria-label="Like" data-i18n-aria="like"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>32</span></button>
-                <button class="post-action" type="button" aria-label="Share" data-i18n-aria="share"><svg aria-hidden="true"><use href="#i-share"></use></svg></button>
+                <button class="post-action" data-action="reply" type="button" aria-label="Reply" data-i18n-aria="reply"><svg aria-hidden="true"><use href="#i-reply"></use></svg><span>11</span></button>
+                <button class="post-action" data-action="repost" type="button" aria-label="Repost" data-i18n-aria="repost"><svg aria-hidden="true"><use href="#i-repeat"></use></svg><span>5</span></button>
+                <button class="post-action" data-action="like" type="button" aria-label="Like" data-i18n-aria="like"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>32</span></button>
+                <button class="post-action" data-action="share" type="button" aria-label="Share" data-i18n-aria="share"><svg aria-hidden="true"><use href="#i-share"></use></svg></button>
               </div>
             </div>
           </div>
@@ -208,18 +275,33 @@
       </div>
     </main>
 
+    <!-- Right Rail: Context & Responder View -->
     <aside class="right-rail" aria-label="Context sidebar" data-i18n-aria="contextSidebar">
-      <label class="search-box"><svg><use href="#i-search"></use></svg><span class="sr-only" data-i18n="search">Search NSosyal</span><input type="search" data-i18n-placeholder="search" placeholder="Search NSosyal"></label>
+      <label class="search-box">
+        <svg><use href="#i-search"></use></svg>
+        <span class="sr-only" data-i18n="search">Search NSosyal</span>
+        <input type="search" data-i18n-placeholder="search" placeholder="Search NSosyal">
+      </label>
 
+      <!-- Responder Preview Panel -->
       <section class="side-panel">
         <div class="side-panel-head">
-          <div class="side-panel-title"><div class="mini-orb" aria-hidden="true"></div><div><strong data-i18n="previewTitle">Responder preview</strong><span data-i18n="previewSub">What a routed request looks like on the other side</span></div></div>
+          <div class="side-panel-title">
+            <div class="mini-orb" aria-hidden="true"></div>
+            <div>
+              <strong data-i18n="previewTitle">Responder preview</strong>
+              <span data-i18n="previewSub">What a routed request looks like on the other side</span>
+            </div>
+          </div>
           <span class="live-pill" data-i18n="live">live</span>
         </div>
 
-        <div class="match-card ai-surface empty" id="matchState" data-state="empty">
-          <div class="match-top"><span class="match-type" id="matchType" data-i18n="waiting">WAITING</span><span class="match-score status" id="matchStatus" data-i18n="noRoute">no route yet</span></div>
-          <p id="matchPostText" data-i18n="previewEmpty">Use one of the demo posts or write a Turkish response-seeking post.</p>
+        <div class="match-card empty" id="matchState" data-state="empty">
+          <div class="match-top">
+            <span class="match-type" id="matchType" data-i18n="waiting">WAITING</span>
+            <span class="match-score status" id="matchStatus" data-i18n="noRoute">no route yet</span>
+          </div>
+          <p id="matchPostText" data-i18n="previewEmpty">Route a response-seeking post to see the responder side.</p>
           <div class="match-reasons" id="matchReasons"></div>
           <button class="soft-btn" id="explainMatch" type="button" disabled data-i18n="technicalDetails">Technical details</button>
           <div class="match-actions">
@@ -228,27 +310,49 @@
           </div>
         </div>
 
+        <!-- Matching Window (Batch Coordination) -->
         <div class="matching-window" id="matchingWindow" aria-live="polite"></div>
 
+        <!-- Capacity Budget Tracker -->
         <div class="budget-box">
-          <div class="budget-line"><span data-i18n="attention">Session capacity</span><strong class="budget-count" id="budgetCount">Browser-session state</strong></div>
+          <div class="budget-line">
+            <span data-i18n="attention">Session capacity</span>
+            <strong class="budget-count" id="budgetCount">Browser-session state</strong>
+          </div>
           <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
           <div class="pause-row">
-            <div class="pause-copy"><strong id="pauseTitle" data-i18n="pause">Routing is on</strong><span data-i18n="pauseSub">The matched responder can pause new requests</span></div>
+            <div class="pause-copy">
+              <strong id="pauseTitle" data-i18n="pause">Routing is on</strong>
+              <span data-i18n="pauseSub">The matched responder can pause new requests</span>
+            </div>
             <button class="switch" id="routingSwitch" type="button" aria-label="Toggle NIYET routing" data-i18n-aria="toggleRouting" aria-pressed="true"></button>
           </div>
         </div>
       </section>
 
+      <!-- Trending Section -->
       <section class="side-panel">
         <div class="trends-head" data-i18n="trends">Trends for you</div>
-        <div class="trend"><div class="trend-kicker" data-i18n="trendTechnology">Technology · Trending</div><strong>TEKNOFEST 2026</strong><span data-i18n="demoFeed">demo feed</span></div>
-        <div class="trend"><div class="trend-kicker" data-i18n="trendAi">AI · Trending</div><strong data-i18n="trend2">Artificial Intelligence</strong><span data-i18n="demoFeed">demo feed</span></div>
-        <div class="trend"><div class="trend-kicker" data-i18n="trendEngineering">Engineering · Trending</div><strong data-i18n="trend3">Robotics</strong><span data-i18n="demoFeed">demo feed</span></div>
+        <div class="trend">
+          <div class="trend-kicker" data-i18n="trendTechnology">Technology · Trending</div>
+          <strong>TEKNOFEST 2026</strong>
+          <span data-i18n="demoFeed">demo feed</span>
+        </div>
+        <div class="trend">
+          <div class="trend-kicker" data-i18n="trendAi">AI · Trending</div>
+          <strong data-i18n="trend2">Artificial Intelligence</strong>
+          <span data-i18n="demoFeed">demo feed</span>
+        </div>
+        <div class="trend">
+          <div class="trend-kicker" data-i18n="trendEngineering">Engineering · Trending</div>
+          <strong data-i18n="trend3">Robotics</strong>
+          <span data-i18n="demoFeed">demo feed</span>
+        </div>
       </section>
     </aside>
   </div>
 
+  <!-- Mobile Bottom Navigation -->
   <nav class="mobile-nav" aria-label="Mobile navigation" data-i18n-aria="mobileNav">
     <button class="active" type="button" aria-label="Feed" data-i18n-aria="feed"><svg><use href="#i-home"></use></svg></button>
     <button type="button" aria-label="Explore" data-i18n-aria="explore"><svg><use href="#i-search"></use></svg></button>
@@ -257,16 +361,32 @@
     <button type="button" aria-label="Profile" data-i18n-aria="profile"><svg><use href="#i-user"></use></svg></button>
   </nav>
 
+  <!-- Technical Modal Sheet -->
   <div class="explain-sheet" id="explainSheet" role="dialog" aria-modal="true" aria-labelledby="sheetHeading">
     <div class="sheet">
       <div class="sheet-head">
-        <div class="sheet-title"><div class="mini-orb" aria-hidden="true"></div><div><strong id="sheetHeading" data-i18n="technicalDetails">Technical details</strong><span data-i18n="techSub">Development diagnostics, not calibrated probabilities</span></div></div>
+        <div class="sheet-title">
+          <div class="mini-orb" aria-hidden="true"></div>
+          <div>
+            <strong id="sheetHeading" data-i18n="technicalDetails">Technical details</strong>
+            <span data-i18n="techSub">Development diagnostics, not calibrated probabilities</span>
+          </div>
+        </div>
         <button class="close-sheet" id="closeSheet" type="button" aria-label="Close" data-i18n-aria="close"><svg width="16" height="16"><use href="#i-close"></use></svg></button>
       </div>
       <div class="score-grid">
-        <div class="score-item"><span data-i18n="retrievalSimilarity">Retrieval similarity</span><strong class="text-value" id="technicalSimilarity" data-i18n="notRun">not run</strong></div>
-        <div class="score-item"><span data-i18n="developmentUtility">Development utility</span><strong class="text-value" id="technicalUtility" data-i18n="notRun">not run</strong></div>
-        <div class="score-item"><span data-i18n="selectedIntent">Selected intent</span><strong class="text-value" id="technicalIntent" data-i18n="notRun">not run</strong></div>
+        <div class="score-item">
+          <span data-i18n="retrievalSimilarity">Retrieval similarity</span>
+          <strong class="text-value" id="technicalSimilarity" data-i18n="notRun">not run</strong>
+        </div>
+        <div class="score-item">
+          <span data-i18n="developmentUtility">Development utility</span>
+          <strong class="text-value" id="technicalUtility" data-i18n="notRun">not run</strong>
+        </div>
+        <div class="score-item">
+          <span data-i18n="selectedIntent">Selected intent</span>
+          <strong class="text-value" id="technicalIntent" data-i18n="notRun">not run</strong>
+        </div>
       </div>
       <p class="tech-note" data-i18n="techNote">These values are internal development signals and are not shown to users as probabilities.</p>
       <div class="route-flow">
@@ -278,7 +398,12 @@
     </div>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><span id="toastText">Done</span></div>
-  <script src="/app.js?v=ui-polish-3" defer></script>
+  <!-- Toast Container -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-check">✓</span>
+    <span id="toastText">Done</span>
+  </div>
+
+  <script src="/app.js?v=ui-rescue-1" defer></script>
 </body>
 </html>

@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from api.index import handler as ApiHandler  # noqa: E402
+from api.experiment import handler as ExperimentHandler  # noqa: E402
 
 
 class LocalHandler(SimpleHTTPRequestHandler):
@@ -23,9 +24,14 @@ class LocalHandler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(WEB), **kwargs)
 
     def do_GET(self) -> None:
+        if self.path.startswith("/api/experiment"):
+            ExperimentHandler.do_GET(self)
+            return
         if self.path.rstrip("/") == "/api":
             ApiHandler.do_GET(self)
             return
+        if self.path.rstrip("/") == "/lab":
+            self.path = "/lab.html"
         super().do_GET()
 
     def do_POST(self) -> None:
