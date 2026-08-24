@@ -1,8 +1,8 @@
 # DRSK Repository Audit
 
-Audit date: 2026-08-24  
-Repository: `pablo228sos/niyet-nsosyal`  
-Audited revision: `1e2ea0bc060702b3b8e2e522e83eb2292eefb5fe` (`main`)  
+Audit date: 2026-08-24
+Repository: `pablo228sos/niyet-nsosyal`
+Audited revision: `1e2ea0bc060702b3b8e2e522e83eb2292eefb5fe` (`main`)
 Target specification: `DRSK_Technical_Report_2026.docx`
 
 ## 1. Executive summary

@@ -19,4 +19,3 @@ def tokens(text: str, *, meaningful: bool = False) -> tuple[str, ...]:
     if meaningful:
         return tuple(token for token in result if token not in _STOPWORDS and len(token) > 1)
     return result
-

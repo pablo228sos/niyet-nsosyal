@@ -80,4 +80,3 @@ def build_evidence_bundle(
         cited_evidence_ids=citations,
         created_at=created_at,
     )
-

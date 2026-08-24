@@ -17,4 +17,3 @@ class DistortionLensResult:
 def distortion_lens(claim: str, evidence: str) -> DistortionLensResult:
     distortions = tuple(item for item in detect_distortions(claim, evidence) if item is not DistortionType.NONE)
     return DistortionLensResult(claim, evidence, distortions, len(distortions))
-

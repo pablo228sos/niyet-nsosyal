@@ -19,4 +19,3 @@ def test_source_mismatch_is_typed_and_unknown_is_not_reputation():
     assert mismatch is True
     assert source_mismatch("Rapora göre oran arttı.", publisher="Example Institute") is None
     assert source_mismatch("WHO raporuna göre oran arttı.", publisher="World Health Organization (WHO)") is False
-

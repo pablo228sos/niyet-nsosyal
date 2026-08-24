@@ -1,7 +1,7 @@
 # DRSK Implementation Plan
 
-Plan date: 2026-08-24  
-Precondition: `docs/DRSK_REPOSITORY_AUDIT.md` accepted  
+Plan date: 2026-08-24
+Precondition: `docs/DRSK_REPOSITORY_AUDIT.md` accepted
 Rule: preserve NIYET as a first-class engine; implement incrementally after approval.
 
 Sprint status (2026-08-24): M0/M1 and the bounded MVP portions of M3-M7 are implemented on `feat/drsk-sourcechain-integration`. Secure arbitrary web ingestion, persistent evidence storage and research-scale model/benchmark work remain tracked GitHub follow-ups. Acceptance evidence is in the test suite and `docs/DRSK_DEMO.md`.

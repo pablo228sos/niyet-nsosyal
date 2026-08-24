@@ -14,4 +14,3 @@ def origin_cluster_counts(evidence: Iterable[EvidenceItem]) -> dict[str, int]:
     for item in evidence:
         counts[item.origin_cluster_id] = counts.get(item.origin_cluster_id, 0) + 1
     return dict(sorted(counts.items()))
-

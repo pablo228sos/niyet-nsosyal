@@ -21,4 +21,3 @@ def source_mismatch(claim: str, *, publisher: str | None) -> bool | None:
         "tuik": ("tuik", "türkiye istatistik kurumu"),
     }
     return not any(value in publisher_value for value in aliases.get(attribution, (attribution,)))
-

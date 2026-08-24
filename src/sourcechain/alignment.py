@@ -24,4 +24,3 @@ def align_claim(claim: str, passage: str) -> EvidenceRelation:
     if lexical_score(claim, passage) >= 0.65 and overlap >= 0.6:
         return EvidenceRelation.SUPPORTED
     return EvidenceRelation.PARTIALLY_SUPPORTED
-

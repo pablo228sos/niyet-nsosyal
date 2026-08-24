@@ -30,4 +30,3 @@ def extract_claims(text: str, *, max_claims: int = 5, max_claim_chars: int = 500
         if len(claims) >= max_claims:
             break
     return tuple(claims)
-

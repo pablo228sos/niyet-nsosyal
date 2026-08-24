@@ -39,4 +39,3 @@ def analyze_post(text: str, *, max_claims: int = 5) -> PostAnalysis:
     check_worthy = statement_type in {StatementType.FACTUAL_CLAIM, StatementType.MIXED}
     claims = extract_claims(text, max_claims=max_claims) if check_worthy else ()
     return PostAnalysis(text=text, statement_type=statement_type, check_worthy=check_worthy, claims=claims)
-
