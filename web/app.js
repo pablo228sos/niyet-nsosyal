@@ -5,12 +5,13 @@ const copy = {
   en: {
     feed: 'Feed', following: 'Following', explore: 'Explore', communities: 'Communities', messages: 'Messages', profile: 'Profile', compose: 'Post',
     layerSub: 'interaction layer', layerNote: 'Concept integration for NSosyal. Research prototype.', concept: 'Concept prototype', search: 'Search NSosyal',
+    productDescriptor: 'Evidence-aware social coordination', productNav: 'Product navigation', evidenceNav: 'Evidence', allocationLab: 'Allocation Lab', technical: 'Technical', researchPrototype: 'Research prototype', heroKicker: 'Context before reaction', heroTitle: 'A social feed that can trace evidence and route human attention.', heroText: 'DRSK connects SOURCECHAIN verification with NIYET coordination—without hiding uncertainty or presenting development signals as probabilities.', systemLayers: 'DRSK system layers', verifyClaims: 'Verify claims', routeAttention: 'Route attention',
     placeholder: 'What is happening?', publish: 'Post', demoHelp: 'Try: ask for help', demoCollab: 'Try: find a collaborator', demoNormal: 'Try: normal post',
     intentTitle: 'This post may need a human response', intentSub: 'NIYET suggests an intent. You confirm before routing.', modelSuggestion: 'model suggestion', modelScope: 'Model scope: Turkish controlled development data',
     ask: 'ASK', feedback: 'FEEDBACK', collaborate: 'COLLABORATE', discuss: 'DISCUSS', notNow: 'Not now', route: 'Route with NIYET', privateNote: 'You stay in control',
     previewTitle: 'Responder preview', previewSub: 'What the request looks like on the responder side', live: 'live', waiting: 'WAITING', noRoute: 'no route yet', previewEmpty: 'Route a response-seeking post to see the responder side.',
     technicalDetails: 'Technical details', accept: 'Accept', skip: 'Skip', attention: 'Session capacity', pause: 'Routing is on', pauseSub: 'The matched responder can pause new requests',
-    trends: 'Trends for you', trend2: 'Artificial Intelligence', trend3: 'Robotics', posts: 'posts', post1Copy: 'We finally got the robot stable on straight lines. Turns are still the hard part. Testing a new PID profile tonight.', post2Copy: 'Looking for one frontend developer for a weekend prototype. React is enough. Small team, clear scope.', routed: 'Routed with NIYET', demoMedia: 'PID response trace · demo media',
+    trends: 'Trends for you', trend2: 'Artificial Intelligence', trend3: 'Robotics', trendTechnology: 'Technology · Trending', trendAi: 'AI · Trending', trendEngineering: 'Engineering · Trending', demoFeed: 'demo feed', posts: 'posts', post1Copy: 'We finally got the robot stable on straight lines. Turns are still the hard part. Testing a new PID profile tonight.', post2Copy: 'Looking for one frontend developer for a weekend prototype. React is enough. Small team, clear scope.', routed: 'Routed with NIYET', demoMedia: 'PID response trace · demo media',
     techSub: 'Development diagnostics, not calibrated probabilities', retrievalSimilarity: 'Retrieval similarity', developmentUtility: 'Development utility', selectedIntent: 'Selected intent', techNote: 'These values are internal development signals and are not shown to users as probabilities.',
     gate: 'Response gate', gateSub: 'response / none', intentStep: 'Intent', intentStepSub: '4-way classifier', retrieve: 'Retrieve', retrieveSub: 'candidate set', allocate: 'Allocate', allocateSub: 'shared capacity',
     pipelineLive: 'live pipeline', pipelineFallback: 'demo fallback', pipelineChecking: 'checking pipeline', analyzing: 'analyzing', eligible: 'eligible match', noCandidate: 'no eligible candidate',
@@ -21,19 +22,20 @@ const copy = {
     topicsPrefix: 'topic profile', requestsEnabled: 'requests enabled', slotsAvailable: 'attention slots available', linkCopied: 'Link copied', followingToast: 'Following feed selected',
     viewExploreTitle: 'Explore', viewExploreText: 'Discover conversations by topic instead of follower count.', viewCommunitiesTitle: 'Communities', viewCommunitiesText: 'Small spaces for shared interests and recurring collaboration.', viewMessagesTitle: 'Messages', viewMessagesText: 'Direct conversations remain separate from NIYET routing.', viewProfileTitle: 'Profile', viewProfileText: 'Your public profile and interaction preferences.',
     demoLabel: 'demo', people: 'members', recent: 'recent', noMessages: 'No unread messages', profileBio: 'Building robotics and social AI prototypes.',
-    evidenceTitle: 'Evidence check', evidenceWaiting: 'Not checked', showEvidence: 'Show evidence', hideEvidence: 'Hide evidence', evidenceUnavailable: 'Evidence check unavailable', evidenceNotRequired: 'No factual claim needs checking', askPerson: 'Ask a relevant person', askingPerson: 'Requesting human review', claimsLabel: 'Claims', sourceLabel: 'Open source', passageLabel: 'Relevant passage', distortionLabel: 'Distortion', resolutionLabel: 'Resolution', noEvidence: 'No supporting source was found in the controlled corpus',
-    primaryNav: 'Primary navigation', languageLabel: 'Language', demoPrompts: 'Demo prompts', postTools: 'Post tools', media: 'Media', poll: 'Poll', location: 'Location', contextSidebar: 'Context sidebar', mobileNav: 'Mobile navigation', reply: 'Reply', repost: 'Repost', like: 'Like', share: 'Share',
+    evidenceTitle: 'Evidence check', evidenceWaiting: 'Not checked', showEvidence: 'Show evidence', hideEvidence: 'Hide evidence', evidenceUnavailable: 'Evidence check unavailable', evidenceNotRequired: 'No factual claim needs checking', askPerson: 'Ask a relevant person', askingPerson: 'Requesting human review', claimsLabel: 'Claim', sourceLabel: 'Open source', passageLabel: 'Evidence passage', distortionLabel: 'Distortion Lens', resolutionLabel: 'Resolution', noEvidence: 'No supporting source was found in the controlled corpus', claimSignal: 'Claim signal', evidenceSignal: 'Source passage', singleHop: 'Single-hop transformation shown from the current evidence item', lineageLabel: 'Evidence lineage', sourceCount: 'source URL', sourceCountPlural: 'source URLs', originCount: 'independent origin', originCountPlural: 'independent origins',
+    primaryNav: 'Primary navigation', languageLabel: 'Language', demoPrompts: 'Demo prompts', postTools: 'Post tools', media: 'Media', poll: 'Poll', location: 'Location', contextSidebar: 'Context sidebar', mobileNav: 'Mobile navigation', reply: 'Reply', repost: 'Repost', like: 'Like', share: 'Share', toggleRouting: 'Toggle NIYET routing', close: 'Close', notRun: 'not run',
     now: 'now'
   },
   tr: {
     feed: 'Akış', following: 'Takip', explore: 'Keşfet', communities: 'Topluluklar', messages: 'Mesajlar', profile: 'Profil', compose: 'Gönderi',
     layerSub: 'etkileşim katmanı', layerNote: 'NSosyal için konsept entegrasyon. Araştırma prototipi.', concept: 'Konsept prototip', search: 'NSosyal içinde ara',
+    productDescriptor: 'Kanıt duyarlı sosyal koordinasyon', productNav: 'Ürün gezinmesi', evidenceNav: 'Kanıt', allocationLab: 'Dağıtım Laboratuvarı', technical: 'Teknik', researchPrototype: 'Araştırma prototipi', heroKicker: 'Tepkiden önce bağlam', heroTitle: 'Kanıtın izini süren ve insan dikkatini yönlendiren bir sosyal akış.', heroText: 'DRSK, SOURCECHAIN doğrulamasıyla NIYET koordinasyonunu birleştirir; belirsizliği saklamaz ve geliştirme sinyallerini olasılık gibi sunmaz.', systemLayers: 'DRSK sistem katmanları', verifyClaims: 'İddiaları doğrula', routeAttention: 'Dikkati yönlendir',
     placeholder: 'Neler oluyor?', publish: 'Gönder', demoHelp: 'Dene: yardım iste', demoCollab: 'Dene: ekip arkadaşı bul', demoNormal: 'Dene: normal gönderi',
     intentTitle: 'Bu gönderi insan yanıtı arıyor olabilir', intentSub: 'NIYET bir niyet önerir. Yönlendirmeden önce sen onaylarsın.', modelSuggestion: 'model önerisi', modelScope: 'Model kapsamı: Türkçe kontrollü geliştirme verisi',
     ask: 'SORU', feedback: 'GERİ BİLDİRİM', collaborate: 'İŞ BİRLİĞİ', discuss: 'TARTIŞ', notNow: 'Şimdi değil', route: 'NIYET ile yönlendir', privateNote: 'Kontrol sende',
     previewTitle: 'Cevaplayıcı önizlemesi', previewSub: 'İsteğin cevaplayıcı tarafında nasıl göründüğü', live: 'aktif', waiting: 'BEKLİYOR', noRoute: 'henüz yönlendirme yok', previewEmpty: 'Cevaplayıcı tarafını görmek için yanıt arayan bir gönderiyi yönlendir.',
     technicalDetails: 'Teknik ayrıntılar', accept: 'Kabul et', skip: 'Geç', attention: 'Oturum kapasitesi', pause: 'Yönlendirme açık', pauseSub: 'Eşleşen kişi yeni istekleri duraklatabilir',
-    trends: 'Senin için trendler', trend2: 'Yapay Zeka', trend3: 'Robotik', posts: 'gönderi', post1Copy: 'Robotu düz çizgide sonunda kararlı hale getirdik. Virajlar hala zor. Bu gece yeni PID profilini test ediyoruz.', post2Copy: 'Hafta sonu prototipi için bir frontend geliştirici arıyoruz. React yeterli. Küçük ekip, net kapsam.', routed: 'NIYET ile yönlendirildi', demoMedia: 'PID yanıt grafiği · demo medya',
+    trends: 'Senin için trendler', trend2: 'Yapay Zeka', trend3: 'Robotik', trendTechnology: 'Teknoloji · Gündemde', trendAi: 'Yapay Zeka · Gündemde', trendEngineering: 'Mühendislik · Gündemde', demoFeed: 'demo akış', posts: 'gönderi', post1Copy: 'Robotu düz çizgide sonunda kararlı hale getirdik. Virajlar hala zor. Bu gece yeni PID profilini test ediyoruz.', post2Copy: 'Hafta sonu prototipi için bir frontend geliştirici arıyoruz. React yeterli. Küçük ekip, net kapsam.', routed: 'NIYET ile yönlendirildi', demoMedia: 'PID yanıt grafiği · demo medya',
     techSub: 'Geliştirme tanıları, kalibre edilmiş olasılıklar değil', retrievalSimilarity: 'Erişim benzerliği', developmentUtility: 'Geliştirme fayda puanı', selectedIntent: 'Seçilen niyet', techNote: 'Bu değerler iç geliştirme sinyalleridir ve kullanıcıya olasılık olarak gösterilmez.',
     gate: 'Yanıt kapısı', gateSub: 'yanıt / normal', intentStep: 'Niyet', intentStepSub: '4 sınıflı model', retrieve: 'Aday bul', retrieveSub: 'aday havuzu', allocate: 'Dağıt', allocateSub: 'ortak kapasite',
     pipelineLive: 'canlı pipeline', pipelineFallback: 'demo yedeği', pipelineChecking: 'pipeline kontrol ediliyor', analyzing: 'analiz ediliyor', eligible: 'uygun eşleşme', noCandidate: 'uygun aday yok',
@@ -44,8 +46,8 @@ const copy = {
     topicsPrefix: 'konu profili', requestsEnabled: 'istekleri açık', slotsAvailable: 'dikkat kapasitesi uygun', linkCopied: 'Bağlantı kopyalandı', followingToast: 'Takip akışı seçildi',
     viewExploreTitle: 'Keşfet', viewExploreText: 'Takipçi sayısından bağımsız olarak konuya göre konuşmaları keşfet.', viewCommunitiesTitle: 'Topluluklar', viewCommunitiesText: 'Ortak ilgi alanları ve tekrar eden iş birlikleri için küçük alanlar.', viewMessagesTitle: 'Mesajlar', viewMessagesText: 'Doğrudan konuşmalar NIYET yönlendirmesinden ayrı kalır.', viewProfileTitle: 'Profil', viewProfileText: 'Herkese açık profilin ve etkileşim tercihlerin.',
     demoLabel: 'demo', people: 'üye', recent: 'yakın zamanda', noMessages: 'Okunmamış mesaj yok', profileBio: 'Robotik ve sosyal yapay zeka prototipleri geliştiriyorum.',
-    evidenceTitle: 'Kanıt kontrolü', evidenceWaiting: 'Kontrol edilmedi', showEvidence: 'Kanıtı göster', hideEvidence: 'Kanıtı gizle', evidenceUnavailable: 'Kanıt kontrolü kullanılamıyor', evidenceNotRequired: 'Kontrol gerektiren olgusal iddia yok', askPerson: 'İlgili bir kişiye sor', askingPerson: 'İnsan incelemesi isteniyor', claimsLabel: 'İddialar', sourceLabel: 'Kaynağı aç', passageLabel: 'İlgili bölüm', distortionLabel: 'Bozulma', resolutionLabel: 'Çözüm', noEvidence: 'Kontrollü derlemde destekleyici kaynak bulunamadı',
-    primaryNav: 'Ana gezinme', languageLabel: 'Dil', demoPrompts: 'Demo örnekleri', postTools: 'Gönderi araçları', media: 'Medya', poll: 'Anket', location: 'Konum', contextSidebar: 'Bağlam kenar çubuğu', mobileNav: 'Mobil gezinme', reply: 'Yanıtla', repost: 'Yeniden gönder', like: 'Beğen', share: 'Paylaş',
+    evidenceTitle: 'Kanıt kontrolü', evidenceWaiting: 'Kontrol edilmedi', showEvidence: 'Kanıtı göster', hideEvidence: 'Kanıtı gizle', evidenceUnavailable: 'Kanıt kontrolü kullanılamıyor', evidenceNotRequired: 'Kontrol gerektiren olgusal iddia yok', askPerson: 'İlgili bir kişiye sor', askingPerson: 'İnsan incelemesi isteniyor', claimsLabel: 'İddia', sourceLabel: 'Kaynağı aç', passageLabel: 'Kanıt bölümü', distortionLabel: 'Bozulma Merceği', resolutionLabel: 'Çözüm', noEvidence: 'Kontrollü derlemde destekleyici kaynak bulunamadı', claimSignal: 'İddia sinyali', evidenceSignal: 'Kaynak bölümü', singleHop: 'Mevcut kanıt öğesinden tek adımlı dönüşüm gösteriliyor', lineageLabel: 'Kanıt soyu', sourceCount: 'kaynak adresi', sourceCountPlural: 'kaynak adresi', originCount: 'bağımsız köken', originCountPlural: 'bağımsız köken',
+    primaryNav: 'Ana gezinme', languageLabel: 'Dil', demoPrompts: 'Demo örnekleri', postTools: 'Gönderi araçları', media: 'Medya', poll: 'Anket', location: 'Konum', contextSidebar: 'Bağlam kenar çubuğu', mobileNav: 'Mobil gezinme', reply: 'Yanıtla', repost: 'Yeniden gönder', like: 'Beğen', share: 'Paylaş', toggleRouting: 'NIYET yönlendirmesini aç veya kapat', close: 'Kapat', notRun: 'çalıştırılmadı',
     now: 'şimdi'
   }
 };
@@ -93,9 +95,9 @@ function localizeReason(reason) {
   return raw;
 }
 
-function applyLanguage(nextLanguage) {
+function applyLanguage(nextLanguage, persist = true) {
   language = nextLanguage;
-  localStorage.setItem('drsk-language', language);
+  if (persist) localStorage.setItem('drsk-language', language);
   document.documentElement.lang = language;
   $$('[data-i18n]').forEach((node) => { node.textContent = text(node.dataset.i18n); });
   $$('[data-i18n-placeholder]').forEach((node) => { node.placeholder = text(node.dataset.i18nPlaceholder); });
@@ -258,6 +260,28 @@ function renderEvidence(payload) {
     appendTextElement(article, 'span', 'evidence-passage-label', text('passageLabel'));
     appendTextElement(article, 'blockquote', 'evidence-passage', item.passage || '');
     const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
+    const claimText = claims[0]?.text || claims[0]?.claim_text || claims[0] || '';
+    if (item.passage || claimText) {
+      const lens = document.createElement('div');
+      lens.className = 'distortion-lens';
+      const sourceNode = document.createElement('div');
+      sourceNode.className = 'lens-node source-node';
+      appendTextElement(sourceNode, 'span', 'lens-label', text('evidenceSignal'));
+      appendTextElement(sourceNode, 'p', '', item.passage || '—');
+      lens.appendChild(sourceNode);
+      const transform = document.createElement('div');
+      transform.className = 'lens-transform';
+      appendTextElement(transform, 'span', '', distortions.length ? distortions.map(displayCode).join(' + ') : displayCode(item.relation));
+      transform.setAttribute('aria-label', `${text('distortionLabel')}: ${transform.textContent}`);
+      lens.appendChild(transform);
+      const claimNode = document.createElement('div');
+      claimNode.className = 'lens-node claim-node';
+      appendTextElement(claimNode, 'span', 'lens-label', text('claimSignal'));
+      appendTextElement(claimNode, 'p', '', claimText || '—');
+      lens.appendChild(claimNode);
+      appendTextElement(lens, 'small', 'lens-scope', text('singleHop'));
+      article.appendChild(lens);
+    }
     if (distortions.length) {
       const labels = document.createElement('div');
       labels.className = 'distortion-list';
@@ -274,6 +298,20 @@ function renderEvidence(payload) {
     }
     evidenceList.appendChild(article);
   });
+
+  if (evidence.length) {
+    const origins = new Set(evidence.map((item) => item.origin_cluster_id || item.canonical_url || item.source_url).filter(Boolean));
+    const lineage = document.createElement('div');
+    lineage.className = 'evidence-lineage';
+    appendTextElement(lineage, 'span', 'lineage-title', text('lineageLabel'));
+    const flow = document.createElement('div');
+    flow.className = 'lineage-flow';
+    appendTextElement(flow, 'strong', 'lineage-node', `${evidence.length} ${text(evidence.length === 1 ? 'sourceCount' : 'sourceCountPlural')}`);
+    appendTextElement(flow, 'span', 'lineage-arrow', '→');
+    appendTextElement(flow, 'strong', 'lineage-node origin', `${origins.size || evidence.length} ${text((origins.size || evidence.length) === 1 ? 'originCount' : 'originCountPlural')}`);
+    lineage.appendChild(flow);
+    evidenceList.prepend(lineage);
+  }
 
   const resolution = payload?.resolution || {};
   const routedPerson = payload?.niyet?.responder_name;
@@ -689,7 +727,7 @@ function installResetButton() {
   button.className = 'reset-demo';
   button.type = 'button';
   button.textContent = text('reset');
-  $('.header-actions')?.insertBefore(button, $('.lang-switch'));
+  $('.header-actions')?.prepend(button);
   button.addEventListener('click', async () => {
     sessionStorage.removeItem('drsk-open-requests');
     sessionStorage.removeItem('drsk-responder-state');
@@ -739,11 +777,12 @@ function closeMobileInbox() {
 }
 function updateMobileInboxButton() {
   const button = $('#mobileInboxButton');
-  if (!button) return;
-  button.classList.toggle('has-match', Boolean(latestDecision?.match));
-  button.hidden = activeView !== 'feed';
-  const label = $('b', button);
-  if (label) label.textContent = text('responderSide');
+  if (button) {
+    button.classList.toggle('has-match', Boolean(latestDecision?.match));
+    button.hidden = activeView !== 'feed';
+    const label = $('b', button);
+    if (label) label.textContent = text('responderSide');
+  }
   const close = $('#mobileInboxClose');
   if (close) close.textContent = text('close');
   const author = $('.author-role-marker');
@@ -854,6 +893,7 @@ function bindEvents() {
     if (!$('#explainMatch').disabled) $('#explainSheet').classList.add('visible');
   });
   $('#closeSheet').addEventListener('click', () => $('#explainSheet').classList.remove('visible'));
+  $('#openTechnical')?.addEventListener('click', () => $('#explainSheet').classList.add('visible'));
   $('#explainSheet').addEventListener('click', (event) => {
     if (event.target === $('#explainSheet')) $('#explainSheet').classList.remove('visible');
   });
@@ -888,7 +928,7 @@ installRoleMarkers();
 installResetButton();
 installMobileInbox();
 wirePostActions();
-applyLanguage(language);
+applyLanguage(language, false);
 bindEvents();
 activateView('feed');
 renderMatchingWindow();

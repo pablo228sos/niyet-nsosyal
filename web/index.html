@@ -3,11 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#f4f6fb">
   <meta name="description" content="DRSK / NIYET concept integration for NSosyal">
   <title>DRSK / NIYET - NSosyal Concept Integration</title>
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/live.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=ui-polish-1">
+  <link rel="stylesheet" href="/live.css?v=ui-polish-1">
 </head>
 <body>
   <svg class="sr-only" aria-hidden="true">
@@ -25,6 +28,26 @@
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V4m0 0L8.5 7.5M12 4l3.5 3.5M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
+
+  <header class="product-nav">
+    <a class="product-wordmark" href="/" aria-label="DRSK home">
+      <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><strong>DRSK</strong><small data-i18n="productDescriptor">Evidence-aware social coordination</small></span>
+    </a>
+    <nav class="product-links" aria-label="Product navigation" data-i18n-aria="productNav">
+      <a class="active" href="#feedTop" data-i18n="feed">Feed</a>
+      <a href="#evidenceCard" data-i18n="evidenceNav">Evidence</a>
+      <a href="/lab" data-i18n="allocationLab">Allocation Lab</a>
+      <button id="openTechnical" type="button" data-i18n="technical">Technical</button>
+    </nav>
+    <div class="nav-actions">
+      <span class="prototype-mark" data-i18n="researchPrototype">Research prototype</span>
+      <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+      </div>
+    </div>
+  </header>
 
   <div class="app-shell">
     <aside class="left-rail" aria-label="Primary navigation" data-i18n-aria="primaryNav">
@@ -49,17 +72,13 @@
       </div>
     </aside>
 
-    <main class="feed-column">
+    <main class="feed-column" id="feedTop">
       <header class="feed-header">
         <div class="feed-topline">
           <div class="feed-title" data-i18n="feed">Feed</div>
           <div class="header-actions">
             <span class="pipeline-state" id="pipelineState">checking pipeline</span>
             <span class="demo-badge" data-i18n="concept">Concept prototype</span>
-            <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
-              <button type="button" data-lang="en" aria-pressed="true">EN</button>
-              <button type="button" data-lang="tr" aria-pressed="false">TR</button>
-            </div>
           </div>
         </div>
         <div class="feed-tabs">
@@ -67,6 +86,19 @@
           <button class="feed-tab" type="button" data-i18n="following">Following</button>
         </div>
       </header>
+
+      <section class="feed-hero" aria-labelledby="feedHeroTitle">
+        <div class="hero-copy">
+          <span class="hero-kicker"><i aria-hidden="true"></i><span data-i18n="heroKicker">Context before reaction</span></span>
+          <h1 id="feedHeroTitle" data-i18n="heroTitle">A social feed that can trace evidence and route human attention.</h1>
+          <p data-i18n="heroText">DRSK connects SOURCECHAIN verification with NIYET coordination—without hiding uncertainty or pretending development signals are probabilities.</p>
+        </div>
+        <div class="system-bridge" aria-label="DRSK system layers" data-i18n-aria="systemLayers">
+          <div class="system-node sourcechain-node"><span>SOURCECHAIN</span><strong data-i18n="verifyClaims">Verify claims</strong></div>
+          <div class="bridge-line" aria-hidden="true"><i></i><b>DRSK</b></div>
+          <div class="system-node niyet-node"><span>NIYET</span><strong data-i18n="routeAttention">Route attention</strong></div>
+        </div>
+      </section>
 
       <section class="composer" aria-labelledby="composerLabel">
         <div class="composer-grid">
@@ -202,16 +234,16 @@
           <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
           <div class="pause-row">
             <div class="pause-copy"><strong id="pauseTitle" data-i18n="pause">Routing is on</strong><span data-i18n="pauseSub">The matched responder can pause new requests</span></div>
-            <button class="switch" id="routingSwitch" type="button" aria-label="Toggle NIYET routing" aria-pressed="true"></button>
+            <button class="switch" id="routingSwitch" type="button" aria-label="Toggle NIYET routing" data-i18n-aria="toggleRouting" aria-pressed="true"></button>
           </div>
         </div>
       </section>
 
       <section class="side-panel">
         <div class="trends-head" data-i18n="trends">Trends for you</div>
-        <div class="trend"><div class="trend-kicker">Technology · Trending</div><strong>TEKNOFEST 2026</strong><span>demo feed</span></div>
-        <div class="trend"><div class="trend-kicker">AI · Trending</div><strong data-i18n="trend2">Artificial Intelligence</strong><span>demo feed</span></div>
-        <div class="trend"><div class="trend-kicker">Engineering · Trending</div><strong data-i18n="trend3">Robotics</strong><span>demo feed</span></div>
+        <div class="trend"><div class="trend-kicker" data-i18n="trendTechnology">Technology · Trending</div><strong>TEKNOFEST 2026</strong><span data-i18n="demoFeed">demo feed</span></div>
+        <div class="trend"><div class="trend-kicker" data-i18n="trendAi">AI · Trending</div><strong data-i18n="trend2">Artificial Intelligence</strong><span data-i18n="demoFeed">demo feed</span></div>
+        <div class="trend"><div class="trend-kicker" data-i18n="trendEngineering">Engineering · Trending</div><strong data-i18n="trend3">Robotics</strong><span data-i18n="demoFeed">demo feed</span></div>
       </section>
     </aside>
   </div>
@@ -228,12 +260,12 @@
     <div class="sheet">
       <div class="sheet-head">
         <div class="sheet-title"><div class="mini-orb" aria-hidden="true"></div><div><strong id="sheetHeading" data-i18n="technicalDetails">Technical details</strong><span data-i18n="techSub">Development diagnostics, not calibrated probabilities</span></div></div>
-        <button class="close-sheet" id="closeSheet" type="button" aria-label="Close"><svg width="16" height="16"><use href="#i-close"></use></svg></button>
+        <button class="close-sheet" id="closeSheet" type="button" aria-label="Close" data-i18n-aria="close"><svg width="16" height="16"><use href="#i-close"></use></svg></button>
       </div>
       <div class="score-grid">
-        <div class="score-item"><span data-i18n="retrievalSimilarity">Retrieval similarity</span><strong class="text-value" id="technicalSimilarity">not run</strong></div>
-        <div class="score-item"><span data-i18n="developmentUtility">Development utility</span><strong class="text-value" id="technicalUtility">not run</strong></div>
-        <div class="score-item"><span data-i18n="selectedIntent">Selected intent</span><strong class="text-value" id="technicalIntent">not run</strong></div>
+        <div class="score-item"><span data-i18n="retrievalSimilarity">Retrieval similarity</span><strong class="text-value" id="technicalSimilarity" data-i18n="notRun">not run</strong></div>
+        <div class="score-item"><span data-i18n="developmentUtility">Development utility</span><strong class="text-value" id="technicalUtility" data-i18n="notRun">not run</strong></div>
+        <div class="score-item"><span data-i18n="selectedIntent">Selected intent</span><strong class="text-value" id="technicalIntent" data-i18n="notRun">not run</strong></div>
       </div>
       <p class="tech-note" data-i18n="techNote">These values are internal development signals and are not shown to users as probabilities.</p>
       <div class="route-flow">
@@ -246,6 +278,6 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><span id="toastText">Done</span></div>
-  <script src="/app.js" defer></script>
+  <script src="/app.js?v=ui-polish-2" defer></script>
 </body>
 </html>
