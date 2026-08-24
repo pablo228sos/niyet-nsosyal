@@ -11,6 +11,8 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold
 from sklearn.pipeline import FeatureUnion, Pipeline
 
+from .annotations import validate_annotation_file
+
 
 @dataclass(frozen=True)
 class LabeledText:
@@ -39,6 +41,10 @@ class CrossValidationResult:
 
 
 def load_labeled_texts(path: str | Path) -> list[LabeledText]:
+    problems = validate_annotation_file(path)
+    if problems:
+        details = "; ".join(f"row {item.row}: {item.message}" for item in problems[:3])
+        raise ValueError(f"invalid annotation CSV: {details}")
     rows: list[LabeledText] = []
     with Path(path).open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
@@ -47,6 +53,8 @@ def load_labeled_texts(path: str | Path) -> list[LabeledText]:
             group = row["source_group"].strip()
             if text and label and group:
                 rows.append(LabeledText(text=text, label=label, group=group))
+    if not rows:
+        raise ValueError("invalid annotation CSV: no labeled rows")
     return rows
 
 

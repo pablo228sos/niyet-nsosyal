@@ -268,6 +268,10 @@ class NiyetRuntime:
         if not requests or len(requests) > 20:
             raise ValueError("batch_size_out_of_range")
 
+        request_ids = [str(item.get("id") or f"batch-{index + 1}") for index, item in enumerate(requests)]
+        if len(request_ids) != len(set(request_ids)):
+            raise ValueError("duplicate_request_id")
+
         prepared: list[dict] = []
         for index, raw in enumerate(requests):
             clean_text = str(raw.get("text", "")).strip()

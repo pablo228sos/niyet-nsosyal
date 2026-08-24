@@ -14,7 +14,7 @@ from niyet.types import CandidateMatch, Intent, IntentType, Responder
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BENCHMARK_PATH = ROOT / "data" / "matching_benchmark_v1_draft.json"
+BENCHMARK_PATH = ROOT / "data" / "matching_benchmark_v1_reviewed.json"
 RESPONDER_PATH = ROOT / "data" / "responder_profiles_v1.json"
 RELEVANT_GRADE = 2
 TOP_K = 3
