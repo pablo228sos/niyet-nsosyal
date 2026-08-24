@@ -18,8 +18,8 @@ def demo_documents() -> tuple[SourceDocument, ...]:
             source_url="https://pubmed.ncbi.nlm.nih.gov/26572796/",
             canonical_url="https://pubmed.ncbi.nlm.nih.gov/26572796/",
             title="Association of Coffee Consumption With Total and Cause-Specific Mortality in 3 Large Prospective Cohorts",
-            publisher=None,
-            publication_date=None,
+            publisher="Circulation",
+            publication_date="2015-12-15",
             text=(
                 "Higher consumption of total coffee, caffeinated coffee, and "
                 "decaffeinated coffee was associated with lower risk of total mortality."

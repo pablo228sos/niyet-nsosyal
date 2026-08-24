@@ -64,6 +64,7 @@ def test_pause_removes_responder_from_next_route():
         responder_state=state,
     )
 
+    assert result.response_needed is True
     assert result.responder_id != "r_control"
 
 
@@ -90,6 +91,7 @@ def test_batch_routing_respects_shared_capacity():
     )
 
     assigned = [item.responder_id for item in decisions if item.responder_id]
+    assert len(assigned) == 1
     assert len(assigned) == len(set(assigned))
 
 

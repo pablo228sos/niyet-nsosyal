@@ -13,6 +13,35 @@ DRSK
 
 SOURCECHAIN never emits an absolute truth score. It preserves individual sources and conflicting passages. NIYET remains the tested interaction-allocation engine for posts that need a useful human response; it is reused through a structured escalation adapter rather than rewritten.
 
+## Capability status
+
+### WORKING NOW
+
+- deterministic statement/claim analysis over a controlled evidence corpus
+- exact passage, canonical URL, publication metadata, document hash and origin-cluster provenance
+- supported/partial/conflicting/insufficient alignment plus typed distortion checks
+- explicit EVIDENCE/HUMAN/BOTH/NONE/DEFERRED resolution and structured escalation into NIYET
+- willingness and capacity constrained global human allocation
+- bilingual desktop/mobile feed, evidence disclosure and source links
+
+### EXPERIMENTAL
+
+- SOURCEBENCH-TR v0 is a 15-example development regression set, not a benchmark-grade evaluation
+- source alignment and distortion detection are deterministic lexical/structured baselines
+- Evidence Lineage counts supplied origin clusters; it does not discover common origins automatically
+- the Distortion Lens exposes typed single-hop changes, not arbitrary multi-hop transformation chains
+- browser-held responder capacity is useful prototype behavior, not durable multi-user state
+
+### PLANNED
+
+- SOURCEBENCH v1 at the scale specified in the technical report
+- trained/hybrid SOURCECHAIN retrieval and alignment with measured Turkish evaluation
+- secure bounded external-source ingestion, persistent evidence cache and re-evaluation jobs
+- automatic lineage clustering and multi-hop distortion visualization
+- authenticated, rate-limited, server-authoritative production capacity
+
+Report claims are mapped to executable code and explicit gaps in [`docs/DRSK_REPORT_CODE_TRACEABILITY.md`](docs/DRSK_REPORT_CODE_TRACEABILITY.md).
+
 ## Product flow
 
 1. classify the statement and extract bounded, span-linked claims
@@ -152,6 +181,8 @@ python scripts/train_intent_baseline.py data/response_gate_seed_v1.csv --cv
 python experiments/evaluate_matching_draft.py
 python experiments/benchmark_scaling.py
 python scripts/validate_sourcebench.py data/sourcebench_tr
+python experiments/evaluate_sourcechain_v0.py
+python scripts/generate_results.py
 python scripts/serve_local.py
 ```
 

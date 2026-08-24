@@ -1,0 +1,23 @@
+{
+  "dataset_version": "v1-reviewed",
+  "generated_at": "2026-08-24T14:39:41.478394+00:00",
+  "git_commit": "930396f9bc7398759bfabb0cce788be881026118",
+  "metrics": {
+    "global": {
+      "coverage": 0.7812,
+      "mean_reviewed_relevance": 2.08,
+      "total_reviewed_relevance": 52
+    },
+    "greedy": {
+      "coverage": 0.6562,
+      "mean_reviewed_relevance": 2.1429,
+      "total_reviewed_relevance": 45
+    }
+  },
+  "parameters": {
+    "allocator_batch_size": 8,
+    "capacity_per_batch": 1,
+    "similarity_floor": 0.02
+  },
+  "review_status": "reviewed"
+}

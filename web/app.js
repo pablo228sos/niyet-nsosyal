@@ -109,6 +109,7 @@ function applyLanguage(nextLanguage) {
   renderPipelineState();
   renderMatchingWindow();
   updateBudget();
+  updateMobileInboxButton();
   renderSecondaryView();
   if (routeResultMode) renderRouteResult(routeResultMode, latestDecision);
   if (latestDrsk) renderEvidence(latestDrsk);
@@ -211,7 +212,15 @@ function appendTextElement(parent, tag, className, value) {
 }
 
 function displayCode(value) {
-  return String(value || '').replaceAll('_', ' ').toLocaleLowerCase(language === 'tr' ? 'tr-TR' : 'en-US');
+  const code = String(value || '').toUpperCase();
+  const labels = language === 'tr' ? {
+    SUPPORTED: 'destekleniyor', PARTIALLY_SUPPORTED: 'kısmen destekleniyor',
+    CONFLICTING: 'çelişkili', INSUFFICIENT: 'yetersiz', PARTIAL: 'kısmi',
+    EVIDENCE: 'kanıt', HUMAN: 'insan', BOTH: 'kanıt + insan', NONE: 'gerek yok', DEFERRED: 'ertelendi',
+    NUMERIC_SHIFT: 'sayısal kayma', CAUSALITY_SHIFT: 'nedensellik kayması',
+    CERTAINTY_SHIFT: 'kesinlik kayması', ATTRIBUTION_SHIFT: 'atıf kayması'
+  } : {};
+  return labels[code] || code.replaceAll('_', ' ').toLocaleLowerCase('en-US');
 }
 
 function renderEvidence(payload) {
@@ -221,12 +230,14 @@ function renderEvidence(payload) {
   const analysis = payload?.post_analysis || bundle.analysis || {};
   const claims = Array.isArray(payload?.claims) ? payload.claims : (Array.isArray(analysis.claims) ? analysis.claims : []);
   const evidence = Array.isArray(bundle.evidence) ? bundle.evidence : [];
-  const status = bundle.status || (analysis.check_worthy === false ? 'NOT_REQUIRED' : 'INSUFFICIENT');
+  const status = analysis.check_worthy === false ? 'NOT_REQUIRED' : (bundle.status || 'INSUFFICIENT');
 
   card.hidden = false;
   card.dataset.status = String(status).toLowerCase();
   $('#evidenceStatus').textContent = status === 'NOT_REQUIRED' ? text('evidenceNotRequired') : `${text('evidenceTitle')}: ${displayCode(status)}`;
-  $('#evidenceExplanation').textContent = bundle.explanation || (evidence.length ? '' : text('noEvidence'));
+  $('#evidenceExplanation').textContent = status === 'NOT_REQUIRED'
+    ? text('evidenceNotRequired')
+    : (bundle.explanation || (evidence.length ? '' : text('noEvidence')));
 
   const claimList = $('#claimList');
   claimList.replaceChildren();

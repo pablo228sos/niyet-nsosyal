@@ -7,8 +7,8 @@ from .schemas import PostAnalysis, StatementType
 from .text import normalize
 
 
-_OPINION = re.compile(r"\b(bence|bana göre|sanırım|fikrimce|i think|in my opinion)\b", re.I)
-_EXPERIENCE = re.compile(r"\b(ben|benim|bende|yaşadım|hissettim|başım|gördüm|i experienced|my)\b", re.I)
+_OPINION = re.compile(r"\b(bence|bana göre|sanırım|fikrimce|düşünüyorum|i think|in my opinion)\b", re.I)
+_EXPERIENCE = re.compile(r"\b(ben|benim|bende|yaşadım|hissettim|başım|kolum|ağrıdı|gördüm|i experienced|my)\b", re.I)
 _PREDICTION = re.compile(r"\b(muhtemelen|gelecekte|olacak|bekleniyor|tahmin|will|likely)\b", re.I)
 _FACT_SIGNAL = re.compile(r"\b(rapor|araştırma|açıkladı|bildirdi|oran|yüzde|%|according|study|report|increased|decreased)\b", re.I)
 

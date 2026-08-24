@@ -47,6 +47,26 @@ class ResolutionEngine:
                 escalation=self._escalation(bundle, "resolve conflicting evidence"),
             )
 
+        distortions = {
+            distortion
+            for evidence in bundle.evidence
+            for distortion in evidence.distortions
+        }
+        if DistortionType.ATTRIBUTION_SHIFT in distortions:
+            return ResolutionDecision(
+                path=ResolutionPath.BOTH,
+                reasons=("source_mismatch", "human_interpretation_required"),
+                escalation=self._escalation(bundle, "interpret source attribution mismatch"),
+            )
+
+        material_distortions = distortions - {DistortionType.NONE}
+        if material_distortions:
+            return ResolutionDecision(
+                path=ResolutionPath.BOTH,
+                reasons=("evidence_distorted", "human_interpretation_required"),
+                escalation=self._escalation(bundle, "interpret distorted evidence claim"),
+            )
+
         if (
             bundle.status in {BundleStatus.SUPPORTED, BundleStatus.PARTIAL}
             and bundle.sufficient

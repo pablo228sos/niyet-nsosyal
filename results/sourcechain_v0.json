@@ -1,0 +1,147 @@
+{
+  "cases": [
+    {
+      "correct": true,
+      "gold": "OPINION",
+      "id": "statement-001",
+      "predicted": "OPINION",
+      "task": "statement_type"
+    },
+    {
+      "correct": true,
+      "gold": "FACTUAL_CLAIM",
+      "id": "statement-002",
+      "predicted": "FACTUAL_CLAIM",
+      "task": "statement_type"
+    },
+    {
+      "correct": true,
+      "gold": "PERSONAL_EXPERIENCE",
+      "id": "statement-003",
+      "predicted": "PERSONAL_EXPERIENCE",
+      "task": "statement_type"
+    },
+    {
+      "correct": true,
+      "gold": "PREDICTION",
+      "id": "statement-004",
+      "predicted": "PREDICTION",
+      "task": "statement_type"
+    },
+    {
+      "correct": true,
+      "gold": "QUESTION",
+      "id": "statement-005",
+      "predicted": "QUESTION",
+      "task": "statement_type"
+    },
+    {
+      "correct": true,
+      "gold": "MIXED",
+      "id": "statement-006",
+      "predicted": "MIXED",
+      "task": "statement_type"
+    },
+    {
+      "correct": false,
+      "gold": "SUPPORTED",
+      "id": "alignment-001",
+      "predicted": "PARTIALLY_SUPPORTED",
+      "task": "alignment"
+    },
+    {
+      "correct": true,
+      "gold": "PARTIALLY_SUPPORTED",
+      "id": "alignment-002",
+      "predicted": "PARTIALLY_SUPPORTED",
+      "task": "alignment"
+    },
+    {
+      "correct": true,
+      "gold": "CONFLICTING",
+      "id": "alignment-003",
+      "predicted": "CONFLICTING",
+      "task": "alignment"
+    },
+    {
+      "correct": true,
+      "gold": "INSUFFICIENT",
+      "id": "alignment-004",
+      "predicted": "INSUFFICIENT",
+      "task": "alignment"
+    },
+    {
+      "correct": true,
+      "gold": "CAUSALITY_SHIFT",
+      "id": "distortion-001",
+      "predicted": [
+        "CAUSALITY_SHIFT"
+      ],
+      "task": "distortion"
+    },
+    {
+      "correct": true,
+      "gold": "CERTAINTY_SHIFT",
+      "id": "distortion-002",
+      "predicted": [
+        "CERTAINTY_SHIFT"
+      ],
+      "task": "distortion"
+    },
+    {
+      "correct": true,
+      "gold": "NUMERIC_DISTORTION",
+      "id": "distortion-003",
+      "predicted": [
+        "NUMERIC_DISTORTION"
+      ],
+      "task": "distortion"
+    },
+    {
+      "correct": true,
+      "gold": "SCOPE_SHIFT",
+      "id": "distortion-004",
+      "predicted": [
+        "SCOPE_SHIFT"
+      ],
+      "task": "distortion"
+    },
+    {
+      "correct": true,
+      "gold": "NONE",
+      "id": "distortion-005",
+      "predicted": [
+        "NONE"
+      ],
+      "task": "distortion"
+    }
+  ],
+  "dataset_sha256": "d8cb5633f58fe4554685bfeba31fe28a9921849ebd9fd29c831542bf16f4e99b",
+  "dataset_version": "SOURCEBENCH-TR-v0-development",
+  "development_only": true,
+  "generated_at": "2026-08-24T14:39:41.478394+00:00",
+  "git_commit": "930396f9bc7398759bfabb0cce788be881026118",
+  "parameters": {
+    "alignment": "lexical_structured_v0",
+    "distortion": "structured_rules_v0",
+    "statement": "deterministic_rules_v0"
+  },
+  "tasks": {
+    "alignment": {
+      "accuracy": 0.75,
+      "correct": 3,
+      "total": 4
+    },
+    "distortion": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "total": 5
+    },
+    "statement_type": {
+      "accuracy": 1.0,
+      "correct": 6,
+      "total": 6
+    }
+  },
+  "total_examples": 15
+}
