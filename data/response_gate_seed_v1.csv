@@ -62,7 +62,7 @@ none_course_2,Bu hafta SQL dersinin normalizasyon bölümünü bitirdim.,control
 none_hardware_1,Yeni sensör kartı bugün geldi. Hafta sonu robota takacağım.,controlled_seed,none_hardware,NONE,,NONE,draft seed; team review pending
 none_hardware_2,Motor sürücü kartını değiştirdik ve kablolamayı yeniden yaptık.,controlled_seed,none_hardware,NONE,,NONE,draft seed; team review pending
 none_travel_1,İstanbul'a sabah erken vardım. Şehir bugün oldukça sakin.,controlled_seed,none_travel,NONE,,NONE,draft seed; team review pending
-none_travel_2,Hafta sonu Kapadokya'daydık, hava beklediğimden daha serindi.,controlled_seed,none_travel,NONE,,NONE,draft seed; team review pending
+none_travel_2,"Hafta sonu Kapadokya'daydık, hava beklediğimden daha serindi.",controlled_seed,none_travel,NONE,,NONE,draft seed; team review pending
 none_article_1,Türkçe NLP üzerine okuduğum güzel bir makaleyi kaydettim.,controlled_seed,none_article,NONE,,NONE,draft seed; team review pending
 none_article_2,Bugün recommender systems hakkında uzun bir yazı okudum.,controlled_seed,none_article,NONE,,NONE,draft seed; team review pending
 none_tutorial_1,FastAPI ile basit bir endpoint oluşturma notlarımı paylaştım.,controlled_seed,none_tutorial,NONE,,NONE,draft seed; team review pending
@@ -74,7 +74,7 @@ none_book_2,Dün gece başladığım kitabın ilk yüz sayfasını okudum.,contr
 none_exam_1,Bugünkü deneme sınavı beklediğimden daha uzun sürdü.,controlled_seed,none_exam,NONE,,NONE,draft seed; team review pending
 none_exam_2,Matematik sınavı bugün öğleden sonra yapılacak.,controlled_seed,none_exam,NONE,,NONE,draft seed; team review pending
 none_weather_1,Bugün şehirde hava bir anda soğudu.,controlled_seed,none_weather,NONE,,NONE,draft seed; team review pending
-none_weather_2,Sabah yağmur vardı, öğleden sonra güneş açtı.,controlled_seed,none_weather,NONE,,NONE,draft seed; team review pending
+none_weather_2,"Sabah yağmur vardı, öğleden sonra güneş açtı.",controlled_seed,none_weather,NONE,,NONE,draft seed; team review pending
 none_news_1,Yeni Python sürümü bugün yayınlandı.,controlled_seed,none_news,NONE,,NONE,draft seed; team review pending
 none_news_2,Üniversitenin yeni laboratuvarı bu hafta açıldı.,controlled_seed,none_news,NONE,,NONE,draft seed; team review pending
 none_worklog_1,Bugün veri temizleme scriptini yeniden yazdım ve iki hatayı kapattım.,controlled_seed,none_worklog,NONE,,NONE,draft seed; team review pending

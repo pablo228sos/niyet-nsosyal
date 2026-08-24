@@ -1,0 +1,5 @@
+{"id":"distortion-001","parent_text":"X, Y ile ilişkili bulundu.","child_text":"X, Y'ye neden olur.","label":"CAUSALITY_SHIFT","language":"tr","origin":"team-authored-development-example"}
+{"id":"distortion-002","parent_text":"X, Y'yi artırabilir.","child_text":"X, Y'yi artırır.","label":"CERTAINTY_SHIFT","language":"tr","origin":"team-authored-development-example"}
+{"id":"distortion-003","parent_text":"Katılım yüzde 12 idi.","child_text":"Katılım yüzde 40 idi.","label":"NUMERIC_DISTORTION","language":"tr","origin":"team-authored-development-example"}
+{"id":"distortion-004","parent_text":"Bazı katılımcılar yarar bildirdi.","child_text":"Tüm katılımcılar yarar gördü.","label":"SCOPE_SHIFT","language":"tr","origin":"team-authored-development-example"}
+{"id":"distortion-005","parent_text":"X, Y ile ilişkili olabilir.","child_text":"X, Y ile ilişkili olabilir.","label":"NONE","language":"tr","origin":"team-authored-development-example"}

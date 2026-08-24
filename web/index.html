@@ -27,7 +27,7 @@
   </svg>
 
   <div class="app-shell">
-    <aside class="left-rail" aria-label="Primary navigation">
+    <aside class="left-rail" aria-label="Primary navigation" data-i18n-aria="primaryNav">
       <div class="ns-brand">
         <div class="ns-mark" aria-hidden="true">N</div>
         <div class="ns-brand-copy"><strong>NSosyal</strong><span>concept integration</span></div>
@@ -56,7 +56,7 @@
           <div class="header-actions">
             <span class="pipeline-state" id="pipelineState">checking pipeline</span>
             <span class="demo-badge" data-i18n="concept">Concept prototype</span>
-            <div class="lang-switch" role="group" aria-label="Language">
+            <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
               <button type="button" data-lang="en" aria-pressed="true">EN</button>
               <button type="button" data-lang="tr" aria-pressed="false">TR</button>
             </div>
@@ -74,7 +74,7 @@
           <div>
             <label class="sr-only" id="composerLabel" for="composerText" data-i18n="placeholder">What is happening?</label>
             <textarea id="composerText" data-i18n-placeholder="placeholder" placeholder="What is happening?"></textarea>
-            <div class="demo-prompts" aria-label="Demo prompts">
+            <div class="demo-prompts" aria-label="Demo prompts" data-i18n-aria="demoPrompts">
               <button class="demo-chip" type="button" data-demo="help" data-i18n="demoHelp">Try: ask for help</button>
               <button class="demo-chip" type="button" data-demo="collab" data-i18n="demoCollab">Try: find a collaborator</button>
               <button class="demo-chip" type="button" data-demo="normal" data-i18n="demoNormal">Try: normal post</button>
@@ -108,11 +108,28 @@
 
         <div class="route-result" id="routeResult" aria-live="polite"></div>
 
+        <section class="evidence-card" id="evidenceCard" hidden aria-labelledby="evidenceHeading">
+          <button class="evidence-summary" id="evidenceToggle" type="button" aria-expanded="false" aria-controls="evidenceDetails">
+            <span class="evidence-status-mark" aria-hidden="true">i</span>
+            <span><strong id="evidenceHeading" data-i18n="evidenceTitle">Evidence check</strong><small id="evidenceStatus" data-i18n="evidenceWaiting">Not checked</small></span>
+            <span class="evidence-toggle-label" data-i18n="showEvidence">Show evidence</span>
+          </button>
+          <div class="evidence-details" id="evidenceDetails" hidden>
+            <p class="evidence-explanation" id="evidenceExplanation"></p>
+            <div class="claim-list" id="claimList"></div>
+            <div class="evidence-list" id="evidenceList"></div>
+            <div class="resolution-row">
+              <span id="resolutionStatus"></span>
+              <button class="soft-btn ask-person-btn" id="askPerson" type="button" data-i18n="askPerson">Ask a relevant person</button>
+            </div>
+          </div>
+        </section>
+
         <div class="composer-meta">
-          <div class="composer-tools" aria-label="Post tools">
-            <button class="icon-btn" type="button" aria-label="Media"><svg><use href="#i-image"></use></svg></button>
-            <button class="icon-btn" type="button" aria-label="Poll"><svg><use href="#i-poll"></use></svg></button>
-            <button class="icon-btn" type="button" aria-label="Location"><svg><use href="#i-pin"></use></svg></button>
+          <div class="composer-tools" aria-label="Post tools" data-i18n-aria="postTools">
+            <button class="icon-btn" type="button" aria-label="Media" data-i18n-aria="media"><svg><use href="#i-image"></use></svg></button>
+            <button class="icon-btn" type="button" aria-label="Poll" data-i18n-aria="poll"><svg><use href="#i-poll"></use></svg></button>
+            <button class="icon-btn" type="button" aria-label="Location" data-i18n-aria="location"><svg><use href="#i-pin"></use></svg></button>
           </div>
           <button class="post-btn" id="publishPost" type="button" data-i18n="publish">Post</button>
         </div>
@@ -158,7 +175,7 @@
       </div>
     </main>
 
-    <aside class="right-rail" aria-label="Context sidebar">
+    <aside class="right-rail" aria-label="Context sidebar" data-i18n-aria="contextSidebar">
       <label class="search-box"><svg><use href="#i-search"></use></svg><span class="sr-only" data-i18n="search">Search NSosyal</span><input type="search" data-i18n-placeholder="search" placeholder="Search NSosyal"></label>
 
       <section class="side-panel">
@@ -199,12 +216,12 @@
     </aside>
   </div>
 
-  <nav class="mobile-nav" aria-label="Mobile navigation">
-    <button class="active" type="button" aria-label="Feed"><svg><use href="#i-home"></use></svg></button>
-    <button type="button" aria-label="Explore"><svg><use href="#i-search"></use></svg></button>
-    <button type="button" aria-label="Communities"><svg><use href="#i-users"></use></svg></button>
-    <button type="button" aria-label="Messages"><svg><use href="#i-message"></use></svg></button>
-    <button type="button" aria-label="Profile"><svg><use href="#i-user"></use></svg></button>
+  <nav class="mobile-nav" aria-label="Mobile navigation" data-i18n-aria="mobileNav">
+    <button class="active" type="button" aria-label="Feed" data-i18n-aria="feed"><svg><use href="#i-home"></use></svg></button>
+    <button type="button" aria-label="Explore" data-i18n-aria="explore"><svg><use href="#i-search"></use></svg></button>
+    <button type="button" aria-label="Communities" data-i18n-aria="communities"><svg><use href="#i-users"></use></svg></button>
+    <button type="button" aria-label="Messages" data-i18n-aria="messages"><svg><use href="#i-message"></use></svg></button>
+    <button type="button" aria-label="Profile" data-i18n-aria="profile"><svg><use href="#i-user"></use></svg></button>
   </nav>
 
   <div class="explain-sheet" id="explainSheet" role="dialog" aria-modal="true" aria-labelledby="sheetHeading">

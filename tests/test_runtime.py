@@ -1,3 +1,5 @@
+import pytest
+
 from niyet.runtime import NiyetRuntime
 from niyet.types import IntentType
 
@@ -89,3 +91,13 @@ def test_batch_routing_respects_shared_capacity():
 
     assigned = [item.responder_id for item in decisions if item.responder_id]
     assert len(assigned) == len(set(assigned))
+
+
+def test_batch_routing_rejects_duplicate_request_ids():
+    with pytest.raises(ValueError, match="duplicate_request_id"):
+        runtime.route_many(
+            [
+                {"id": "same", "text": "Python API konusunda yardım?", "intent_override": IntentType.ASK},
+                {"id": "same", "text": "FastAPI konusunda yardım?", "intent_override": IntentType.ASK},
+            ]
+        )

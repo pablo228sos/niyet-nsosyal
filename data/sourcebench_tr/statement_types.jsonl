@@ -1,0 +1,6 @@
+{"id":"statement-001","text":"Bu filmin berbat olduğunu düşünüyorum.","label":"OPINION","language":"tr","origin":"team-authored-development-example"}
+{"id":"statement-002","text":"Rapor, katılımcıların yüzde 12'sinin ürünü kullandığını bildiriyor.","label":"FACTUAL_CLAIM","language":"tr","origin":"team-authored-development-example"}
+{"id":"statement-003","text":"Dün aşıdan sonra kolum ağrıdı.","label":"PERSONAL_EXPERIENCE","language":"tr","origin":"team-authored-development-example"}
+{"id":"statement-004","text":"Gelecek yıl satışların artacağını tahmin ediyorum.","label":"PREDICTION","language":"tr","origin":"team-authored-development-example"}
+{"id":"statement-005","text":"Bu yöntem hangi koşullarda çalışır?","label":"QUESTION","language":"tr","origin":"team-authored-development-example"}
+{"id":"statement-006","text":"Bence çalışma önemli ve örneklem 120 kişiden oluşuyor.","label":"MIXED","language":"tr","origin":"team-authored-development-example"}

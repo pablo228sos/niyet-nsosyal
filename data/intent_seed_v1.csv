@@ -84,7 +84,7 @@ discuss_remote_2,Küçük ekiplerde remote çalışmanın artıları sizce eksil
 discuss_university_1,Üniversite seçiminde sıralama mı yoksa bölümün kültürü mü daha önemli sizce?,controlled_seed,discuss_university,DISCUSS,,DISCUSS,draft seed; team review pending
 discuss_university_2,İki üniversite arasında kalınca ranking'e ne kadar ağırlık vermek gerekir?,controlled_seed,discuss_university,DISCUSS,,DISCUSS,draft seed; team review pending
 discuss_hardware_1,"Projelerde hazır modül kullanmak öğrenmeyi azaltır mı, yoksa zamanı doğru kullanmak mı olur?",controlled_seed,discuss_hardware,DISCUSS,,DISCUSS,draft seed; team review pending
-discuss_hardware_2,Bir öğrenci projesinde her şeyi sıfırdan yapmak mı daha değerli, hazır modül kullanmak mı?,controlled_seed,discuss_hardware,DISCUSS,,DISCUSS,draft seed; team review pending
+discuss_hardware_2,"Bir öğrenci projesinde her şeyi sıfırdan yapmak mı daha değerli, hazır modül kullanmak mı?",controlled_seed,discuss_hardware,DISCUSS,,DISCUSS,draft seed; team review pending
 discuss_ai_art_1,AI ile üretilen görseller tasarım yarışmalarında ayrı kategoride mi değerlendirilmeli?,controlled_seed,discuss_ai_art,DISCUSS,,DISCUSS,draft seed; team review pending
 discuss_ai_art_2,Sizce AI görselleri insan tasarımıyla aynı kategoride yarışmalı mı?,controlled_seed,discuss_ai_art,DISCUSS,,DISCUSS,draft seed; team review pending
 discuss_algorithms_1,Sosyal medya algoritmaları kronolojik akıştan gerçekten daha iyi bir deneyim sunuyor mu?,controlled_seed,discuss_algorithms,DISCUSS,,DISCUSS,draft seed; team review pending

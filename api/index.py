@@ -15,6 +15,29 @@ from niyet.types import IntentType  # noqa: E402
 
 
 runtime = NiyetRuntime(os.path.join(ROOT, "data"))
+MAX_REQUEST_BYTES = 32 * 1024
+MAX_TEXT_LENGTH = 1200
+_DRSK = None
+
+
+def _drsk_orchestrator():
+    # Build once: constructing NiyetRuntime fits two classifiers and must not
+    # become request-amplified CPU work. The lazy boundary also keeps legacy
+    # NIYET import behavior stable.
+    global _DRSK
+    from drsk.orchestrator import DrskOrchestrator
+
+    if _DRSK is None:
+        _DRSK = DrskOrchestrator(niyet_runtime=runtime)
+    return _DRSK
+
+
+def _valid_responder_state(value: object) -> bool:
+    return value is None or isinstance(value, dict)
+
+
+def _valid_string_list(value: object) -> bool:
+    return isinstance(value, list) and all(isinstance(item, str) for item in value)
 
 
 def serialize_decision(result: RouteDecision, intent_source: str) -> dict:
@@ -54,6 +77,9 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -74,17 +100,101 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         try:
-            length = int(self.headers.get("Content-Length", "0"))
-            payload = json.loads(self.rfile.read(length) or b"{}")
+            raw_length = self.headers.get("Content-Length", "0")
+            length = int(raw_length)
         except (ValueError, json.JSONDecodeError):
             self._json(400, {"error": "invalid_json"})
             return
 
+        if length < 0:
+            self._json(400, {"error": "invalid_content_length"})
+            return
+        if length > MAX_REQUEST_BYTES:
+            self._json(413, {"error": "request_body_too_large"})
+            return
+
+        try:
+            payload = json.loads(self.rfile.read(length) or b"{}")
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            self._json(400, {"error": "invalid_json"})
+            return
+        if not isinstance(payload, dict):
+            self._json(400, {"error": "json_object_required"})
+            return
+
         responder_state = payload.get("responder_state")
-        action = str(payload.get("action", "")).strip().lower()
+        if not _valid_responder_state(responder_state):
+            self._json(400, {"error": "invalid_responder_state"})
+            return
+
+        raw_action = payload.get("action", "")
+        if not isinstance(raw_action, str):
+            self._json(400, {"error": "invalid_action"})
+            return
+        action = raw_action.strip().lower()
+
+        if action in {"analyze", "resolve"}:
+            raw_text = payload.get("text")
+            if not isinstance(raw_text, str) or not raw_text.strip():
+                self._json(400, {"error": "text_required"})
+                return
+            text = raw_text.strip()
+            if len(text) > MAX_TEXT_LENGTH:
+                self._json(400, {"error": "text_too_long"})
+                return
+
+            ask_human = payload.get("ask_human", action == "resolve")
+            include_niyet = payload.get("include_niyet", False)
+            if not isinstance(ask_human, bool) or not isinstance(include_niyet, bool):
+                self._json(400, {"error": "invalid_boolean_option"})
+                return
+
+            try:
+                response = _drsk_orchestrator().analyze(
+                    text,
+                    ask_human=ask_human,
+                    responder_state=responder_state,
+                )
+            except Exception as exc:
+                self._json(
+                    500,
+                    {"error": "drsk_analysis_failed", "detail": type(exc).__name__},
+                )
+                return
+            if not isinstance(response, dict):
+                self._json(500, {"error": "invalid_drsk_response"})
+                return
+
+            bundle = response.get("evidence_bundle")
+            bundle_analysis = bundle.get("analysis", {}) if isinstance(bundle, dict) else {}
+            result = {
+                "status": "ok",
+                "post_analysis": response.get("post_analysis") or bundle_analysis,
+                "claims": response.get("claims") or bundle_analysis.get("claims", []),
+                "evidence_bundle": bundle,
+                "resolution": response.get("resolution"),
+            }
+            if response.get("human_routing") is not None:
+                result["niyet"] = response["human_routing"]
+            if include_niyet:
+                try:
+                    niyet_result = runtime.route(text, responder_state=responder_state)
+                    result["niyet"] = serialize_decision(niyet_result, "model")
+                    result["responder_state"] = runtime.normalize_responder_state(
+                        responder_state
+                    )
+                except Exception as exc:
+                    self._json(
+                        500,
+                        {"error": "routing_failed", "detail": type(exc).__name__},
+                    )
+                    return
+            self._json(200, result)
+            return
 
         if action:
-            responder_id = str(payload.get("responder_id", "")).strip()
+            raw_responder_id = payload.get("responder_id", "")
+            responder_id = raw_responder_id.strip() if isinstance(raw_responder_id, str) else ""
             if action not in {"accept", "pause", "resume"}:
                 self._json(400, {"error": "invalid_action"})
                 return
@@ -111,6 +221,10 @@ class handler(BaseHTTPRequestHandler):
             )
             return
 
+        if "requests" in payload and not isinstance(payload["requests"], list):
+            self._json(400, {"error": "invalid_requests"})
+            return
+
         if isinstance(payload.get("requests"), list):
             raw_requests = payload["requests"]
             if not raw_requests or len(raw_requests) > 20:
@@ -119,26 +233,39 @@ class handler(BaseHTTPRequestHandler):
 
             requests = []
             intent_sources: dict[str, str] = {}
+            request_ids: set[str] = set()
             try:
                 for index, item in enumerate(raw_requests):
                     if not isinstance(item, dict):
                         raise ValueError("invalid_batch_request")
-                    text = str(item.get("text", "")).strip()
-                    if not text or len(text) > 1200:
+                    raw_text = item.get("text")
+                    if not isinstance(raw_text, str):
                         raise ValueError("invalid_batch_text")
-                    request_id = str(item.get("id") or f"batch-{index + 1}")
+                    text = raw_text.strip()
+                    if not text or len(text) > MAX_TEXT_LENGTH:
+                        raise ValueError("invalid_batch_text")
+                    raw_request_id = item.get("id")
+                    if raw_request_id is not None and not isinstance(raw_request_id, str):
+                        raise ValueError("invalid_batch_request_id")
+                    request_id = raw_request_id or f"batch-{index + 1}"
+                    if request_id in request_ids:
+                        raise ValueError("duplicate_batch_request_id")
+                    request_ids.add(request_id)
                     override_raw = item.get("intent_override")
                     override = None
                     if override_raw:
+                        if not isinstance(override_raw, str):
+                            raise ValueError("invalid_intent_override")
                         override = IntentType(str(override_raw).strip().lower())
+                    excluded_ids = item.get("exclude_responder_ids", [])
+                    if not _valid_string_list(excluded_ids):
+                        raise ValueError("invalid_exclude_responder_ids")
                     requests.append(
                         {
                             "id": request_id,
                             "text": text,
                             "intent_override": override,
-                            "exclude_responder_ids": item.get(
-                                "exclude_responder_ids", []
-                            ),
+                            "exclude_responder_ids": excluded_ids,
                         }
                     )
                     intent_sources[request_id] = (
@@ -181,21 +308,27 @@ class handler(BaseHTTPRequestHandler):
             )
             return
 
-        text = str(payload.get("text", "")).strip()
+        raw_text = payload.get("text")
+        text = raw_text.strip() if isinstance(raw_text, str) else ""
         override_raw = payload.get("intent_override")
-        excluded = tuple(
-            str(value) for value in payload.get("exclude_responder_ids", [])
-        )
+        raw_excluded = payload.get("exclude_responder_ids", [])
+        if not _valid_string_list(raw_excluded):
+            self._json(400, {"error": "invalid_exclude_responder_ids"})
+            return
+        excluded = tuple(raw_excluded)
 
         if not text:
             self._json(400, {"error": "text_required"})
             return
-        if len(text) > 1200:
+        if len(text) > MAX_TEXT_LENGTH:
             self._json(400, {"error": "text_too_long"})
             return
 
         intent_override = None
         if override_raw:
+            if not isinstance(override_raw, str):
+                self._json(400, {"error": "invalid_intent_override"})
+                return
             try:
                 intent_override = IntentType(str(override_raw).strip().lower())
             except ValueError:

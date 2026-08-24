@@ -20,7 +20,7 @@ from niyet.types import CandidateMatch, IntentType, Responder  # noqa: E402
 
 
 with open(
-    os.path.join(ROOT, "data", "matching_benchmark_v1_draft.json"),
+    os.path.join(ROOT, "data", "matching_benchmark_v1_reviewed.json"),
     encoding="utf-8",
 ) as handle:
     BENCHMARK = json.load(handle)

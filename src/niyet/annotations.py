@@ -5,7 +5,14 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-ALLOWED_LABELS = {"ASK", "FEEDBACK", "COLLABORATE", "DISCUSS"}
+ALLOWED_LABELS = {
+    "ASK",
+    "FEEDBACK",
+    "COLLABORATE",
+    "DISCUSS",
+    "RESPONSE",
+    "NONE",
+}
 ALLOWED_SOURCE_TYPES = {"public", "team_written", "controlled_seed"}
 REQUIRED_COLUMNS = (
     "example_id",
@@ -39,6 +46,9 @@ def validate_annotation_file(path: str | Path) -> list[AnnotationProblem]:
             return [AnnotationProblem(1, "unexpected CSV columns")]
 
         for row_number, row in enumerate(reader, start=2):
+            if None in row:
+                problems.append(AnnotationProblem(row_number, "malformed CSV row"))
+                continue
             example_id = row["example_id"].strip()
             text = row["text"].strip()
             source_type = row["source_type"].strip()

@@ -1,20 +1,29 @@
-# DRSK / NIYET
+# DRSK — Hybrid Social Intelligence Layer
 
-DRSK is our NSosyal project. NIYET is its interaction-allocation engine for posts that need a useful human response.
+DRSK combines evidence intelligence and human interaction intelligence in one social-feed flow:
 
-Most social feeds solve a content-ranking problem: which post should receive a user's attention? NIYET looks at the reverse problem: when several posts need a response, how should limited willing human attention be distributed across them?
+```text
+DRSK
+├── SOURCECHAIN — claim, passage, provenance, relation and distortion
+├── NIYET       — willing-human retrieval and capacity-aware allocation
+└── Resolution  — EVIDENCE | HUMAN | BOTH | NONE | DEFERRED
+```
+
+**When evidence is enough, show the evidence. When it is not, find the right human.**
+
+SOURCECHAIN never emits an absolute truth score. It preserves individual sources and conflicting passages. NIYET remains the tested interaction-allocation engine for posts that need a useful human response; it is reused through a structured escalation adapter rather than rewritten.
 
 ## Product flow
 
-1. detect whether a post needs a human response
-2. suggest ASK, FEEDBACK, COLLABORATE or DISCUSS
-3. let the author confirm or correct the intent
-4. retrieve a bounded responder candidate set
-5. apply intent willingness, active state and topic-quality filters
-6. allocate open requests under shared responder capacity
-7. let responders accept, skip or pause routing
+1. classify the statement and extract bounded, span-linked claims
+2. rank passages from the controlled evidence provider
+3. preserve URL, exact passage, location, hash and independent-origin metadata
+4. align each claim with `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` or `INSUFFICIENT`
+5. detect numeric, causality, certainty and attribution shifts
+6. resolve to evidence, human help, both, none or deferred work
+7. when needed, pass structured evidence context into NIYET retrieval, willingness, capacity and global allocation
 
-Normal posts stay outside NIYET. A user can also activate NIYET manually if the response-needed gate misses a request.
+Opinions stay outside factual verification. Missing evidence is reported as insufficient, not false. Arbitrary live URL fetching is intentionally disabled in the MVP.
 
 ## Live prototype
 
@@ -24,6 +33,9 @@ Allocation lab: https://niyet-nsosyal.vercel.app/lab
 
 The web prototype calls the Python pipeline in `api/`. The current deployed path stays lightweight and reproducible:
 
+- deterministic SOURCECHAIN statement/claim rules and controlled real-source corpus
+- lexical passage ranking plus structured alignment and distortion checks
+- immutable citation-first EvidenceBundles and an explicit DRSK resolution policy
 - word and character TF-IDF with Logistic Regression for response-needed detection
 - word and character TF-IDF with Logistic Regression for four-way intent classification
 - weighted character TF-IDF for deployed responder retrieval
@@ -65,20 +77,24 @@ The main prototype keeps multiple unresolved requests in a short matching window
 - `responder_profiles_v1.json`: synthetic responder profiles for the prototype
 - `matching_benchmark_v1_draft.json`: original 32-query matching draft
 - `matching_benchmark_v1_reviewed.json`: frozen human-reviewed benchmark
+- `sourcebench_tr/`: small SOURCEBENCH-TR v0 statement/alignment/distortion development set
 - annotation and review templates
 
 Two team members independently reviewed all 256 query-responder relevance pairs. Exact agreement was 243/256 (94.92%) and quadratic weighted Cohen's kappa was 0.9756. The third team member adjudicated all 13 disagreements. The resulting `v1-reviewed` benchmark is now frozen. No participant names are stored.
 
 ## Current checks
 
-Response-needed model on the controlled grouped development split:
+Response-needed model on the repaired 96-row controlled set, four-fold grouped CV in the pinned environment:
 
-- Accuracy: 0.917
-- Macro F1: 0.916
+- Accuracy: 0.917 +/- 0.030
+- Macro F1: 0.915 +/- 0.030
 
-Four-way intent baseline on the current grouped controlled data:
+Four-way intent baseline on the repaired 96-row controlled set, four-fold grouped CV in the pinned environment:
 
-- Macro F1: about 0.872
+- Accuracy: 0.885 +/- 0.062
+- Macro F1: 0.880 +/- 0.061
+
+These replace dependency-drifted local checks; the exact NumPy, SciPy and scikit-learn versions used by CI are recorded in `constraints.txt`. The values remain controlled-development evidence, not population estimates.
 
 Retrieval on the frozen 32-query x 8-responder human-reviewed benchmark:
 
@@ -114,6 +130,8 @@ Main metrics:
 ## Repository structure
 
 - `src/niyet/`: classifiers, retrieval, scoring, allocation, metrics and runtime
+- `src/sourcechain/`: statement/claim analysis, controlled retrieval, alignment, distortion, lineage and EvidenceBundle assembly
+- `src/drsk/`: resolution policy, NIYET adapter and end-to-end orchestrator
 - `api/`: deployed routing and experiment endpoints
 - `data/`: development datasets, responder profiles and benchmark fixtures
 - `experiments/`: reproducible evaluation and scaling checks
@@ -127,12 +145,14 @@ Main metrics:
 Python 3.11 or newer is required.
 
 ```bash
-python -m pip install -e . pytest
+python -m pip install -c constraints.txt -e . pytest
 pytest -q
 python scripts/train_intent_baseline.py --cv
 python scripts/train_intent_baseline.py data/response_gate_seed_v1.csv --cv
 python experiments/evaluate_matching_draft.py
 python experiments/benchmark_scaling.py
+python scripts/validate_sourcebench.py data/sourcebench_tr
+python scripts/serve_local.py
 ```
 
 Semantic retrieval comparison requires the optional embedding dependencies and is intentionally kept outside the lightweight deployed runtime.
@@ -140,6 +160,9 @@ Semantic retrieval comparison requires the optional embedding dependencies and i
 ## Current limitations
 
 - classification data are controlled development data
+- SOURCEBENCH-TR v0 is a tiny team-authored regression set, not a definitive benchmark
+- the default SOURCECHAIN corpus contains only a bounded verified demo source, not general web coverage
+- arbitrary URL fetching and production evidence persistence are not implemented
 - responder profiles are synthetic prototype profiles
 - browser-session capacity is not a production persistence layer
 - the semantic model is evaluated offline but is not yet the deployed Vercel retriever
