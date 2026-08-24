@@ -66,3 +66,12 @@ def test_one_shared_entity_does_not_create_false_structured_conflict():
         "Coffee causes severe climate damage.",
         "Coffee may improve short term attention.",
     ) is EvidenceRelation.INSUFFICIENT
+
+
+def test_turkish_certainty_and_scope_shifts_are_detected():
+    assert DistortionType.CERTAINTY_SHIFT in detect_distortions(
+        "X, Y'yi artırır.", "X, Y'yi artırabilir."
+    )
+    assert DistortionType.SCOPE_SHIFT in detect_distortions(
+        "Tüm katılımcılar yarar gördü.", "Bazı katılımcılar yarar bildirdi."
+    )

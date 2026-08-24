@@ -13,7 +13,9 @@ _DECREASE = ("azaldı", "düştü", "decreased", "fell", "declined")
 _CAUSAL = ("neden", "sebep", "yol aç", "caus", "leads to", "results in")
 _ASSOCIATION = ("ilişki", "bağlantı", "korelasyon", "associated", "correlat", "linked")
 _CERTAIN = ("kesin", "kanıtladı", "ispatladı", "proves", "definitely", "always")
-_UNCERTAIN = ("olabil", "muhtemel", "öneriyor", "suggests", "may", "might", "could", "possibly")
+_UNCERTAIN = ("olabil", "abilir", "ebilir", "muhtemel", "öneriyor", "suggests", "may", "might", "could", "possibly")
+_UNIVERSAL_SCOPE = ("tüm", "bütün", "her biri", "all", "every")
+_LIMITED_SCOPE = ("bazı", "kimi", "bir kısm", "some", "several")
 _NEGATION_RE = re.compile(
     r"\b(?:no|not|never|neither|nor|değil|degil|yok|artırmaz|arttirmaz|azaltmaz)\b",
     re.I,
@@ -22,7 +24,7 @@ _NEGATION_RE = re.compile(
 
 def _contains_any(text: str, needles: tuple[str, ...]) -> bool:
     value = normalize(text)
-    return any(needle in value for needle in needles)
+    return any(normalize(needle) in value for needle in needles)
 
 
 def numeric_values(text: str) -> tuple[str, ...]:
@@ -54,6 +56,8 @@ def detect_distortions(claim: str, evidence: str) -> tuple[DistortionType, ...]:
         and not _contains_any(evidence, _CERTAIN)
     ):
         found.append(DistortionType.CERTAINTY_SHIFT)
+    if _contains_any(claim, _UNIVERSAL_SCOPE) and _contains_any(evidence, _LIMITED_SCOPE):
+        found.append(DistortionType.SCOPE_SHIFT)
     if (_contains_any(claim, _INCREASE) and _contains_any(evidence, _DECREASE)) or (_contains_any(claim, _DECREASE) and _contains_any(evidence, _INCREASE)):
         if DistortionType.NUMERIC_DISTORTION not in found:
             found.append(DistortionType.NUMERIC_DISTORTION)

@@ -99,6 +99,8 @@ def test_default_pipeline_has_no_implicit_or_fake_evidence_source():
 def test_hostile_language_gate_and_code_switching_cases():
     assert not analyze_post("I think coffee tastes terrible.").check_worthy
     assert not analyze_post("Bence kahve tadı korkunç.").check_worthy
+    assert analyze_post("Bu filmin berbat olduğunu düşünüyorum.").statement_type is StatementType.OPINION
+    assert analyze_post("Dün aşıdan sonra kolum ağrıdı.").statement_type is StatementType.PERSONAL_EXPERIENCE
     assert analyze_post("Araştırma, model accuracy oranını yüzde 12 artırdı.").check_worthy
     assert analyze_post("Study sonucu model doğruluğu yüzde 12 increased.").check_worthy
 
