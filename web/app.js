@@ -21,6 +21,8 @@ const copy = {
     topicsPrefix: 'topic profile', requestsEnabled: 'requests enabled', slotsAvailable: 'attention slots available', linkCopied: 'Link copied', followingToast: 'Following feed selected',
     viewExploreTitle: 'Explore', viewExploreText: 'Discover conversations by topic instead of follower count.', viewCommunitiesTitle: 'Communities', viewCommunitiesText: 'Small spaces for shared interests and recurring collaboration.', viewMessagesTitle: 'Messages', viewMessagesText: 'Direct conversations remain separate from NIYET routing.', viewProfileTitle: 'Profile', viewProfileText: 'Your public profile and interaction preferences.',
     demoLabel: 'demo', people: 'members', recent: 'recent', noMessages: 'No unread messages', profileBio: 'Building robotics and social AI prototypes.',
+    evidenceTitle: 'Evidence check', evidenceWaiting: 'Not checked', showEvidence: 'Show evidence', hideEvidence: 'Hide evidence', evidenceUnavailable: 'Evidence check unavailable', evidenceNotRequired: 'No factual claim needs checking', askPerson: 'Ask a relevant person', askingPerson: 'Requesting human review', claimsLabel: 'Claims', sourceLabel: 'Open source', passageLabel: 'Relevant passage', distortionLabel: 'Distortion', resolutionLabel: 'Resolution', noEvidence: 'No supporting source was found in the controlled corpus',
+    primaryNav: 'Primary navigation', languageLabel: 'Language', demoPrompts: 'Demo prompts', postTools: 'Post tools', media: 'Media', poll: 'Poll', location: 'Location', contextSidebar: 'Context sidebar', mobileNav: 'Mobile navigation', reply: 'Reply', repost: 'Repost', like: 'Like', share: 'Share',
     now: 'now'
   },
   tr: {
@@ -42,6 +44,8 @@ const copy = {
     topicsPrefix: 'konu profili', requestsEnabled: 'istekleri açık', slotsAvailable: 'dikkat kapasitesi uygun', linkCopied: 'Bağlantı kopyalandı', followingToast: 'Takip akışı seçildi',
     viewExploreTitle: 'Keşfet', viewExploreText: 'Takipçi sayısından bağımsız olarak konuya göre konuşmaları keşfet.', viewCommunitiesTitle: 'Topluluklar', viewCommunitiesText: 'Ortak ilgi alanları ve tekrar eden iş birlikleri için küçük alanlar.', viewMessagesTitle: 'Mesajlar', viewMessagesText: 'Doğrudan konuşmalar NIYET yönlendirmesinden ayrı kalır.', viewProfileTitle: 'Profil', viewProfileText: 'Herkese açık profilin ve etkileşim tercihlerin.',
     demoLabel: 'demo', people: 'üye', recent: 'yakın zamanda', noMessages: 'Okunmamış mesaj yok', profileBio: 'Robotik ve sosyal yapay zeka prototipleri geliştiriyorum.',
+    evidenceTitle: 'Kanıt kontrolü', evidenceWaiting: 'Kontrol edilmedi', showEvidence: 'Kanıtı göster', hideEvidence: 'Kanıtı gizle', evidenceUnavailable: 'Kanıt kontrolü kullanılamıyor', evidenceNotRequired: 'Kontrol gerektiren olgusal iddia yok', askPerson: 'İlgili bir kişiye sor', askingPerson: 'İnsan incelemesi isteniyor', claimsLabel: 'İddialar', sourceLabel: 'Kaynağı aç', passageLabel: 'İlgili bölüm', distortionLabel: 'Bozulma', resolutionLabel: 'Çözüm', noEvidence: 'Kontrollü derlemde destekleyici kaynak bulunamadı',
+    primaryNav: 'Ana gezinme', languageLabel: 'Dil', demoPrompts: 'Demo örnekleri', postTools: 'Gönderi araçları', media: 'Medya', poll: 'Anket', location: 'Konum', contextSidebar: 'Bağlam kenar çubuğu', mobileNav: 'Mobil gezinme', reply: 'Yanıtla', repost: 'Yeniden gönder', like: 'Beğen', share: 'Paylaş',
     now: 'şimdi'
   }
 };
@@ -56,6 +60,7 @@ if (sessionStorage.getItem('drsk-state-version') !== STATE_VERSION) {
 let language = localStorage.getItem('drsk-language') || 'en';
 let selectedIntent = 'ask';
 let latestDecision = null;
+let latestDrsk = null;
 let currentRequestId = null;
 let routingEnabled = false;
 let pipelineLive = false;
@@ -76,7 +81,6 @@ function saveSession() {
   if (responderState) sessionStorage.setItem('drsk-responder-state', JSON.stringify(responderState));
 }
 function makeRequestId() { return `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`; }
-function escapeHtml(value) { const node = document.createElement('span'); node.textContent = value; return node.innerHTML; }
 function formatDevelopmentValue(value) { return typeof value === 'number' ? value.toFixed(3) : 'n/a'; }
 function intentLabel(intent = selectedIntent) { return text(String(intent || 'ask').toLowerCase()); }
 
@@ -95,6 +99,7 @@ function applyLanguage(nextLanguage) {
   document.documentElement.lang = language;
   $$('[data-i18n]').forEach((node) => { node.textContent = text(node.dataset.i18n); });
   $$('[data-i18n-placeholder]').forEach((node) => { node.placeholder = text(node.dataset.i18nPlaceholder); });
+  $$('[data-i18n-aria]').forEach((node) => { node.setAttribute('aria-label', text(node.dataset.i18nAria)); });
   $('.lang-switch')?.classList.toggle('tr', language === 'tr');
   $$('.lang-switch button').forEach((button) => {
     const active = button.dataset.lang === language;
@@ -106,6 +111,7 @@ function applyLanguage(nextLanguage) {
   updateBudget();
   renderSecondaryView();
   if (routeResultMode) renderRouteResult(routeResultMode, latestDecision);
+  if (latestDrsk) renderEvidence(latestDrsk);
   if (latestDecision?.response_needed && routingEnabled) renderMatchPreview(latestDecision);
   else if (!latestDecision) resetPreview();
 }
@@ -179,6 +185,104 @@ async function callPipeline(value, intentOverride = null, excluded = []) {
   return payload;
 }
 
+async function callDrsk(value, askHuman = false) {
+  const response = await fetch('/api', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: askHuman ? 'resolve' : 'analyze', text: value, ask_human: askHuman })
+  });
+  if (!response.ok) throw new Error('DRSK request failed');
+  return response.json();
+}
+
+function safeHttpUrl(value) {
+  try {
+    const parsed = new URL(String(value));
+    return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : null;
+  } catch (_) { return null; }
+}
+
+function appendTextElement(parent, tag, className, value) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  node.textContent = String(value ?? '');
+  parent.appendChild(node);
+  return node;
+}
+
+function displayCode(value) {
+  return String(value || '').replaceAll('_', ' ').toLocaleLowerCase(language === 'tr' ? 'tr-TR' : 'en-US');
+}
+
+function renderEvidence(payload) {
+  latestDrsk = payload;
+  const card = $('#evidenceCard');
+  const bundle = payload?.evidence_bundle || {};
+  const analysis = payload?.post_analysis || bundle.analysis || {};
+  const claims = Array.isArray(payload?.claims) ? payload.claims : (Array.isArray(analysis.claims) ? analysis.claims : []);
+  const evidence = Array.isArray(bundle.evidence) ? bundle.evidence : [];
+  const status = bundle.status || (analysis.check_worthy === false ? 'NOT_REQUIRED' : 'INSUFFICIENT');
+
+  card.hidden = false;
+  card.dataset.status = String(status).toLowerCase();
+  $('#evidenceStatus').textContent = status === 'NOT_REQUIRED' ? text('evidenceNotRequired') : `${text('evidenceTitle')}: ${displayCode(status)}`;
+  $('#evidenceExplanation').textContent = bundle.explanation || (evidence.length ? '' : text('noEvidence'));
+
+  const claimList = $('#claimList');
+  claimList.replaceChildren();
+  if (claims.length) appendTextElement(claimList, 'strong', 'evidence-section-title', text('claimsLabel'));
+  claims.forEach((claim) => appendTextElement(claimList, 'p', 'claim-text', claim.text || claim.claim_text || claim));
+
+  const evidenceList = $('#evidenceList');
+  evidenceList.replaceChildren();
+  evidence.forEach((item) => {
+    const article = document.createElement('article');
+    article.className = 'evidence-item';
+    const head = document.createElement('div');
+    head.className = 'evidence-item-head';
+    appendTextElement(head, 'strong', '', item.title || item.publisher || text('sourceLabel'));
+    appendTextElement(head, 'span', 'evidence-relation', displayCode(item.relation));
+    article.appendChild(head);
+    if (item.publisher) appendTextElement(article, 'small', 'evidence-publisher', item.publisher);
+    appendTextElement(article, 'span', 'evidence-passage-label', text('passageLabel'));
+    appendTextElement(article, 'blockquote', 'evidence-passage', item.passage || '');
+    const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
+    if (distortions.length) {
+      const labels = document.createElement('div');
+      labels.className = 'distortion-list';
+      appendTextElement(labels, 'span', 'distortion-prefix', `${text('distortionLabel')}:`);
+      distortions.forEach((value) => appendTextElement(labels, 'span', 'distortion-chip', displayCode(value)));
+      article.appendChild(labels);
+    }
+    const href = safeHttpUrl(item.source_url || item.canonical_url);
+    if (href) {
+      const link = appendTextElement(article, 'a', 'evidence-source-link', text('sourceLabel'));
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
+    evidenceList.appendChild(article);
+  });
+
+  const resolution = payload?.resolution || {};
+  const routedPerson = payload?.niyet?.responder_name;
+  $('#resolutionStatus').textContent = resolution.path
+    ? `${text('resolutionLabel')}: ${displayCode(resolution.path)}${routedPerson ? ` · ${routedPerson}` : ''}`
+    : '';
+  const askButton = $('#askPerson');
+  askButton.hidden = Boolean(resolution.escalation);
+  askButton.disabled = false;
+  askButton.textContent = text('askPerson');
+}
+
+function resetEvidence() {
+  latestDrsk = null;
+  $('#evidenceCard').hidden = true;
+  $('#evidenceDetails').hidden = true;
+  $('#evidenceToggle').setAttribute('aria-expanded', 'false');
+  $('.evidence-toggle-label').textContent = text('showEvidence');
+}
+
 async function callBatch(requests) {
   const response = await fetch('/api', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -216,6 +320,7 @@ async function analyzePost() {
   if (value.length < 12) {
     latestDecision = null;
     hideIntentPanel();
+    resetEvidence();
     $('#routeResult').classList.remove('visible');
     routeResultMode = null;
     return;
@@ -224,7 +329,13 @@ async function analyzePost() {
   button.disabled = true;
   button.textContent = text('analyzing');
   try {
-    latestDecision = await callPipeline(value);
+    const [niyetResult, drskResult] = await Promise.all([
+      callPipeline(value),
+      pipelineLive ? callDrsk(value).catch(() => null) : Promise.resolve(null)
+    ]);
+    latestDecision = niyetResult;
+    if (drskResult) renderEvidence(drskResult);
+    else resetEvidence();
     if (!latestDecision.response_needed) {
       hideIntentPanel();
       renderRouteResult('normal');
@@ -238,6 +349,7 @@ async function analyzePost() {
     pipelineLive = false;
     renderPipelineState();
     latestDecision = await callPipeline(value);
+    resetEvidence();
     if (latestDecision.response_needed) {
       setIntent((latestDecision.intent || 'ASK').toLowerCase());
       $('#intentPanel').classList.add('visible');
@@ -251,23 +363,37 @@ async function analyzePost() {
 function renderRouteResult(mode, decision = latestDecision) {
   const box = $('#routeResult');
   routeResultMode = mode;
+  box.replaceChildren();
+  appendTextElement(box, 'strong', '', mode === 'normal' ? text('normalPost') : (!decision?.match ? text('routeNoMatch') : text('routeFound')));
+  const meta = document.createElement('div');
+  meta.className = 'route-meta';
+  box.appendChild(meta);
+  const addChip = (value, className = 'route-chip') => appendTextElement(meta, className === 'button' ? 'button' : 'span', className === 'button' ? 'route-chip action-chip' : className, value);
   if (mode === 'normal') {
-    box.innerHTML = `<strong>${text('normalPost')}</strong><div class="route-meta"><button class="route-chip action-chip" id="forceNiyet" type="button">${text('useAnyway')}</button></div>`;
+    const force = addChip(text('useAnyway'), 'button');
+    force.id = 'forceNiyet';
+    force.type = 'button';
     box.classList.add('visible');
-    $('#forceNiyet').addEventListener('click', () => {
+    force.addEventListener('click', () => {
       setIntent('ask');
       $('#intentPanel').classList.add('visible');
     });
     return;
   }
   if (!decision?.match) {
-    box.innerHTML = `<strong>${text('routeNoMatch')}</strong><div class="route-meta"><span class="route-chip">${text('confirmedIntent')}: ${intentLabel()}</span><span class="route-chip">${text('modelScopeShort')}</span></div>`;
+    addChip(`${text('confirmedIntent')}: ${intentLabel()}`);
+    addChip(text('modelScopeShort'));
     box.classList.add('visible');
     return;
   }
-  box.innerHTML = `<strong>${text('routeFound')}</strong><div class="route-meta"><span class="route-chip">${escapeHtml(decision.match.name)}</span><span class="route-chip">${text('confirmedIntent')}: ${intentLabel()}</span><span class="route-chip">${openRequests.length} ${openRequests.length === 1 ? text('openRequest') : text('openRequests')}</span><button class="route-chip action-chip mobile-responder-link" type="button">${text('openResponder')}</button></div>`;
+  addChip(decision.match.name);
+  addChip(`${text('confirmedIntent')}: ${intentLabel()}`);
+  addChip(`${openRequests.length} ${openRequests.length === 1 ? text('openRequest') : text('openRequests')}`);
+  const responderLink = addChip(text('openResponder'), 'button');
+  responderLink.type = 'button';
+  responderLink.classList.add('mobile-responder-link');
   box.classList.add('visible');
-  $('.mobile-responder-link', box)?.addEventListener('click', openMobileInbox);
+  responderLink.addEventListener('click', openMobileInbox);
 }
 
 function renderMatchPreview(decision) {
@@ -278,7 +404,7 @@ function renderMatchPreview(decision) {
     $('#matchType').textContent = intentLabel();
     $('#matchStatus').textContent = text('noCandidate');
     $('#matchPostText').textContent = $('#composerText').value.trim();
-    $('#matchReasons').innerHTML = '';
+    $('#matchReasons').replaceChildren();
     $('#explainMatch').disabled = true;
     $('#acceptMatch').disabled = true;
     $('#skipMatch').disabled = false;
@@ -289,7 +415,9 @@ function renderMatchPreview(decision) {
   $('#matchType').textContent = `${intentLabel()} · ${decision.match.name}`;
   $('#matchStatus').textContent = text('eligible');
   $('#matchPostText').textContent = $('#composerText').value.trim();
-  $('#matchReasons').innerHTML = (decision.match.reason || []).map((reason) => `<div class="match-reason-line">${escapeHtml(localizeReason(reason))}</div>`).join('');
+  const matchReasons = $('#matchReasons');
+  matchReasons.replaceChildren();
+  (decision.match.reason || []).forEach((reason) => appendTextElement(matchReasons, 'div', 'match-reason-line', localizeReason(reason)));
   $('#explainMatch').disabled = false;
   $('#acceptMatch').disabled = false;
   $('#skipMatch').disabled = false;
@@ -338,11 +466,48 @@ async function confirmRoute() {
 
 function iconMarkup(id) { return `<svg aria-hidden="true"><use href="#${id}"></use></svg>`; }
 
+function appendPostEvidence(article, payload) {
+  const bundle = payload?.evidence_bundle;
+  if (!bundle) return;
+  const postBody = article.querySelector('.post-grid > div:last-child');
+  const actions = $('.post-actions', article);
+  const checkWorthy = Boolean(payload?.post_analysis?.check_worthy ?? bundle?.analysis?.check_worthy);
+  if (!checkWorthy) {
+    const note = appendTextElement(postBody, 'span', 'post-evidence-note', text('evidenceNotRequired'));
+    postBody.insertBefore(note, actions);
+    return;
+  }
+
+  const disclosure = document.createElement('details');
+  disclosure.className = 'post-evidence-disclosure';
+  const summary = appendTextElement(disclosure, 'summary', 'post-evidence-summary', `${text('evidenceTitle')}: ${displayCode(bundle.status)}`);
+  summary.setAttribute('aria-label', `${text('evidenceTitle')}: ${displayCode(bundle.status)}`);
+  if (bundle.explanation) appendTextElement(disclosure, 'p', 'post-evidence-explanation', bundle.explanation);
+  (Array.isArray(bundle.evidence) ? bundle.evidence : []).forEach((item) => {
+    const row = document.createElement('div');
+    row.className = 'post-evidence-row';
+    appendTextElement(row, 'strong', '', item.title || item.publisher || text('sourceLabel'));
+    appendTextElement(row, 'blockquote', '', item.passage || '');
+    const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
+    if (distortions.length) appendTextElement(row, 'small', '', `${text('distortionLabel')}: ${distortions.map(displayCode).join(', ')}`);
+    const href = safeHttpUrl(item.source_url || item.canonical_url);
+    if (href) {
+      const link = appendTextElement(row, 'a', '', text('sourceLabel'));
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
+    disclosure.appendChild(row);
+  });
+  postBody.insertBefore(disclosure, actions);
+}
+
 function createPost(textValue) {
   const article = document.createElement('article');
   article.className = 'post-card demo-user-post';
-  article.innerHTML = `<div class="post-grid"><div class="avatar" aria-hidden="true">AB</div><div><div class="post-head"><span class="post-name">Demo User</span><span class="post-handle">@demo.user</span><span class="post-time">· ${text('now')}</span></div><p class="post-copy"></p>${routingEnabled ? `<div class="niyet-tag"><span class="niyet-dot"></span><span data-i18n="routed">${text('routed')}</span></div>` : ''}<div class="post-actions"><button class="post-action" data-action="reply" type="button" aria-label="Reply">${iconMarkup('i-reply')}<span>0</span></button><button class="post-action" data-action="repost" type="button" aria-label="Repost">${iconMarkup('i-repeat')}<span>0</span></button><button class="post-action" data-action="like" type="button" aria-label="Like">${iconMarkup('i-heart')}<span>0</span></button><button class="post-action" data-action="share" type="button" aria-label="Share">${iconMarkup('i-share')}</button></div></div></div>`;
+  article.innerHTML = `<div class="post-grid"><div class="avatar" aria-hidden="true">AB</div><div><div class="post-head"><span class="post-name">Demo User</span><span class="post-handle">@demo.user</span><span class="post-time">· ${text('now')}</span></div><p class="post-copy"></p>${routingEnabled ? `<div class="niyet-tag"><span class="niyet-dot"></span><span data-i18n="routed">${text('routed')}</span></div>` : ''}<div class="post-actions"><button class="post-action" data-action="reply" type="button" aria-label="${text('reply')}">${iconMarkup('i-reply')}<span>0</span></button><button class="post-action" data-action="repost" type="button" aria-label="${text('repost')}">${iconMarkup('i-repeat')}<span>0</span></button><button class="post-action" data-action="like" type="button" aria-label="${text('like')}">${iconMarkup('i-heart')}<span>0</span></button><button class="post-action" data-action="share" type="button" aria-label="${text('share')}">${iconMarkup('i-share')}</button></div></div></div>`;
   $('.post-copy', article).textContent = textValue;
+  appendPostEvidence(article, latestDrsk);
   $('#feedPosts').prepend(article);
   wirePostActions(article);
 }
@@ -399,7 +564,7 @@ function resetPreview() {
   $('#matchType').textContent = text('waiting');
   $('#matchStatus').textContent = text('noRoute');
   $('#matchPostText').textContent = text('previewEmpty');
-  $('#matchReasons').innerHTML = '';
+  $('#matchReasons').replaceChildren();
   $('#explainMatch').disabled = true;
   $('#acceptMatch').disabled = true;
   $('#skipMatch').disabled = true;
@@ -524,6 +689,7 @@ function installResetButton() {
     routingEnabled = false;
     $('#composerText').value = '';
     hideIntentPanel();
+    resetEvidence();
     $('#routeResult').classList.remove('visible');
     routeResultMode = null;
     renderMatchingWindow();
@@ -610,6 +776,29 @@ function bindEvents() {
   $$('.intent-choice').forEach((button) => button.addEventListener('click', () => setIntent(button.dataset.intent)));
   $('#dismissIntent').addEventListener('click', hideIntentPanel);
   $('#routeIntent').addEventListener('click', confirmRoute);
+  $('#evidenceToggle').addEventListener('click', () => {
+    const details = $('#evidenceDetails');
+    const expanded = details.hidden;
+    details.hidden = !expanded;
+    $('#evidenceToggle').setAttribute('aria-expanded', String(expanded));
+    $('.evidence-toggle-label').textContent = text(expanded ? 'hideEvidence' : 'showEvidence');
+  });
+  $('#askPerson').addEventListener('click', async () => {
+    const value = textarea.value.trim();
+    if (!value) return;
+    const button = $('#askPerson');
+    button.disabled = true;
+    button.textContent = text('askingPerson');
+    try {
+      renderEvidence(await callDrsk(value, true));
+      $('#evidenceDetails').hidden = false;
+      $('#evidenceToggle').setAttribute('aria-expanded', 'true');
+      $('.evidence-toggle-label').textContent = text('hideEvidence');
+    } catch (_) {
+      button.disabled = false;
+      button.textContent = text('askPerson');
+    }
+  });
   $('#publishPost').addEventListener('click', () => {
     const value = textarea.value.trim();
     if (!value) return;
@@ -618,6 +807,7 @@ function bindEvents() {
     latestDecision = null;
     routingEnabled = false;
     hideIntentPanel();
+    resetEvidence();
     $('#routeResult').classList.remove('visible');
     routeResultMode = null;
     resetPreview();
