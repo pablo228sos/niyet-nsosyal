@@ -136,7 +136,7 @@ The ModernBERT ranking order was produced by the fixed GitHub Actions experiment
 
 At lexical similarity floor 0.02 on the frozen labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total reviewed relevance from 45 to 52. Mean assigned relevance is 2.08 for global versus 2.14 for greedy, showing the expected coverage-quality tradeoff rather than hiding it. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
 
-Human usability testing is documented separately. Eight real participants completed the initial six-task study, which exposed a mobile responder-side dead end. A five-session targeted retest after the responsive fix raised responder-control completion from 0/3 phone sessions to 2/2 mobile sessions. The remaining explainability-discoverability issue is kept explicit rather than presented as solved.
+Human usability testing is documented separately. The team records an eight-participant initial study and a five-session targeted retest, which exposed and then retested a mobile responder-side dead end. The reported responder-control completion changed from 0/3 phone sessions to 2/2 mobile sessions. De-identified row-level observations are not included in this repository, so these aggregates are documented study results rather than independently reproducible repository evidence. The remaining explainability-discoverability issue is kept explicit rather than presented as solved.
 
 ## Evaluation
 
@@ -182,6 +182,7 @@ python experiments/evaluate_matching_draft.py
 python experiments/benchmark_scaling.py
 python scripts/validate_sourcebench.py data/sourcebench_tr
 python experiments/evaluate_sourcechain_v0.py
+python scripts/competition_check.py
 python scripts/generate_results.py
 python scripts/serve_local.py
 ```

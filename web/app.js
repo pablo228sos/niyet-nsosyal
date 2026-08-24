@@ -190,7 +190,7 @@ async function callDrsk(value, askHuman = false) {
   const response = await fetch('/api', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: askHuman ? 'resolve' : 'analyze', text: value, ask_human: askHuman })
+    body: JSON.stringify({ action: askHuman ? 'resolve' : 'analyze', text: value, ask_human: askHuman, responder_state: responderState })
   });
   if (!response.ok) throw new Error('DRSK request failed');
   return response.json();

@@ -14,4 +14,5 @@ def test_sourcebench_evaluation_is_complete_and_machine_readable():
     assert result["tasks"]["alignment"]["total"] == 4
     assert result["tasks"]["distortion"]["total"] == 5
     assert all("accuracy" in task for task in result["tasks"].values())
+    assert result["metrics"] == result["tasks"]
     assert len(result["cases"]) == 15

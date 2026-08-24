@@ -43,3 +43,16 @@ Status definitions:
 - Repository evidence gaps affecting an empirical claim: 1 (later usability study raw records)
 
 The principal risk is not a contradiction in the report. It is reading time-stamped “planned” statements as if they described the current repository, or reading small deterministic regression results as mature SOURCECHAIN model validation.
+
+## Release-freeze evidence gap disposition
+
+The one evidence gap is the later usability study's de-identified row-level observations. They are not present in the repository and cannot be regenerated from the blank template, protocol or aggregate narrative. The usability claim therefore remains **NOT VERIFIED** for independent reproduction. No synthetic rows were created and no historical wording was upgraded. README language now distinguishes team-documented results from repository-reproducible evidence.
+
+## SOURCEBENCH-TR alignment limitation
+
+`alignment-001` expects `SUPPORTED` for:
+
+- claim: `Çalışmaya 120 kişi katıldı.`
+- passage: `Araştırma toplam 120 katılımcıyla yürütüldü.`
+
+The current deterministic baseline returns `PARTIALLY_SUPPORTED`. The gold label is defensible: both sentences state that the study had 120 participants. The failure is classified **LEXICAL ERROR**. Turkish morphology and paraphrase leave only the number `120` as an exact meaningful token overlap, producing lexical score `0.2222`. Adding aliases for this single wording would overfit the 15-example development set, so release freeze retains the honest 3/4 alignment result. A future measured semantic or morphology-aware aligner should address the general weakness.

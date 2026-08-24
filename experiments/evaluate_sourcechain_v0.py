@@ -61,12 +61,14 @@ def evaluate_sourcebench(root: str | Path) -> dict:
         cases.append(case)
         by_task["distortion"].append(case)
 
+    task_metrics = {name: _task_result(task_cases) for name, task_cases in by_task.items()}
     return {
         "dataset_version": "SOURCEBENCH-TR-v0-development",
         "development_only": True,
         "dataset_sha256": _dataset_hash(root),
         "total_examples": len(cases),
-        "tasks": {name: _task_result(task_cases) for name, task_cases in by_task.items()},
+        "tasks": task_metrics,
+        "metrics": task_metrics,
         "cases": cases,
     }
 
