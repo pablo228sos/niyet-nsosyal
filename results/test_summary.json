@@ -1,0 +1,21 @@
+{
+  "dataset_version": "repository-test-suite",
+  "generated_at": "2026-08-24T14:39:41.478394+00:00",
+  "git_commit": "930396f9bc7398759bfabb0cce788be881026118",
+  "metrics": {
+    "command": [
+      "C:\\Users\\lawdir\\Documents\\Codex\\niyet-nsosyal\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "failed": 0,
+    "passed": 121,
+    "summary": "121 passed in 22.64s"
+  },
+  "parameters": {
+    "mode": "quiet",
+    "runner": "pytest"
+  }
+}

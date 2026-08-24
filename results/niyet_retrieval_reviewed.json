@@ -1,0 +1,17 @@
+{
+  "dataset_version": "v1-reviewed",
+  "generated_at": "2026-08-24T14:39:41.478394+00:00",
+  "git_commit": "930396f9bc7398759bfabb0cce788be881026118",
+  "metrics": {
+    "ndcg_at_3": 0.845,
+    "precision_at_3": 0.4688,
+    "recall_at_3": 0.8438
+  },
+  "parameters": {
+    "profile_weight": 0.2,
+    "retriever": "weighted_character_tfidf",
+    "top_k": 3,
+    "topic_weight": 0.8
+  },
+  "review_status": "reviewed"
+}
