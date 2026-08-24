@@ -6,13 +6,28 @@
   <meta name="theme-color" content="#f7f9fc">
   <meta name="description" content="NIYET allocation lab for comparing routing strategies">
   <title>NIYET Allocation Lab</title>
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/lab.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=ui-polish-1">
+  <link rel="stylesheet" href="/lab.css?v=ui-polish-1">
 </head>
 <body class="lab-body">
   <main class="lab-shell">
+    <nav class="lab-topbar" aria-label="Product navigation">
+      <a class="product-wordmark" href="/">
+        <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>DRSK</strong><small>Evidence-aware social coordination</small></span>
+      </a>
+      <div class="lab-nav-links">
+        <a href="/">Feed</a>
+        <a href="/#evidenceCard">Evidence</a>
+        <a class="active" href="/lab">Allocation Lab</a>
+      </div>
+      <span class="prototype-mark">Research prototype</span>
+    </nav>
     <header class="lab-header">
-      <a class="back-link" href="/">← Feed prototype</a>
+      <a class="back-link" href="/">← Back to feed</a>
       <div class="lab-brand">
         <div class="mini-orb" aria-hidden="true"></div>
         <div>
@@ -106,6 +121,6 @@
     </section>
   </main>
 
-  <script src="/lab.js" defer></script>
+  <script src="/lab.js?v=ui-polish-1" defer></script>
 </body>
 </html>

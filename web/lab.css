@@ -8,6 +8,53 @@ body.lab-body {
   color: #0f172a;
 }
 
+/* Shared DRSK system */
+body.lab-body {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(23, 104, 229, .09), transparent 28rem),
+    radial-gradient(circle at 90% 8%, rgba(196, 96, 43, .08), transparent 30rem),
+    var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+.lab-topbar {
+  min-height: 68px;
+  margin-bottom: 32px;
+  padding: 9px 12px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 20px;
+  background: rgba(255,255,255,.9);
+  box-shadow: var(--shadow-subtle);
+  backdrop-filter: blur(18px);
+}
+.lab-nav-links { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: var(--color-bg-subtle); }
+.lab-nav-links a { min-height: 38px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 9px; color: var(--color-text-secondary); text-decoration: none; font-size: 11px; font-weight: 750; }
+.lab-nav-links a:hover, .lab-nav-links a.active { color: var(--color-text-primary); background: #fff; box-shadow: 0 1px 5px rgba(20,28,50,.08); }
+.lab-topbar .prototype-mark { justify-self: end; }
+.lab-header { margin-bottom: 28px; }.back-link { color: var(--color-sourcechain-accent); }.lab-brand h1 { color: var(--color-text-primary); font-size: clamp(34px, 5vw, 58px); }.lab-brand p { color: var(--color-text-secondary); }.lab-brand .mini-orb { filter: hue-rotate(127deg) saturate(.72); }
+.lab-badge, .pipeline-state { border-color: var(--color-border-subtle); background: rgba(255,255,255,.86); font-family: var(--font-mono); }
+.lab-explainer, .lab-controls, .result-summary, .method-card, .lab-note { border-color: var(--color-border-subtle); background: rgba(255,255,255,.92); box-shadow: var(--shadow-subtle); }
+.lab-explainer { border-radius: var(--radius-lg); }.lab-explainer > div + div { border-left-color: var(--color-border-subtle); }.step-index, .eyebrow, .method-kicker, .method-chip { font-family: var(--font-mono); }
+.lab-controls { border-radius: var(--radius-md); }.batch-tabs button { min-height: 40px; border-color: var(--color-border-subtle); }.batch-tabs button.active { border-color: #b9cafa; background: var(--color-sourcechain-soft); color: var(--color-sourcechain-accent); }.floor-control output { background: var(--color-sourcechain-soft); color: var(--color-sourcechain-accent); }.floor-control input { accent-color: var(--color-sourcechain-accent); }
+.result-summary { border-radius: var(--radius-lg); background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(239,237,255,.74)); }.result-summary::after { background: radial-gradient(circle, rgba(91,78,232,.13), rgba(23,104,229,.04) 55%, transparent 70%); }
+.method-card { border-radius: var(--radius-lg); }.global-card { border-color: #e8cdb9; background: linear-gradient(150deg, #fff, var(--color-niyet-soft)); }.niyet-kicker, .niyet-chip { color: var(--color-niyet-accent); }.assignment-row, .metric { border-color: var(--color-border-subtle); }
+.lab-note { border-radius: var(--radius-md); }.note-mark { background: var(--color-drsk-soft); color: var(--color-drsk-accent); font-family: var(--font-mono); }
+
+@media (max-width: 760px) {
+  .lab-topbar { grid-template-columns: 1fr auto; margin-bottom: 22px; }.lab-nav-links { grid-column: 1 / -1; justify-content: center; overflow-x: auto; }.lab-topbar .prototype-mark { display: none; }
+}
+@media (max-width: 480px) {
+  .lab-shell { width: min(100% - 20px, 1180px); padding-top: 10px; }.lab-topbar { border-radius: 16px; }.lab-topbar .product-wordmark small { display: none; }.lab-nav-links a { padding: 0 9px; font-size: 10px; }.lab-header { grid-template-columns: 1fr; }.lab-status-row { flex-wrap: wrap; }.lab-brand h1 { font-size: 38px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-topbar, .method-card, .result-summary { transform: none !important; }
+}
+
 .lab-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -393,6 +440,27 @@ body.lab-body {
   .grade { width: 38px; }
 }
 
+/* Final cascade keeps shared tokens authoritative over the legacy lab layer. */
+.lab-topbar { border-color: var(--color-border-subtle); background: rgba(255,255,255,.9); box-shadow: var(--shadow-subtle); }
+.back-link { color: var(--color-sourcechain-accent); }
+.lab-brand h1 { color: var(--color-text-primary); font-size: clamp(34px, 5vw, 58px); }
+.lab-brand p { color: var(--color-text-secondary); }
+.lab-badge, .pipeline-state { border-color: var(--color-border-subtle); font-family: var(--font-mono); }
+.lab-explainer, .lab-controls, .result-summary, .method-card, .lab-note { border-color: var(--color-border-subtle); box-shadow: var(--shadow-subtle); }
+.lab-controls { border-radius: var(--radius-md); }.result-summary, .method-card { border-radius: var(--radius-lg); }
+.global-card { border-color: #e8cdb9; background: linear-gradient(150deg, #fff, var(--color-niyet-soft)); }
+.niyet-kicker, .niyet-chip { color: var(--color-niyet-accent); }
+.batch-tabs button { min-height: 40px; }.batch-tabs button.active { border-color: #b9cafa; background: var(--color-sourcechain-soft); color: var(--color-sourcechain-accent); }
+.floor-control output { background: var(--color-sourcechain-soft); color: var(--color-sourcechain-accent); }.floor-control input { accent-color: var(--color-sourcechain-accent); }
+.note-mark { background: var(--color-drsk-soft); color: var(--color-drsk-accent); font-family: var(--font-mono); }
+@media (max-width: 760px) {
+  .lab-topbar { grid-template-columns: 1fr auto; margin-bottom: 22px; }.lab-nav-links { grid-column: 1 / -1; justify-content: center; overflow-x: auto; }.lab-topbar .prototype-mark { display: none; }
+}
+@media (max-width: 480px) {
+  .lab-shell { width: min(100% - 20px, 1180px); padding-top: 10px; }.lab-topbar { border-radius: 16px; }.lab-topbar .product-wordmark small { display: none; }.lab-nav-links a { padding: 0 9px; font-size: 10px; }.lab-header { grid-template-columns: 1fr; }.lab-brand h1 { font-size: 38px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; animation: none !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .mini-orb::after { animation: none !important; }
+  button, a, input { transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease, opacity 120ms ease !important; }
 }
