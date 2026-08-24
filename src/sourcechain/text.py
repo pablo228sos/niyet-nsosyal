@@ -11,7 +11,10 @@ _STOPWORDS = {
 
 
 def normalize(text: str) -> str:
-    return " ".join(text.casefold().replace("ı", "i").split())
+    # Unicode casefold expands Turkish capital İ to ``i`` + combining dot.
+    # Collapse that sequence so aliases and lexical checks behave identically
+    # for uppercase and lowercase Turkish input.
+    return " ".join(text.casefold().replace("i\u0307", "i").replace("ı", "i").split())
 
 
 def tokens(text: str, *, meaningful: bool = False) -> tuple[str, ...]:

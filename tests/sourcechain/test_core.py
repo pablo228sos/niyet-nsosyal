@@ -6,7 +6,7 @@ from sourcechain.evidence import build_evidence_bundle
 from sourcechain.lineage import independent_origin_count
 from sourcechain.pipeline import SourcechainPipeline
 from sourcechain.retrieval import ControlledEvidenceProvider, SourceDocument
-from sourcechain.schemas import BundleStatus, EvidenceRelation, StatementType
+from sourcechain.schemas import BundleStatus, DistortionType, EvidenceRelation, StatementType
 from sourcechain.statement_classifier import analyze_post
 
 
@@ -94,3 +94,83 @@ def test_default_pipeline_has_no_implicit_or_fake_evidence_source():
     bundle = SourcechainPipeline().analyze("Satışlar yüzde 20 arttı.", now=NOW)
     assert bundle.status is BundleStatus.INSUFFICIENT
     assert bundle.evidence == ()
+
+
+def test_hostile_language_gate_and_code_switching_cases():
+    assert not analyze_post("I think coffee tastes terrible.").check_worthy
+    assert not analyze_post("Bence kahve tadı korkunç.").check_worthy
+    assert analyze_post("Araştırma, model accuracy oranını yüzde 12 artırdı.").check_worthy
+    assert analyze_post("Study sonucu model doğruluğu yüzde 12 increased.").check_worthy
+
+
+def test_multiple_claims_remain_distinct_and_long_input_is_bounded():
+    text = "X is associated with Y. Z does not increase Q."
+    claims = extract_claims(text)
+    assert [claim.text for claim in claims] == ["X is associated with Y.", "Z does not increase Q."]
+
+    long_claim = extract_claims("x" * 20_000)
+    assert len(long_claim) == 1
+    assert len(long_claim[0].text) == 500
+
+
+def test_empty_and_malformed_input_fail_closed_without_evidence():
+    provider = ControlledEvidenceProvider((document("https://example.org/a", "X is associated with Y."),))
+    for text in ("", "   ", "???", "\x00\x01"):
+        result = build_evidence_bundle(analyze_post(text), provider, now=NOW)
+        assert result.status is BundleStatus.INSUFFICIENT
+        assert result.evidence == ()
+
+
+def test_conflicting_sources_remain_visible_in_bundle():
+    analysis = analyze_post("Coffee increases mortality.")
+    provider = ControlledEvidenceProvider(
+        (
+            document("https://example.org/support", "Coffee increases mortality.", cluster="study-a"),
+            document("https://example.org/conflict", "Coffee does not increase mortality.", cluster="study-b"),
+        )
+    )
+
+    result = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert result.status is BundleStatus.CONFLICTING
+    assert {item.relation for item in result.evidence} == {
+        EvidenceRelation.SUPPORTED,
+        EvidenceRelation.CONFLICTING,
+    }
+
+
+def test_multiple_claim_evidence_points_back_to_exact_claim_and_document():
+    text = "Coffee increases mortality. Tea consumption is associated with sleep."
+    analysis = analyze_post(text)
+    source_text = "Coffee increases mortality. Tea consumption is associated with sleep."
+    provider = ControlledEvidenceProvider(
+        (document("https://example.org/study", source_text),)
+    )
+
+    result = build_evidence_bundle(analysis, provider, now=NOW)
+
+    claim_ids = {claim.claim_id for claim in analysis.claims}
+    assert len(claim_ids) == 2
+    assert result.evidence
+    assert all(item.claim_id in claim_ids for item in result.evidence)
+    assert all(item.passage in source_text for item in result.evidence)
+    assert set(result.cited_evidence_ids) <= {item.evidence_id for item in result.evidence}
+
+
+def test_attribution_and_causality_mismatch_are_both_preserved():
+    analysis = analyze_post("According to SOURCE, coffee causes lower mortality.")
+    provider = ControlledEvidenceProvider(
+        (
+            document(
+                "https://example.org/study",
+                "Coffee is associated with lower mortality.",
+            ),
+        )
+    )
+
+    result = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert result.evidence
+    assert result.status is BundleStatus.CONFLICTING
+    assert DistortionType.ATTRIBUTION_SHIFT in result.evidence[0].distortions
+    assert DistortionType.CAUSALITY_SHIFT in result.evidence[0].distortions

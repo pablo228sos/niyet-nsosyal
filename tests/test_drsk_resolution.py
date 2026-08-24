@@ -8,6 +8,9 @@ from sourcechain.schemas import (
     EvidenceBundle,
     PostAnalysis,
     StatementType,
+    DistortionType,
+    EvidenceItem,
+    EvidenceRelation,
 )
 
 
@@ -79,3 +82,63 @@ def test_insufficient_claim_escalates_only_when_requested():
     assert deferred.escalation is None
     assert escalated.path is ResolutionPath.HUMAN
     assert escalated.escalation is not None
+
+
+def test_source_mismatch_requires_evidence_and_human_interpretation():
+    base = bundle(BundleStatus.PARTIAL, sufficient=True)
+    evidence = EvidenceItem(
+        evidence_id="ev-1",
+        claim_id="claim-1",
+        source_url="https://example.org/report",
+        canonical_url="https://example.org/report",
+        title="Report",
+        publisher="Example Institute",
+        publication_date="2026-08-24",
+        retrieved_at=datetime(2026, 8, 24, tzinfo=UTC),
+        passage="X is associated with Y.",
+        passage_location="passage:1",
+        document_hash="abc",
+        relation=EvidenceRelation.PARTIALLY_SUPPORTED,
+        distortions=(DistortionType.ATTRIBUTION_SHIFT, DistortionType.CAUSALITY_SHIFT),
+        origin_cluster_id="origin-1",
+        metadata={},
+    )
+    mismatched = EvidenceBundle(
+        **{**base.__dict__, "evidence": (evidence,), "cited_evidence_ids": ("ev-1",)}
+    )
+
+    decision = ResolutionEngine().resolve(mismatched)
+
+    assert decision.path is ResolutionPath.BOTH
+    assert decision.escalation is not None
+    assert "source_mismatch" in decision.reasons
+
+
+def test_causality_distortion_requires_evidence_and_human_interpretation():
+    base = bundle(BundleStatus.PARTIAL, sufficient=True)
+    evidence = EvidenceItem(
+        evidence_id="ev-causal",
+        claim_id="claim-1",
+        source_url="https://example.org/study",
+        canonical_url="https://example.org/study",
+        title="Study",
+        publisher="Example Journal",
+        publication_date="2026-08-24",
+        retrieved_at=datetime(2026, 8, 24, tzinfo=UTC),
+        passage="X is associated with Y.",
+        passage_location="passage:1",
+        document_hash="causal-hash",
+        relation=EvidenceRelation.PARTIALLY_SUPPORTED,
+        distortions=(DistortionType.CAUSALITY_SHIFT,),
+        origin_cluster_id="origin-1",
+        metadata={},
+    )
+    distorted = EvidenceBundle(
+        **{**base.__dict__, "evidence": (evidence,), "cited_evidence_ids": ("ev-causal",)}
+    )
+
+    decision = ResolutionEngine().resolve(distorted)
+
+    assert decision.path is ResolutionPath.BOTH
+    assert decision.escalation is not None
+    assert "evidence_distorted" in decision.reasons

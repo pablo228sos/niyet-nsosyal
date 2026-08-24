@@ -4,6 +4,8 @@ import json
 import os
 import sys
 from http.server import BaseHTTPRequestHandler
+from ipaddress import ip_address
+from urllib.parse import urlparse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
@@ -17,7 +19,9 @@ from niyet.types import IntentType  # noqa: E402
 runtime = NiyetRuntime(os.path.join(ROOT, "data"))
 MAX_REQUEST_BYTES = 32 * 1024
 MAX_TEXT_LENGTH = 1200
+MAX_REQUEST_ID_LENGTH = 80
 _DRSK = None
+_SAFE_EVIDENCE_METADATA = frozenset({"provider", "lexical_score"})
 
 
 def _drsk_orchestrator():
@@ -33,11 +37,119 @@ def _drsk_orchestrator():
 
 
 def _valid_responder_state(value: object) -> bool:
-    return value is None or isinstance(value, dict)
+    if value is None:
+        return True
+    if not isinstance(value, dict):
+        return False
+
+    known_responders = runtime.responder_by_id
+    if len(value) > len(known_responders):
+        return False
+    for responder_id, state in value.items():
+        responder = (
+            known_responders.get(responder_id)
+            if isinstance(responder_id, str)
+            else None
+        )
+        if responder is None or not isinstance(state, dict):
+            return False
+        if not set(state).issubset({"remaining_slots", "active"}):
+            return False
+        slots = state.get("remaining_slots", responder.remaining_slots)
+        active = state.get("active", responder.responder.active)
+        if isinstance(slots, bool) or not isinstance(slots, int):
+            return False
+        if not 0 <= slots <= responder.daily_budget or not isinstance(active, bool):
+            return False
+    return True
 
 
 def _valid_string_list(value: object) -> bool:
     return isinstance(value, list) and all(isinstance(item, str) for item in value)
+
+
+def _valid_responder_id_list(value: object) -> bool:
+    return (
+        _valid_string_list(value)
+        and len(value) <= len(runtime.responder_by_id)
+        and len(value) == len(set(value))
+        and all(item in runtime.responder_by_id for item in value)
+    )
+
+
+def _reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def _reject_nonfinite_number(value: str) -> None:
+    raise ValueError(f"non-finite JSON number: {value}")
+
+
+def _parse_json(value: bytes) -> object:
+    return json.loads(
+        value,
+        object_pairs_hook=_reject_duplicate_keys,
+        parse_constant=_reject_nonfinite_number,
+    )
+
+
+def _safe_evidence_url(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    parsed = urlparse(value)
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+    ):
+        return False
+
+    hostname = parsed.hostname.lower().rstrip(".")
+    if hostname == "localhost" or hostname.endswith(
+        (".localhost", ".local", ".internal")
+    ):
+        return False
+    try:
+        return ip_address(hostname).is_global
+    except ValueError:
+        return True
+
+
+def _safe_evidence_bundle(value: object) -> dict:
+    if not isinstance(value, dict):
+        raise ValueError("invalid evidence bundle")
+    evidence = value.get("evidence", [])
+    if not isinstance(evidence, list):
+        raise ValueError("invalid evidence list")
+
+    sanitized = dict(value)
+    sanitized_evidence = []
+    for raw_item in evidence:
+        if not isinstance(raw_item, dict):
+            raise ValueError("invalid evidence item")
+        if not all(
+            _safe_evidence_url(raw_item.get(field))
+            for field in ("source_url", "canonical_url")
+        ):
+            raise ValueError("unsafe evidence URL")
+        item = dict(raw_item)
+        metadata = item.get("metadata", {})
+        if not isinstance(metadata, dict):
+            raise ValueError("invalid evidence metadata")
+        item["metadata"] = {
+            key: metadata[key]
+            for key in _SAFE_EVIDENCE_METADATA
+            if key in metadata and isinstance(metadata[key], (str, int, float, bool))
+        }
+        sanitized_evidence.append(item)
+    sanitized["evidence"] = sanitized_evidence
+    return sanitized
 
 
 def serialize_decision(result: RouteDecision, intent_source: str) -> dict:
@@ -80,6 +192,13 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header(
+            "Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'"
+        )
+        self.send_header(
+            "Permissions-Policy", "camera=(), microphone=(), geolocation=()"
+        )
+        self.send_header("Cross-Origin-Resource-Policy", "same-origin")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -99,11 +218,24 @@ class handler(BaseHTTPRequestHandler):
         )
 
     def do_POST(self) -> None:
+        content_type = (
+            self.headers.get("Content-Type", "")
+            .split(";", 1)[0]
+            .strip()
+            .lower()
+        )
+        if content_type != "application/json" and not content_type.endswith("+json"):
+            self._json(415, {"error": "unsupported_media_type"})
+            return
+
+        raw_length = self.headers.get("Content-Length")
+        if raw_length is None:
+            self._json(411, {"error": "content_length_required"})
+            return
         try:
-            raw_length = self.headers.get("Content-Length", "0")
             length = int(raw_length)
-        except (ValueError, json.JSONDecodeError):
-            self._json(400, {"error": "invalid_json"})
+        except ValueError:
+            self._json(400, {"error": "invalid_content_length"})
             return
 
         if length < 0:
@@ -114,8 +246,8 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            payload = json.loads(self.rfile.read(length) or b"{}")
-        except (UnicodeDecodeError, json.JSONDecodeError):
+            payload = _parse_json(self.rfile.read(length) or b"{}")
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError):
             self._json(400, {"error": "invalid_json"})
             return
         if not isinstance(payload, dict):
@@ -155,17 +287,21 @@ class handler(BaseHTTPRequestHandler):
                     ask_human=ask_human,
                     responder_state=responder_state,
                 )
-            except Exception as exc:
+            except Exception:
                 self._json(
                     500,
-                    {"error": "drsk_analysis_failed", "detail": type(exc).__name__},
+                    {"error": "drsk_analysis_failed"},
                 )
                 return
             if not isinstance(response, dict):
                 self._json(500, {"error": "invalid_drsk_response"})
                 return
 
-            bundle = response.get("evidence_bundle")
+            try:
+                bundle = _safe_evidence_bundle(response.get("evidence_bundle"))
+            except ValueError:
+                self._json(500, {"error": "invalid_drsk_response"})
+                return
             bundle_analysis = bundle.get("analysis", {}) if isinstance(bundle, dict) else {}
             result = {
                 "status": "ok",
@@ -183,10 +319,10 @@ class handler(BaseHTTPRequestHandler):
                     result["responder_state"] = runtime.normalize_responder_state(
                         responder_state
                     )
-                except Exception as exc:
+                except Exception:
                     self._json(
                         500,
-                        {"error": "routing_failed", "detail": type(exc).__name__},
+                        {"error": "routing_failed"},
                     )
                     return
             self._json(200, result)
@@ -245,20 +381,27 @@ class handler(BaseHTTPRequestHandler):
                     if not text or len(text) > MAX_TEXT_LENGTH:
                         raise ValueError("invalid_batch_text")
                     raw_request_id = item.get("id")
-                    if raw_request_id is not None and not isinstance(raw_request_id, str):
+                    if raw_request_id is None:
+                        request_id = f"batch-{index + 1}"
+                    elif not isinstance(raw_request_id, str):
                         raise ValueError("invalid_batch_request_id")
-                    request_id = raw_request_id or f"batch-{index + 1}"
+                    else:
+                        request_id = raw_request_id.strip()
+                        if not request_id or len(request_id) > MAX_REQUEST_ID_LENGTH:
+                            raise ValueError("invalid_batch_request_id")
                     if request_id in request_ids:
                         raise ValueError("duplicate_batch_request_id")
                     request_ids.add(request_id)
                     override_raw = item.get("intent_override")
                     override = None
-                    if override_raw:
+                    if override_raw is not None:
                         if not isinstance(override_raw, str):
                             raise ValueError("invalid_intent_override")
-                        override = IntentType(str(override_raw).strip().lower())
+                        clean_override = override_raw.strip().lower()
+                        if clean_override:
+                            override = IntentType(clean_override)
                     excluded_ids = item.get("exclude_responder_ids", [])
-                    if not _valid_string_list(excluded_ids):
+                    if not _valid_responder_id_list(excluded_ids):
                         raise ValueError("invalid_exclude_responder_ids")
                     requests.append(
                         {
@@ -280,10 +423,10 @@ class handler(BaseHTTPRequestHandler):
                     requests,
                     responder_state=responder_state,
                 )
-            except Exception as exc:
+            except Exception:
                 self._json(
                     500,
-                    {"error": "batch_routing_failed", "detail": type(exc).__name__},
+                    {"error": "batch_routing_failed"},
                 )
                 return
 
@@ -312,7 +455,7 @@ class handler(BaseHTTPRequestHandler):
         text = raw_text.strip() if isinstance(raw_text, str) else ""
         override_raw = payload.get("intent_override")
         raw_excluded = payload.get("exclude_responder_ids", [])
-        if not _valid_string_list(raw_excluded):
+        if not _valid_responder_id_list(raw_excluded):
             self._json(400, {"error": "invalid_exclude_responder_ids"})
             return
         excluded = tuple(raw_excluded)
@@ -325,12 +468,14 @@ class handler(BaseHTTPRequestHandler):
             return
 
         intent_override = None
-        if override_raw:
+        if override_raw is not None:
             if not isinstance(override_raw, str):
                 self._json(400, {"error": "invalid_intent_override"})
                 return
             try:
-                intent_override = IntentType(str(override_raw).strip().lower())
+                clean_override = override_raw.strip().lower()
+                if clean_override:
+                    intent_override = IntentType(clean_override)
             except ValueError:
                 self._json(400, {"error": "invalid_intent_override"})
                 return
@@ -342,10 +487,10 @@ class handler(BaseHTTPRequestHandler):
                 responder_state=responder_state,
                 exclude_responder_ids=excluded,
             )
-        except Exception as exc:
+        except Exception:
             self._json(
                 500,
-                {"error": "routing_failed", "detail": type(exc).__name__},
+                {"error": "routing_failed"},
             )
             return
 

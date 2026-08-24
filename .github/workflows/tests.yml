@@ -16,7 +16,10 @@ jobs:
       - run: node --check web/lab.js
       - run: python -m pip install --upgrade pip
       - run: pip install -c constraints.txt -e . pytest
+      - run: python -m compileall -q src api scripts experiments
       - run: pytest -q
       - run: python experiments/evaluate_matching_draft.py
+      - run: python experiments/evaluate_sourcechain_v0.py
       - run: python scripts/validate_annotations.py data/intent_seed_v1.csv
       - run: python scripts/validate_annotations.py data/response_gate_seed_v1.csv
+      - run: python scripts/validate_sourcebench.py data/sourcebench_tr

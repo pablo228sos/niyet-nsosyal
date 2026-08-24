@@ -90,3 +90,20 @@ def test_real_sourcechain_to_niyet_path_is_executable():
     assert result["resolution"]["path"] == "HUMAN"
     assert result["human_routing"]["intent"] == "ask"
     assert result["human_routing"]["responder_id"] == "r_ml"
+
+
+def test_structured_claim_context_changes_real_niyet_routing():
+    orchestrator = DrskOrchestrator()
+
+    robotics = orchestrator.analyze(
+        "Robot PID control loop oscillation is 40 percent worse.", ask_human=True
+    )
+    nlp = orchestrator.analyze(
+        "Turkish NLP embedding retrieval accuracy is 40 percent worse.", ask_human=True
+    )
+
+    assert robotics["resolution"]["path"] == "HUMAN"
+    assert nlp["resolution"]["path"] == "HUMAN"
+    assert robotics["human_routing"]["responder_id"] == "r_control"
+    assert nlp["human_routing"]["responder_id"] == "r_ml"
+    assert robotics["human_routing"]["responder_id"] != nlp["human_routing"]["responder_id"]
