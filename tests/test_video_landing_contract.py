@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
 STYLES = (ROOT / "web" / "styles.css").read_text(encoding="utf-8")
 MAIN = ROOT / "web" / "main.js"
+VERCEL = (ROOT / "vercel.json").read_text(encoding="utf-8")
 
 
 def test_full_bleed_video_landing_shell_is_present():
@@ -34,3 +35,9 @@ def test_landing_interactions_and_motion_contracts_exist():
     assert "overflow: hidden" in STYLES
     assert ".bg-video" in STYLES
     assert "@media (prefers-reduced-motion: reduce)" in STYLES
+
+
+def test_deployment_policy_allows_the_declared_video_and_font_sources():
+    assert "media-src 'self' https://d8j0ntlcm91z4.cloudfront.net" in VERCEL
+    assert "https://fonts.googleapis.com" in VERCEL
+    assert "https://db.onlinewebfonts.com" in VERCEL
