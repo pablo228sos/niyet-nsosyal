@@ -8,6 +8,10 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from experiments.evaluate_matching_draft import (
     TOP_K,
     build_batch,
@@ -20,7 +24,6 @@ from niyet.allocator import allocate
 from niyet.optimizer import global_allocate
 
 
-ROOT = Path(__file__).resolve().parents[1]
 RESULT_FILENAMES = (
     "sourcechain_v0.json",
     "niyet_retrieval_reviewed.json",
