@@ -935,6 +935,8 @@ installMobileInbox();
 wirePostActions();
 applyLanguage(language, false);
 bindEvents();
+window.__drskAppReady = true;
+window.dispatchEvent(new CustomEvent('drsk-app-ready'));
 activateView('feed');
 renderMatchingWindow();
 updateBudget();

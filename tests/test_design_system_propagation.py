@@ -37,6 +37,10 @@ def test_shared_shell_preserves_product_evidence_and_lab_navigation():
     assert 'href="/?open=evidence"' in LAB
     assert "window.location.search" in MAIN
     assert "query.get('open') === 'evidence'" in MAIN
+    assert "window.__drskAppReady" in MAIN
+    assert "drsk-app-ready" in MAIN
+    assert "window.__drskAppReady = true" in APP
+    assert "new CustomEvent('drsk-app-ready')" in APP
 
 
 def test_technical_dialog_has_keyboard_and_focus_contracts():
