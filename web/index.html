@@ -6,12 +6,14 @@
   <meta name="theme-color" content="#000000">
   <meta name="description" content="DRSK connects evidence-aware verification with human attention routing.">
   <title>Intelligence Designed To Evolve</title>
+  <link rel="icon" href="/assets/logo.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
   <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=video-landing-1">
-  <link rel="stylesheet" href="/live.css?v=video-landing-1">
+  <link rel="stylesheet" href="/styles.css?v=drsk-system-1">
+  <link rel="stylesheet" href="/live.css?v=drsk-system-1">
+  <link rel="stylesheet" href="/design-system.css?v=drsk-system-1">
 </head>
 <body>
   <svg class="sr-only" aria-hidden="true">
@@ -64,7 +66,7 @@
       </header>
 
       <main class="landing-hero" id="landingMain">
-        <div class="trust-row anim" style="--d:.05s">
+        <div class="trust-row anim delay-1">
           <div class="trust-avatars" aria-hidden="true">
             <span class="trust-avatar a1"><i>SC</i></span>
             <span class="trust-avatar a2"><i>D</i></span>
@@ -74,20 +76,20 @@
         </div>
 
         <h1 class="landing-headline" aria-label="Evidence-aware social coordination">
-          <span style="--d:.12s" data-landing-key="headlineOne">Evidence-Aware</span>
-          <span style="--d:.3s" data-landing-key="headlineTwo">Social Coordination</span>
+          <span class="delay-2" data-landing-key="headlineOne">Evidence-Aware</span>
+          <span class="delay-3" data-landing-key="headlineTwo">Social Coordination</span>
         </h1>
 
-        <p class="landing-subhead anim" style="--d:.28s" data-landing-key="subhead">Trace claims to evidence, make uncertainty visible, and route human attention through one research-grade social layer.</p>
-        <button class="landing-cta anim" type="button" style="--d:.4s" data-open-experience data-landing-key="cta">Explore the live system</button>
+        <p class="landing-subhead anim delay-3" data-landing-key="subhead">Trace claims to evidence, make uncertainty visible, and route human attention through one research-grade social layer.</p>
+        <button class="landing-cta anim delay-4" type="button" data-open-experience data-landing-key="cta">Explore the live system</button>
       </main>
 
       <footer class="landing-footer">
         <div class="landing-stats" aria-label="DRSK system scope">
-          <div class="landing-stat anim" style="--d:.5s" data-target="2" data-decimals="0"><span class="stat-symbol">&lt;</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statEngines">Coordinated engines</small></div>
-          <div class="landing-stat anim" style="--d:.58s" data-target="4" data-decimals="0"><span class="stat-symbol">%</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statIntents">Intent routes</small></div>
-          <div class="landing-stat anim" style="--d:.66s" data-target="1" data-decimals="0"><span class="stat-symbol">*</span><strong><span class="stat-value">0</span><span class="stat-suffix">-hop</span></strong><small data-landing-key="statTrace">Truthful evidence trace</small></div>
-          <div class="landing-stat anim" style="--d:.74s" data-target="2" data-decimals="0"><span class="stat-symbol">#</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statLanguages">Interface languages</small></div>
+          <div class="landing-stat anim delay-5" data-target="2" data-decimals="0"><span class="stat-symbol">&lt;</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statEngines">Coordinated engines</small></div>
+          <div class="landing-stat anim delay-6" data-target="4" data-decimals="0"><span class="stat-symbol">%</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statIntents">Intent routes</small></div>
+          <div class="landing-stat anim delay-7" data-target="1" data-decimals="0"><span class="stat-symbol">*</span><strong><span class="stat-value">0</span><span class="stat-suffix">-hop</span></strong><small data-landing-key="statTrace">Truthful evidence trace</small></div>
+          <div class="landing-stat anim delay-8" data-target="2" data-decimals="0"><span class="stat-symbol">#</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statLanguages">Interface languages</small></div>
         </div>
         <button class="video-toggle" id="videoToggle" type="button" aria-pressed="false"><span aria-hidden="true">Ⅱ</span><b data-landing-key="pauseMotion">Pause motion</b></button>
       </footer>
@@ -336,7 +338,7 @@
   </nav>
   </section>
 
-  <div class="explain-sheet" id="explainSheet" role="dialog" aria-modal="true" aria-labelledby="sheetHeading">
+  <div class="explain-sheet" id="explainSheet" role="dialog" aria-modal="true" aria-labelledby="sheetHeading" aria-hidden="true">
     <div class="sheet">
       <div class="sheet-head">
         <div class="sheet-title"><div class="mini-orb" aria-hidden="true"></div><div><strong id="sheetHeading" data-i18n="technicalDetails">Technical details</strong><span data-i18n="techSub">Development diagnostics, not calibrated probabilities</span></div></div>
@@ -358,7 +360,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><span id="toastText">Done</span></div>
-  <script src="/main.js?v=video-landing-1" defer></script>
-  <script src="/app.js?v=video-landing-1" defer></script>
+  <script src="/main.js?v=drsk-system-1" defer></script>
+  <script src="/app.js?v=drsk-system-1" defer></script>
 </body>
 </html>
