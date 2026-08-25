@@ -99,8 +99,10 @@ function openEvidence(trigger) {
   const composer = document.querySelector('#composerText');
   if (!composer) return;
   composer.value = 'Research proves coffee consumption causes lower mortality.';
-  composer.dispatchEvent(new Event('input', { bubbles: true }));
   composer.focus();
+  // main.js runs before app.js. Defer the synthetic input so the product
+  // controller has registered its analysis listener for direct evidence URLs.
+  window.setTimeout(() => composer.dispatchEvent(new Event('input', { bubbles: true })), 0);
 }
 
 function setCounterFinal(stat) {
@@ -190,5 +192,6 @@ document.documentElement.classList.toggle('motion-reduced', reducedMotion);
 if (reducedMotion) video.pause();
 else video.play().catch(() => {});
 updateVideoToggle();
-if (location.hash === '#product') openExperience(document.querySelector('.landing-cta'));
+if (query.get('open') === 'evidence') openEvidence(document.querySelector('[data-open-evidence]'));
+else if (location.hash === '#product') openExperience(document.querySelector('.landing-cta'));
 window.__ready = true;

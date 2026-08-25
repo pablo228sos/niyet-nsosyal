@@ -3,97 +3,116 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f9fc">
+  <meta name="theme-color" content="#000000">
   <meta name="description" content="NIYET allocation lab for comparing routing strategies">
   <title>NIYET Allocation Lab</title>
+  <link rel="icon" href="/assets/logo.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=ui-polish-3">
-  <link rel="stylesheet" href="/lab.css?v=ui-polish-3">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=drsk-system-1">
+  <link rel="stylesheet" href="/lab.css?v=drsk-system-1">
+  <link rel="stylesheet" href="/design-system.css?v=drsk-system-1">
 </head>
 <body class="lab-body">
   <main class="lab-shell">
-    <nav class="lab-topbar" aria-label="Product navigation">
-      <a class="product-wordmark" href="/">
-        <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span><strong>DRSK</strong><small>Evidence-aware social coordination</small></span>
+    <nav class="lab-topbar" aria-label="Product navigation" data-lab-aria="productNav">
+      <a class="lab-home-mark" href="/" aria-label="DRSK home" data-lab-aria="homeLabel">
+        <img src="/assets/logo.webp" width="34" height="34" alt="">
       </a>
       <div class="lab-nav-links">
-        <a href="/">Feed</a>
-        <a href="/#evidenceCard">Evidence</a>
-        <a class="active" href="/lab">Allocation Lab</a>
+        <a href="/#product" data-lab-key="feed">Feed</a>
+        <a href="/?open=evidence" data-lab-key="evidence">Evidence</a>
+        <a class="active" href="/lab" data-lab-key="allocationLab">Allocation Lab</a>
       </div>
-      <span class="prototype-mark">Research prototype</span>
+      <div class="lab-top-actions">
+        <div class="lab-lang" role="group" aria-label="Language" data-lab-aria="language">
+          <button class="active" type="button" data-lab-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lab-lang="tr" aria-pressed="false">TR</button>
+        </div>
+        <a class="lab-open" href="/#product" data-lab-key="openDrsk">Open DRSK</a>
+      </div>
+      <button class="lab-menu-toggle" id="labMenuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="labMobileMenu" data-lab-aria="menuOpen"><span></span><span></span><span></span></button>
     </nav>
+    <div class="lab-mobile-menu" id="labMobileMenu" hidden>
+      <div role="dialog" aria-modal="true" aria-label="Navigation" data-lab-aria="navigation">
+        <a href="/#product" data-lab-key="feed">Feed</a>
+        <a href="/?open=evidence" data-lab-key="evidence">Evidence</a>
+        <a href="/lab" data-lab-key="allocationLab">Allocation Lab</a>
+        <button type="button" data-lab-lang="en">EN</button>
+        <button type="button" data-lab-lang="tr">TR</button>
+        <a class="lab-mobile-open" href="/#product" data-lab-key="openDrsk">Open DRSK</a>
+      </div>
+    </div>
     <header class="lab-header">
-      <a class="back-link" href="/">← Back to feed</a>
+      <a class="back-link" href="/#product" data-lab-key="backFeed">← Back to feed</a>
       <div class="lab-brand">
         <div class="mini-orb" aria-hidden="true"></div>
         <div>
           <span class="eyebrow">DRSK / NIYET</span>
-          <h1>Allocation Lab</h1>
-          <p>Same requests. Same responder capacity. Different allocation strategies.</p>
+          <h1 data-lab-key="allocationLab">Allocation Lab</h1>
+          <p data-lab-key="labSubtitle">Same requests. Same responder capacity. Different allocation strategies.</p>
         </div>
       </div>
       <div class="lab-status-row">
-        <span class="lab-badge">Development benchmark</span>
-        <span class="pipeline-state" id="labApiStatus">checking API</span>
+        <span class="lab-badge" data-lab-key="benchmark">Development benchmark</span>
+        <span class="pipeline-state" id="labApiStatus" data-lab-key="checkingApi">checking API</span>
       </div>
     </header>
 
     <section class="lab-explainer">
       <div>
         <span class="step-index">01</span>
-        <strong>Retrieve</strong>
-        <p>Only responders who accept the intent and pass the topic floor enter the candidate graph.</p>
+        <strong data-lab-key="retrieve">Retrieve</strong>
+        <p data-lab-key="retrieveText">Only responders who accept the intent and pass the topic floor enter the candidate graph.</p>
       </div>
       <div>
         <span class="step-index">02</span>
-        <strong>Constrain</strong>
-        <p>Each responder has one slot in this lab, so requests compete for limited attention.</p>
+        <strong data-lab-key="constrain">Constrain</strong>
+        <p data-lab-key="constrainText">Each responder has one slot in this lab, so requests compete for limited attention.</p>
       </div>
       <div>
         <span class="step-index">03</span>
-        <strong>Allocate</strong>
-        <p>Greedy chooses locally. Global assignment evaluates the batch together.</p>
+        <strong data-lab-key="allocate">Allocate</strong>
+        <p data-lab-key="allocateText">Greedy chooses locally. Global assignment evaluates the batch together.</p>
       </div>
     </section>
 
     <section class="lab-controls" aria-labelledby="controlsTitle">
       <div>
-        <span class="eyebrow" id="controlsTitle">Experiment controls</span>
-        <div class="batch-tabs" id="batchTabs" role="group" aria-label="Benchmark batch">
-          <button class="active" type="button" data-batch="0">Batch 1</button>
-          <button type="button" data-batch="1">Batch 2</button>
-          <button type="button" data-batch="2">Batch 3</button>
-          <button type="button" data-batch="3">Batch 4</button>
+        <span class="eyebrow" id="controlsTitle" data-lab-key="controls">Experiment controls</span>
+        <div class="batch-tabs" id="batchTabs" role="group" aria-label="Benchmark batch" data-lab-aria="batchGroup">
+          <button class="active" type="button" data-batch="0" data-batch-label="1">Batch 1</button>
+          <button type="button" data-batch="1" data-batch-label="2">Batch 2</button>
+          <button type="button" data-batch="2" data-batch-label="3">Batch 3</button>
+          <button type="button" data-batch="3" data-batch-label="4">Batch 4</button>
         </div>
       </div>
       <label class="floor-control" for="floorRange">
-        <span><strong>Topic floor</strong><output id="floorValue">0.06</output></span>
+        <span><strong data-lab-key="topicFloor">Topic floor</strong><output id="floorValue">0.06</output></span>
         <input id="floorRange" type="range" min="0" max="0.12" step="0.02" value="0.06">
-        <small>Weak retrieval edges are removed before optimization.</small>
+        <small data-lab-key="topicFloorHelp">Weak retrieval edges are removed before optimization.</small>
       </label>
     </section>
 
     <section class="result-summary" id="summary" aria-live="polite">
       <div class="summary-copy">
-        <span class="eyebrow">What changed?</span>
+        <span class="eyebrow" data-lab-key="whatChanged">What changed?</span>
         <h2 id="summaryTitle">Running the same batch through both methods...</h2>
         <p id="summaryText">The comparison uses draft relevance labels and is not a production claim.</p>
       </div>
       <div class="tradeoff" id="tradeoff"></div>
     </section>
 
-    <section class="comparison-grid" aria-label="Allocation comparison">
+    <section class="comparison-grid" aria-label="Allocation comparison" data-lab-aria="comparison">
       <article class="method-card" id="greedyCard">
         <div class="method-head">
           <div>
-            <span class="method-kicker">Baseline</span>
-            <h2>Capacity-aware greedy</h2>
+            <span class="method-kicker" data-lab-key="baseline">Baseline</span>
+            <h2 data-lab-key="greedyTitle">Capacity-aware greedy</h2>
           </div>
-          <span class="method-chip">local choice</span>
+          <span class="method-chip" data-lab-key="localChoice">local choice</span>
         </div>
         <div class="metric-grid" id="greedyMetrics"></div>
         <div class="assignment-list" id="greedyAssignments"></div>
@@ -103,9 +122,9 @@
         <div class="method-head">
           <div>
             <span class="method-kicker niyet-kicker">NIYET</span>
-            <h2>Global allocation</h2>
+            <h2 data-lab-key="globalTitle">Global allocation</h2>
           </div>
-          <span class="method-chip niyet-chip">batch choice</span>
+          <span class="method-chip niyet-chip" data-lab-key="batchChoice">batch choice</span>
         </div>
         <div class="metric-grid" id="globalMetrics"></div>
         <div class="assignment-list" id="globalAssignments"></div>
@@ -115,12 +134,12 @@
     <section class="lab-note">
       <div class="note-mark">i</div>
       <div>
-        <strong>How to read this lab</strong>
-        <p>The benchmark is currently marked <code>team_review_pending</code>. Relevance grades are development labels. The lab makes the algorithm, tradeoffs and failure cases inspectable without presenting draft labels as field performance.</p>
+        <strong data-lab-key="howToRead">How to read this lab</strong>
+        <p data-lab-key="labNote">The benchmark is currently marked team_review_pending. Relevance grades are development labels. The lab makes the algorithm, tradeoffs and failure cases inspectable without presenting draft labels as field performance.</p>
       </div>
     </section>
   </main>
 
-  <script src="/lab.js?v=ui-polish-3" defer></script>
+  <script src="/lab.js?v=drsk-system-1" defer></script>
 </body>
 </html>
