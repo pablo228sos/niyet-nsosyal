@@ -100,9 +100,9 @@ function openEvidence(trigger) {
   if (!composer) return;
   composer.value = 'Research proves coffee consumption causes lower mortality.';
   composer.focus();
-  // main.js runs before app.js. Defer the synthetic input so the product
-  // controller has registered its analysis listener for direct evidence URLs.
-  window.setTimeout(() => composer.dispatchEvent(new Event('input', { bubbles: true })), 0);
+  const analyze = () => composer.dispatchEvent(new Event('input', { bubbles: true }));
+  if (window.__drskAppReady) analyze();
+  else window.addEventListener('drsk-app-ready', analyze, { once: true });
 }
 
 function setCounterFinal(stat) {
