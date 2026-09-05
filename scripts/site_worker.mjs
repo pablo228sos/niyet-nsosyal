@@ -33,10 +33,15 @@ export default {
       try {
         const upstream = await fetch(API_ORIGIN + url.pathname + url.search, {
           method: request.method, headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body, redirect: 'error', signal: AbortSignal.timeout(20000),
+          body, redirect: 'manual', signal: AbortSignal.timeout(20000),
         });
+        // Workers supports manual/follow redirect modes. Never forward to another host.
+        if (upstream.status >= 300 && upstream.status < 400) {
+          return Response.json({ error: 'backend_redirect' }, { status: 502, headers: { ...HEADERS, 'Cache-Control': 'no-store' } });
+        }
         return new Response(upstream.body, { status: upstream.status, headers: { ...HEADERS, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
-      } catch {
+      } catch (error) {
+        console.error('API proxy unavailable', error instanceof Error ? error.message : 'Unknown fetch error');
         return Response.json({ error: 'backend_unavailable' }, { status: 503, headers: { ...HEADERS, 'Cache-Control': 'no-store' } });
       }
     }
