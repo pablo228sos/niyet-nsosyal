@@ -1,63 +1,58 @@
----
-version: alpha
-name: DRSK Interface System
-description: The approved DRSK homepage language adapted from cinematic brand expression to operational and research workspaces.
-colors:
-  bg-canvas: "#000000"
-  bg-surface: "#111113"
-  bg-subtle: "#19191c"
-  text-primary: "#ffffff"
-  text-secondary: "#c8c8c8"
-  text-tertiary: "#8e8e8e"
-  border-subtle: "rgba(255, 255, 255, 0.12)"
-  border-strong: "rgba(255, 255, 255, 0.24)"
-  drsk-accent: "#ffffff"
-  sourcechain-accent: "#8ab8ff"
-  niyet-accent: "#f0ae78"
-  status-support: "#79d6b2"
-  status-caution: "#efc36d"
-  status-conflict: "#ef929c"
-typography:
-  sans:
-    fontFamily: Inter, Segoe UI, system-ui, sans-serif
-  display:
-    fontFamily: BubbledotICG-FinePos, Geist Pixel Circle, monospace
-  mono:
-    fontFamily: Geist Pixel Circle, Consolas, monospace
-rounded:
-  sm: 10px
-  md: 16px
-  lg: 24px
----
+# DRSK interface system
 
-## Overview
+## Direction
 
-DRSK is an evidence-aware social coordination product. Its approved interface is black, high-contrast, minimal, futuristic, and editorial. The homepage is the cinematic expression; Feed, SOURCECHAIN, NIYET, and Allocation Lab are functional expressions of the same identity.
+A working social surface for NSosyal readers, authors and willing responders.
+The 2026 redesign opens directly on the feed. Evidence and human routing remain
+the product; there is no marketing gate. Variance 4, motion 2, density 5.
 
-## Colors
+The visual reference uses a quiet three-column layout: navigation, conversation,
+response space. The code adopts its 24px rhythm, readable sans hierarchy, flat
+surfaces and evidence edge. It does not adopt the reference's invented source text.
 
-Use the black canvas as the dominant field. Operational hierarchy comes from lightness separation between canvas, surfaces, and fine translucent borders, not from large tinted panels. SOURCECHAIN blue and NIYET warm amber are semantic accents; neither replaces the monochrome DRSK foundation. Status meaning always includes text or an icon in addition to color.
+## Tokens
 
-## Typography
+| Role | Light | Dark |
+| --- | --- | --- |
+| Canvas | #f5f7fb | #121926 |
+| Surface | #ffffff | #192233 |
+| Text | #17233e | #e9eef8 |
+| Secondary text | #58657b | #b4bfd1 |
+| Border | #d8deea | #39465c |
+| Action | #2855d9 | #94b4ff |
+| Evidence | #087b7b | #74d6cc |
 
-Inter is the default for interface copy, forms, navigation, and dense reading. Bubbledot with Geist Pixel fallback is reserved for brand display, page identity, technical labels, and selected metrics. Never set paragraphs, long explanations, or form values in the display face.
+Primary filled buttons keep white text on #2855d9 in both themes. Semantic
+statuses always include words. System preference selects light/dark consistently.
 
-## Layout
+Typography: Segoe UI/system sans for readable native rendering without network
+fonts; Consolas for technical values. Body 16px, controls 14–16px, secondary
+metadata 12–13px. Display 28–38px; lab heading up to 48px. No dot-matrix body copy.
 
-The homepage remains a single full-bleed viewport. Product workspaces use a centered shell beneath universal navigation, with restrained page padding, clear section rhythm, and denser layouts where evidence or allocation data require it. Mobile reorganizes content instead of scaling desktop columns down.
+Use 8px control/surface corners, 12px avatars/dialogs and fully rounded switches.
+Spacing follows 8/12/16/20/24/28/32px roles. Shadows are reserved for overlays.
 
-## Elevation & Depth
+## Composition and state
 
-Depth comes from translucent dark surfaces, fine borders, restrained blur, and sparse shadows. Avoid stacked bright cards, heavy glow, and decorative gradients behind dense content.
+- Desktop: 200px navigation, flexible feed up to 650px, 310px response space.
+- Tablet: response space becomes an accessible drawer.
+- Mobile: one column, bottom navigation and a labeled responder action.
+- Source details reveal progressively and retain verbatim passages and URLs.
+- Unavailable evidence is not false; empty allocation is not fabricated success.
+- Technical diagnostics stay behind a keyboard-accessible dialog.
+- Lab pairs the same real query batch and capacity in both methods.
+- Session-only data and unconnected social surfaces are explicitly identified.
 
-## Shapes
+## References applied
 
-Primary actions and navigation use pills. Icon controls are circular. Sheets and major workspace surfaces use the large radius; dense evidence rows and controls use the small or medium radius. Radius communicates component role and must not be maximized indiscriminately.
+- Vercel Web Interface Guidelines: semantics, focus, forms, URLs, reduced motion,
+  overflow, errors and async state audit.
+- Taste Skill: audit-first redesign, restrained surfaces, coherent type and tokens.
+  Its marketing-only layout rules do not replace operational product requirements.
+- Image-to-Code: generated working-screen reference, then composition analysis.
+- Awesome Design MD / Intercom analysis: conversational clarity and friendly blue
+  action emphasis, adapted to DRSK rather than copying an unrelated product.
 
-## Components
-
-Universal navigation uses the circular DRSK mark, white navigation pill, dark secondary action, three-dot active marker, EN/TR control, and circular mobile burger. Buttons share pill geometry, visible focus, and clear primary, secondary, ghost, danger, and icon roles. Inputs use dark surfaces, readable placeholders, fine borders, and a high-contrast focus ring. Dialogs and drawers use a dark scrim, blur, and a bordered dark sheet.
-
-## Do's and Don'ts
-
-Preserve the homepage video and art direction. Propagate its language rather than its hero composition. Keep analytical SOURCECHAIN surfaces calm and precise, give NIYET a restrained warmer accent, and let Lab remain dense. Do not reintroduce white application canvases, Bootstrap-like rectangular buttons, raw internal enums, decorative dashboard gradients, or paragraphs in dot-matrix typography.
+Sources: https://github.com/vercel-labs/web-interface-guidelines,
+https://www.tasteskill.dev/, https://github.com/voltagent/awesome-design-md,
+https://getdesign.md/intercom/design-md.

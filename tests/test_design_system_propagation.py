@@ -13,9 +13,9 @@ LOCAL_SERVER = (ROOT / "scripts" / "serve_local.py").read_text(encoding="utf-8")
 
 
 def test_shared_design_system_is_loaded_by_every_real_route():
-    assert "/design-system.css?v=drsk-system-1" in INDEX
-    assert "/design-system.css?v=drsk-system-1" in LAB
-    assert "--color-bg-canvas: #000" in SYSTEM
+    assert "/design-system.css?v=drsk-system-2" in INDEX
+    assert "/design-system.css?v=drsk-system-2" in LAB
+    assert "--color-bg-canvas: #f5f7fb" in SYSTEM
     assert "--color-sourcechain-accent" in SYSTEM
     assert "--color-niyet-accent" in SYSTEM
 

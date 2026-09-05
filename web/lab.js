@@ -40,8 +40,11 @@ let labLanguage = localStorage.getItem('drsk-language') === 'tr' ? 'tr' : 'en';
 const t = (key) => LAB_COPY[labLanguage][key] || LAB_COPY.en[key] || key;
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
 
-let activeBatch = 0;
-let floor = 0.06;
+Object.assign(LAB_COPY.en, { retry: 'Run again', topicFloor: 'Minimum topic match', topicFloorHelp: 'Raise this to exclude weaker matches before allocation.', labNote: 'Results use 32 frozen, human-reviewed queries and 8 sample responder profiles. Grades measure relevance from 0 to 3. These are offline development results, not real response rates.', gradeTitle: 'Human-reviewed relevance grade', delta: 'reviewed relevance points vs greedy', summaryBestText: 'Both methods use the same frozen, human-reviewed benchmark and responder capacity.', summaryBest: 'More requests served, with no loss in average relevance.' });
+Object.assign(LAB_COPY.tr, { retry: 'Yeniden çalıştır', topicFloor: 'En düşük konu eşleşmesi', topicFloorHelp: 'Zayıf eşleşmeleri dağıtımdan önce elemek için yükselt.', labNote: 'Sonuçlar, insan değerlendirmesiyle dondurulmuş 32 soru ve 8 örnek yanıtlayıcı profiline dayanır. İlgi puanı 0 ile 3 arasındadır. Bunlar çevrimdışı geliştirme sonuçlarıdır; gerçek yanıt oranları değildir.', gradeTitle: 'İnsan değerlendirmeli ilgi puanı', delta: 'greedy yöntemine göre incelenmiş ilgi puanı', summaryBestText: 'Her iki yöntem aynı incelenmiş karşılaştırma verisini ve yanıtlayıcı kapasitesini kullanır.', summaryBest: 'Ortalama ilgiyi azaltmadan daha fazla isteğe yanıt.' });
+const initialQuery = new URLSearchParams(location.search);
+let activeBatch = Math.min(3, Math.max(0, Number(initialQuery.get('batch')) || 0));
+let floor = initialQuery.has('floor') ? Math.min(.12, Math.max(0, Number(initialQuery.get('floor')) || 0)) : .06;
 let requestToken = 0;
 
 function pct(value) {
@@ -151,6 +154,9 @@ function renderError(message) {
 async function runExperiment() {
   const token = ++requestToken;
   $('.lab-shell').classList.add('loading');
+  $('.comparison-grid').setAttribute('aria-busy', 'true');
+  $('#labApiStatus').textContent = t('checkingApi');
+  history.replaceState(null, '', `/lab?batch=${activeBatch}&floor=${floor.toFixed(2)}`);
   const url = `/api/experiment?batch=${activeBatch}&floor=${floor.toFixed(2)}`;
 
   try {
@@ -163,7 +169,10 @@ async function runExperiment() {
     if (token !== requestToken) return;
     renderError(error instanceof Error ? error.message : 'Unknown API error');
   } finally {
-    if (token === requestToken) $('.lab-shell').classList.remove('loading');
+    if (token === requestToken) {
+      $('.lab-shell').classList.remove('loading');
+      $('.comparison-grid').setAttribute('aria-busy', 'false');
+    }
   }
 }
 
@@ -176,6 +185,9 @@ $$('#batchTabs button').forEach((button) => {
 });
 
 const floorRange = $('#floorRange');
+floorRange.value = floor;
+$('#floorValue').textContent = floor.toFixed(2);
+$$('#batchTabs button').forEach((button) => { button.classList.toggle('active', Number(button.dataset.batch) === activeBatch); });
 let floorTimer;
 floorRange.addEventListener('input', () => {
   floor = Number(floorRange.value);
@@ -215,4 +227,5 @@ $('#labMenuToggle').addEventListener('click', () => setLabMenu($('#labMobileMenu
 $('#labMobileMenu').addEventListener('click', (event) => { if (event.target === $('#labMobileMenu')) setLabMenu(false); });
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setLabMenu(false); });
 
+$('#retryExperiment').addEventListener('click', runExperiment);
 applyLabLanguage(labLanguage, false);

@@ -52,6 +52,47 @@ const copy = {
   }
 };
 
+Object.assign(copy.en, {
+  heroTitle: 'A little context. A better conversation.', heroText: 'Check a claim or find someone who can help.',
+  productDescriptor: 'Evidence & human help', placeholder: 'What would you like to share?',
+  demoHelp: 'Ask for help', demoCollab: 'Find a collaborator', demoNormal: 'Normal post', demoEvidence: 'Check a claim',
+  previewTitle: 'Your response space', previewSub: 'Review requests and choose when to help.', waiting: 'Requests will appear here',
+  previewEmpty: 'Write a question, confirm your intent, then find a responder to try this side of the conversation.',
+  ask: 'Ask', feedback: 'Feedback', collaborate: 'Collaborate', discuss: 'Discuss', route: 'Find a responder',
+  localNotice: 'Posts stay in this browser session.', scopeTitle: 'About this prototype', scopeText: 'Evidence comes from a small controlled corpus. Responders are sample profiles. Capacity is local to this browser session.', labLink: 'See how allocation works →',
+  pipelineLive: 'Analysis available', pipelineFallback: 'Analysis offline', pipelineChecking: 'Connecting…', analyzing: 'Analyzing…',
+  requiredPost: 'Write a post first. You can also choose an example above.', actionFailed: 'The change was not saved. Try again.',
+  emptyFollowing: 'No posts from people you follow yet.', searchEmpty: 'No conversations match. Try robotics or FastAPI.',
+  resetConfirm: 'Reset this demo session? Your local posts and open requests will be removed.',
+  viewMessagesText: 'Messaging is a planned NSosyal integration. No messages are sent from this prototype.',
+  viewCommunitiesText: 'Sample NSosyal communities. Membership is not connected in this prototype.',
+  viewProfileText: 'Sample profile for this browser session.', singleWindow: 'Ready for another request',
+  normalPost: 'No human response detected. You can post normally or choose to ask for help.',
+  routeFound: 'A willing responder is available for this request.', showEvidence: 'Show source & passage',
+  noMessages: 'No connected conversations yet.', shareFailed: 'Could not copy the link. Copy the address from your browser.',
+  evidenceUnavailable: 'Evidence check unavailable. Try editing the post again.', pausedPerson: 'Paused responder',
+});
+Object.assign(copy.tr, {
+  heroTitle: 'Biraz bağlam. Daha iyi bir sohbet.', heroText: 'Bir iddiayı incele veya yardımcı olabilecek birini bul.',
+  productDescriptor: 'Kanıt ve insan desteği', placeholder: 'Ne paylaşmak istersin?',
+  demoHelp: 'Yardım iste', demoCollab: 'Ekip arkadaşı bul', demoNormal: 'Normal gönderi', demoEvidence: 'İddiayı incele',
+  previewTitle: 'Yanıt alanın', previewSub: 'İstekleri incele, ne zaman yardım edeceğini seç.', waiting: 'İstekler burada görünür',
+  previewEmpty: 'Bir soru yaz, niyetini onayla ve sohbetin bu tarafını denemek için bir yanıtlayıcı bul.',
+  ask: 'Soru', feedback: 'Geri bildirim', collaborate: 'İş birliği', discuss: 'Tartış', route: 'Yanıtlayıcı bul',
+  localNotice: 'Gönderiler bu tarayıcı oturumunda kalır.', scopeTitle: 'Bu prototip hakkında', scopeText: 'Kanıtlar küçük, kontrollü bir derlemden gelir. Yanıtlayıcılar örnek profillerdir. Kapasite bu tarayıcı oturumuna özeldir.', labLink: 'Dağıtımın nasıl çalıştığını gör →',
+  pipelineLive: 'Analiz kullanılabilir', pipelineFallback: 'Analiz çevrimdışı', pipelineChecking: 'Bağlanıyor…', analyzing: 'İnceleniyor…',
+  requiredPost: 'Önce bir gönderi yaz veya yukarıdan bir örnek seç.', actionFailed: 'Değişiklik kaydedilmedi. Tekrar dene.',
+  emptyFollowing: 'Takip ettiğin kişilerden henüz gönderi yok.', searchEmpty: 'Eşleşen sohbet yok. Robotik veya FastAPI dene.',
+  resetConfirm: 'Demo oturumu sıfırlansın mı? Yerel gönderiler ve açık istekler silinecek.',
+  viewMessagesText: 'Mesajlaşma planlanan bir NSosyal entegrasyonudur. Bu prototipten mesaj gönderilmez.',
+  viewCommunitiesText: 'Örnek NSosyal toplulukları. Bu prototipte üyelik bağlantısı yoktur.',
+  viewProfileText: 'Bu tarayıcı oturumu için örnek profil.', singleWindow: 'Yeni isteğe hazır',
+  normalPost: 'İnsan yanıtı isteği algılanmadı. Normal gönderi paylaşabilir veya yardım isteyebilirsin.',
+  routeFound: 'Bu istek için gönüllü bir yanıtlayıcı mevcut.', showEvidence: 'Kaynağı ve bölümü göster',
+  noMessages: 'Henüz bağlı sohbet yok.', shareFailed: 'Bağlantı kopyalanamadı. Adresi tarayıcıdan kopyala.',
+  evidenceUnavailable: 'Kanıt kontrolü kullanılamıyor. Gönderiyi yeniden düzenleyerek dene.', pausedPerson: 'Duraklatılan yanıtlayıcı',
+});
+
 const STATE_VERSION = '4';
 if (sessionStorage.getItem('drsk-state-version') !== STATE_VERSION) {
   sessionStorage.removeItem('drsk-open-requests');
@@ -62,6 +103,7 @@ if (sessionStorage.getItem('drsk-state-version') !== STATE_VERSION) {
 let language = localStorage.getItem('drsk-language') || 'en';
 let selectedIntent = 'ask';
 let latestDecision = null;
+let activeMatchDecision = null;
 let latestDrsk = null;
 let currentRequestId = null;
 let routingEnabled = false;
@@ -72,6 +114,10 @@ let openRequests = loadJson('drsk-open-requests', []);
 let responderState = loadJson('drsk-responder-state', null);
 let routeResultMode = null;
 let activeView = 'feed';
+let analysisRevision = 0;
+let pausedResponderId = null;
+let savedPosts = loadJson('drsk-posts', []);
+let activeFeed = 'all';
 
 function text(key) { return copy[language][key] || key; }
 function loadJson(key, fallback) {
@@ -96,7 +142,7 @@ function localizeReason(reason) {
 }
 
 function applyLanguage(nextLanguage, persist = true) {
-  language = nextLanguage;
+  language = nextLanguage === 'tr' ? 'tr' : 'en';
   if (persist) localStorage.setItem('drsk-language', language);
   document.documentElement.lang = language;
   $$('[data-i18n]').forEach((node) => { node.textContent = text(node.dataset.i18n); });
@@ -117,6 +163,7 @@ function applyLanguage(nextLanguage, persist = true) {
   if (latestDrsk) renderEvidence(latestDrsk);
   if (latestDecision?.response_needed && routingEnabled) renderMatchPreview(latestDecision);
   else if (!latestDecision) resetPreview();
+  document.title = `DRSK · ${text('productDescriptor')}`;
 }
 
 function showToast(messageKey) {
@@ -140,7 +187,7 @@ async function checkPipeline() {
   renderPipelineState(true);
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 20000);
     const response = await fetch('/api', { cache: 'no-store', signal: controller.signal });
     clearTimeout(timeout);
     if (!response.ok) throw new Error('api unavailable');
@@ -153,6 +200,16 @@ async function checkPipeline() {
   } catch (_) { pipelineLive = false; }
   renderPipelineState();
   updateBudget();
+  if (pipelineLive && openRequests.length && !latestDecision) {
+    currentRequestId = openRequests.at(-1).id;
+    try {
+      latestDecision = await rerunOpenWindow(currentRequestId);
+      selectedIntent = openRequests.at(-1).intent_override || 'ask';
+      routingEnabled = true;
+      renderMatchPreview(latestDecision);
+    } catch (_) { showToast('actionFailed'); }
+  }
+  if (pipelineLive && $('#composerText').value.trim().length >= 12 && !routingEnabled) analyzePost();
 }
 
 function localNeedsResponse(value) {
@@ -316,10 +373,10 @@ function renderEvidence(payload) {
   const resolution = payload?.resolution || {};
   const routedPerson = payload?.niyet?.responder_name;
   $('#resolutionStatus').textContent = resolution.path
-    ? `${text('resolutionLabel')}: ${displayCode(resolution.path)}${routedPerson ? ` · ${routedPerson}` : ''}`
+    ? `${text('resolutionLabel')}: ${displayCode(resolution.path)}${routedPerson ? ` · ${routedPerson}` : resolution.escalation ? ` · ${text('routeNoMatch')}` : ''}`
     : '';
   const askButton = $('#askPerson');
-  askButton.hidden = Boolean(resolution.escalation);
+  askButton.hidden = Boolean(resolution.escalation) || status === 'NOT_REQUIRED';
   askButton.disabled = false;
   askButton.textContent = text('askPerson');
 }
@@ -365,6 +422,7 @@ function setIntent(intent) {
 function hideIntentPanel() { $('#intentPanel').classList.remove('visible'); routingEnabled = false; }
 
 async function analyzePost() {
+  const revision = ++analysisRevision;
   const value = $('#composerText').value.trim();
   if (value.length < 12) {
     latestDecision = null;
@@ -382,6 +440,7 @@ async function analyzePost() {
       callPipeline(value),
       pipelineLive ? callDrsk(value).catch(() => null) : Promise.resolve(null)
     ]);
+    if (revision !== analysisRevision || value !== $('#composerText').value.trim()) return;
     latestDecision = niyetResult;
     if (drskResult) renderEvidence(drskResult);
     else resetEvidence();
@@ -395,6 +454,7 @@ async function analyzePost() {
     $('#routeResult').classList.remove('visible');
     routeResultMode = null;
   } catch (_) {
+    if (revision !== analysisRevision) return;
     pipelineLive = false;
     renderPipelineState();
     latestDecision = await callPipeline(value);
@@ -404,8 +464,10 @@ async function analyzePost() {
       $('#intentPanel').classList.add('visible');
     }
   } finally {
-    button.disabled = false;
-    button.textContent = text('route');
+    if (revision === analysisRevision) {
+      button.disabled = false;
+      button.textContent = text('route');
+    }
   }
 }
 
@@ -446,6 +508,7 @@ function renderRouteResult(mode, decision = latestDecision) {
 }
 
 function renderMatchPreview(decision) {
+  activeMatchDecision = decision;
   const card = $('#matchState');
   card.classList.remove('empty', 'loading');
   card.dataset.state = 'ready';
@@ -464,6 +527,7 @@ function renderMatchPreview(decision) {
   $('#matchType').textContent = `${intentLabel()} · ${decision.match.name}`;
   $('#matchStatus').textContent = text('eligible');
   $('#matchPostText').textContent = $('#composerText').value.trim();
+  $('#matchPostText').textContent = openRequests.find((request) => request.id === currentRequestId)?.text || $('#composerText').value.trim();
   const matchReasons = $('#matchReasons');
   matchReasons.replaceChildren();
   (decision.match.reason || []).forEach((reason) => appendTextElement(matchReasons, 'div', 'match-reason-line', localizeReason(reason)));
@@ -551,14 +615,18 @@ function appendPostEvidence(article, payload) {
   postBody.insertBefore(disclosure, actions);
 }
 
-function createPost(textValue) {
+function createPost(textValue, persist = true, evidencePayload = latestDrsk) {
   const article = document.createElement('article');
   article.className = 'post-card demo-user-post';
   article.innerHTML = `<div class="post-grid"><div class="avatar" aria-hidden="true">AB</div><div><div class="post-head"><span class="post-name">Demo User</span><span class="post-handle">@demo.user</span><span class="post-time">· ${text('now')}</span></div><p class="post-copy"></p>${routingEnabled ? `<div class="niyet-tag"><span class="niyet-dot"></span><span data-i18n="routed">${text('routed')}</span></div>` : ''}<div class="post-actions"><button class="post-action" data-action="reply" type="button" aria-label="${text('reply')}">${iconMarkup('i-reply')}<span>0</span></button><button class="post-action" data-action="repost" type="button" aria-label="${text('repost')}">${iconMarkup('i-repeat')}<span>0</span></button><button class="post-action" data-action="like" type="button" aria-label="${text('like')}">${iconMarkup('i-heart')}<span>0</span></button><button class="post-action" data-action="share" type="button" aria-label="${text('share')}">${iconMarkup('i-share')}</button></div></div></div>`;
   $('.post-copy', article).textContent = textValue;
-  appendPostEvidence(article, latestDrsk);
+  appendPostEvidence(article, evidencePayload);
   $('#feedPosts').prepend(article);
   wirePostActions(article);
+  if (persist) {
+    savedPosts.push({ text: textValue, evidence: evidencePayload });
+    sessionStorage.setItem('drsk-posts', JSON.stringify(savedPosts.slice(-30)));
+  }
 }
 
 function wirePostActions(root = document) {
@@ -574,29 +642,29 @@ function wirePostActions(root = document) {
         return;
       }
       if (action === 'share') {
-        try { await navigator.clipboard.writeText(location.href); } catch (_) {}
-        showToast('linkCopied');
+        try { await navigator.clipboard.writeText(location.href); showToast('linkCopied'); }
+        catch (_) { showToast('shareFailed'); }
         return;
       }
       const active = button.classList.toggle('active-action');
+      button.setAttribute('aria-pressed', String(active));
       if (count) count.textContent = String(Math.max(0, Number(count.textContent || 0) + (active ? 1 : -1)));
     });
   });
 }
 
-function activeResponderId() { return latestDecision?.match?.id || null; }
+function activeResponderId() { return activeMatchDecision?.match?.id || null; }
 function updateBudget() {
+  $('#routingSwitch').disabled = !pipelineLive || (!activeResponderId() && !pausedResponderId);
   const id = activeResponderId();
   const count = $('#budgetCount');
   if (!id || !responderState?.[id]) {
     count.textContent = text('sessionOnly');
-    $('#budgetFill').style.width = '50%';
     return;
   }
   const remaining = Number(responderState[id].remaining_slots || 0);
   const daily = Math.max(1, remaining + 1);
   count.textContent = language === 'tr' ? `${remaining} slot kaldı` : `${remaining} slots remaining`;
-  $('#budgetFill').style.width = `${Math.min(100, Math.max(0, (remaining / daily) * 100))}%`;
 }
 
 function renderMatchingWindow() {
@@ -607,6 +675,7 @@ function renderMatchingWindow() {
 }
 
 function resetPreview() {
+  activeMatchDecision = null;
   const card = $('#matchState');
   card.classList.add('empty');
   card.dataset.state = 'empty';
@@ -623,11 +692,13 @@ function resetPreview() {
 
 function demoExamples() {
   if (language === 'tr') return {
+    evidence: 'Araştırma, kahve tüketiminin ölüm riskini azalttığını kanıtlıyor.',
     help: 'Çizgi izleyen robotum virajlarda salınım yapıyor. PID ayarına nereden başlamalıyım?',
     collab: 'Hafta sonu prototipi için FastAPI bilen bir ekip arkadaşı arıyorum. Birlikte çalışmak isteyen var mı?',
     normal: 'Bugün prototipin ilk benchmark koşusunu tamamladık. Sonuçları yarın paylaşacağız.'
   };
   return {
+    evidence: 'Research proves coffee consumption causes lower mortality.',
     help: 'My line-following robot oscillates in turns. Which PID term should I tune first?',
     collab: 'I am looking for a teammate who knows FastAPI for a weekend prototype. Who wants to collaborate?',
     normal: 'We completed the first benchmark run of the prototype today. We will share the results tomorrow.'
@@ -638,7 +709,7 @@ function secondaryMarkup(view) {
   const views = {
     explore: {
       title: text('viewExploreTitle'), subtitle: text('viewExploreText'),
-      body: `<div class="view-search"><svg><use href="#i-search"></use></svg><span>${text('search')}</span></div><div class="topic-grid"><button>#Robotics</button><button>#ArtificialIntelligence</button><button>#Accessibility</button><button>#OpenSource</button></div>`
+      body: `<label class="view-search">${text('search')}<input id="exploreSearch" type="search" name="conversation-search" autocomplete="off" placeholder="Robotics, FastAPI…"></label><div class="topic-grid"><button type="button" data-topic="robot">Robotics</button><button type="button" data-topic="FastAPI">FastAPI</button><button type="button" data-topic="prototype">Prototypes</button></div><div id="searchResults" aria-live="polite"></div>`
     },
     communities: {
       title: text('viewCommunitiesTitle'), subtitle: text('viewCommunitiesText'),
@@ -646,7 +717,7 @@ function secondaryMarkup(view) {
     },
     messages: {
       title: text('viewMessagesTitle'), subtitle: text('viewMessagesText'),
-      body: `<div class="message-list"><div><span class="avatar green">DA</span><p><b>Deniz A.</b><small>PID notes · ${text('recent')}</small></p></div><div><span class="avatar alt">MK</span><p><b>Mert K.</b><small>Weekend prototype · ${text('recent')}</small></p></div><div class="empty-row">${text('noMessages')}</div></div>`
+      body: `<div class="message-list"><div class="empty-row">${text('noMessages')}</div></div>`
     },
     profile: {
       title: text('viewProfileTitle'), subtitle: text('viewProfileText'),
@@ -655,7 +726,7 @@ function secondaryMarkup(view) {
   };
   const item = views[view];
   if (!item) return '';
-  return `<div class="secondary-head"><span class="role-badge">${text('demoLabel')}</span><h2>${item.title}</h2><p>${item.subtitle}</p></div>${item.body}`;
+  return `<div class="secondary-head"><span class="role-badge">${text('demoLabel')}</span><h1>${item.title}</h1><p>${item.subtitle}</p></div>${item.body}`;
 }
 
 function ensureSecondaryView() {
@@ -675,20 +746,46 @@ function renderSecondaryView() {
   }
   secondary.innerHTML = secondaryMarkup(activeView);
   secondary.hidden = false;
+  if (activeView === 'explore') {
+    const search = $('#exploreSearch');
+    const render = () => {
+      const term = search.value.trim().toLocaleLowerCase(language);
+      const posts = $$('#feedPosts .post-card').filter((post) => post.textContent.toLocaleLowerCase(language).includes(term));
+      const results = $('#searchResults');
+      results.replaceChildren();
+      posts.forEach((post) => {
+        const clone = post.cloneNode(true);
+        $$('[data-bound]', clone).forEach((button) => delete button.dataset.bound);
+        results.appendChild(clone);
+        wirePostActions(clone);
+      });
+      if (!posts.length) appendTextElement(results, 'p', 'assignment-empty', text('searchEmpty'));
+    };
+    search.addEventListener('input', render);
+    $$('[data-topic]').forEach((button) => button.addEventListener('click', () => { search.value = button.dataset.topic; render(); }));
+    render();
+  }
 }
 
-function activateView(view) {
+function activateView(view, updateUrl = true) {
+  if (!['feed', 'explore', 'communities', 'messages', 'profile'].includes(view)) view = 'feed';
   activeView = view;
   const isFeed = view === 'feed';
   $('.composer').hidden = !isFeed;
   $('#feedPosts').hidden = !isFeed;
   $('.feed-tabs').hidden = !isFeed;
+  $('.feed-hero').hidden = !isFeed;
   $('.feed-title').textContent = isFeed ? text('feed') : text(`view${view[0].toUpperCase()}${view.slice(1)}Title`);
   renderSecondaryView();
 
   const viewOrder = ['feed', 'explore', 'communities', 'messages', 'profile'];
   $$('.nav-list .nav-item').forEach((button, index) => button.classList.toggle('active', viewOrder[index] === view));
   $$('.mobile-nav button').forEach((button, index) => button.classList.toggle('active', viewOrder[index] === view));
+  $$('.nav-list .nav-item, .mobile-nav button').forEach((button) => {
+    if (button.classList.contains('active')) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
+  if (updateUrl && location.hash !== `#${view}`) history.pushState(null, '', `${location.pathname}#${view}`);
   updateMobileInboxButton();
   if (isFeed) window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -729,6 +826,9 @@ function installResetButton() {
   button.textContent = text('reset');
   $('.header-actions')?.prepend(button);
   button.addEventListener('click', async () => {
+    if (!window.confirm(text('resetConfirm'))) return;
+    analysisRevision++;
+    clearTimeout(analyzeTimer);
     sessionStorage.removeItem('drsk-open-requests');
     sessionStorage.removeItem('drsk-responder-state');
     openRequests = [];
@@ -736,7 +836,15 @@ function installResetButton() {
     latestDecision = null;
     currentRequestId = null;
     routingEnabled = false;
+    savedPosts = [];
+    sessionStorage.removeItem('drsk-posts');
+    sessionStorage.removeItem('drsk-draft');
+    $$('.demo-user-post').forEach((post) => post.remove());
+    pausedResponderId = null;
+    $('#routingSwitch').classList.remove('off');
+    $('#routingSwitch').setAttribute('aria-pressed', 'true');
     $('#composerText').value = '';
+    $('#characterCount').textContent = '0 / 1200';
     hideIntentPanel();
     resetEvidence();
     $('#routeResult').classList.remove('visible');
@@ -767,13 +875,29 @@ function installMobileInbox() {
   close.addEventListener('click', closeMobileInbox);
 }
 
+let inboxReturnFocus = null;
 function openMobileInbox() {
+  if (window.innerWidth > 1024) { $('#matchState').scrollIntoView({ block: 'center' }); return; }
+  inboxReturnFocus = document.activeElement;
   $('.right-rail')?.classList.add('mobile-open');
+  $('.right-rail').setAttribute('role', 'dialog');
+  $('.right-rail').setAttribute('aria-modal', 'true');
   document.body.classList.add('mobile-inbox-open');
+  $('.feed-column').inert = true;
+  $('.product-nav').inert = true;
+  $('.mobile-nav').inert = true;
+  $('#mobileInboxClose').focus();
 }
 function closeMobileInbox() {
+  const wasOpen = $('.right-rail').classList.contains('mobile-open');
   $('.right-rail')?.classList.remove('mobile-open');
+  $('.right-rail').removeAttribute('role');
+  $('.right-rail').removeAttribute('aria-modal');
   document.body.classList.remove('mobile-inbox-open');
+  $('.feed-column').inert = false;
+  $('.product-nav').inert = false;
+  $('.mobile-nav').inert = false;
+  if (wasOpen) inboxReturnFocus?.focus();
 }
 function updateMobileInboxButton() {
   const button = $('#mobileInboxButton');
@@ -799,6 +923,8 @@ function openExplainSheet(trigger = document.activeElement) {
   const sheet = $('#explainSheet');
   sheet.classList.add('visible');
   sheet.setAttribute('aria-hidden', 'false');
+  $('#productExperience').inert = true;
+  $('#mobileInboxButton').inert = true;
   $('#closeSheet').focus();
 }
 function closeExplainSheet() {
@@ -806,6 +932,8 @@ function closeExplainSheet() {
   if (!sheet.classList.contains('visible')) return;
   sheet.classList.remove('visible');
   sheet.setAttribute('aria-hidden', 'true');
+  $('#productExperience').inert = false;
+  $('#mobileInboxButton').inert = false;
   sheetReturnFocus?.focus?.();
 }
 
@@ -813,11 +941,22 @@ function bindEvents() {
   $$('.lang-switch button').forEach((button) => button.addEventListener('click', () => applyLanguage(button.dataset.lang)));
   const textarea = $('#composerText');
   textarea.addEventListener('input', () => {
+    analysisRevision++;
+    resetEvidence();
+    hideIntentPanel();
+    $('#routeResult').classList.remove('visible');
+    routeResultMode = null;
+    $('#characterCount').textContent = `${textarea.value.length} / 1200`;
+    $('#composerError').hidden = true;
+    textarea.removeAttribute('aria-invalid');
+    sessionStorage.setItem('drsk-draft', textarea.value);
     clearTimeout(analyzeTimer);
     analyzeTimer = setTimeout(analyzePost, 650);
   });
   $$('.demo-chip').forEach((button) => button.addEventListener('click', () => {
     textarea.value = demoExamples()[button.dataset.demo];
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    clearTimeout(analyzeTimer);
     textarea.focus();
     analyzePost();
   }));
@@ -838,20 +977,46 @@ function bindEvents() {
     button.disabled = true;
     button.textContent = text('askingPerson');
     try {
-      renderEvidence(await callDrsk(value, true));
+      const result = await callDrsk(value, true);
+      if (value !== textarea.value.trim()) return;
+      renderEvidence(result);
+      const human = result.niyet;
+      if (human?.responder_id) {
+        currentRequestId = result.resolution.escalation.request_id;
+        selectedIntent = human.intent || 'ask';
+        if (!openRequests.some((request) => request.id === currentRequestId)) {
+          openRequests.push({ id: currentRequestId, text: value, intent_override: selectedIntent, exclude_responder_ids: [] });
+          saveSession();
+        }
+        latestDecision = await rerunOpenWindow(currentRequestId);
+        routingEnabled = true;
+        renderMatchPreview(latestDecision);
+        renderRouteResult('routed', latestDecision);
+      }
       $('#evidenceDetails').hidden = false;
       $('#evidenceToggle').setAttribute('aria-expanded', 'true');
       $('.evidence-toggle-label').textContent = text('hideEvidence');
     } catch (_) {
       button.disabled = false;
       button.textContent = text('askPerson');
+      showToast('actionFailed');
     }
   });
   $('#publishPost').addEventListener('click', () => {
     const value = textarea.value.trim();
-    if (!value) return;
+    if (!value) {
+      $('#composerError').textContent = text('requiredPost');
+      $('#composerError').hidden = false;
+      textarea.setAttribute('aria-invalid', 'true');
+      textarea.focus();
+      return;
+    }
+    analysisRevision++;
+    clearTimeout(analyzeTimer);
     createPost(value);
     textarea.value = '';
+    sessionStorage.removeItem('drsk-draft');
+    $('#characterCount').textContent = '0 / 1200';
     latestDecision = null;
     routingEnabled = false;
     hideIntentPanel();
@@ -864,26 +1029,32 @@ function bindEvents() {
   $('#acceptMatch').addEventListener('click', async () => {
     const responderId = activeResponderId();
     if ($('#acceptMatch').disabled || !responderId) return;
-    try { await applyStateAction('accept', responderId); } catch (_) {}
+    $('#acceptMatch').disabled = true;
+    try { await applyStateAction('accept', responderId); }
+    catch (_) { $('#acceptMatch').disabled = false; showToast('actionFailed'); return; }
     openRequests = openRequests.filter((item) => item.id !== currentRequestId);
     saveSession();
     renderMatchingWindow();
     updateBudget();
     $('#matchStatus').textContent = text('accepted');
     $('#acceptMatch').disabled = true;
+    $('#skipMatch').disabled = true;
     showToast('acceptedToast');
   });
   $('#skipMatch').addEventListener('click', async () => {
     const responderId = activeResponderId();
     const item = openRequests.find((request) => request.id === currentRequestId);
     if (item && responderId) {
+      const previousExcluded = [...(item.exclude_responder_ids || [])];
+      $('#skipMatch').disabled = true;
       item.exclude_responder_ids = [...new Set([...(item.exclude_responder_ids || []), responderId])];
       saveSession();
       try {
         latestDecision = await rerunOpenWindow(currentRequestId);
         renderRouteResult('routed', latestDecision);
         renderMatchPreview(latestDecision);
-      } catch (_) { resetPreview(); }
+      } catch (_) { item.exclude_responder_ids = previousExcluded; saveSession(); showToast('actionFailed'); return; }
+      finally { $('#skipMatch').disabled = false; }
     } else resetPreview();
     showToast('skippedToast');
   });
@@ -896,7 +1067,10 @@ function bindEvents() {
     if (event.target === $('#explainSheet')) closeExplainSheet();
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') { closeExplainSheet(); closeMobileInbox(); }
+    if (event.key === 'Escape') {
+      if ($('#explainSheet').classList.contains('visible')) closeExplainSheet();
+      else closeMobileInbox();
+    }
     if (event.key === 'Tab' && $('#explainSheet').classList.contains('visible')) {
       const focusable = $$('#explainSheet button:not([disabled]), #explainSheet a[href], #explainSheet input:not([disabled])');
       if (!focusable.length) return;
@@ -905,26 +1079,42 @@ function bindEvents() {
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
+    if (event.key === 'Tab' && $('.right-rail').classList.contains('mobile-open') && !$('#explainSheet').classList.contains('visible')) {
+      const items = $$('.right-rail button:not([disabled]), .right-rail a[href]').filter((item) => item.getClientRects().length);
+      if (event.shiftKey && document.activeElement === items[0]) { event.preventDefault(); items.at(-1)?.focus(); }
+      else if (!event.shiftKey && document.activeElement === items.at(-1)) { event.preventDefault(); items[0]?.focus(); }
+    }
   });
   $('#routingSwitch').addEventListener('click', async (event) => {
     const button = event.currentTarget;
-    const off = button.classList.toggle('off');
-    button.setAttribute('aria-pressed', String(!off));
-    const responderId = activeResponderId();
+    const off = !button.classList.contains('off');
+    const responderId = off ? activeResponderId() : pausedResponderId;
     if (responderId && pipelineLive) {
+      button.disabled = true;
       try {
         await applyStateAction(off ? 'pause' : 'resume', responderId);
+        pausedResponderId = off ? responderId : null;
+        button.classList.toggle('off', off);
+        button.setAttribute('aria-pressed', String(!off));
         latestDecision = await rerunOpenWindow(currentRequestId) || latestDecision;
         renderMatchPreview(latestDecision);
-      } catch (_) {}
-    }
+      } catch (_) { showToast('actionFailed'); return; }
+      finally { button.disabled = false; }
+    } else { showToast('actionFailed'); return; }
     $('#pauseTitle').textContent = off ? (language === 'tr' ? 'Yönlendirme duraklatıldı' : 'Routing is paused') : text('pause');
     showToast(off ? 'pausedToast' : 'resumedToast');
   });
   $$('.feed-tab').forEach((tab) => tab.addEventListener('click', () => {
     $$('.feed-tab').forEach((node) => node.classList.remove('active'));
     tab.classList.add('active');
-    if (tab !== $$('.feed-tab')[0]) showToast('followingToast');
+    activeFeed = tab === $$('.feed-tab')[0] ? 'all' : 'following';
+    $$('#feedPosts .post-card').forEach((post) => { post.hidden = activeFeed === 'following'; });
+    let empty = $('#followingEmpty');
+    if (!empty) empty = appendTextElement($('#feedPosts'), 'p', 'assignment-empty', text('emptyFollowing'));
+    empty.id = 'followingEmpty';
+    empty.hidden = activeFeed !== 'following';
+    tab.setAttribute('aria-pressed', 'true');
+    $$('.feed-tab').filter((node) => node !== tab).forEach((node) => node.setAttribute('aria-pressed', 'false'));
   }));
 }
 
@@ -932,12 +1122,18 @@ installNavigation();
 installRoleMarkers();
 installResetButton();
 installMobileInbox();
+$$('.post-actions').forEach((actions) => $$('button', actions).forEach((button, index) => { button.dataset.action = ['reply','repost','like','share'][index]; }));
 wirePostActions();
 applyLanguage(language, false);
 bindEvents();
 window.__drskAppReady = true;
 window.dispatchEvent(new CustomEvent('drsk-app-ready'));
-activateView('feed');
+activateView(location.hash.slice(1), false);
+window.addEventListener('popstate', () => activateView(location.hash.slice(1), false));
+window.addEventListener('hashchange', () => activateView(location.hash.slice(1), false));
+savedPosts.slice(-30).forEach((post) => createPost(post.text, false, post.evidence));
+if (new URLSearchParams(location.search).get('open') !== 'evidence') $('#composerText').value = sessionStorage.getItem('drsk-draft') || $('#composerText').value;
+$('#characterCount').textContent = `${$('#composerText').value.length} / 1200`;
 renderMatchingWindow();
 updateBudget();
 resetPreview();

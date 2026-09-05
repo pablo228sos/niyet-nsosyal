@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 APP = (ROOT / "web" / "app.js").read_text(encoding="utf-8")
 INDEX = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
-STYLES = (ROOT / "web" / "styles.css").read_text(encoding="utf-8")
+STYLES = (ROOT / "web" / "design-system.css").read_text(encoding="utf-8")
 
 
 def test_first_visit_uses_english_without_persisting_an_implicit_choice():

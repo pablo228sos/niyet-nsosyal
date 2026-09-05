@@ -3,17 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#f5f7fb">
   <meta name="description" content="DRSK connects evidence-aware verification with human attention routing.">
-  <title>Intelligence Designed To Evolve</title>
+  <title>DRSK · Evidence & human help</title>
   <link rel="icon" href="/assets/logo.webp" type="image/webp">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
-  <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=drsk-system-1">
-  <link rel="stylesheet" href="/live.css?v=drsk-system-1">
-  <link rel="stylesheet" href="/design-system.css?v=drsk-system-1">
+  <link rel="stylesheet" href="/design-system.css?v=drsk-system-2">
 </head>
 <body>
   <svg class="sr-only" aria-hidden="true">
@@ -32,92 +26,17 @@
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
 
-  <div class="landing-page" id="landingPage">
-    <div class="bg" aria-hidden="true">
-      <video class="bg-video" id="backgroundVideo" autoplay muted loop playsinline>
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4">
-      </video>
-    </div>
-
-    <div class="landing-shell">
-      <header class="landing-header">
-        <button class="landing-logo" type="button" data-open-experience aria-label="Open DRSK product">
-          <img src="/assets/logo.webp" alt="" width="52" height="52">
-        </button>
-
-        <nav class="landing-nav" aria-label="Landing navigation">
-          <button class="active" type="button" data-landing-home data-landing-key="navHome">Home</button>
-          <button type="button" data-open-experience data-landing-key="navProduct">Product</button>
-          <button type="button" data-open-evidence data-landing-key="navEvidence">Evidence</button>
-          <a href="/lab" data-landing-key="navAllocation">Allocation Lab</a>
-        </nav>
-
-        <div class="landing-actions">
-          <div class="landing-lang" role="group" aria-label="Language">
-            <button class="active" type="button" data-landing-lang="en" aria-pressed="true">EN</button>
-            <button type="button" data-landing-lang="tr" aria-pressed="false">TR</button>
-          </div>
-          <button class="landing-open" type="button" data-open-experience data-landing-key="openDrsk">Open DRSK</button>
-        </div>
-
-        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileMenu">
-          <span></span><span></span><span></span>
-        </button>
-      </header>
-
-      <main class="landing-hero" id="landingMain">
-        <div class="trust-row anim delay-1">
-          <div class="trust-avatars" aria-hidden="true">
-            <span class="trust-avatar a1"><i>SC</i></span>
-            <span class="trust-avatar a2"><i>D</i></span>
-            <span class="trust-avatar a3"><i>N</i></span>
-          </div>
-          <span class="trust-pill" data-landing-key="trust">SOURCECHAIN · DRSK · NIYET</span>
-        </div>
-
-        <h1 class="landing-headline" aria-label="Evidence-aware social coordination">
-          <span class="delay-2" data-landing-key="headlineOne">Evidence-Aware</span>
-          <span class="delay-3" data-landing-key="headlineTwo">Social Coordination</span>
-        </h1>
-
-        <p class="landing-subhead anim delay-3" data-landing-key="subhead">Trace claims to evidence, make uncertainty visible, and route human attention through one research-grade social layer.</p>
-        <button class="landing-cta anim delay-4" type="button" data-open-experience data-landing-key="cta">Explore the live system</button>
-      </main>
-
-      <footer class="landing-footer">
-        <div class="landing-stats" aria-label="DRSK system scope">
-          <div class="landing-stat anim delay-5" data-target="2" data-decimals="0"><span class="stat-symbol">&lt;</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statEngines">Coordinated engines</small></div>
-          <div class="landing-stat anim delay-6" data-target="4" data-decimals="0"><span class="stat-symbol">%</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statIntents">Intent routes</small></div>
-          <div class="landing-stat anim delay-7" data-target="1" data-decimals="0"><span class="stat-symbol">*</span><strong><span class="stat-value">0</span><span class="stat-suffix">-hop</span></strong><small data-landing-key="statTrace">Truthful evidence trace</small></div>
-          <div class="landing-stat anim delay-8" data-target="2" data-decimals="0"><span class="stat-symbol">#</span><strong><span class="stat-value">0</span><span class="stat-suffix"></span></strong><small data-landing-key="statLanguages">Interface languages</small></div>
-        </div>
-        <button class="video-toggle" id="videoToggle" type="button" aria-pressed="false"><span aria-hidden="true">Ⅱ</span><b data-landing-key="pauseMotion">Pause motion</b></button>
-      </footer>
-    </div>
-
-    <div class="menu-overlay" id="mobileMenu" hidden>
-      <div class="mobile-menu-sheet" role="dialog" aria-modal="true" aria-label="Navigation">
-        <button class="active" type="button" data-landing-home data-landing-key="navHome">Home</button>
-        <button type="button" data-open-experience data-landing-key="navProduct">Product</button>
-        <button type="button" data-open-evidence data-landing-key="navEvidence">Evidence</button>
-        <a href="/lab" data-landing-key="navAllocation">Allocation Lab</a>
-        <button class="mobile-open-cta" type="button" data-open-experience data-landing-key="openDrsk">Open DRSK</button>
-      </div>
-    </div>
-  </div>
-
-  <section class="experience-overlay" id="productExperience" hidden aria-label="DRSK product experience">
-    <button class="experience-close" id="experienceClose" type="button" aria-label="Return to landing"><span aria-hidden="true">×</span><b data-landing-key="backLanding">Back to landing</b></button>
+  <section id="productExperience" aria-label="DRSK workspace">
   <a class="skip-link" href="#feedTop" data-i18n="skipToFeed">Skip to feed</a>
 
   <header class="product-nav">
     <a class="product-wordmark" href="/" aria-label="DRSK home">
-      <span class="drsk-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
+      <img src="/assets/logo.webp" width="36" height="36" alt="">
       <span><strong>DRSK</strong><small data-i18n="productDescriptor">Evidence-aware social coordination</small></span>
     </a>
     <nav class="product-links" aria-label="Product navigation" data-i18n-aria="productNav">
-      <a class="active" href="#feedTop" data-i18n="feed">Feed</a>
-      <a href="#evidenceCard" data-i18n="evidenceNav">Evidence</a>
+      <a class="active" href="#feed" data-i18n="feed">Feed</a>
+      <a href="/?open=evidence" data-i18n="evidenceNav">Evidence</a>
       <a href="/lab" data-i18n="allocationLab">Allocation Lab</a>
       <button id="openTechnical" type="button" data-i18n="technical">Technical</button>
     </nav>
@@ -137,11 +56,11 @@
         <div class="ns-brand-copy"><strong>NSosyal</strong><span>concept integration</span></div>
       </div>
       <nav class="nav-list">
-        <button class="nav-item active" type="button"><svg class="nav-icon"><use href="#i-home"></use></svg><span class="nav-label" data-i18n="feed">Feed</span></button>
-        <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-search"></use></svg><span class="nav-label" data-i18n="explore">Explore</span></button>
-        <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-users"></use></svg><span class="nav-label" data-i18n="communities">Communities</span></button>
-        <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-message"></use></svg><span class="nav-label" data-i18n="messages">Messages</span></button>
-        <button class="nav-item" type="button"><svg class="nav-icon"><use href="#i-user"></use></svg><span class="nav-label" data-i18n="profile">Profile</span></button>
+        <button class="nav-item active" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-home"></use></svg><span class="nav-label" data-i18n="feed">Feed</span></button>
+        <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-search"></use></svg><span class="nav-label" data-i18n="explore">Explore</span></button>
+        <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-users"></use></svg><span class="nav-label" data-i18n="communities">Communities</span></button>
+        <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-message"></use></svg><span class="nav-label" data-i18n="messages">Messages</span></button>
+        <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-user"></use></svg><span class="nav-label" data-i18n="profile">Profile</span></button>
       </nav>
       <button class="compose-main" type="button"><span data-i18n="compose">Post</span></button>
       <div class="layer-card">
@@ -153,13 +72,13 @@
       </div>
     </aside>
 
-    <main class="feed-column" id="feedTop">
+    <main class="feed-column" id="feedTop" tabindex="-1">
       <header class="feed-header">
         <div class="feed-topline">
           <div class="feed-title" data-i18n="feed">Feed</div>
           <div class="header-actions">
             <span class="pipeline-state" id="pipelineState">checking pipeline</span>
-            <span class="demo-badge" data-i18n="concept">Concept prototype</span>
+
           </div>
         </div>
         <div class="feed-tabs">
@@ -169,27 +88,20 @@
       </header>
 
       <section class="feed-hero" aria-labelledby="feedHeroTitle">
-        <div class="hero-copy">
-          <span class="hero-kicker"><i aria-hidden="true"></i><span data-i18n="heroKicker">Context before reaction</span></span>
-          <h1 id="feedHeroTitle" data-i18n="heroTitle">A social feed that can trace evidence and route human attention.</h1>
-          <p data-i18n="heroText">DRSK connects SOURCECHAIN verification with NIYET coordination—without hiding uncertainty or pretending development signals are probabilities.</p>
-        </div>
-        <div class="system-bridge" aria-label="DRSK system layers" data-i18n-aria="systemLayers">
-          <div class="system-node sourcechain-node"><span>SOURCECHAIN</span><strong data-i18n="verifyClaims">Verify claims</strong></div>
-          <div class="bridge-line" aria-hidden="true"><i></i><b>DRSK</b></div>
-          <div class="system-node niyet-node"><span>NIYET</span><strong data-i18n="routeAttention">Route attention</strong></div>
-        </div>
+        <h1 id="feedHeroTitle" data-i18n="heroTitle">A little context. A better conversation.</h1>
+        <p data-i18n="heroText">Check a claim or find someone who can help.</p>
       </section>
 
       <section class="composer" aria-labelledby="composerLabel">
         <div class="composer-grid">
           <div class="avatar" aria-hidden="true">AB</div>
           <div>
-            <label class="sr-only" id="composerLabel" for="composerText" data-i18n="placeholder">What is happening?</label>
-            <textarea id="composerText" data-i18n-placeholder="placeholder" placeholder="What is happening?"></textarea>
+            <label class="composer-label" id="composerLabel" for="composerText" data-i18n="placeholder">What is happening?</label>
+            <textarea id="composerText" name="post" maxlength="1200" aria-describedby="composerHelp composerError" data-i18n-placeholder="placeholder" placeholder="What is happening?"></textarea><div class="composer-help" id="composerHelp"><span data-i18n="localNotice">Posts stay in this browser session.</span><output id="characterCount">0 / 1200</output></div><p id="composerError" class="field-error" role="alert" hidden></p>
             <div class="demo-prompts" aria-label="Demo prompts" data-i18n-aria="demoPrompts">
               <button class="demo-chip" type="button" data-demo="help" data-i18n="demoHelp">Try: ask for help</button>
               <button class="demo-chip" type="button" data-demo="collab" data-i18n="demoCollab">Try: find a collaborator</button>
+              <button class="demo-chip" type="button" data-demo="evidence" data-i18n="demoEvidence">Check a claim</button>
               <button class="demo-chip" type="button" data-demo="normal" data-i18n="demoNormal">Try: normal post</button>
             </div>
           </div>
@@ -239,11 +151,7 @@
         </section>
 
         <div class="composer-meta">
-          <div class="composer-tools" aria-label="Post tools" data-i18n-aria="postTools">
-            <button class="icon-btn" type="button" aria-label="Media" data-i18n-aria="media"><svg><use href="#i-image"></use></svg></button>
-            <button class="icon-btn" type="button" aria-label="Poll" data-i18n-aria="poll"><svg><use href="#i-poll"></use></svg></button>
-            <button class="icon-btn" type="button" aria-label="Location" data-i18n-aria="location"><svg><use href="#i-pin"></use></svg></button>
-          </div>
+<span class="composer-privacy" data-i18n="privateNote">You stay in control</span>
           <button class="post-btn" id="publishPost" type="button" data-i18n="publish">Post</button>
         </div>
       </section>
@@ -289,12 +197,12 @@
     </main>
 
     <aside class="right-rail" aria-label="Context sidebar" data-i18n-aria="contextSidebar">
-      <label class="search-box"><svg><use href="#i-search"></use></svg><span class="sr-only" data-i18n="search">Search NSosyal</span><input type="search" data-i18n-placeholder="search" placeholder="Search NSosyal"></label>
+
 
       <section class="side-panel">
         <div class="side-panel-head">
           <div class="side-panel-title"><div class="mini-orb" aria-hidden="true"></div><div><strong data-i18n="previewTitle">Responder preview</strong><span data-i18n="previewSub">What a routed request looks like on the other side</span></div></div>
-          <span class="live-pill" data-i18n="live">live</span>
+
         </div>
 
         <div class="match-card ai-surface empty" id="matchState" data-state="empty">
@@ -320,21 +228,16 @@
         </div>
       </section>
 
-      <section class="side-panel">
-        <div class="trends-head" data-i18n="trends">Trends for you</div>
-        <div class="trend"><div class="trend-kicker" data-i18n="trendTechnology">Technology · Trending</div><strong>TEKNOFEST 2026</strong><span data-i18n="demoFeed">demo feed</span></div>
-        <div class="trend"><div class="trend-kicker" data-i18n="trendAi">AI · Trending</div><strong data-i18n="trend2">Artificial Intelligence</strong><span data-i18n="demoFeed">demo feed</span></div>
-        <div class="trend"><div class="trend-kicker" data-i18n="trendEngineering">Engineering · Trending</div><strong data-i18n="trend3">Robotics</strong><span data-i18n="demoFeed">demo feed</span></div>
-      </section>
+      <section class="scope-note"><h2 data-i18n="scopeTitle">About this prototype</h2><p data-i18n="scopeText">Evidence comes from a small controlled corpus. Responders are sample profiles. Capacity is local to this browser session.</p><a href="/lab" data-i18n="labLink">See how allocation works →</a></section>
     </aside>
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile navigation" data-i18n-aria="mobileNav">
-    <button class="active" type="button" aria-label="Feed" data-i18n-aria="feed"><svg><use href="#i-home"></use></svg></button>
-    <button type="button" aria-label="Explore" data-i18n-aria="explore"><svg><use href="#i-search"></use></svg></button>
-    <button type="button" aria-label="Communities" data-i18n-aria="communities"><svg><use href="#i-users"></use></svg></button>
-    <button type="button" aria-label="Messages" data-i18n-aria="messages"><svg><use href="#i-message"></use></svg></button>
-    <button type="button" aria-label="Profile" data-i18n-aria="profile"><svg><use href="#i-user"></use></svg></button>
+    <button class="active" type="button" aria-label="Feed" data-i18n-aria="feed"><svg aria-hidden="true"><use href="#i-home"></use></svg></button>
+    <button type="button" aria-label="Explore" data-i18n-aria="explore"><svg aria-hidden="true"><use href="#i-search"></use></svg></button>
+    <button type="button" aria-label="Communities" data-i18n-aria="communities"><svg aria-hidden="true"><use href="#i-users"></use></svg></button>
+    <button type="button" aria-label="Messages" data-i18n-aria="messages"><svg aria-hidden="true"><use href="#i-message"></use></svg></button>
+    <button type="button" aria-label="Profile" data-i18n-aria="profile"><svg aria-hidden="true"><use href="#i-user"></use></svg></button>
   </nav>
   </section>
 
@@ -360,7 +263,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><span id="toastText">Done</span></div>
-  <script src="/main.js?v=drsk-system-1" defer></script>
-  <script src="/app.js?v=drsk-system-1" defer></script>
+  <script src="/main.js?v=drsk-system-2" defer></script>
+  <script src="/app.js?v=drsk-system-2" defer></script>
 </body>
 </html>

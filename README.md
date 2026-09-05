@@ -1,5 +1,13 @@
 # DRSK — Hybrid Social Intelligence Layer
 
+## Rebuilt interface
+
+The feed and allocation laboratory share an accessible, responsive interface with English/Turkish localization and automatic dark mode. See [the redesign and QA report](docs/REDESIGN_REPORT.md) and [design tokens](DESIGN.md).
+
+For local Python development, run `python scripts/serve_local.py --port 8766`.
+For the Sites production build, run `python scripts/build_site.py`, then `node scripts/preview_worker.mjs` and open `http://127.0.0.1:8767`.
+The Sites Worker serves bundled frontend assets and forwards `/api` and `/api/experiment` to the existing Python deployment at `https://niyet-nsosyal.vercel.app`; it does not execute Python itself. `.openai/hosting.json` identifies the private Sites project.
+
 DRSK combines evidence intelligence and human interaction intelligence in one social-feed flow:
 
 ```text

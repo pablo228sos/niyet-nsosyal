@@ -3,23 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#f5f7fb">
   <meta name="description" content="NIYET allocation lab for comparing routing strategies">
   <title>NIYET Allocation Lab</title>
   <link rel="icon" href="/assets/logo.webp" type="image/webp">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
-  <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=drsk-system-1">
-  <link rel="stylesheet" href="/lab.css?v=drsk-system-1">
-  <link rel="stylesheet" href="/design-system.css?v=drsk-system-1">
+  <link rel="stylesheet" href="/design-system.css?v=drsk-system-2">
 </head>
 <body class="lab-body">
-  <main class="lab-shell">
+  <a class="skip-link" href="#controlsTitle">Skip to experiment</a><main class="lab-shell">
     <nav class="lab-topbar" aria-label="Product navigation" data-lab-aria="productNav">
       <a class="lab-home-mark" href="/" aria-label="DRSK home" data-lab-aria="homeLabel">
-        <img src="/assets/logo.webp" width="34" height="34" alt="">
+        <img src="/assets/logo.webp" width="34" height="34" alt=""><strong>DRSK</strong>
       </a>
       <div class="lab-nav-links">
         <a href="/#product" data-lab-key="feed">Feed</a>
@@ -55,7 +49,7 @@
           <p data-lab-key="labSubtitle">Same requests. Same responder capacity. Different allocation strategies.</p>
         </div>
       </div>
-      <div class="lab-status-row">
+      <div class="lab-status-row"><button id="retryExperiment" type="button" data-lab-key="retry">Run again</button>
         <span class="lab-badge" data-lab-key="benchmark">Development benchmark</span>
         <span class="pipeline-state" id="labApiStatus" data-lab-key="checkingApi">checking API</span>
       </div>
@@ -63,17 +57,17 @@
 
     <section class="lab-explainer">
       <div>
-        <span class="step-index">01</span>
+
         <strong data-lab-key="retrieve">Retrieve</strong>
         <p data-lab-key="retrieveText">Only responders who accept the intent and pass the topic floor enter the candidate graph.</p>
       </div>
       <div>
-        <span class="step-index">02</span>
+
         <strong data-lab-key="constrain">Constrain</strong>
         <p data-lab-key="constrainText">Each responder has one slot in this lab, so requests compete for limited attention.</p>
       </div>
       <div>
-        <span class="step-index">03</span>
+
         <strong data-lab-key="allocate">Allocate</strong>
         <p data-lab-key="allocateText">Greedy chooses locally. Global assignment evaluates the batch together.</p>
       </div>
@@ -91,7 +85,7 @@
       </div>
       <label class="floor-control" for="floorRange">
         <span><strong data-lab-key="topicFloor">Topic floor</strong><output id="floorValue">0.06</output></span>
-        <input id="floorRange" type="range" min="0" max="0.12" step="0.02" value="0.06">
+        <input id="floorRange" name="topic-floor" type="range" min="0" max="0.12" step="0.02" value="0.06">
         <small data-lab-key="topicFloorHelp">Weak retrieval edges are removed before optimization.</small>
       </label>
     </section>
@@ -140,6 +134,6 @@
     </section>
   </main>
 
-  <script src="/lab.js?v=drsk-system-1" defer></script>
+  <script src="/lab.js?v=drsk-system-2" defer></script>
 </body>
 </html>

@@ -1,0 +1,50 @@
+const API_ORIGIN = 'https://niyet-nsosyal.vercel.app';
+const HEADERS = {
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'no-referrer',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+};
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (url.pathname === '/api' || url.pathname === '/api/experiment') {
+      if (!['GET', 'POST'].includes(request.method) || (url.pathname === '/api/experiment' && request.method !== 'GET')) return new Response('Method not allowed', { status: 405 });
+      let body;
+      if (request.method === 'POST') {
+        if (!request.headers.get('content-type')?.startsWith('application/json')) return new Response('JSON required', { status: 415 });
+        if (Number(request.headers.get('content-length')) > 32768) return new Response('Request too large', { status: 413 });
+        const reader = request.body?.getReader();
+        let size = 0;
+        const chunks = [];
+        if (reader) {
+          while (true) {
+            const part = await reader.read();
+            if (part.done) break;
+            size += part.value.byteLength;
+            if (size > 32768) { await reader.cancel(); return new Response('Request too large', { status: 413 }); }
+            chunks.push(part.value);
+          }
+        }
+        body = new Uint8Array(size);
+        let offset = 0;
+        for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
+      }
+      try {
+        const upstream = await fetch(API_ORIGIN + url.pathname + url.search, {
+          method: request.method, headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body, redirect: 'error', signal: AbortSignal.timeout(20000),
+        });
+        return new Response(upstream.body, { status: upstream.status, headers: { ...HEADERS, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+      } catch {
+        return Response.json({ error: 'backend_unavailable' }, { status: 503, headers: { ...HEADERS, 'Cache-Control': 'no-store' } });
+      }
+    }
+    if (!['GET', 'HEAD'].includes(request.method)) return new Response('Method not allowed', { status: 405 });
+    const path = url.pathname === '/' ? '/index.html' : ['/lab', '/lab/'].includes(url.pathname) ? '/lab.html' : url.pathname;
+    const asset = ASSETS[path];
+    if (!asset) return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Page not found · DRSK</title><link rel="stylesheet" href="/design-system.css"><main class="lab-shell"><h1>Page not found</h1><p>This page is not part of DRSK.</p><a href="/">Return to the feed</a></main></html>', { status: 404, headers: { ...HEADERS, 'Content-Type': 'text/html; charset=utf-8' } });
+    const bytes = Uint8Array.from(atob(asset.body), (character) => character.charCodeAt(0));
+    return new Response(request.method === 'HEAD' ? null : bytes, { headers: { ...HEADERS, 'Content-Type': asset.type, 'Cache-Control': 'no-cache' } });
+  },
+};
