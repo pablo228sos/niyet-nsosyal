@@ -3,7 +3,7 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const LAB_COPY = {
   en: {
-    productNav: 'Product navigation', homeLabel: 'DRSK home', language: 'Language', navigation: 'Navigation', menuOpen: 'Open navigation', menuClose: 'Close navigation',
+    productNav: 'Product navigation', homeLabel: 'NIYET home', language: 'Language', navigation: 'Navigation', menuOpen: 'Open navigation', menuClose: 'Close navigation',
     feed: 'Feed', evidence: 'Evidence', allocationLab: 'Allocation Lab', openDrsk: 'Open DRSK', backFeed: '← Back to feed',
     labSubtitle: 'Same requests. Same responder capacity. Different allocation strategies.', benchmark: 'Development benchmark', checkingApi: 'checking API',
     retrieve: 'Retrieve', retrieveText: 'Only responders who accept the intent and pass the topic floor enter the candidate graph.',
@@ -144,7 +144,7 @@ function renderError(message) {
     $(`#${id}`).innerHTML = metric(t('status'), t('offline'));
   });
   ['greedyAssignments', 'globalAssignments'].forEach((id) => {
-    $(`#${id}`).innerHTML = `<div class="assignment-empty">${escapeHtml(message)}</div>`;
+    $(`#${id}`).innerHTML = `<div class="assignment-empty">${escapeHtml(t('apiErrorText'))}</div>`;
   });
   const status = $('#labApiStatus');
   status.textContent = t('apiUnavailable');
@@ -153,6 +153,7 @@ function renderError(message) {
 
 async function runExperiment() {
   const token = ++requestToken;
+  $('#retryExperiment').disabled = true;
   $('.lab-shell').classList.add('loading');
   $('.comparison-grid').setAttribute('aria-busy', 'true');
   $('#labApiStatus').textContent = t('checkingApi');
@@ -170,6 +171,7 @@ async function runExperiment() {
     renderError(error instanceof Error ? error.message : 'Unknown API error');
   } finally {
     if (token === requestToken) {
+      $('#retryExperiment').disabled = false;
       $('.lab-shell').classList.remove('loading');
       $('.comparison-grid').setAttribute('aria-busy', 'false');
     }

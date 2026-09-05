@@ -10,6 +10,8 @@ code = '''async (page) => {
  const results = [];
  for (const theme of ['light','dark']) {
   await page.emulateMedia({colorScheme:theme});
+  await page.goto('http://127.0.0.1:8767/');
+  await page.evaluate(value => localStorage.setItem('niyet-theme', value), theme);
   for (const route of ['/', '/#explore','/#communities','/#messages','/#profile','/lab']) {
    await page.goto('http://127.0.0.1:8767' + route);
    if (route === '/lab') await page.waitForFunction(() => !document.querySelector('.lab-shell').classList.contains('loading'));

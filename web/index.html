@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f7fb">
+  <meta name="theme-color" content="#090d16">
   <meta name="description" content="DRSK connects evidence-aware verification with human attention routing.">
-  <title>DRSK · Evidence & human help</title>
-  <link rel="icon" href="/assets/logo.webp" type="image/webp">
-  <link rel="stylesheet" href="/design-system.css?v=drsk-system-2">
+  <title>NIYET · Evidence, context & human help</title>
+  <link rel="icon" href="/assets/niyet/niyet-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/design-system.css?v=niyet-system-3">
+  <script src="/theme.js"></script>
 </head>
 <body>
   <svg class="sr-only" aria-hidden="true">
@@ -26,13 +27,13 @@
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
 
-  <section id="productExperience" aria-label="DRSK workspace">
+  <section id="productExperience" aria-label="NIYET workspace">
   <a class="skip-link" href="#feedTop" data-i18n="skipToFeed">Skip to feed</a>
 
   <header class="product-nav">
-    <a class="product-wordmark" href="/" aria-label="DRSK home">
-      <img src="/assets/logo.webp" width="36" height="36" alt="">
-      <span><strong>DRSK</strong><small data-i18n="productDescriptor">Evidence-aware social coordination</small></span>
+    <a class="product-wordmark" href="/" aria-label="NIYET home">
+<img class="brand-mark" src="/assets/niyet/niyet-mark.svg" width="32" height="32" alt=""><svg class="brand-wordmark" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="480" height="120" viewBox="0 0 480 120">
+<rect width="480" height="120" fill="none"/><text x="18" y="82" fill="currentColor" font-family="Arial, sans-serif" font-size="72" font-weight="600" letter-spacing="22">NIYET</text></svg>
     </a>
     <nav class="product-links" aria-label="Product navigation" data-i18n-aria="productNav">
       <a class="active" href="#feed" data-i18n="feed">Feed</a>
@@ -40,8 +41,8 @@
       <a href="/lab" data-i18n="allocationLab">Allocation Lab</a>
       <button id="openTechnical" type="button" data-i18n="technical">Technical</button>
     </nav>
-    <div class="nav-actions">
-      <span class="prototype-mark" data-i18n="researchPrototype">Research prototype</span>
+    <div class="nav-actions"><button class="theme-toggle" data-theme-toggle type="button" aria-label="Light appearance" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 5a7 7 0 0 1 0 14Z" fill="currentColor"/></svg></button>
+      <span class="prototype-mark">NSosyal</span>
       <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="tr" aria-pressed="false">TR</button>
@@ -52,12 +53,12 @@
   <div class="app-shell">
     <aside class="left-rail" aria-label="Primary navigation" data-i18n-aria="primaryNav">
       <div class="ns-brand">
-        <div class="ns-mark" aria-hidden="true">N</div>
-        <div class="ns-brand-copy"><strong>NSosyal</strong><span>concept integration</span></div>
+        <img class="ns-mark" src="/assets/niyet/niyet-mark.svg" width="28" height="28" alt="">
+        <div class="ns-brand-copy"><strong>NSosyal</strong><span>connected workspace</span></div>
       </div>
       <nav class="nav-list">
         <button class="nav-item active" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-home"></use></svg><span class="nav-label" data-i18n="feed">Feed</span></button>
-        <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-search"></use></svg><span class="nav-label" data-i18n="explore">Explore</span></button>
+        <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="/assets/niyet/icons.svg#search"></use></svg><span class="nav-label" data-i18n="explore">Explore</span></button>
         <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-users"></use></svg><span class="nav-label" data-i18n="communities">Communities</span></button>
         <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-message"></use></svg><span class="nav-label" data-i18n="messages">Messages</span></button>
         <button class="nav-item" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#i-user"></use></svg><span class="nav-label" data-i18n="profile">Profile</span></button>
@@ -66,7 +67,7 @@
       <div class="layer-card">
         <div class="layer-row">
           <div class="mini-orb" aria-hidden="true"></div>
-          <div class="layer-copy"><strong>DRSK / NIYET</strong><span data-i18n="layerSub">interaction layer</span></div>
+          <div class="layer-copy"><strong>NIYET</strong><span data-i18n="layerSub">interaction layer</span></div>
         </div>
         <p class="layer-note" data-i18n="layerNote">Concept integration for NSosyal. Research prototype.</p>
       </div>
@@ -88,9 +89,19 @@
       </header>
 
       <section class="feed-hero" aria-labelledby="feedHeroTitle">
-        <h1 id="feedHeroTitle" data-i18n="heroTitle">A little context. A better conversation.</h1>
-        <p data-i18n="heroText">Check a claim or find someone who can help.</p>
+        <picture class="hero-art" aria-hidden="true"><source media="(max-width: 760px)" srcset="/assets/niyet/wave-small.webp"><img src="/assets/niyet/wave.webp" width="760" height="489" alt="" fetchpriority="low"></picture>
+        <span class="eyebrow hero-eyebrow" data-i18n="heroEyebrow">Evidence. Context. Connection.</span>
+        <h1 id="feedHeroTitle" data-i18n="heroTitle">Better answers start with context.</h1>
+        <p data-i18n="heroText">Trace a claim to its source with SOURCECHAIN. Find a willing person when you need more.</p>
+        <button class="hero-start" id="startContext" type="button"><span data-i18n="startContext">Start with a question</span><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#arrow-right"></use></svg></button>
       </section>
+      <details class="sourcechain-guide" id="sourcechainGuide">
+        <summary><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#layers"></use></svg><span data-i18n="howSourcechain">How SOURCECHAIN builds context</span></summary>
+        <p data-i18n="chainIntro">A traceable path, not a truth score. Every result keeps the source and its limits visible.</p>
+        <ol class="chain-steps">
+<li><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#source"></use></svg><strong data-i18n="chainSource">Source</strong><span data-i18n="chainSourceText">Find the original</span></li><li><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#layers"></use></svg><strong data-i18n="chainEvidence">Evidence</strong><span data-i18n="chainEvidenceText">Read the passage</span></li><li><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#shield"></use></svg><strong data-i18n="chainCheck">Compare</strong><span data-i18n="chainCheckText">Check the claim</span></li><li><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#link"></use></svg><strong data-i18n="chainContext">Context</strong><span data-i18n="chainContextText">Keep provenance</span></li><li><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#check"></use></svg><strong data-i18n="chainDecision">Resolution</strong><span data-i18n="chainDecisionText">Choose the next step</span></li>
+        </ol>
+      </details>
 
       <section class="composer" aria-labelledby="composerLabel">
         <div class="composer-grid">
@@ -107,6 +118,8 @@
           </div>
         </div>
 
+        <div class="analysis-progress" id="analysisProgress" role="status" hidden><span class="progress-line" aria-hidden="true"></span><span data-i18n="checkingContext">Checking intent and source context…</span></div>
+        <div class="analysis-error" id="analysisError" role="alert" hidden><strong data-i18n="analysisUnavailable">Analysis is temporarily unavailable</strong><p data-i18n="analysisRecovery">Your draft is safe. Retry the connection or post without analysis.</p><button id="retryAnalysis" type="button" data-i18n="retryAnalysis">Retry analysis</button></div>
         <div class="intent-panel ai-surface" id="intentPanel" aria-live="polite">
           <div class="intent-head">
             <div class="intent-brand">
@@ -135,16 +148,16 @@
 
         <section class="evidence-card" id="evidenceCard" hidden aria-labelledby="evidenceHeading">
           <button class="evidence-summary" id="evidenceToggle" type="button" aria-expanded="false" aria-controls="evidenceDetails">
-            <span class="evidence-status-mark" aria-hidden="true">i</span>
+            <span class="evidence-status-mark"><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#source"></use></svg></span>
             <span><strong id="evidenceHeading" data-i18n="evidenceTitle">Evidence check</strong><small id="evidenceStatus" data-i18n="evidenceWaiting">Not checked</small></span>
             <span class="evidence-toggle-label" data-i18n="showEvidence">Show evidence</span>
           </button>
-          <div class="evidence-details" id="evidenceDetails" hidden>
+          <div class="evidence-details" id="evidenceDetails" hidden><ol class="evidence-trail" id="evidenceTrail" aria-label="Source to resolution"></ol>
             <p class="evidence-explanation" id="evidenceExplanation"></p>
             <div class="claim-list" id="claimList"></div>
             <div class="evidence-list" id="evidenceList"></div>
             <div class="resolution-row">
-              <span id="resolutionStatus"></span>
+              <div id="resolutionStatus" class="resolution-state" role="status"></div>
               <button class="soft-btn ask-person-btn" id="askPerson" type="button" data-i18n="askPerson">Ask a relevant person</button>
             </div>
           </div>
@@ -233,11 +246,11 @@
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile navigation" data-i18n-aria="mobileNav">
-    <button class="active" type="button" aria-label="Feed" data-i18n-aria="feed"><svg aria-hidden="true"><use href="#i-home"></use></svg></button>
-    <button type="button" aria-label="Explore" data-i18n-aria="explore"><svg aria-hidden="true"><use href="#i-search"></use></svg></button>
-    <button type="button" aria-label="Communities" data-i18n-aria="communities"><svg aria-hidden="true"><use href="#i-users"></use></svg></button>
-    <button type="button" aria-label="Messages" data-i18n-aria="messages"><svg aria-hidden="true"><use href="#i-message"></use></svg></button>
-    <button type="button" aria-label="Profile" data-i18n-aria="profile"><svg aria-hidden="true"><use href="#i-user"></use></svg></button>
+    <button class="active" type="button" aria-label="Feed" data-i18n-aria="feed"><svg aria-hidden="true"><use href="#i-home"></use></svg><span data-i18n="feed">Feed</span></button>
+    <button type="button" aria-label="Explore" data-i18n-aria="explore"><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#search"></use></svg><span data-i18n="explore">Explore</span></button>
+    <button type="button" aria-label="Communities" data-i18n-aria="communities"><svg aria-hidden="true"><use href="#i-users"></use></svg><span data-i18n="communities">Communities</span></button>
+    <button type="button" aria-label="Messages" data-i18n-aria="messages"><svg aria-hidden="true"><use href="#i-message"></use></svg><span data-i18n="messages">Messages</span></button>
+    <button type="button" aria-label="Profile" data-i18n-aria="profile"><svg aria-hidden="true"><use href="#i-user"></use></svg><span data-i18n="profile">Profile</span></button>
   </nav>
   </section>
 
@@ -263,7 +276,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><span id="toastText">Done</span></div>
-  <script src="/main.js?v=drsk-system-2" defer></script>
-  <script src="/app.js?v=drsk-system-2" defer></script>
+  <script src="/main.js?v=niyet-system-3" defer></script>
+  <script src="/app.js?v=niyet-system-3" defer></script>
 </body>
 </html>

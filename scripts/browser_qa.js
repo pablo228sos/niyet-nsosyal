@@ -74,6 +74,7 @@ async (page) => {
   await page.locator('#evidenceToggle').click();
   await page.locator('.evidence-source-link').waitFor();
   check((await page.locator('.evidence-source-link').first().getAttribute('href')).startsWith('https://pubmed.ncbi.nlm.nih.gov/'), 'Evidence preserves real source provenance');
+  await page.locator('.claim-comparison summary').first().click();
   check(await visible('.distortion-lens'), 'Claim and passage comparison visible');
   await page.screenshot({ path: 'output/qa/evidence-desktop.png', fullPage: true });
   await page.evaluate(() => { sessionStorage.removeItem('drsk-responder-state'); sessionStorage.removeItem('drsk-open-requests'); });

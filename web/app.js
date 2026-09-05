@@ -53,13 +53,19 @@ const copy = {
 };
 
 Object.assign(copy.en, {
-  heroTitle: 'A little context. A better conversation.', heroText: 'Check a claim or find someone who can help.',
+  heroTitle: 'Better answers start with context.', heroText: 'Trace a claim to its source with SOURCECHAIN. Find a willing person when you need more.',
+  heroEyebrow: 'Evidence. Context. Connection.', startContext: 'Start with a question', technical: 'System details',
+  howSourcechain: 'How SOURCECHAIN builds context', chainIntro: 'A traceable path, not a truth score. Every result keeps the source and its limits visible.',
+  chainSource: 'Source', chainSourceText: 'Find the original', chainEvidence: 'Evidence', chainEvidenceText: 'Read the passage', chainCheck: 'Compare', chainCheckText: 'Check the claim', chainContext: 'Context', chainContextText: 'Keep provenance', chainDecision: 'Resolution', chainDecisionText: 'Choose the next step',
+  checkingContext: 'Checking intent and source context…', analysisUnavailable: 'Analysis is temporarily unavailable', analysisRecovery: 'Your draft is safe. Retry the connection or post without analysis.', retryAnalysis: 'Retry analysis',
+  resolutionEvidence: 'Evidence available', resolutionEvidenceText: 'Review the source passage and its relationship to your claim.', resolutionHuman: 'Human help', resolutionHumanText: 'This request needs a willing person. Confirm your intent to find a responder.', resolutionBoth: 'Evidence + human help', resolutionBothText: 'Use the source context and a relevant person to continue.', resolutionNone: 'No further review', resolutionNoneText: 'No factual check or human response is required for this post.', resolutionDeferred: 'More context needed', resolutionDeferredText: 'The available information is insufficient. Add context or request human help.',
+  evidenceChecked: 'Claim compared', evidenceMissing: 'No source found', backToFeed: 'Return to the feed', clearSearch: 'Clear search', compareClaim: 'Compare with the claim',
   productDescriptor: 'Evidence & human help', placeholder: 'What would you like to share?',
   demoHelp: 'Ask for help', demoCollab: 'Find a collaborator', demoNormal: 'Normal post', demoEvidence: 'Check a claim',
   previewTitle: 'Your response space', previewSub: 'Review requests and choose when to help.', waiting: 'Requests will appear here',
   previewEmpty: 'Write a question, confirm your intent, then find a responder to try this side of the conversation.',
   ask: 'Ask', feedback: 'Feedback', collaborate: 'Collaborate', discuss: 'Discuss', route: 'Find a responder',
-  localNotice: 'Posts stay in this browser session.', scopeTitle: 'About this prototype', scopeText: 'Evidence comes from a small controlled corpus. Responders are sample profiles. Capacity is local to this browser session.', labLink: 'See how allocation works →',
+  localNotice: 'Posts stay in this browser session.', scopeTitle: 'Data & availability', scopeText: 'Evidence comes from a small controlled corpus. Responders are sample profiles. Capacity is local to this browser session.', labLink: 'See how allocation works →',
   pipelineLive: 'Analysis available', pipelineFallback: 'Analysis offline', pipelineChecking: 'Connecting…', analyzing: 'Analyzing…',
   requiredPost: 'Write a post first. You can also choose an example above.', actionFailed: 'The change was not saved. Try again.',
   emptyFollowing: 'No posts from people you follow yet.', searchEmpty: 'No conversations match. Try robotics or FastAPI.',
@@ -73,13 +79,19 @@ Object.assign(copy.en, {
   evidenceUnavailable: 'Evidence check unavailable. Try editing the post again.', pausedPerson: 'Paused responder',
 });
 Object.assign(copy.tr, {
-  heroTitle: 'Biraz bağlam. Daha iyi bir sohbet.', heroText: 'Bir iddiayı incele veya yardımcı olabilecek birini bul.',
+  heroTitle: 'Daha iyi yanıtlar bağlamla başlar.', heroText: 'SOURCECHAIN ile iddiayı kaynağına kadar izle. Daha fazlası gerektiğinde istekli bir kişiye ulaş.',
+  heroEyebrow: 'Kanıt. Bağlam. Bağlantı.', startContext: 'Bir soruyla başla', technical: 'Sistem ayrıntıları',
+  howSourcechain: 'SOURCECHAIN nasıl bağlam oluşturur?', chainIntro: 'Bir doğruluk puanı değil, izlenebilir bir yol. Her sonuç, kaynağı ve sınırlarını görünür tutar.',
+  chainSource: 'Kaynak', chainSourceText: 'Özgün kaynağı bul', chainEvidence: 'Kanıt', chainEvidenceText: 'İlgili bölümü oku', chainCheck: 'Karşılaştır', chainCheckText: 'İddiayı incele', chainContext: 'Bağlam', chainContextText: 'Kökeni koru', chainDecision: 'Çözüm', chainDecisionText: 'Sonraki adımı seç',
+  checkingContext: 'Niyet ve kaynak bağlamı inceleniyor…', analysisUnavailable: 'Analiz geçici olarak kullanılamıyor', analysisRecovery: 'Taslağın güvende. Bağlantıyı yeniden dene veya analiz olmadan paylaş.', retryAnalysis: 'Analizi yeniden dene',
+  resolutionEvidence: 'Kanıt mevcut', resolutionEvidenceText: 'Kaynak bölümünü ve iddiayla ilişkisini incele.', resolutionHuman: 'İnsan desteği', resolutionHumanText: 'Bu istek için istekli bir kişi gerekiyor. Yanıtlayıcı bulmak için niyetini onayla.', resolutionBoth: 'Kanıt + insan desteği', resolutionBothText: 'Kaynak bağlamı ve ilgili bir kişiyle devam et.', resolutionNone: 'Ek inceleme gerekmiyor', resolutionNoneText: 'Bu gönderi için olgusal kontrol veya insan yanıtı gerekmiyor.', resolutionDeferred: 'Daha fazla bağlam gerekiyor', resolutionDeferredText: 'Mevcut bilgi yetersiz. Bağlam ekle veya insan desteği iste.',
+  evidenceChecked: 'İddia karşılaştırıldı', evidenceMissing: 'Kaynak bulunamadı', backToFeed: 'Akışa dön', clearSearch: 'Aramayı temizle', compareClaim: 'İddia ile karşılaştır',
   productDescriptor: 'Kanıt ve insan desteği', placeholder: 'Ne paylaşmak istersin?',
   demoHelp: 'Yardım iste', demoCollab: 'Ekip arkadaşı bul', demoNormal: 'Normal gönderi', demoEvidence: 'İddiayı incele',
   previewTitle: 'Yanıt alanın', previewSub: 'İstekleri incele, ne zaman yardım edeceğini seç.', waiting: 'İstekler burada görünür',
   previewEmpty: 'Bir soru yaz, niyetini onayla ve sohbetin bu tarafını denemek için bir yanıtlayıcı bul.',
   ask: 'Soru', feedback: 'Geri bildirim', collaborate: 'İş birliği', discuss: 'Tartış', route: 'Yanıtlayıcı bul',
-  localNotice: 'Gönderiler bu tarayıcı oturumunda kalır.', scopeTitle: 'Bu prototip hakkında', scopeText: 'Kanıtlar küçük, kontrollü bir derlemden gelir. Yanıtlayıcılar örnek profillerdir. Kapasite bu tarayıcı oturumuna özeldir.', labLink: 'Dağıtımın nasıl çalıştığını gör →',
+  localNotice: 'Gönderiler bu tarayıcı oturumunda kalır.', scopeTitle: 'Veri ve kullanılabilirlik', scopeText: 'Kanıtlar küçük, kontrollü bir derlemden gelir. Yanıtlayıcılar örnek profillerdir. Kapasite bu tarayıcı oturumuna özeldir.', labLink: 'Dağıtımın nasıl çalıştığını gör →',
   pipelineLive: 'Analiz kullanılabilir', pipelineFallback: 'Analiz çevrimdışı', pipelineChecking: 'Bağlanıyor…', analyzing: 'İnceleniyor…',
   requiredPost: 'Önce bir gönderi yaz veya yukarıdan bir örnek seç.', actionFailed: 'Değişiklik kaydedilmedi. Tekrar dene.',
   emptyFollowing: 'Takip ettiğin kişilerden henüz gönderi yok.', searchEmpty: 'Eşleşen sohbet yok. Robotik veya FastAPI dene.',
@@ -163,7 +175,7 @@ function applyLanguage(nextLanguage, persist = true) {
   if (latestDrsk) renderEvidence(latestDrsk);
   if (latestDecision?.response_needed && routingEnabled) renderMatchPreview(latestDecision);
   else if (!latestDecision) resetPreview();
-  document.title = `DRSK · ${text('productDescriptor')}`;
+  document.title = `NIYET · ${text('productDescriptor')}`;
 }
 
 function showToast(messageKey) {
@@ -282,6 +294,15 @@ function displayCode(value) {
   return labels[code] || code.replaceAll('_', ' ').toLocaleLowerCase('en-US');
 }
 
+function packIcon(name) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('aria-hidden', 'true');
+  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  use.setAttribute('href', `/assets/niyet/icons.svg#${name}`);
+  svg.appendChild(use);
+  return svg;
+}
+
 function renderEvidence(payload) {
   latestDrsk = payload;
   const card = $('#evidenceCard');
@@ -296,7 +317,14 @@ function renderEvidence(payload) {
   $('#evidenceStatus').textContent = status === 'NOT_REQUIRED' ? text('evidenceNotRequired') : `${text('evidenceTitle')}: ${displayCode(status)}`;
   $('#evidenceExplanation').textContent = status === 'NOT_REQUIRED'
     ? text('evidenceNotRequired')
-    : (bundle.explanation || (evidence.length ? '' : text('noEvidence')));
+    : (evidence.length ? `${text('evidenceTitle')}: ${displayCode(status)}. ${text('chainIntro')}` : text('noEvidence'));
+  const trail = $('#evidenceTrail');
+  trail.replaceChildren();
+  const path = String(payload?.resolution?.path || 'DEFERRED').toUpperCase();
+  [[evidence.length ? 'chainSource' : 'evidenceMissing', evidence.length > 0], ['evidenceChecked', status !== 'NOT_REQUIRED'], ['chainContext', evidence.length > 0], ['chainDecision', Boolean(payload?.resolution?.path)]].forEach(([key, done]) => {
+    const step = appendTextElement(trail, 'li', '', text(key));
+    step.dataset.complete = String(done);
+  });
 
   const claimList = $('#claimList');
   claimList.replaceChildren();
@@ -308,6 +336,7 @@ function renderEvidence(payload) {
   evidence.forEach((item) => {
     const article = document.createElement('article');
     article.className = 'evidence-item';
+    article.dataset.relation = item.relation;
     const head = document.createElement('div');
     head.className = 'evidence-item-head';
     appendTextElement(head, 'strong', '', item.title || item.publisher || text('sourceLabel'));
@@ -317,8 +346,12 @@ function renderEvidence(payload) {
     appendTextElement(article, 'span', 'evidence-passage-label', text('passageLabel'));
     appendTextElement(article, 'blockquote', 'evidence-passage', item.passage || '');
     const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
-    const claimText = claims[0]?.text || claims[0]?.claim_text || claims[0] || '';
+    const relatedClaim = claims.find(claim => claim.claim_id === item.claim_id) || claims[0];
+    const claimText = relatedClaim?.text || relatedClaim?.claim_text || relatedClaim || '';
     if (item.passage || claimText) {
+      const comparison = document.createElement('details');
+      comparison.className = 'claim-comparison';
+      appendTextElement(comparison, 'summary', '', text('compareClaim'));
       const lens = document.createElement('div');
       lens.className = 'distortion-lens';
       const sourceNode = document.createElement('div');
@@ -337,7 +370,8 @@ function renderEvidence(payload) {
       appendTextElement(claimNode, 'p', '', claimText || '—');
       lens.appendChild(claimNode);
       appendTextElement(lens, 'small', 'lens-scope', text('singleHop'));
-      article.appendChild(lens);
+      comparison.appendChild(lens);
+      article.appendChild(comparison);
     }
     if (distortions.length) {
       const labels = document.createElement('div');
@@ -352,7 +386,22 @@ function renderEvidence(payload) {
       link.href = href;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
+      link.prepend(packIcon('link'));
     }
+    const provenance = document.createElement('details');
+    provenance.className = 'source-provenance';
+    appendTextElement(provenance, 'summary', '', language === 'tr' ? 'Kaynak ve köken ayrıntıları' : 'Source & provenance details');
+    const metadata = document.createElement('dl');
+    const metadataLabels = language === 'tr'
+      ? ['Yayın tarihi', 'Bölüm konumu', 'Köken kümesi', 'Belge özeti']
+      : ['Published', 'Passage location', 'Origin cluster', 'Document hash'];
+    [item.publication_date, item.passage_location, item.origin_cluster_id, item.document_hash].forEach((value, index) => {
+      if (!value) return;
+      appendTextElement(metadata, 'dt', '', metadataLabels[index]);
+      appendTextElement(metadata, 'dd', index === 3 ? 'provenance-hash' : '', value);
+    });
+    provenance.appendChild(metadata);
+    article.appendChild(provenance);
     evidenceList.appendChild(article);
   });
 
@@ -369,12 +418,24 @@ function renderEvidence(payload) {
     lineage.appendChild(flow);
     evidenceList.prepend(lineage);
   }
+  if (bundle.explanation) {
+    const notes = document.createElement('details');
+    notes.className = 'analysis-notes';
+    appendTextElement(notes, 'summary', '', language === 'tr' ? 'Analiz notları' : 'Analysis notes');
+    appendTextElement(notes, 'p', '', bundle.explanation);
+    evidenceList.appendChild(notes);
+  }
 
   const resolution = payload?.resolution || {};
   const routedPerson = payload?.niyet?.responder_name;
-  $('#resolutionStatus').textContent = resolution.path
-    ? `${text('resolutionLabel')}: ${displayCode(resolution.path)}${routedPerson ? ` · ${routedPerson}` : resolution.escalation ? ` · ${text('routeNoMatch')}` : ''}`
-    : '';
+  const state = $('#resolutionStatus');
+  state.replaceChildren();
+  state.dataset.path = path;
+  const stateKeys = { EVIDENCE: 'Evidence', HUMAN: 'Human', BOTH: 'Both', NONE: 'None', DEFERRED: 'Deferred' };
+  const key = stateKeys[path] || 'Deferred';
+  state.appendChild(packIcon({ EVIDENCE: 'source', HUMAN: 'arrow-right', BOTH: 'layers', NONE: 'check', DEFERRED: 'search' }[path] || 'search'));
+  appendTextElement(state, 'strong', '', text(`resolution${key}`));
+  appendTextElement(state, 'p', '', `${text(`resolution${key}Text`)}${routedPerson ? ` ${routedPerson}` : resolution.escalation ? ` ${text('routeNoMatch')}` : ''}`);
   const askButton = $('#askPerson');
   askButton.hidden = Boolean(resolution.escalation) || status === 'NOT_REQUIRED';
   askButton.disabled = false;
@@ -433,6 +494,9 @@ async function analyzePost() {
     return;
   }
   const button = $('#routeIntent');
+  $('#analysisProgress').hidden = false;
+  $('.composer').setAttribute('aria-busy', 'true');
+  $('#analysisError').hidden = true;
   button.disabled = true;
   button.textContent = text('analyzing');
   try {
@@ -443,7 +507,7 @@ async function analyzePost() {
     if (revision !== analysisRevision || value !== $('#composerText').value.trim()) return;
     latestDecision = niyetResult;
     if (drskResult) renderEvidence(drskResult);
-    else resetEvidence();
+    else { resetEvidence(); $('#analysisError').hidden = false; }
     if (!latestDecision.response_needed) {
       hideIntentPanel();
       renderRouteResult('normal');
@@ -456,6 +520,7 @@ async function analyzePost() {
   } catch (_) {
     if (revision !== analysisRevision) return;
     pipelineLive = false;
+    $('#analysisError').hidden = false;
     renderPipelineState();
     latestDecision = await callPipeline(value);
     resetEvidence();
@@ -465,6 +530,8 @@ async function analyzePost() {
     }
   } finally {
     if (revision === analysisRevision) {
+      $('#analysisProgress').hidden = true;
+      $('.composer').setAttribute('aria-busy', 'false');
       button.disabled = false;
       button.textContent = text('route');
     }
@@ -717,7 +784,7 @@ function secondaryMarkup(view) {
     },
     messages: {
       title: text('viewMessagesTitle'), subtitle: text('viewMessagesText'),
-      body: `<div class="message-list"><div class="empty-row">${text('noMessages')}</div></div>`
+      body: `<div class="message-list"><div class="empty-row">${text('noMessages')}<br><a class="empty-action" href="#feed">${text('backToFeed')} →</a></div></div>`
     },
     profile: {
       title: text('viewProfileTitle'), subtitle: text('viewProfileText'),
@@ -759,7 +826,12 @@ function renderSecondaryView() {
         results.appendChild(clone);
         wirePostActions(clone);
       });
-      if (!posts.length) appendTextElement(results, 'p', 'assignment-empty', text('searchEmpty'));
+      if (!posts.length) {
+        appendTextElement(results, 'p', 'assignment-empty', text('searchEmpty'));
+        const clear = appendTextElement(results, 'button', 'clear-search', text('clearSearch'));
+        clear.type = 'button';
+        clear.addEventListener('click', () => { search.value = ''; render(); search.focus(); });
+      }
     };
     search.addEventListener('input', render);
     $$('[data-topic]').forEach((button) => button.addEventListener('click', () => { search.value = button.dataset.topic; render(); }));
@@ -775,6 +847,7 @@ function activateView(view, updateUrl = true) {
   $('#feedPosts').hidden = !isFeed;
   $('.feed-tabs').hidden = !isFeed;
   $('.feed-hero').hidden = !isFeed;
+  $('#sourcechainGuide').hidden = !isFeed;
   $('.feed-title').textContent = isFeed ? text('feed') : text(`view${view[0].toUpperCase()}${view.slice(1)}Title`);
   renderSecondaryView();
 
@@ -829,6 +902,9 @@ function installResetButton() {
     if (!window.confirm(text('resetConfirm'))) return;
     analysisRevision++;
     clearTimeout(analyzeTimer);
+    $('#analysisProgress').hidden = true;
+    $('#analysisError').hidden = true;
+    $('.composer').setAttribute('aria-busy', 'false');
     sessionStorage.removeItem('drsk-open-requests');
     sessionStorage.removeItem('drsk-responder-state');
     openRequests = [];
@@ -938,10 +1014,20 @@ function closeExplainSheet() {
 }
 
 function bindEvents() {
+  $('#startContext').addEventListener('click', () => { $('#composerText').focus(); $('#composerText').scrollIntoView({ block: 'center', behavior: 'smooth' }); });
+  $('#retryAnalysis').addEventListener('click', async () => {
+    $('#retryAnalysis').disabled = true;
+    await checkPipeline();
+    if (!pipelineLive) $('#analysisError').hidden = false;
+    $('#retryAnalysis').disabled = false;
+  });
   $$('.lang-switch button').forEach((button) => button.addEventListener('click', () => applyLanguage(button.dataset.lang)));
   const textarea = $('#composerText');
   textarea.addEventListener('input', () => {
     analysisRevision++;
+    $('#analysisProgress').hidden = true;
+    $('#analysisError').hidden = true;
+    $('.composer').setAttribute('aria-busy', 'false');
     resetEvidence();
     hideIntentPanel();
     $('#routeResult').classList.remove('visible');
@@ -1013,6 +1099,9 @@ function bindEvents() {
     }
     analysisRevision++;
     clearTimeout(analyzeTimer);
+    $('#analysisProgress').hidden = true;
+    $('#analysisError').hidden = true;
+    $('.composer').setAttribute('aria-busy', 'false');
     createPost(value);
     textarea.value = '';
     sessionStorage.removeItem('drsk-draft');

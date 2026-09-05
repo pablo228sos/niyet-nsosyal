@@ -9,9 +9,9 @@ VERCEL = (ROOT / "vercel.json").read_text(encoding="utf-8")
 
 
 def test_product_is_available_without_a_video_or_modal_gate():
-    assert "<title>DRSK · Evidence & human help</title>" in INDEX
+    assert "<title>NIYET · Evidence, context & human help</title>" in INDEX
     assert '<video' not in INDEX
-    assert 'id="productExperience" aria-label="DRSK workspace"' in INDEX
+    assert 'id="productExperience" aria-label="NIYET workspace"' in INDEX
     assert 'id="composerText" name="post" maxlength="1200"' in INDEX
     assert 'id="composerError"' in INDEX
 

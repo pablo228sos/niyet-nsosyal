@@ -10,9 +10,10 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / 'web'
-FILES = ['index.html', 'lab.html', 'design-system.css', 'app.js', 'main.js', 'lab.js', 'assets/logo.webp']
-MIME = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.webp': 'image/webp'}
-for name in ['app.js', 'main.js', 'lab.js']:
+FILES = ['index.html', 'lab.html', 'design-system.css', 'app.js', 'main.js', 'lab.js', 'theme.js']
+FILES += [file.relative_to(WEB).as_posix() for file in sorted((WEB / 'assets/niyet').glob('*'))]
+MIME = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.webp': 'image/webp', '.svg': 'image/svg+xml'}
+for name in ['app.js', 'main.js', 'lab.js', 'theme.js']:
     subprocess.run(['node', '--check', str(WEB / name)], check=True)
 assets = {
     '/' + name: {'body': base64.b64encode((WEB / name).read_bytes()).decode(), 'type': MIME[Path(name).suffix]}

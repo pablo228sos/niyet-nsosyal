@@ -3,48 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f7fb">
+  <meta name="theme-color" content="#090d16">
   <meta name="description" content="NIYET allocation lab for comparing routing strategies">
   <title>NIYET Allocation Lab</title>
-  <link rel="icon" href="/assets/logo.webp" type="image/webp">
-  <link rel="stylesheet" href="/design-system.css?v=drsk-system-2">
+  <link rel="icon" href="/assets/niyet/niyet-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/design-system.css?v=niyet-system-3">
+  <script src="/theme.js"></script>
 </head>
 <body class="lab-body">
   <a class="skip-link" href="#controlsTitle">Skip to experiment</a><main class="lab-shell">
     <nav class="lab-topbar" aria-label="Product navigation" data-lab-aria="productNav">
-      <a class="lab-home-mark" href="/" aria-label="DRSK home" data-lab-aria="homeLabel">
-        <img src="/assets/logo.webp" width="34" height="34" alt=""><strong>DRSK</strong>
+      <a class="lab-home-mark" href="/" aria-label="NIYET home" data-lab-aria="homeLabel">
+        <img class="brand-mark" src="/assets/niyet/niyet-mark.svg" width="32" height="32" alt=""><svg class="brand-wordmark" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="480" height="120" viewBox="0 0 480 120">
+<rect width="480" height="120" fill="none"/><text x="18" y="82" fill="currentColor" font-family="Arial, sans-serif" font-size="72" font-weight="600" letter-spacing="22">NIYET</text></svg>
       </a>
       <div class="lab-nav-links">
-        <a href="/#product" data-lab-key="feed">Feed</a>
+        <a href="/#feed" data-lab-key="feed">Feed</a>
         <a href="/?open=evidence" data-lab-key="evidence">Evidence</a>
         <a class="active" href="/lab" data-lab-key="allocationLab">Allocation Lab</a>
       </div>
-      <div class="lab-top-actions">
+      <div class="lab-top-actions"><button class="theme-toggle" data-theme-toggle type="button" aria-label="Light appearance" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 5a7 7 0 0 1 0 14Z" fill="currentColor"/></svg></button>
         <div class="lab-lang" role="group" aria-label="Language" data-lab-aria="language">
           <button class="active" type="button" data-lab-lang="en" aria-pressed="true">EN</button>
           <button type="button" data-lab-lang="tr" aria-pressed="false">TR</button>
         </div>
-        <a class="lab-open" href="/#product" data-lab-key="openDrsk">Open DRSK</a>
+        <a class="lab-open" href="/#feed" data-lab-key="openDrsk">Open DRSK</a>
       </div>
       <button class="lab-menu-toggle" id="labMenuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="labMobileMenu" data-lab-aria="menuOpen"><span></span><span></span><span></span></button>
     </nav>
     <div class="lab-mobile-menu" id="labMobileMenu" hidden>
       <div role="dialog" aria-modal="true" aria-label="Navigation" data-lab-aria="navigation">
-        <a href="/#product" data-lab-key="feed">Feed</a>
+        <a href="/#feed" data-lab-key="feed">Feed</a>
         <a href="/?open=evidence" data-lab-key="evidence">Evidence</a>
         <a href="/lab" data-lab-key="allocationLab">Allocation Lab</a>
         <button type="button" data-lab-lang="en">EN</button>
         <button type="button" data-lab-lang="tr">TR</button>
-        <a class="lab-mobile-open" href="/#product" data-lab-key="openDrsk">Open DRSK</a>
+        <a class="lab-mobile-open" href="/#feed" data-lab-key="openDrsk">Open DRSK</a>
       </div>
     </div>
     <header class="lab-header">
-      <a class="back-link" href="/#product" data-lab-key="backFeed">← Back to feed</a>
+      <a class="back-link" href="/#feed" data-lab-key="backFeed">← Back to feed</a>
       <div class="lab-brand">
         <div class="mini-orb" aria-hidden="true"></div>
         <div>
-          <span class="eyebrow">DRSK / NIYET</span>
+          <span class="eyebrow lab-eyebrow"><svg aria-hidden="true"><use href="/assets/niyet/icons.svg#graph"></use></svg> NIYET / ALLOCATION</span>
           <h1 data-lab-key="allocationLab">Allocation Lab</h1>
           <p data-lab-key="labSubtitle">Same requests. Same responder capacity. Different allocation strategies.</p>
         </div>
@@ -94,7 +96,7 @@
       <div class="summary-copy">
         <span class="eyebrow" data-lab-key="whatChanged">What changed?</span>
         <h2 id="summaryTitle">Running the same batch through both methods...</h2>
-        <p id="summaryText">The comparison uses draft relevance labels and is not a production claim.</p>
+        <p id="summaryText">Comparing the same requests and capacity. Results use reviewed development labels.</p>
       </div>
       <div class="tradeoff" id="tradeoff"></div>
     </section>
@@ -134,6 +136,6 @@
     </section>
   </main>
 
-  <script src="/lab.js?v=drsk-system-2" defer></script>
+  <script src="/lab.js?v=niyet-system-3" defer></script>
 </body>
 </html>

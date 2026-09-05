@@ -13,9 +13,9 @@ LOCAL_SERVER = (ROOT / "scripts" / "serve_local.py").read_text(encoding="utf-8")
 
 
 def test_shared_design_system_is_loaded_by_every_real_route():
-    assert "/design-system.css?v=drsk-system-2" in INDEX
-    assert "/design-system.css?v=drsk-system-2" in LAB
-    assert "--color-bg-canvas: #f5f7fb" in SYSTEM
+    assert "/design-system.css?v=niyet-system-3" in INDEX
+    assert "/design-system.css?v=niyet-system-3" in LAB
+    assert "--color-bg-canvas: #090d16" in SYSTEM
     assert "--color-sourcechain-accent" in SYSTEM
     assert "--color-niyet-accent" in SYSTEM
 
@@ -33,7 +33,7 @@ def test_shared_shell_preserves_product_evidence_and_lab_navigation():
     for label in ("Feed", "Evidence", "Lab"):
         assert label in INDEX
         assert label in LAB
-    assert 'href="/#product"' in LAB
+    assert 'href="/#feed"' in LAB
     assert 'href="/?open=evidence"' in LAB
     assert "window.location.search" in MAIN
     assert "query.get('open') === 'evidence'" in MAIN
