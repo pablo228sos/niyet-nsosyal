@@ -1,0 +1,16 @@
+.agents/
+.openai/
+.playwright-cli/
+.pytest_cache/
+.venv/
+__pycache__/
+**/__pycache__/
+design/
+docs/
+tests/
+output/
+dist/
+scripts/
+report/
+experiments/
+.github/

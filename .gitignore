@@ -7,3 +7,4 @@ __pycache__/
 dist/
 output/qa/
 .playwright-cli/
+.vercel/
