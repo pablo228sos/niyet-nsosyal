@@ -1,6 +1,9 @@
 from types import SimpleNamespace
 
+import pytest
+
 from drsk.human_help import HumanHelpService, HumanRequestStatus
+from drsk.state_store import MemoryStateStore
 from niyet.runtime import RouteDecision
 
 
@@ -157,3 +160,34 @@ def test_evidence_context_survives_human_resolution_lifecycle():
     author_view = service.status(request.request_id, request.author_token)
     assert author_view["evidence_context"] == evidence
     assert author_view["answer"] == "Association does not establish causation."
+
+
+def test_two_service_instances_observe_one_shared_store():
+    runtime = StubRuntime()
+    store = MemoryStateStore(
+        {"requests": {}, "responder_state": runtime.default_responder_state()}
+    )
+    author_service = HumanHelpService(runtime, store=store)
+    responder_service = HumanHelpService(runtime, store=store)
+
+    request = author_service.open_request("I need help across two instances")
+    inbox = responder_service.inbox("r_one")
+
+    assert [item["request_id"] for item in inbox] == [request.request_id]
+    responder_service.accept(request.request_id, "r_one")
+    responder_service.answer(request.request_id, "r_one", "Shared state works.")
+    assert author_service.status(request.request_id, request.author_token)["answer"] == "Shared state works."
+
+
+def test_accept_rejects_stale_open_request_after_capacity_is_exhausted():
+    service = build_service()
+    first = service.open_request("First request")
+    second = service.open_request("Second request")
+    stale = service.open_request("Third request")
+
+    assert first.assigned_responder_id == second.assigned_responder_id == stale.assigned_responder_id == "r_one"
+    service.accept(first.request_id, "r_one")
+    service.accept(second.request_id, "r_one")
+
+    with pytest.raises(ValueError, match="responder_capacity_exhausted"):
+        service.accept(stale.request_id, "r_one")
