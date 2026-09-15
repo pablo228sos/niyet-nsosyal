@@ -3,6 +3,12 @@
   "framework": null,
   "outputDirectory": "web",
   "cleanUrls": true,
+  "git": {
+    "deploymentEnabled": {
+      "*": false,
+      "main": true
+    }
+  },
   "redirects": [
     {"source": "/", "destination": "/live", "permanent": false}
   ],
