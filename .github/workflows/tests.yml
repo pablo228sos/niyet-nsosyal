@@ -17,6 +17,8 @@ jobs:
       - run: node --check web/live.js
       - run: node --check web/live-motion.js
       - run: node --check web/live-theme.js
+      - run: node --check demo/nsosyal-overlay/background.js
+      - run: node --check demo/nsosyal-overlay/content.js
       - run: python scripts/build_site.py
       - run: python -m pip install --upgrade pip
       - run: pip install -c constraints.txt -e . pytest
