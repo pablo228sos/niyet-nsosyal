@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from sourcechain.corpus import demo_documents
 from sourcechain.evidence import build_evidence_bundle
 from sourcechain.pipeline import provider_from_environment
 from sourcechain.retrieval import ControlledEvidenceProvider, FallbackEvidenceProvider
@@ -43,6 +44,10 @@ def _turkish_payload():
     }
 
 
+def _controlled():
+    return ControlledEvidenceProvider(demo_documents())
+
+
 def test_tavily_provider_turns_search_results_into_provenanced_hits():
     calls = []
 
@@ -72,7 +77,7 @@ def test_tavily_evidence_still_uses_sourcechain_relation_and_distortion_logic():
     assert DistortionType.CAUSALITY_SHIFT in bundle.evidence[0].distortions
 
 
-def test_tavily_ranks_turkish_semantic_paraphrase_without_changing_authority_boundary():
+def test_tavily_ranks_turkish_paraphrase_without_changing_authority_boundary():
     provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _turkish_payload())
     hits = provider.retrieve("Fiziksel hareket kalp hastalığı riskinin azalmasıyla bağlantılıdır.", limit=3)
 
@@ -86,10 +91,7 @@ def test_live_provider_failure_falls_back_to_controlled_evidence():
     def failing_transport(_query: str, _timeout: float):
         raise TimeoutError("simulated Tavily timeout")
 
-    live = TavilyEvidenceProvider("secret", transport=failing_transport)
-    controlled = provider_from_environment.__globals__["build_controlled_provider"]()
-    provider = FallbackEvidenceProvider((live, controlled))
-
+    provider = FallbackEvidenceProvider((TavilyEvidenceProvider("secret", transport=failing_transport), _controlled()))
     hits = provider.retrieve("coffee mortality", limit=3)
 
     assert hits
@@ -98,9 +100,7 @@ def test_live_provider_failure_falls_back_to_controlled_evidence():
 
 def test_empty_live_results_fall_back_to_controlled_evidence():
     live = TavilyEvidenceProvider("secret", transport=lambda _q, _t: {"results": []})
-    controlled = provider_from_environment.__globals__["build_controlled_provider"]()
-    provider = FallbackEvidenceProvider((live, controlled))
-
+    provider = FallbackEvidenceProvider((live, _controlled()))
     hits = provider.retrieve("coffee mortality", limit=3)
 
     assert hits
