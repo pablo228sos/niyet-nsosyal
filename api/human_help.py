@@ -81,12 +81,25 @@ def _evidence_context(response: dict) -> dict | None:
     if not isinstance(bundle, dict):
         return None
 
+    analysis = bundle.get("analysis")
+    claims_by_id: dict[str, str] = {}
+    if isinstance(analysis, dict):
+        for claim in analysis.get("claims", []):
+            if not isinstance(claim, dict):
+                continue
+            claim_id = claim.get("claim_id")
+            claim_text = claim.get("text")
+            if claim_id and isinstance(claim_text, str) and claim_text.strip():
+                claims_by_id[str(claim_id)] = claim_text.strip()
+
     evidence_items = []
     for item in bundle.get("evidence", [])[:3]:
         if not isinstance(item, dict):
             continue
+        claim_id = item.get("claim_id")
         evidence_items.append(
             {
+                "claim_text": claims_by_id.get(str(claim_id)) if claim_id else None,
                 "source_title": item.get("title") or item.get("publisher"),
                 "source_url": item.get("source_url") or item.get("canonical_url"),
                 "publisher": item.get("publisher"),
