@@ -14,12 +14,14 @@ def test_sites_bundle_contains_final_surface_assets():
         "live.css",
         "live-ux.css",
         "live-motion.css",
+        "live-nsosyal.css",
         "live.js",
         "live-motion.js",
+        "live-theme.js",
     ):
         assert f'"{asset}"' in BUILD
 
-    assert '"live.js", "live-motion.js"' in BUILD
+    assert '"live.js", "live-motion.js", "live-theme.js"' in BUILD
 
 
 def test_sites_root_and_live_route_to_final_surface():
