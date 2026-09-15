@@ -1,4 +1,7 @@
-const API_URL = 'https://niyet-nsosyal.vercel.app/api/human-help';
+const API_URLS = [
+  'https://niyet-nsosyal.vercel.app/api/human_help',
+  'https://niyet-nsosyal.vercel.app/api/human-help'
+];
 const ALLOWED_ACTIONS = new Set(['resolve', 'status']);
 const NSOSYAL_HOSTS = new Set(['nsosyal.com', 'www.nsosyal.com']);
 
@@ -10,6 +13,23 @@ function trustedSender(sender) {
   } catch (_) {
     return false;
   }
+}
+
+function errorText(value, fallback = 'DRSK backend request failed') {
+  if (!value) return fallback;
+  if (typeof value === 'string') return value;
+  if (value instanceof Error && value.message) return value.message;
+  if (typeof value === 'object') {
+    for (const key of ['message', 'detail', 'code', 'error']) {
+      const nested = value[key];
+      if (typeof nested === 'string' && nested.trim()) return nested.trim();
+    }
+    try {
+      const encoded = JSON.stringify(value);
+      if (encoded && encoded !== '{}') return encoded;
+    } catch (_) {}
+  }
+  return String(value);
 }
 
 function validatePayload(value) {
@@ -49,8 +69,8 @@ function validatePayload(value) {
   return { ok: false, error: 'unsupported_action' };
 }
 
-async function requestApi(payload) {
-  const response = await fetch(API_URL, {
+async function requestOne(url, payload) {
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -65,15 +85,44 @@ async function requestApi(payload) {
   let data = {};
   try { data = await response.json(); } catch (_) {}
 
-  if (!response.ok) {
-    return {
-      ok: false,
-      status: response.status,
-      error: data.error || `HTTP ${response.status}`
-    };
+  return { response, data };
+}
+
+async function requestApi(payload) {
+  let lastFailure = null;
+
+  for (let index = 0; index < API_URLS.length; index += 1) {
+    const url = API_URLS[index];
+    try {
+      const { response, data } = await requestOne(url, payload);
+      if (response.ok) {
+        return { ok: true, status: response.status, data };
+      }
+
+      const failure = {
+        ok: false,
+        status: response.status,
+        error: errorText(data?.error ?? data?.message, `HTTP ${response.status}`)
+      };
+      lastFailure = failure;
+
+      // Vercel maps Python function filenames to underscore routes. The hyphen
+      // alias is retained only as a compatibility fallback, so only retry a
+      // route-like failure rather than masking a real application error.
+      if (![404, 405].includes(response.status) || index === API_URLS.length - 1) {
+        return failure;
+      }
+    } catch (error) {
+      lastFailure = {
+        ok: false,
+        status: 0,
+        error: errorText(error, 'DRSK backend is not reachable right now.')
+      };
+      if (index === API_URLS.length - 1) return lastFailure;
+    }
   }
 
-  return { ok: true, status: response.status, data };
+  return lastFailure || { ok: false, status: 0, error: 'DRSK backend is not reachable right now.' };
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -95,7 +144,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     .catch((error) => sendResponse({
       ok: false,
       status: 0,
-      error: error?.message || 'backend unavailable'
+      error: errorText(error, 'DRSK backend is not reachable right now.')
     }));
 
   return true;
