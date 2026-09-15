@@ -1,0 +1,140 @@
+/* Final-stage UX hardening layered over live.css.
+   Keep this file small: it contains interaction/layout corrections rather than a second design system. */
+
+/* The final prototype exposes only controls that actually do something. */
+.main-nav button.nav-item,
+.social-actions {
+  display: none;
+}
+
+/* Keyboard focus must remain visible on every actionable control. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(11, 108, 255, 0.28);
+  outline-offset: 2px;
+}
+
+/* Comfortable pointer/touch targets on both desktop and mobile. */
+.primary-button,
+.quiet-button,
+.scenario-button,
+.role-tab,
+.icon-button,
+.responder-controls select {
+  min-height: 44px;
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+}
+
+.role-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prevent long IDs, responder names and user text from widening the page. */
+.composer-main,
+.post-body,
+.responder-profile-main,
+.inbox-card,
+.matched-person div {
+  min-width: 0;
+}
+
+.request-id,
+.matched-person strong,
+.inbox-text,
+.post-copy,
+.evidence-item,
+.inbox-evidence-item {
+  overflow-wrap: anywhere;
+}
+
+.responder-controls select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* The direct-human path is a real secondary action, not a text-like dead control. */
+.direct-human {
+  border: 1px solid #dce3eb;
+  background: #fff;
+  padding-inline: 12px;
+}
+
+.direct-human:hover {
+  background: #f5f8fc;
+}
+
+@media (max-width: 640px) {
+  .composer-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .scenario-button {
+    justify-self: start;
+    padding-inline: 4px;
+  }
+
+  .post-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+
+  .post-actions > * {
+    width: 100%;
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .match-footer .quiet-button,
+  .answer-editor .primary-button,
+  .inbox-actions .primary-button,
+  .inbox-actions .quiet-button {
+    min-height: 44px;
+  }
+
+  /* Transparency should not disappear on the phone used by the responder. */
+  .limit-card {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .responder-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .responder-controls label {
+    grid-column: auto;
+  }
+
+  .responder-controls .quiet-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-copy,
+  .brand-divider {
+    display: none;
+  }
+
+  .topbar {
+    gap: 8px;
+  }
+}
