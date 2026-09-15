@@ -4,110 +4,183 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
-  <title>DRSK Live Resolution</title>
+  <title>DRSK × NSosyal — Final Prototype</title>
   <link rel="stylesheet" href="/live.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">Skip to feed</a>
+
   <header class="topbar">
-    <a class="brand" href="/" aria-label="DRSK home">
-      <span class="brand-mark" aria-hidden="true">D</span>
-      <span><b>DRSK</b><small>live resolution</small></span>
+    <a class="brand" href="/live" aria-label="DRSK final prototype">
+      <span class="brand-n" aria-hidden="true">N</span>
+      <span class="brand-copy"><b>N'SOSYAL</b><small>concept integration</small></span>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <span class="drsk-lockup"><b>DRSK</b><small>resolution layer</small></span>
     </a>
     <div class="top-actions">
       <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
+      <button id="resetDemo" class="icon-button" type="button" title="Reset demo" aria-label="Reset demo">↻</button>
       <button id="languageToggle" class="quiet-button" type="button">TR</button>
     </div>
   </header>
 
-  <main id="main" class="shell">
-    <section class="intro" aria-labelledby="pageTitle">
-      <p class="eyebrow" data-copy="eyebrow">Evidence when it is enough. People when it is not.</p>
-      <h1 id="pageTitle" data-copy="title">One request. Two devices. One shared resolution.</h1>
-      <p data-copy="subtitle">This surface is intentionally narrow: it demonstrates the real human-help lifecycle without pretending the prototype is a production social network.</p>
-    </section>
+  <main id="main" class="app-shell">
+    <aside class="left-rail" aria-label="Primary navigation">
+      <nav class="main-nav">
+        <a class="nav-item active" href="#feed" aria-current="page"><span aria-hidden="true">⌂</span><b data-copy="navFeed">Feed</b></a>
+        <button class="nav-item" type="button"><span aria-hidden="true">⌕</span><b data-copy="navExplore">Discover</b></button>
+        <button class="nav-item" type="button"><span aria-hidden="true">◎</span><b data-copy="navCommunities">Communities</b></button>
+        <button class="nav-item" type="button"><span aria-hidden="true">✉</span><b data-copy="navMessages">Messages</b></button>
+        <button class="nav-item" type="button"><span aria-hidden="true">○</span><b data-copy="navProfile">Profile</b></button>
+      </nav>
+      <div class="integration-note">
+        <span class="drsk-dot" aria-hidden="true"></span>
+        <div><b>DRSK</b><small data-copy="integrationNote">Evidence + human resolution</small></div>
+      </div>
+    </aside>
 
-    <nav class="role-tabs" aria-label="Demo role">
-      <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">Author</button>
-      <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
-    </nav>
-
-    <section id="authorView" class="view-card" aria-labelledby="authorHeading">
-      <div class="section-head">
+    <section class="feed-column" aria-label="DRSK social flow">
+      <div class="feed-head">
         <div>
-          <span class="role-label" data-copy="authorSide">Author side</span>
-          <h2 id="authorHeading" data-copy="authorHeading">Ask without an audience.</h2>
+          <span class="feed-kicker" data-copy="prototypeLabel">Final prototype</span>
+          <h1 data-copy="feedTitle">Feed</h1>
         </div>
-        <button id="restoreAuthor" class="quiet-button" type="button" hidden data-copy="restore">Restore request</button>
+        <nav class="role-tabs" aria-label="Demo device role">
+          <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">New user</button>
+          <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
+        </nav>
       </div>
 
-      <label class="composer-label" for="requestText" data-copy="requestLabel">What do you need help with?</label>
-      <textarea id="requestText" maxlength="1200" rows="5" data-placeholder="requestPlaceholder" placeholder="My line-following robot oscillates in turns. Which PID term should I tune first?"></textarea>
-      <div class="composer-meta"><span id="charCount">0 / 1200</span><span data-copy="noFollowers">No follower count is used for routing.</span></div>
-
-      <div class="action-row">
-        <button id="routeHuman" class="primary-button" type="button" data-copy="routeHuman">Find a relevant person</button>
-        <button id="resolveEvidence" class="secondary-button" type="button" data-copy="resolveEvidence">Check evidence, then escalate if needed</button>
-      </div>
-
-      <div id="authorMessage" class="inline-message" role="status" aria-live="polite"></div>
-
-      <article id="requestCard" class="request-card" hidden>
-        <div class="request-card-head">
-          <div>
-            <span id="requestStatus" class="request-state">OPEN</span>
-            <h3 id="requestTextPreview"></h3>
+      <section id="authorView" class="author-view" aria-labelledby="authorHeading">
+        <article class="composer-card">
+          <div class="avatar" aria-hidden="true">AY</div>
+          <div class="composer-main">
+            <div class="identity-line">
+              <div><strong>Ayşe Yılmaz</strong><span>@ayse.new</span></div>
+              <span class="zero-followers" data-copy="zeroFollowers">0 followers</span>
+            </div>
+            <h2 id="authorHeading" class="sr-only" data-copy="authorHeading">Ask without an audience.</h2>
+            <label class="sr-only" for="requestText" data-copy="requestLabel">What do you need help with?</label>
+            <textarea id="requestText" maxlength="1200" rows="4" data-placeholder="requestPlaceholder" placeholder="Share a question, claim or idea..."></textarea>
+            <div class="composer-tools">
+              <div class="tool-row" aria-hidden="true"><span>▧</span><span>GIF</span><span>◉</span><span>⌖</span></div>
+              <span id="charCount">0 / 1200</span>
+            </div>
+            <div class="composer-actions">
+              <button id="loadScenario" class="scenario-button" type="button" data-copy="loadScenario">Load jury scenario</button>
+              <div class="post-actions">
+                <button id="routeHuman" class="quiet-button direct-human" type="button" data-copy="routeHuman">Ask a person directly</button>
+                <button id="resolveEvidence" class="primary-button" type="button" data-copy="postWithDrsk">Post with DRSK</button>
+              </div>
+            </div>
+            <p class="composer-hint" data-copy="noFollowers">Follower count is never used as an eligibility signal.</p>
           </div>
-          <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Open responder device</button>
-        </div>
+        </article>
 
-        <div id="matchBlock" class="match-block" hidden>
-          <span class="mini-label" data-copy="routedTo">Routed to</span>
-          <strong id="matchedResponder"></strong>
-          <div id="matchReasons" class="reason-list"></div>
-        </div>
+        <div id="authorMessage" class="inline-message" role="status" aria-live="polite"></div>
 
-        <details id="evidenceBlock" class="evidence-block" hidden>
-          <summary><span data-copy="evidenceContext">Evidence context</span> · <b id="evidenceStatus"></b></summary>
-          <div id="evidenceItems"></div>
-        </details>
+        <article id="requestCard" class="post-card" hidden>
+          <div class="post-grid">
+            <div class="avatar" aria-hidden="true">AY</div>
+            <div class="post-body">
+              <div class="post-head"><strong>Ayşe Yılmaz</strong><span>@ayse.new</span><span>· now</span></div>
+              <p id="requestTextPreview" class="post-copy"></p>
 
-        <div id="answerBlock" class="answer-block" hidden>
-          <span class="mini-label" data-copy="humanAnswer">Human answer</span>
-          <p id="humanAnswer"></p>
-        </div>
-      </article>
+              <section id="evidenceBlock" class="drsk-card evidence-card" hidden>
+                <div class="drsk-card-head">
+                  <div><span class="mini-brand">SOURCECHAIN</span><strong data-copy="evidenceHeading">What does the source actually say?</strong></div>
+                  <span id="evidenceStatus" class="evidence-status"></span>
+                </div>
+                <div id="evidenceItems"></div>
+                <p class="bounded-note" data-copy="boundedNote">Bounded evidence, not a truth score.</p>
+              </section>
+
+              <section id="matchBlock" class="drsk-card niyet-card" hidden>
+                <div class="drsk-card-head">
+                  <div><span class="mini-brand niyet">NIYET</span><strong data-copy="humanNeeded">Evidence needs human context</strong></div>
+                  <span id="requestStatus" class="request-state">OPEN</span>
+                </div>
+                <div class="matched-person">
+                  <span class="match-avatar" aria-hidden="true">R</span>
+                  <div><small data-copy="routedTo">Routed to</small><strong id="matchedResponder"></strong></div>
+                </div>
+                <div id="matchReasons" class="reason-list"></div>
+                <div class="match-footer">
+                  <small data-copy="capacityNote">Willingness and remaining capacity are hard constraints.</small>
+                  <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Open responder device</button>
+                </div>
+              </section>
+
+              <section id="answerBlock" class="answer-block" hidden>
+                <div class="answer-avatar" aria-hidden="true">R</div>
+                <div>
+                  <div class="answer-head"><strong data-copy="humanAnswer">Human answer</strong><span class="resolved-badge" data-copy="resolved">Resolved</span></div>
+                  <p id="humanAnswer"></p>
+                </div>
+              </section>
+
+              <div class="social-actions" aria-label="Post actions">
+                <button type="button" aria-label="Reply">◯ <span>0</span></button>
+                <button type="button" aria-label="Repost">↻ <span>0</span></button>
+                <button type="button" aria-label="Like">♡ <span>0</span></button>
+                <button type="button" aria-label="Share">⌁</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="responderView" class="responder-view" aria-labelledby="responderHeading" hidden>
+        <article class="responder-profile-card">
+          <div class="avatar responder-avatar" aria-hidden="true">R</div>
+          <div class="responder-profile-main">
+            <span class="feed-kicker" data-copy="responderSide">Responder side</span>
+            <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
+            <div class="responder-controls">
+              <label for="responderSelect" data-copy="identity">Demo identity</label>
+              <select id="responderSelect"></select>
+              <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
+            </div>
+            <div id="responderMeta" class="responder-meta"></div>
+          </div>
+        </article>
+        <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
+        <div id="inbox" class="inbox" aria-live="polite"></div>
+      </section>
     </section>
 
-    <section id="responderView" class="view-card" aria-labelledby="responderHeading" hidden>
-      <div class="section-head responder-head">
-        <div>
-          <span class="role-label" data-copy="responderSide">Responder side</span>
-          <h2 id="responderHeading" data-copy="responderHeading">Only receive requests you can actually help with.</h2>
-        </div>
-        <div class="responder-controls">
-          <label for="responderSelect" data-copy="identity">Identity</label>
-          <select id="responderSelect"></select>
-          <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
-        </div>
-      </div>
+    <aside class="right-rail" aria-label="Resolution context">
+      <section class="context-card resolution-card">
+        <span class="context-kicker">DRSK</span>
+        <h2 data-copy="resolutionTitle">From attention to resolution</h2>
+        <ol class="resolution-steps">
+          <li id="stagePost" class="active"><span>1</span><div><b data-copy="stagePost">Need</b><small data-copy="stagePostText">A new user asks without an audience.</small></div></li>
+          <li id="stageEvidence"><span>2</span><div><b>Evidence</b><small data-copy="stageEvidenceText">SOURCECHAIN exposes what the source supports.</small></div></li>
+          <li id="stageHuman"><span>3</span><div><b>Human</b><small data-copy="stageHumanText">NIYET routes the unresolved part to a willing person.</small></div></li>
+          <li id="stageResolved"><span>4</span><div><b data-copy="resolved">Resolved</b><small data-copy="stageResolvedText">Evidence and human context return to the same post.</small></div></li>
+        </ol>
+      </section>
 
-      <div id="responderMeta" class="responder-meta"></div>
-      <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
-      <div id="inbox" class="inbox" aria-live="polite"></div>
-    </section>
+      <section class="context-card proof-card">
+        <span class="context-kicker" data-copy="whyItMatters">Why it matters</span>
+        <p data-copy="proofText">Reach should not decide whether a useful question gets an answer.</p>
+        <div class="proof-row"><b>0</b><span data-copy="followersUsed">followers required</span></div>
+        <div class="proof-row"><b>2</b><span data-copy="systemsTogether">evidence + human layers</span></div>
+        <div class="proof-row"><b>1</b><span data-copy="sharedOutcome">shared outcome</span></div>
+      </section>
 
-    <section class="truth-strip" aria-label="Prototype limits">
-      <strong data-copy="truthTitle">What this demo proves</strong>
-      <p data-copy="truthText">Shared request state, server-side responder capacity, accept / skip / pause, human answers, and evidence context carried into escalation. State is demo-process memory, not a production database.</p>
-    </section>
+      <section class="context-card limit-card">
+        <b data-copy="truthTitle">Prototype boundary</b>
+        <p data-copy="truthText">Controlled evidence corpus and server-process demo state. No generic truth score, no hidden psychological profiling.</p>
+      </section>
+    </aside>
   </main>
 
   <template id="inboxRequestTemplate">
     <article class="inbox-card">
       <div class="inbox-card-head">
-        <span class="request-state"></span>
-        <small class="request-id"></small>
+        <div><span class="request-state"></span><small class="request-id"></small></div>
+        <span class="request-arrival" data-copy="routedByNiyet">Routed by NIYET</span>
       </div>
       <h3 class="inbox-text"></h3>
       <div class="inbox-evidence" hidden></div>
