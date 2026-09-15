@@ -20,6 +20,11 @@ def _clean(value: Any) -> str | None:
     return text or None
 
 
+def _bounded_query(value: str) -> str:
+    words = " ".join(value.split()).strip().split(" ")
+    return " ".join(words[:75])[:600].strip()
+
+
 def _publication_date(metadata: dict[str, Any]) -> str | None:
     value = metadata.get("age")
     if isinstance(value, str):
@@ -68,7 +73,7 @@ class BraveContextEvidenceProvider:
     def _http_transport(self, query: str, timeout: float) -> dict[str, Any]:
         params = urlencode(
             {
-                "q": query[:600],
+                "q": _bounded_query(query),
                 "count": self.count,
                 "maximum_number_of_tokens": self.token_budget,
                 "context_threshold_mode": "strict",
@@ -145,7 +150,7 @@ class BraveContextEvidenceProvider:
         return tuple(documents)
 
     def retrieve(self, query: str, *, limit: int = 5) -> tuple[RetrievalHit, ...]:
-        clean_query = " ".join(query.split()).strip()
+        clean_query = _bounded_query(query)
         if not clean_query or limit < 1:
             return ()
         payload = self._transport(clean_query, self.timeout)
