@@ -40,6 +40,25 @@ def post(address, payload):
     return result
 
 
+def get(address):
+    connection = http.client.HTTPConnection(*address, timeout=4)
+    connection.request("GET", "/api/human-help")
+    response = connection.getresponse()
+    result = response.status, json.loads(response.read())
+    connection.close()
+    return result
+
+
+def test_health_exposes_state_backend_contract(api_server):
+    status, payload = get(api_server)
+
+    assert status == 200
+    assert payload["status"] == "ok"
+    assert payload["state_backend"] in {"memory", "upstash-redis-rest"}
+    assert isinstance(payload["state_durable"], bool)
+    assert payload["responders"]
+
+
 def test_evidence_to_human_to_answer_round_trip(api_server):
     text = (
         "Research proves coffee consumption causes lower mortality. "
@@ -103,6 +122,34 @@ def test_evidence_to_human_to_answer_round_trip(api_server):
     assert author["request"]["evidence_context"]["evidence"][0]["source_url"] == evidence["source_url"]
 
 
+def test_stale_assignment_returns_conflict_instead_of_generic_bad_request(api_server):
+    status, opened = post(
+        api_server,
+        {"action": "open", "text": "PID control loop tuning help needed."},
+    )
+    assert status == 200
+    request = opened["request"]
+    old_responder = request["assigned_responder"]["id"]
+
+    status, paused = post(
+        api_server,
+        {"action": "pause", "responder_id": old_responder},
+    )
+    assert status == 200
+    assert paused["responder_state"]["active"] is False
+
+    status, conflict = post(
+        api_server,
+        {
+            "action": "accept",
+            "request_id": request["request_id"],
+            "responder_id": old_responder,
+        },
+    )
+    assert status == 409
+    assert conflict["error"] == "request_not_assigned"
+
+
 def test_reset_clears_shared_demo_state(api_server):
     status, opened = post(
         api_server,
@@ -123,5 +170,14 @@ def test_reset_clears_shared_demo_state(api_server):
             "author_token": request["author_token"],
         },
     )
-    assert status == 400
+    assert status == 404
     assert missing["error"] == "request_not_found"
+
+
+def test_state_store_failures_map_to_service_unavailable_without_internal_details():
+    assert human_api._runtime_error_response(
+        RuntimeError("state_store_unavailable")
+    ) == (503, "state_temporarily_unavailable")
+    assert human_api._runtime_error_response(
+        RuntimeError("state_store_conflict")
+    ) == (503, "state_temporarily_unavailable")
