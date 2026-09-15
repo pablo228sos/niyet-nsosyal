@@ -14,7 +14,7 @@ ARCHIVE = DIST / "drsk-nsosyal-overlay.zip"
 RUNTIME_FILES = (
     "manifest.json",
     "background.js",
-    "content.js",
+    "content-v2.js",
     "overlay.css",
 )
 
@@ -25,10 +25,13 @@ def validate_manifest() -> None:
         raise SystemExit("overlay manifest must use Manifest V3")
     if manifest.get("host_permissions") != ["https://niyet-nsosyal.vercel.app/*"]:
         raise SystemExit("overlay host_permissions drifted from the fixed DRSK backend")
-    matches = manifest.get("content_scripts", [{}])[0].get("matches", [])
+    content_script = manifest.get("content_scripts", [{}])[0]
+    matches = content_script.get("matches", [])
     expected = ["https://nsosyal.com/*", "https://www.nsosyal.com/*"]
     if matches != expected:
         raise SystemExit("overlay content-script scope drifted from NSosyal")
+    if content_script.get("js") != ["content-v2.js"]:
+        raise SystemExit("overlay manifest must load the live composer adapter")
 
 
 def write_deterministic_zip() -> None:
