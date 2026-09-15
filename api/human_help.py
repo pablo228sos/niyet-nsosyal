@@ -12,11 +12,17 @@ if SRC not in sys.path:
 
 from drsk.human_help import HumanHelpService  # noqa: E402
 from drsk.orchestrator import DrskOrchestrator  # noqa: E402
+from drsk.state_store import state_store_from_environment  # noqa: E402
 from niyet.final_runtime import FinalDemoRuntime  # noqa: E402
 
 
 runtime = FinalDemoRuntime(os.path.join(ROOT, "data"))
-service = HumanHelpService(runtime)
+initial_state = {
+    "requests": {},
+    "responder_state": runtime.default_responder_state(),
+}
+state_store = state_store_from_environment(initial_state)
+service = HumanHelpService(runtime, store=state_store)
 orchestrator = DrskOrchestrator(niyet_runtime=runtime)
 
 MAX_REQUEST_BYTES = 32 * 1024
@@ -89,13 +95,24 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         state = service.responder_state()
+        durable = service.state_durable
         self._json(
             200,
             {
                 "status": "ok",
                 "service": "DRSK human-help demo service",
-                "state_model": "server-process authoritative demo state",
-                "durability": "non-durable; reset on process restart",
+                "state_backend": service.state_backend,
+                "state_durable": durable,
+                "state_model": (
+                    "shared durable state"
+                    if durable
+                    else "process-local development fallback"
+                ),
+                "durability": (
+                    "survives function instance replacement"
+                    if durable
+                    else "non-durable; configure shared state before live multi-device use"
+                ),
                 "responders": [
                     {
                         "id": item.responder.id,
