@@ -1,48 +1,108 @@
+from types import SimpleNamespace
+
 from drsk.human_help import HumanHelpService, HumanRequestStatus
-from niyet.runtime import NiyetRuntime
+from niyet.runtime import RouteDecision
+
+
+class StubRuntime:
+    def __init__(self) -> None:
+        self.responder_by_id = {
+            "r_one": SimpleNamespace(),
+            "r_two": SimpleNamespace(),
+        }
+
+    def default_responder_state(self):
+        return {
+            "r_one": {"remaining_slots": 2, "active": True},
+            "r_two": {"remaining_slots": 1, "active": True},
+        }
+
+    def update_responder_state(self, state, responder_id, *, action):
+        next_state = {key: dict(value) for key, value in state.items()}
+        if responder_id not in next_state:
+            raise ValueError("unknown_responder")
+        current = next_state[responder_id]
+        if action == "accept":
+            current["remaining_slots"] = max(0, current["remaining_slots"] - 1)
+            current["active"] = current["active"] and current["remaining_slots"] > 0
+        elif action == "pause":
+            current["active"] = False
+        elif action == "resume":
+            current["active"] = current["remaining_slots"] > 0
+        else:
+            raise ValueError("invalid_state_action")
+        return next_state
+
+    def route(
+        self,
+        text,
+        *,
+        intent_override=None,
+        responder_state=None,
+        exclude_responder_ids=(),
+        **kwargs,
+    ):
+        state = responder_state or self.default_responder_state()
+        for responder_id, name in (("r_one", "Responder One"), ("r_two", "Responder Two")):
+            if responder_id in exclude_responder_ids:
+                continue
+            if state[responder_id]["active"] and state[responder_id]["remaining_slots"] > 0:
+                return RouteDecision(
+                    response_needed=True,
+                    intent="ask",
+                    responder_id=responder_id,
+                    responder_name=name,
+                    reason=("topic_match", "available_now"),
+                    development_utility=0.8,
+                    retrieval_similarity=0.7,
+                    request_id="stub-route",
+                )
+        return RouteDecision(
+            response_needed=True,
+            intent="ask",
+            responder_id=None,
+            responder_name=None,
+            reason=("no_eligible_responder",),
+            development_utility=None,
+            retrieval_similarity=None,
+            request_id="stub-route",
+        )
 
 
 def build_service() -> HumanHelpService:
-    return HumanHelpService(NiyetRuntime())
+    return HumanHelpService(StubRuntime())
 
 
 def test_open_request_is_visible_in_assigned_responder_inbox():
     service = build_service()
-
-    request = service.open_request("PID ayarı için nereden başlamalıyım?")
+    request = service.open_request("I need help with this question")
 
     assert request.status is HumanRequestStatus.OPEN
-    assert request.assigned_responder_id is not None
-    inbox = service.inbox(request.assigned_responder_id)
+    assert request.assigned_responder_id == "r_one"
+    inbox = service.inbox("r_one")
     assert [item["request_id"] for item in inbox] == [request.request_id]
     assert "author_token" not in inbox[0]
 
 
 def test_accept_consumes_server_side_capacity_and_answer_reaches_author():
     service = build_service()
-    request = service.open_request("PID ayarı için nereden başlamalıyım?")
-    responder_id = request.assigned_responder_id
-    assert responder_id is not None
-    before = service.responder_state()[responder_id]["remaining_slots"]
+    request = service.open_request("I need help with this question")
+    before = service.responder_state()["r_one"]["remaining_slots"]
 
-    accepted = service.accept(request.request_id, responder_id)
+    accepted = service.accept(request.request_id, "r_one")
     assert accepted["status"] == HumanRequestStatus.ACCEPTED.value
-    assert service.responder_state()[responder_id]["remaining_slots"] == before - 1
+    assert service.responder_state()["r_one"]["remaining_slots"] == before - 1
 
-    answered = service.answer(
-        request.request_id,
-        responder_id,
-        "Önce P kazancını düşük bir I ve D ile ayarlayıp salınımı gözlemleyin.",
-    )
+    answered = service.answer(request.request_id, "r_one", "Here is a grounded answer.")
     assert answered["status"] == HumanRequestStatus.ANSWERED.value
 
     author_view = service.status(request.request_id, request.author_token)
-    assert author_view["answer"].startswith("Önce P kazancını")
+    assert author_view["answer"] == "Here is a grounded answer."
 
 
 def test_author_status_requires_unpredictable_token():
     service = build_service()
-    request = service.open_request("Python API hatamı nasıl ayıklarım?")
+    request = service.open_request("I need help")
 
     try:
         service.status(request.request_id, "wrong-token")
@@ -54,27 +114,22 @@ def test_author_status_requires_unpredictable_token():
 
 def test_skip_reallocates_without_consuming_skipped_responder_capacity():
     service = build_service()
-    request = service.open_request("Python API ve backend deployment konusunda yardım lazım")
-    first_responder = request.assigned_responder_id
-    assert first_responder is not None
-    before = service.responder_state()[first_responder]["remaining_slots"]
+    request = service.open_request("I need help")
+    before = service.responder_state()["r_one"]["remaining_slots"]
 
-    updated = service.skip(request.request_id, first_responder)
+    updated = service.skip(request.request_id, "r_one")
 
-    assert service.responder_state()[first_responder]["remaining_slots"] == before
-    assert updated["assigned_responder"] is None or (
-        updated["assigned_responder"]["id"] != first_responder
-    )
+    assert service.responder_state()["r_one"]["remaining_slots"] == before
+    assert updated["assigned_responder"]["id"] == "r_two"
 
 
 def test_pause_changes_authoritative_availability_for_later_routes():
     service = build_service()
-    service.set_responder_active("r_control", False)
+    service.set_responder_active("r_one", False)
 
-    assert service.responder_state()["r_control"]["active"] is False
-
-    request = service.open_request("PID control robot motor salınımını nasıl azaltırım?")
-    assert request.assigned_responder_id != "r_control"
+    assert service.responder_state()["r_one"]["active"] is False
+    request = service.open_request("I need help")
+    assert request.assigned_responder_id == "r_two"
 
 
 def test_evidence_context_survives_human_resolution_lifecycle():
@@ -96,10 +151,8 @@ def test_evidence_context_survives_human_resolution_lifecycle():
         evidence_context=evidence,
     )
 
-    responder_id = request.assigned_responder_id
-    assert responder_id is not None
-    service.accept(request.request_id, responder_id)
-    service.answer(request.request_id, responder_id, "Association does not establish causation.")
+    service.accept(request.request_id, "r_one")
+    service.answer(request.request_id, "r_one", "Association does not establish causation.")
 
     author_view = service.status(request.request_id, request.author_token)
     assert author_view["evidence_context"] == evidence
