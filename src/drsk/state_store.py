@@ -208,13 +208,30 @@ return 0
         return body.get("result")
 
 
+def _redis_credentials_from_environment() -> tuple[str, str]:
+    """Resolve Redis REST credentials from direct or Vercel-integration names."""
+
+    direct_url = os.getenv("UPSTASH_REDIS_REST_URL", "").strip()
+    direct_token = os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip()
+    if direct_url or direct_token:
+        if not direct_url or not direct_token:
+            raise RuntimeError("state_store_configuration_incomplete")
+        return direct_url, direct_token
+
+    vercel_url = os.getenv("KV_REST_API_URL", "").strip()
+    vercel_token = os.getenv("KV_REST_API_TOKEN", "").strip()
+    if vercel_url or vercel_token:
+        if not vercel_url or not vercel_token:
+            raise RuntimeError("state_store_configuration_incomplete")
+        return vercel_url, vercel_token
+
+    return "", ""
+
+
 def state_store_from_environment(initial_state: State) -> StateStore:
     """Select durable state when configured, otherwise explicit local fallback."""
 
-    url = os.getenv("UPSTASH_REDIS_REST_URL", "").strip()
-    token = os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip()
-    if bool(url) != bool(token):
-        raise RuntimeError("state_store_configuration_incomplete")
+    url, token = _redis_credentials_from_environment()
     if not url:
         return MemoryStateStore(initial_state)
 
