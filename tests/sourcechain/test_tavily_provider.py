@@ -26,6 +26,23 @@ def _payload():
     }
 
 
+def _turkish_payload():
+    return {
+        "query": "Fiziksel hareket kalp hastalığı riskinin azalmasıyla bağlantılıdır.",
+        "results": [
+            {
+                "title": "Fiziksel aktivite ve kardiyovasküler risk",
+                "url": "https://example.org/tr/physical-activity",
+                "content": (
+                    "Düzenli fiziksel aktivite daha düşük kardiyovasküler hastalık riski ile ilişkilidir. "
+                    "Bu ilişki tek başına nedensellik kanıtı değildir."
+                ),
+                "score": 0.88,
+            }
+        ],
+    }
+
+
 def test_tavily_provider_turns_search_results_into_provenanced_hits():
     calls = []
 
@@ -53,6 +70,41 @@ def test_tavily_evidence_still_uses_sourcechain_relation_and_distortion_logic():
     assert bundle.evidence
     assert bundle.evidence[0].metadata["provider"] == "tavily_search"
     assert DistortionType.CAUSALITY_SHIFT in bundle.evidence[0].distortions
+
+
+def test_tavily_ranks_turkish_semantic_paraphrase_without_changing_authority_boundary():
+    provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _turkish_payload())
+    hits = provider.retrieve("Fiziksel hareket kalp hastalığı riskinin azalmasıyla bağlantılıdır.", limit=3)
+
+    assert hits
+    assert hits[0].provider == "tavily_search"
+    assert hits[0].document.source_url == "https://example.org/tr/physical-activity"
+    assert "kardiyovasküler hastalık riski" in hits[0].passage
+
+
+def test_live_provider_failure_falls_back_to_controlled_evidence():
+    def failing_transport(_query: str, _timeout: float):
+        raise TimeoutError("simulated Tavily timeout")
+
+    live = TavilyEvidenceProvider("secret", transport=failing_transport)
+    controlled = provider_from_environment.__globals__["build_controlled_provider"]()
+    provider = FallbackEvidenceProvider((live, controlled))
+
+    hits = provider.retrieve("coffee mortality", limit=3)
+
+    assert hits
+    assert all(hit.provider == "controlled" for hit in hits)
+
+
+def test_empty_live_results_fall_back_to_controlled_evidence():
+    live = TavilyEvidenceProvider("secret", transport=lambda _q, _t: {"results": []})
+    controlled = provider_from_environment.__globals__["build_controlled_provider"]()
+    provider = FallbackEvidenceProvider((live, controlled))
+
+    hits = provider.retrieve("coffee mortality", limit=3)
+
+    assert hits
+    assert all(hit.provider == "controlled" for hit in hits)
 
 
 def test_environment_prefers_tavily_then_brave_then_controlled(monkeypatch):
