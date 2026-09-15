@@ -19,7 +19,7 @@ from api.index import handler as ApiHandler  # noqa: E402
 class LocalHandler(SimpleHTTPRequestHandler):
     """Serve the checked-in web surface and production API handlers locally.
 
-    The local server is also the reliable multi-device jury/demo target: every
+    The local server is also the reliable multi-device demo target: every
     browser connected to this process sees the same HumanHelpService state.
     """
 
@@ -41,7 +41,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
             return
         if route == "/lab":
             self.path = "/lab.html"
-        if route == "/live":
+        if route in {"", "/live"}:
             self.path = "/live.html"
         super().do_GET()
 
