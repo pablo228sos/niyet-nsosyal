@@ -31,7 +31,9 @@ def test_overlay_requests_only_the_hosts_it_needs():
 
 
 def test_background_is_a_fixed_backend_proxy_not_an_arbitrary_fetch_bridge():
+    assert "https://niyet-nsosyal.vercel.app/api/human_help" in BACKGROUND
     assert "https://niyet-nsosyal.vercel.app/api/human-help" in BACKGROUND
+    assert "API_URLS" in BACKGROUND
     assert "ALLOWED_ACTIONS" in BACKGROUND
     assert "'resolve'" in BACKGROUND and "'status'" in BACKGROUND
     assert "message.url" not in BACKGROUND
@@ -40,6 +42,13 @@ def test_background_is_a_fixed_backend_proxy_not_an_arbitrary_fetch_bridge():
     assert "cache: 'no-store'" in BACKGROUND
     assert "trustedSender" in BACKGROUND
     assert "text.length > 1200" in BACKGROUND
+
+
+def test_backend_errors_are_always_renderable_strings():
+    assert "function errorText" in BACKGROUND
+    assert "typeof value === 'object'" in BACKGROUND
+    assert "JSON.stringify(value)" in BACKGROUND
+    assert "data?.error ?? data?.message" in BACKGROUND
 
 
 def test_overlay_is_css_isolated_and_does_not_mutate_nsosyal_actions():
@@ -67,12 +76,15 @@ def test_live_composer_detection_handles_rich_text_editors_and_nsosyal_send_acti
     assert "editableText(node)" in CONTENT
 
 
-def test_composer_anchored_trigger_stays_compact():
+def test_composer_helper_stays_compact_and_clear_of_native_toolbar():
     assert "trigger.style.setProperty('right', 'auto')" in CONTENT
     assert "trigger.style.setProperty('right', '24px')" in CONTENT
     assert "sendRect.left - 82" in CONTENT
     assert "trigger.dataset.fallback = 'false'" in CONTENT
     assert "trigger.dataset.fallback = 'true'" in CONTENT
+    assert 'min-width:58px' in CSS
+    assert 'height:32px' in CSS
+    assert '.drsk-overlay-trigger[data-fallback="false"]{margin-top:-42px}' in CSS
 
 
 def test_overlay_is_explicitly_a_concept_integration():
