@@ -3,6 +3,9 @@
   "framework": null,
   "outputDirectory": "web",
   "cleanUrls": true,
+  "rewrites": [
+    {"source": "/", "destination": "/live"}
+  ],
   "headers": [
     {
       "source": "/(.*)",
