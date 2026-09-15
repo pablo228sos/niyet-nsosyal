@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from drsk.orchestrator import DrskOrchestrator
 from drsk.schemas import HumanEscalationRequest
+from niyet.final_runtime import FinalDemoRuntime
 from niyet.runtime import RouteDecision
 from sourcechain.schemas import (
     AtomicClaim,
@@ -107,3 +108,19 @@ def test_structured_claim_context_changes_real_niyet_routing():
     assert robotics["human_routing"]["responder_id"] == "r_control"
     assert nlp["human_routing"]["responder_id"] == "r_ml"
     assert robotics["human_routing"]["responder_id"] != nlp["human_routing"]["responder_id"]
+
+
+def test_final_demo_routes_mixed_evidence_question_to_research_reviewer():
+    orchestrator = DrskOrchestrator(niyet_runtime=FinalDemoRuntime())
+    text = (
+        "Research proves coffee consumption causes lower mortality. "
+        "Can someone explain what the study actually shows?"
+    )
+
+    result = orchestrator.analyze(text, ask_human=True)
+
+    assert result["evidence_bundle"]["analysis"]["statement_type"] == "MIXED"
+    assert result["evidence_bundle"]["evidence"]
+    assert result["resolution"]["path"] == "BOTH"
+    assert result["human_routing"]["intent"] == "ask"
+    assert result["human_routing"]["responder_id"] == "r_research"
