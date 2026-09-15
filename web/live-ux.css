@@ -51,13 +51,33 @@ textarea:focus-visible {
 .inbox-text,
 .post-copy,
 .evidence-item,
-.inbox-evidence-item {
+.inbox-evidence-item,
+.wording-compare b {
   overflow-wrap: anywhere;
+}
+
+.wording-compare b {
+  line-height: 1.42;
+  font-weight: 650;
 }
 
 .responder-controls select {
   width: 100%;
   min-width: 0;
+}
+
+/* Both author and responder must be able to inspect provenance. */
+.inbox-evidence-item a {
+  display: inline-block;
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 750;
+  margin-top: 7px;
+  text-decoration: none;
+}
+
+.inbox-evidence-item a:hover {
+  text-decoration: underline;
 }
 
 /* The direct-human path is a real secondary action, not a text-like dead control. */
