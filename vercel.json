@@ -3,8 +3,8 @@
   "framework": null,
   "outputDirectory": "web",
   "cleanUrls": true,
-  "rewrites": [
-    {"source": "/", "destination": "/live"}
+  "redirects": [
+    {"source": "/", "destination": "/live", "permanent": false}
   ],
   "headers": [
     {
