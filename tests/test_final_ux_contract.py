@@ -42,6 +42,11 @@ def test_touch_focus_and_small_screen_layout_contracts_are_explicit():
     assert ".responder-controls select" in UX and "min-width: 0" in UX
     assert "prefers-reduced-motion" in UX
 
+    # Mobile must not reserve a whole empty viewport before the resolution rail.
+    assert "@media (max-width: 640px)" in MOTION_CSS
+    assert ".feed-column" in MOTION_CSS
+    assert "min-height: 0" in MOTION_CSS
+
 
 def test_visual_system_is_restrained_and_semantic():
     assert "--canvas: #f6f8fb" in UX.lower()
