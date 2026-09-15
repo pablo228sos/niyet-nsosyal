@@ -107,7 +107,15 @@ def test_final_integrated_surface_is_the_default_entrypoint():
     config = json.loads((ROOT / "vercel.json").read_text(encoding="utf-8"))
     local_server = (ROOT / "scripts" / "serve_local.py").read_text(encoding="utf-8")
 
-    assert {"source": "/", "destination": "/live"} in config.get("rewrites", [])
+    # Vercel serves static index.html before rewrites, so the final surface must
+    # use a redirect that runs before filesystem resolution.
+    assert {
+        "source": "/",
+        "destination": "/live",
+        "permanent": False,
+    } in config.get("redirects", [])
+    assert "rewrites" not in config
+
     assert 'if route in {"", "/live"}:' in local_server
     assert 'self.path = "/live.html"' in local_server
 
