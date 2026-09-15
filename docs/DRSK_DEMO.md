@@ -1,47 +1,119 @@
 # DRSK Demo
 
-Run the API/web prototype as described in the README, then exercise these acceptance scenes in the existing feed.
+These scenarios exercise the current bounded prototype without relying on live web search. They are product/engineering smoke tests, not jury-specific scripts.
 
-## A — Opinion stays outside evidence verification
+## A — NONE: opinion stays outside factual verification
 
-Post: `I think this movie is terrible.`
+Post:
 
-Expected: `OPINION`, no factual evidence badge, resolution `NONE`.
+```text
+I think this movie is terrible.
+```
 
-## B — Association is not causation
+Expected:
 
-Post: `Research proves X causes Y.`
+- statement type is subjective/non-checkable
+- no evidence is invented
+- resolution is `NONE`
+- SOURCECHAIN does not create a human escalation automatically
 
-Use the controlled evidence passage: `X was associated with Y.`
+## B — EVIDENCE: exact supported official statement
 
-Expected: the passage and its source remain visible; relation is partial/conflicting; `CAUSALITY_SHIFT` (and certainty shift where detected) is shown; explanation cites the evidence ID.
+Post:
 
-## C — Conflicting evidence remains visible
+```text
+Regular physical activity provides significant physical and mental health benefits.
+```
 
-Analyze a claim with controlled passages supporting different relations.
+Controlled source: World Health Organization, `Physical activity`.
 
-Expected: individual passages remain separate; bundle is `CONFLICTING`; resolution is `BOTH` when a human route is requested. No absolute truth score appears.
+Expected:
 
-## D — Evidence-to-human escalation
+- the stored WHO passage is retrieved with its original URL/provenance
+- relation is supported
+- the bounded path can resolve through `EVIDENCE`
+- no truth score appears
 
-Analyze a factual claim absent from the controlled corpus, then choose **Ask a relevant person**.
+## C — BOTH: association is not causation
 
-Expected: bundle is `INSUFFICIENT`; DRSK creates structured claim/topic/status context; NIYET runs retrieval, willingness, capacity and allocation; the response identifies a matched responder or honestly reports no match.
+Post:
 
-## E — Shared capacity
+```text
+Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?
+```
 
-Submit two batch requests that compete for a one-slot responder.
+Controlled source: PubMed / *Circulation*, `Association of Coffee Consumption With Total and Cause-Specific Mortality in 3 Large Prospective Cohorts`.
 
-Expected: duplicate request IDs are rejected and one responder slot cannot be assigned twice.
+Expected:
+
+- the exact stored passage says coffee consumption was **associated with** lower mortality risk
+- `CAUSALITY_SHIFT` is exposed rather than silently accepting `causes/proves`
+- the evidence remains visible
+- the unresolved interpretation is routed through NIYET
+- resolution is `BOTH`
+
+## D — BOTH: numeric distortion
+
+Post:
+
+```text
+A report says industrial activities raised atmospheric carbon dioxide by 90% since 1750.
+```
+
+Controlled source: NASA Science, `Causes`.
+
+Expected:
+
+- the stored NASA passage reports **nearly 50% since 1750**
+- the changed number is exposed as `NUMERIC_DISTORTION`
+- the source passage and provenance remain visible
+- the resolution policy can keep evidence while requesting human interpretation (`BOTH`)
+
+## E — HUMAN: honest insufficiency
+
+Post:
+
+```text
+ESP32 ultrasonic sensors always detect obstacles at 50 meters. Can someone help me check this?
+```
+
+Expected:
+
+- no unrelated controlled passage is presented as proof
+- evidence status remains `INSUFFICIENT`
+- when human help is requested, structured claim/status context enters NIYET
+- the request is routed only to an eligible willing responder with remaining capacity, or remains unmatched honestly
+- resolution path is `HUMAN`
+
+## F — Shared-capacity window
+
+Open two or more human-help requests that compete for the same low-capacity responder.
+
+Expected:
+
+- all open/unmatched requests are allocated together as one bounded window
+- a one-slot responder cannot be assigned to two accepted requests
+- Accept consumes capacity once and pins the accepted request
+- Skip triggers reallocation of the still-open request when an alternative exists
+- Pause removes the responder from new allocation; Resume restores eligibility only if capacity remains
+- a stale Accept/Skip from an older UI snapshot is rejected as a conflict and the UI refreshes the current queue
+
+For a real cross-device/serverless demo, configure the durable Upstash state backend. Without it, the local memory fallback is intentionally reported as process-local.
 
 ## Verification commands
 
 ```bash
-pytest -q
+python -m pip install -c constraints.txt -e . pytest
 node --check web/app.js
 node --check web/lab.js
+node --check web/live.js
+python -m compileall -q src api scripts experiments
+pytest -q
+python experiments/evaluate_matching_draft.py
+python experiments/evaluate_sourcechain_v0.py
 python scripts/validate_annotations.py data/intent_seed_v1.csv
 python scripts/validate_annotations.py data/response_gate_seed_v1.csv
 python scripts/validate_sourcebench.py data/sourcebench_tr
-python experiments/evaluate_matching_draft.py
 ```
+
+The smoke-test goal is not to force every post into an answer. Correct refusal, `INSUFFICIENT`, `NONE` and an unmatched human request are valid outcomes when the evidence or responder constraints do not support a stronger result.
