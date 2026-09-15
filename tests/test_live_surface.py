@@ -1,3 +1,4 @@
+import json
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -84,14 +85,25 @@ def test_live_surface_keeps_resolution_story_and_honest_boundaries():
 
 
 def test_public_live_surface_is_product_facing_not_jury_prep():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    combined = f"{html}\n{script}"
 
     assert "exampleScenario" in script
-    assert "Load example" in script
+    assert "Load example" in combined
     assert "Örneği yükle" in script
-    assert "juryScenario" not in script
-    assert "Load jury scenario" not in script
-    assert "Jüri senaryosunu" not in script
+    assert "juryScenario" not in combined
+    assert "Load jury scenario" not in combined
+    assert "Jüri senaryosunu" not in combined
+
+
+def test_final_integrated_surface_is_the_default_entrypoint():
+    config = json.loads((ROOT / "vercel.json").read_text(encoding="utf-8"))
+    local_server = (ROOT / "scripts" / "serve_local.py").read_text(encoding="utf-8")
+
+    assert {"source": "/", "destination": "/live"} in config.get("rewrites", [])
+    assert 'if route in {"", "/live"}:' in local_server
+    assert 'self.path = "/live.html"' in local_server
 
 
 def test_live_surface_recovers_from_shared_state_changes():
