@@ -11,12 +11,17 @@ WEB = ROOT / "web"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from api.index import handler as ApiHandler  # noqa: E402
 from api.experiment import handler as ExperimentHandler  # noqa: E402
+from api.human_help import handler as HumanHelpHandler  # noqa: E402
+from api.index import handler as ApiHandler  # noqa: E402
 
 
 class LocalHandler(SimpleHTTPRequestHandler):
-    """Serve the checked-in web surface and the same API handler locally."""
+    """Serve the checked-in web surface and production API handlers locally.
+
+    The local server is also the reliable multi-device jury/demo target: every
+    browser connected to this process sees the same HumanHelpService state.
+    """
 
     _json = ApiHandler._json
 
@@ -31,24 +36,39 @@ class LocalHandler(SimpleHTTPRequestHandler):
         if route == "/api/experiment":
             ExperimentHandler.do_GET(self)
             return
+        if route == "/api/human-help":
+            HumanHelpHandler.do_GET(self)
+            return
         if route == "/lab":
             self.path = "/lab.html"
+        if route == "/live":
+            self.path = "/live.html"
         super().do_GET()
 
     def do_POST(self) -> None:
-        if self.path.rstrip("/") != "/api":
-            self.send_error(404)
+        route = self.path.split("?", 1)[0].rstrip("/")
+        if route == "/api":
+            ApiHandler.do_POST(self)
             return
-        ApiHandler.do_POST(self)
+        if route == "/api/human-help":
+            HumanHelpHandler.do_POST(self)
+            return
+        self.send_error(404)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Bind address. Use 0.0.0.0 only on a trusted local network for multi-device demo.",
+    )
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args()
     server = ThreadingHTTPServer((args.host, args.port), LocalHandler)
     print(f"DRSK local demo: http://{args.host}:{args.port}")
+    if args.host == "0.0.0.0":
+        print("Multi-device demo mode: connect devices to the same trusted LAN/hotspot and open this machine's LAN IP.")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
