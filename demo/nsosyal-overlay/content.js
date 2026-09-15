@@ -150,7 +150,7 @@
   const foot = el('div', 'drsk-overlay-foot', strings.concept);
   panel.append(head, body, foot);
   shadow.append(stylesheet, trigger, panel);
-  document.documentElement.appendChild(host);
+  document.body.appendChild(host);
 
   function applyTheme() {
     state.dark = detectTheme();
