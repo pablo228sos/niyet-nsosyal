@@ -1,0 +1,108 @@
+/* Product-state motion for the final prototype.
+   Motion explains state changes; it never decorates idle screens. */
+
+button[aria-busy="true"] {
+  position: relative;
+  pointer-events: none;
+}
+
+button[aria-busy="true"]::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  margin-right: 8px;
+  display: inline-block;
+  vertical-align: -2px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: drsk-spin 0.72s linear infinite;
+  opacity: 0.78;
+}
+
+.author-view.is-pending .composer-card,
+.inbox-card.is-pending,
+.responder-profile-card.is-pending {
+  cursor: progress;
+}
+
+.author-view.is-pending .composer-card::after,
+.inbox-card.is-pending::after,
+.responder-profile-card.is-pending::after {
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(21, 94, 239, 0.48), transparent);
+  background-size: 180% 100%;
+  animation: drsk-progress 1.25s ease-in-out infinite;
+}
+
+.state-reveal {
+  animation: drsk-state-in 220ms cubic-bezier(.2, .75, .25, 1) both;
+}
+
+.request-state,
+.evidence-status,
+.resolved-badge,
+.resolution-steps li,
+.resolution-steps li > span {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.resolution-steps li.active > span,
+.resolution-steps li.done > span {
+  transform: scale(1.03);
+}
+
+.inline-message:not(:empty) {
+  animation: drsk-message-in 160ms ease-out both;
+}
+
+@keyframes drsk-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes drsk-progress {
+  0% { background-position: 100% 0; opacity: 0.35; }
+  50% { opacity: 0.8; }
+  100% { background-position: -100% 0; opacity: 0.35; }
+}
+
+@keyframes drsk-state-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drsk-message-in {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button[aria-busy="true"]::before,
+  .author-view.is-pending .composer-card::after,
+  .inbox-card.is-pending::after,
+  .responder-profile-card.is-pending::after,
+  .state-reveal,
+  .inline-message:not(:empty) {
+    animation: none !important;
+  }
+
+  .resolution-steps li,
+  .resolution-steps li > span {
+    transition: none !important;
+  }
+}
