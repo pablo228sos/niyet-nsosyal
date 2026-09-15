@@ -6,10 +6,14 @@ ROOT = Path(__file__).parents[1]
 HTML = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
 SCRIPT = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 UX = (ROOT / "web" / "live-ux.css").read_text(encoding="utf-8")
+MOTION_SCRIPT = (ROOT / "web" / "live-motion.js").read_text(encoding="utf-8")
+MOTION_CSS = (ROOT / "web" / "live-motion.css").read_text(encoding="utf-8")
 
 
 def test_final_surface_loads_the_product_design_layer():
     assert 'href="/live-ux.css"' in HTML
+    assert 'href="/live-motion.css"' in HTML
+    assert 'src="/live-motion.js"' in HTML
     assert "DRSK × NSosyal — Resolution Layer" in HTML
     assert "DRSK integration" in HTML
 
@@ -85,3 +89,24 @@ def test_responder_evidence_keeps_context_and_can_open_the_source():
     assert "if (href)" in SCRIPT
     assert "if (href && target.id === 'evidenceItems')" not in SCRIPT
     assert ".inbox-evidence-item a" in UX
+
+
+def test_async_actions_expose_plain_language_progress_and_busy_semantics():
+    assert "Checking available evidence…" in MOTION_SCRIPT
+    assert "Finding someone who can help…" in MOTION_SCRIPT
+    assert "Sending answer…" in MOTION_SCRIPT
+    assert "Mevcut kanıt kontrol ediliyor…" in MOTION_SCRIPT
+    assert "aria-busy" in MOTION_SCRIPT
+    assert "MutationObserver" in MOTION_SCRIPT
+    assert "accept-request" in MOTION_SCRIPT
+    assert "skip-request" in MOTION_SCRIPT
+    assert "send-answer" in MOTION_SCRIPT
+
+
+def test_product_state_motion_is_restrained_and_accessible():
+    assert "drsk-state-in" in MOTION_CSS
+    assert "drsk-progress" in MOTION_CSS
+    assert "button[aria-busy=\"true\"]" in MOTION_CSS
+    assert "prefers-reduced-motion: reduce" in MOTION_CSS
+    assert "animation: none !important" in MOTION_CSS
+    assert "AI" not in MOTION_CSS
