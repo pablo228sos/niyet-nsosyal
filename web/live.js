@@ -2,7 +2,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const apiCandidates = ['/api/human-help', '/api/human_help'];
-const juryScenario = {
+const exampleScenario = {
   en: 'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?',
   tr: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor. Çalışmanın aslında ne gösterdiğini biri açıklayabilir mi?'
 };
@@ -23,22 +23,23 @@ const copy = {
     authorTab: 'New user', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'Responder side',
     authorHeading: 'Ask without an audience.', responderHeading: 'Requests that match what you can help with.',
     requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
-    noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a person directly', postWithDrsk: 'Post with DRSK', loadScenario: 'Load jury scenario',
+    noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a person directly', postWithDrsk: 'Post with DRSK', loadScenario: 'Load example',
     restore: 'Restore request', routedTo: 'Routed to', copyResponder: 'Open responder device', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
     evidenceHeading: 'What does the source actually say?', boundedNote: 'Bounded evidence, not a truth score.', humanNeeded: 'Evidence needs human context',
     capacityNote: 'Willingness and remaining capacity are hard constraints.', identity: 'Demo identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
     resolutionTitle: 'From attention to resolution', stagePost: 'Need', stagePostText: 'A new user asks without an audience.',
     stageEvidenceText: 'SOURCECHAIN exposes what the source supports.', stageHumanText: 'NIYET routes the unresolved part to a willing person.', stageResolvedText: 'Evidence and human context return to the same post.',
     whyItMatters: 'Why it matters', proofText: 'Reach should not decide whether a useful question gets an answer.', followersUsed: 'followers required', systemsTogether: 'evidence + human layers', sharedOutcome: 'shared outcome',
-    truthTitle: 'Prototype boundary', truthText: 'Controlled evidence corpus and server-process demo state. No generic truth score, no hidden psychological profiling.',
-    backendLive: 'shared backend live', backendDown: 'backend unavailable', checking: 'checking backend', pause: 'Pause', resume: 'Resume',
+    truthTitle: 'Prototype boundary', truthText: 'Controlled evidence corpus and explicit prototype state. No generic truth score, no hidden psychological profiling.',
+    backendDurable: 'durable shared state live', backendMemory: 'prototype state live', backendDown: 'backend unavailable', checking: 'checking backend', pause: 'Pause', resume: 'Resume',
     capacity: 'slots remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
     accept: 'Accept', skip: 'Skip', answer: 'Answer', answerPlaceholder: 'Give the person a concise, useful answer.', send: 'Send answer',
     requestOpened: 'Request opened. NIYET is looking for a willing person.', evidenceRouted: 'Evidence checked. The unresolved part was routed with its source context.',
     noHumanNeeded: 'Evidence was sufficient for this path; no human request was opened.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
+    routingChanged: 'Availability changed, so NIYET reallocated this request. The latest queue is shown.', capacityChanged: 'Responder capacity changed. NIYET recalculated the pending window.', serviceBusy: 'Shared state is temporarily unavailable. Try again in a moment.',
     copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
-    networkError: 'The shared demo backend is not reachable.', invalidState: 'This request can no longer be restored.',
-    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post wording', sourceWording: 'Source wording', causalityShift: 'causes / proves', association: 'associated with', resetDone: 'Demo reset.', resetConfirm: 'Reset the shared demo state for every connected device?'
+    networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored.',
+    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post wording', sourceWording: 'Source wording', causalityShift: 'causes / proves', association: 'associated with', resetDone: 'Demo reset.', resetConfirm: 'Reset the prototype state for every connected device?'
   },
   tr: {
     navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
@@ -46,22 +47,23 @@ const copy = {
     authorTab: 'Yeni kullanıcı', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'Cevaplayıcı tarafı',
     authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Gerçekten yardımcı olabileceğin istekler.',
     requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
-    noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'Doğrudan birine sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Jüri senaryosunu yükle',
+    noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'Doğrudan birine sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Örneği yükle',
     restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', copyResponder: 'Cevaplayıcı cihazını aç', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
     evidenceHeading: 'Kaynak aslında ne söylüyor?', boundedNote: 'Sınırlı kanıt, doğruluk puanı değil.', humanNeeded: 'Kanıt insan bağlamına ihtiyaç duyuyor',
     capacityNote: 'İsteklilik ve kalan kapasite kesin kısıtlardır.', identity: 'Demo kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
     resolutionTitle: 'Dikkatten çözüme', stagePost: 'İhtiyaç', stagePostText: 'Yeni kullanıcı kitlesi olmadan soruyor.',
     stageEvidenceText: 'SOURCECHAIN kaynağın neyi desteklediğini gösteriyor.', stageHumanText: 'NIYET çözülmeyen kısmı istekli bir kişiye yönlendiriyor.', stageResolvedText: 'Kanıt ve insan bağlamı aynı gönderiye dönüyor.',
     whyItMatters: 'Neden önemli', proofText: 'Faydalı bir sorunun yanıt alıp almamasını erişim belirlememeli.', followersUsed: 'gerekli takipçi', systemsTogether: 'kanıt + insan katmanı', sharedOutcome: 'ortak sonuç',
-    truthTitle: 'Prototip sınırı', truthText: 'Kontrollü kanıt derlemi ve sunucu-süreci demo durumu. Genel doğruluk puanı veya gizli psikolojik profilleme yok.',
-    backendLive: 'ortak backend aktif', backendDown: 'backend erişilemiyor', checking: 'backend kontrol ediliyor', pause: 'Duraklat', resume: 'Devam et',
+    truthTitle: 'Prototip sınırı', truthText: 'Kontrollü kanıt derlemi ve açık prototip durumu. Genel doğruluk puanı veya gizli psikolojik profilleme yok.',
+    backendDurable: 'kalıcı ortak durum aktif', backendMemory: 'prototip durumu aktif', backendDown: 'backend erişilemiyor', checking: 'backend kontrol ediliyor', pause: 'Duraklat', resume: 'Devam et',
     capacity: 'slot kaldı', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
     accept: 'Kabul et', skip: 'Geç', answer: 'Yanıt', answerPlaceholder: 'Kısa ve faydalı bir yanıt yaz.', send: 'Yanıtı gönder',
     requestOpened: 'İstek açıldı. NIYET istekli birini arıyor.', evidenceRouted: 'Kanıt kontrol edildi. Çözülmeyen kısım kaynak bağlamıyla birlikte yönlendirildi.',
     noHumanNeeded: 'Bu yol için kanıt yeterliydi; insan isteği açılmadı.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
+    routingChanged: 'Uygunluk değiştiği için NIYET bu isteği yeniden yönlendirdi. Güncel kuyruk gösteriliyor.', capacityChanged: 'Cevaplayıcı kapasitesi değişti. NIYET bekleyen istekleri yeniden hesapladı.', serviceBusy: 'Ortak durum geçici olarak kullanılamıyor. Birazdan tekrar dene.',
     copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
-    networkError: 'Ortak demo backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
-    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi ifadesi', sourceWording: 'Kaynak ifadesi', causalityShift: 'neden olur / kanıtlar', association: 'ilişkili', resetDone: 'Demo sıfırlandı.', resetConfirm: 'Ortak demo durumunu bağlı tüm cihazlar için sıfırlamak istiyor musun?'
+    networkError: 'Prototip backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
+    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi ifadesi', sourceWording: 'Kaynak ifadesi', causalityShift: 'neden olur / kanıtlar', association: 'ilişkili', resetDone: 'Demo sıfırlandı.', resetConfirm: 'Bağlı tüm cihazlar için prototip durumunu sıfırlamak istiyor musun?'
   }
 };
 
@@ -71,6 +73,18 @@ function setMessage(target, message, isError = false) {
   target.textContent = message || '';
   target.classList.toggle('error', isError);
 }
+
+function errorCode(error) { return error?.code || error?.message || ''; }
+
+function friendlyError(error) {
+  const code = errorCode(error);
+  if (['request_not_assigned', 'request_not_open', 'request_not_accepted'].includes(code)) return t('routingChanged');
+  if (code === 'responder_capacity_exhausted') return t('capacityChanged');
+  if (code === 'state_temporarily_unavailable' || error?.status === 503) return t('serviceBusy');
+  return code || t('networkError');
+}
+
+function isStaleRoutingError(error) { return error?.status === 409; }
 
 function safeUrl(value) {
   try {
@@ -91,6 +105,7 @@ async function rawApi(endpoint, payload = null) {
   if (!response.ok) {
     const error = new Error(data.error || `HTTP ${response.status}`);
     error.status = response.status;
+    error.code = data.error || null;
     throw error;
   }
   return data;
@@ -107,7 +122,10 @@ async function callApi(payload = null) {
       return result;
     } catch (error) {
       lastError = error;
-      if (error.status && error.status !== 404) throw error;
+      // A bare 404 may mean this deployment uses the alternate API filename.
+      // A JSON 404 with a domain error (for example request_not_found) is real
+      // application state and must not be replayed against another endpoint.
+      if (error.status && (error.status !== 404 || error.code)) throw error;
     }
   }
   throw lastError || new Error('backend unavailable');
@@ -152,7 +170,8 @@ async function checkBackend() {
     const data = await callApi();
     responders = Array.isArray(data.responders) ? data.responders : [];
     badge.dataset.state = 'live';
-    badge.textContent = t('backendLive');
+    badge.dataset.durable = String(Boolean(data.state_durable));
+    badge.textContent = t(data.state_durable ? 'backendDurable' : 'backendMemory');
     populateResponders();
     return true;
   } catch (_) {
@@ -360,7 +379,7 @@ async function openAuthorRequest(mode) {
     setMessage($('#authorMessage'), t(mode === 'resolve' ? 'evidenceRouted' : 'requestOpened'));
     startAuthorPoll();
   } catch (error) {
-    setMessage($('#authorMessage'), error.message || t('networkError'), true);
+    setMessage($('#authorMessage'), friendlyError(error), true);
   } finally {
     requestBusy = false;
     $('#routeHuman').disabled = false;
@@ -378,14 +397,15 @@ async function refreshAuthor() {
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();
   } catch (error) {
-    if (error.message === 'request_not_found' || error.message === 'invalid_author_token') {
+    const code = errorCode(error);
+    if (code === 'request_not_found' || code === 'invalid_author_token') {
       stopAuthorPoll();
       sessionStorage.removeItem('drsk-live-author');
       $('#restoreAuthor').hidden = true;
       setMessage($('#authorMessage'), t('invalidState'), true);
       return;
     }
-    setMessage($('#authorMessage'), error.message || t('networkError'), true);
+    setMessage($('#authorMessage'), friendlyError(error), true);
   }
 }
 
@@ -424,6 +444,12 @@ function buildInboxEvidence(context) {
   wrap.appendChild(title);
   renderEvidence(context, wrap);
   return wrap;
+}
+
+async function recoverInboxConflict(error) {
+  const message = friendlyError(error);
+  await refreshBackendAndInbox();
+  setMessage($('#inboxMessage'), message, true);
 }
 
 function renderInbox(requests) {
@@ -480,7 +506,11 @@ function renderInbox(requests) {
         if (result.request) updateStages(result.request);
         await refreshBackendAndInbox();
       } catch (error) {
-        setMessage($('#inboxMessage'), error.message, true);
+        if (isStaleRoutingError(error)) {
+          await recoverInboxConflict(error);
+          return;
+        }
+        setMessage($('#inboxMessage'), friendlyError(error), true);
         accept.disabled = false;
         skip.disabled = false;
       }
@@ -494,7 +524,11 @@ function renderInbox(requests) {
         setMessage($('#inboxMessage'), t('requestSkipped'));
         await refreshBackendAndInbox();
       } catch (error) {
-        setMessage($('#inboxMessage'), error.message, true);
+        if (isStaleRoutingError(error)) {
+          await recoverInboxConflict(error);
+          return;
+        }
+        setMessage($('#inboxMessage'), friendlyError(error), true);
         accept.disabled = false;
         skip.disabled = false;
       }
@@ -510,7 +544,11 @@ function renderInbox(requests) {
         if (result.request) updateStages(result.request);
         await refreshBackendAndInbox();
       } catch (error) {
-        setMessage($('#inboxMessage'), error.message, true);
+        if (isStaleRoutingError(error)) {
+          await recoverInboxConflict(error);
+          return;
+        }
+        setMessage($('#inboxMessage'), friendlyError(error), true);
         send.disabled = false;
       }
     });
@@ -525,7 +563,7 @@ async function refreshInbox() {
     const result = await callApi({ action: 'inbox', responder_id: selectedResponderId });
     renderInbox(Array.isArray(result.requests) ? result.requests : []);
   } catch (error) {
-    setMessage($('#inboxMessage'), error.message || t('networkError'), true);
+    setMessage($('#inboxMessage'), friendlyError(error), true);
   }
 }
 
@@ -550,7 +588,7 @@ async function toggleAvailability() {
     await callApi({ action: record.active ? 'pause' : 'resume', responder_id: record.id });
     await refreshBackendAndInbox();
   } catch (error) {
-    setMessage($('#inboxMessage'), error.message || t('networkError'), true);
+    setMessage($('#inboxMessage'), friendlyError(error), true);
   } finally { button.disabled = false; }
 }
 
@@ -567,7 +605,7 @@ async function resetDemo() {
   stopAuthorPoll();
   stopInboxPoll();
   try { await callApi({ action: 'reset' }); }
-  catch (error) { setMessage($('#authorMessage'), error.message || t('networkError'), true); return; }
+  catch (error) { setMessage($('#authorMessage'), friendlyError(error), true); return; }
   sessionStorage.removeItem('drsk-live-author');
   currentAuthor = null;
   $('#requestCard').hidden = true;
@@ -593,7 +631,7 @@ $('#routeHuman').addEventListener('click', () => openAuthorRequest('open'));
 $('#resolveEvidence').addEventListener('click', () => openAuthorRequest('resolve'));
 $('#copyResponderLink').addEventListener('click', copyResponderLink);
 $('#loadScenario').addEventListener('click', () => {
-  $('#requestText').value = juryScenario[language];
+  $('#requestText').value = exampleScenario[language];
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
   $('#requestText').focus();
 });
