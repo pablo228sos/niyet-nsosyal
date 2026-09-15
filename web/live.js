@@ -39,7 +39,7 @@ const copy = {
     routingChanged: 'Availability changed, so NIYET reallocated this request. The latest queue is shown.', capacityChanged: 'Responder capacity changed. NIYET recalculated the pending window.', serviceBusy: 'Shared state is temporarily unavailable. Try again in a moment.',
     copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
     networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored.',
-    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post wording', sourceWording: 'Source wording', causalityShift: 'causes / proves', association: 'associated with', resetDone: 'Demo reset.', resetConfirm: 'Reset the prototype state for every connected device?'
+    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post claim', sourceWording: 'Source passage', resetDone: 'Demo reset.', resetConfirm: 'Reset the prototype state for every connected device?'
   },
   tr: {
     navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
@@ -63,7 +63,7 @@ const copy = {
     routingChanged: 'Uygunluk değiştiği için NIYET bu isteği yeniden yönlendirdi. Güncel kuyruk gösteriliyor.', capacityChanged: 'Cevaplayıcı kapasitesi değişti. NIYET bekleyen istekleri yeniden hesapladı.', serviceBusy: 'Ortak durum geçici olarak kullanılamıyor. Birazdan tekrar dene.',
     copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
     networkError: 'Prototip backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
-    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi ifadesi', sourceWording: 'Kaynak ifadesi', causalityShift: 'neden olur / kanıtlar', association: 'ilişkili', resetDone: 'Demo sıfırlandı.', resetConfirm: 'Bağlı tüm cihazlar için prototip durumunu sıfırlamak istiyor musun?'
+    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi iddiası', sourceWording: 'Kaynak pasajı', resetDone: 'Demo sıfırlandı.', resetConfirm: 'Bağlı tüm cihazlar için prototip durumunu sıfırlamak istiyor musun?'
   }
 };
 
@@ -257,18 +257,33 @@ function renderReasons(values) {
   });
 }
 
-function appendDistortionComparison(row, distortions) {
-  if (!distortions.includes('CAUSALITY_SHIFT')) return;
+function appendDistortionComparison(row, item, distortions) {
+  if (!distortions.length || !item?.claim_text || !item?.passage) return false;
+
   const compare = document.createElement('div');
   compare.className = 'wording-compare';
+
   const claim = document.createElement('div');
-  claim.innerHTML = `<small>${t('claimWording')}</small><b>${t('causalityShift')}</b>`;
+  const claimLabel = document.createElement('small');
+  claimLabel.textContent = t('claimWording');
+  const claimText = document.createElement('b');
+  claimText.textContent = item.claim_text;
+  claim.append(claimLabel, claimText);
+
   const arrow = document.createElement('span');
-  arrow.textContent = '→';
+  arrow.textContent = '↔';
+  arrow.setAttribute('aria-hidden', 'true');
+
   const source = document.createElement('div');
-  source.innerHTML = `<small>${t('sourceWording')}</small><b>${t('association')}</b>`;
+  const sourceLabel = document.createElement('small');
+  sourceLabel.textContent = t('sourceWording');
+  const sourceText = document.createElement('b');
+  sourceText.textContent = item.passage;
+  source.append(sourceLabel, sourceText);
+
   compare.append(claim, arrow, source);
   row.appendChild(compare);
+  return true;
 }
 
 function renderEvidence(context, target = $('#evidenceItems')) {
@@ -285,13 +300,17 @@ function renderEvidence(context, target = $('#evidenceItems')) {
       provenance.textContent = [item.publisher, item.publication_date].filter(Boolean).join(' · ');
       row.appendChild(provenance);
     }
-    if (item.passage) {
+
+    const distortions = Array.isArray(item.distortions)
+      ? item.distortions.filter((value) => value && value !== 'NONE')
+      : [];
+    const compared = appendDistortionComparison(row, item, distortions);
+    if (item.passage && !compared) {
       const quote = document.createElement('blockquote');
       quote.textContent = item.passage;
       row.appendChild(quote);
     }
-    const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
-    appendDistortionComparison(row, distortions);
+
     const signals = [];
     if (item.relation) signals.push(`${t('relation')}: ${item.relation}`);
     if (distortions.length) signals.push(`${t('distortion')}: ${distortions.join(', ')}`);
@@ -300,8 +319,9 @@ function renderEvidence(context, target = $('#evidenceItems')) {
       small.textContent = signals.join(' · ');
       row.appendChild(small);
     }
+
     const href = safeUrl(item.source_url);
-    if (href && target.id === 'evidenceItems') {
+    if (href) {
       const link = document.createElement('a');
       link.href = href;
       link.target = '_blank';
@@ -441,8 +461,9 @@ function buildInboxEvidence(context) {
   if (!context) return wrap;
   const title = document.createElement('strong');
   title.textContent = `${t('evidenceContext')}: ${context.status || context.resolution?.path || ''}`;
-  wrap.appendChild(title);
-  renderEvidence(context, wrap);
+  const items = document.createElement('div');
+  wrap.append(title, items);
+  renderEvidence(context, items);
   return wrap;
 }
 
