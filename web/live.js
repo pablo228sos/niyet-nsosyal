@@ -2,6 +2,11 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const apiCandidates = ['/api/human-help', '/api/human_help'];
+const juryScenario = {
+  en: 'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?',
+  tr: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor. Çalışmanın aslında ne gösterdiğini biri açıklayabilir mi?'
+};
+
 let apiEndpoint = sessionStorage.getItem('drsk-human-help-endpoint') || null;
 let language = localStorage.getItem('drsk-live-language') || 'en';
 let responders = [];
@@ -13,42 +18,50 @@ let requestBusy = false;
 
 const copy = {
   en: {
-    eyebrow: 'Evidence when it is enough. People when it is not.',
-    title: 'One request. Two devices. One shared resolution.',
-    subtitle: 'This surface is intentionally narrow: it demonstrates the real human-help lifecycle without pretending the prototype is a production social network.',
-    authorTab: 'Author', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'Responder side',
-    authorHeading: 'Ask without an audience.', responderHeading: 'Only receive requests you can actually help with.',
-    requestLabel: 'What do you need help with?', requestPlaceholder: 'My line-following robot oscillates in turns. Which PID term should I tune first?',
-    noFollowers: 'No follower count is used for routing.', routeHuman: 'Find a relevant person', resolveEvidence: 'Check evidence, then escalate if needed',
+    navFeed: 'Feed', navExplore: 'Discover', navCommunities: 'Communities', navMessages: 'Messages', navProfile: 'Profile',
+    integrationNote: 'Evidence + human resolution', prototypeLabel: 'Final prototype', feedTitle: 'Feed',
+    authorTab: 'New user', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'Responder side',
+    authorHeading: 'Ask without an audience.', responderHeading: 'Requests that match what you can help with.',
+    requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
+    noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a person directly', postWithDrsk: 'Post with DRSK', loadScenario: 'Load jury scenario',
     restore: 'Restore request', routedTo: 'Routed to', copyResponder: 'Open responder device', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
-    identity: 'Identity', truthTitle: 'What this demo proves', truthText: 'Shared request state, server-side responder capacity, accept / skip / pause, human answers, and evidence context carried into escalation. State is demo-process memory, not a production database.',
+    evidenceHeading: 'What does the source actually say?', boundedNote: 'Bounded evidence, not a truth score.', humanNeeded: 'Evidence needs human context',
+    capacityNote: 'Willingness and remaining capacity are hard constraints.', identity: 'Demo identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
+    resolutionTitle: 'From attention to resolution', stagePost: 'Need', stagePostText: 'A new user asks without an audience.',
+    stageEvidenceText: 'SOURCECHAIN exposes what the source supports.', stageHumanText: 'NIYET routes the unresolved part to a willing person.', stageResolvedText: 'Evidence and human context return to the same post.',
+    whyItMatters: 'Why it matters', proofText: 'Reach should not decide whether a useful question gets an answer.', followersUsed: 'followers required', systemsTogether: 'evidence + human layers', sharedOutcome: 'shared outcome',
+    truthTitle: 'Prototype boundary', truthText: 'Controlled evidence corpus and server-process demo state. No generic truth score, no hidden psychological profiling.',
     backendLive: 'shared backend live', backendDown: 'backend unavailable', checking: 'checking backend', pause: 'Pause', resume: 'Resume',
     capacity: 'slots remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
     accept: 'Accept', skip: 'Skip', answer: 'Answer', answerPlaceholder: 'Give the person a concise, useful answer.', send: 'Send answer',
-    requestOpened: 'Request opened. Waiting for the responder.', evidenceRouted: 'Evidence context was carried into the human request.',
-    noHumanNeeded: 'The evidence path did not create a human request for this statement.', answerSent: 'Answer sent to the author.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped and reallocated when another eligible responder exists.',
+    requestOpened: 'Request opened. NIYET is looking for a willing person.', evidenceRouted: 'Evidence checked. The unresolved part was routed with its source context.',
+    noHumanNeeded: 'Evidence was sufficient for this path; no human request was opened.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
     copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
     networkError: 'The shared demo backend is not reachable.', invalidState: 'This request can no longer be restored.',
-    evidenceSource: 'Source', relation: 'Relation', distortion: 'Distortion'
+    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post wording', sourceWording: 'Source wording', causalityShift: 'causes / proves', association: 'associated with', resetDone: 'Demo reset.', resetConfirm: 'Reset the shared demo state for every connected device?'
   },
   tr: {
-    eyebrow: 'Kanıt yeterliyse kanıt. Yetmiyorsa doğru insan.',
-    title: 'Tek istek. İki cihaz. Ortak bir çözüm.',
-    subtitle: 'Bu ekran bilinçli olarak dar tutuldu: prototipi üretim sosyal ağı gibi göstermeden gerçek insan-yardım yaşam döngüsünü kanıtlar.',
-    authorTab: 'Gönderi sahibi', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'Cevaplayıcı tarafı',
-    authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Yalnızca gerçekten yardımcı olabileceğin istekleri al.',
-    requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Çizgi izleyen robotum virajlarda salınım yapıyor. Önce hangi PID terimini ayarlamalıyım?',
-    noFollowers: 'Yönlendirmede takipçi sayısı kullanılmaz.', routeHuman: 'İlgili birini bul', resolveEvidence: 'Önce kanıtı kontrol et, gerekirse insana aktar',
+    navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
+    integrationNote: 'Kanıt + insan çözümü', prototypeLabel: 'Final prototipi', feedTitle: 'Akış',
+    authorTab: 'Yeni kullanıcı', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'Cevaplayıcı tarafı',
+    authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Gerçekten yardımcı olabileceğin istekler.',
+    requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
+    noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'Doğrudan birine sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Jüri senaryosunu yükle',
     restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', copyResponder: 'Cevaplayıcı cihazını aç', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
-    identity: 'Kimlik', truthTitle: 'Bu demo neyi kanıtlıyor', truthText: 'Ortak istek durumu, sunucu taraflı cevaplayıcı kapasitesi, kabul / geç / duraklat, insan yanıtları ve kanıt bağlamının insana aktarılması. Durum demo süreci belleğindedir; üretim veritabanı değildir.',
+    evidenceHeading: 'Kaynak aslında ne söylüyor?', boundedNote: 'Sınırlı kanıt, doğruluk puanı değil.', humanNeeded: 'Kanıt insan bağlamına ihtiyaç duyuyor',
+    capacityNote: 'İsteklilik ve kalan kapasite kesin kısıtlardır.', identity: 'Demo kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
+    resolutionTitle: 'Dikkatten çözüme', stagePost: 'İhtiyaç', stagePostText: 'Yeni kullanıcı kitlesi olmadan soruyor.',
+    stageEvidenceText: 'SOURCECHAIN kaynağın neyi desteklediğini gösteriyor.', stageHumanText: 'NIYET çözülmeyen kısmı istekli bir kişiye yönlendiriyor.', stageResolvedText: 'Kanıt ve insan bağlamı aynı gönderiye dönüyor.',
+    whyItMatters: 'Neden önemli', proofText: 'Faydalı bir sorunun yanıt alıp almamasını erişim belirlememeli.', followersUsed: 'gerekli takipçi', systemsTogether: 'kanıt + insan katmanı', sharedOutcome: 'ortak sonuç',
+    truthTitle: 'Prototip sınırı', truthText: 'Kontrollü kanıt derlemi ve sunucu-süreci demo durumu. Genel doğruluk puanı veya gizli psikolojik profilleme yok.',
     backendLive: 'ortak backend aktif', backendDown: 'backend erişilemiyor', checking: 'backend kontrol ediliyor', pause: 'Duraklat', resume: 'Devam et',
     capacity: 'slot kaldı', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
     accept: 'Kabul et', skip: 'Geç', answer: 'Yanıt', answerPlaceholder: 'Kısa ve faydalı bir yanıt yaz.', send: 'Yanıtı gönder',
-    requestOpened: 'İstek açıldı. Cevaplayıcı bekleniyor.', evidenceRouted: 'Kanıt bağlamı insan isteğine taşındı.',
-    noHumanNeeded: 'Bu ifade için kanıt yolu insan isteği oluşturmadı.', answerSent: 'Yanıt gönderi sahibine ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi; uygun başka cevaplayıcı varsa yeniden yönlendirildi.',
+    requestOpened: 'İstek açıldı. NIYET istekli birini arıyor.', evidenceRouted: 'Kanıt kontrol edildi. Çözülmeyen kısım kaynak bağlamıyla birlikte yönlendirildi.',
+    noHumanNeeded: 'Bu yol için kanıt yeterliydi; insan isteği açılmadı.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
     copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
     networkError: 'Ortak demo backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
-    evidenceSource: 'Kaynak', relation: 'İlişki', distortion: 'Bozulma'
+    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi ifadesi', sourceWording: 'Kaynak ifadesi', causalityShift: 'neden olur / kanıtlar', association: 'ilişkili', resetDone: 'Demo sıfırlandı.', resetConfirm: 'Ortak demo durumunu bağlı tüm cihazlar için sıfırlamak istiyor musun?'
   }
 };
 
@@ -122,7 +135,13 @@ function setRole(role, updateUrl = true) {
     url.searchParams.set('role', responder ? 'responder' : 'author');
     history.replaceState(null, '', url);
   }
-  if (responder) startInboxPoll(); else stopInboxPoll();
+  if (responder) {
+    stopAuthorPoll();
+    startInboxPoll();
+  } else {
+    stopInboxPoll();
+    if (currentAuthor?.request) startAuthorPoll();
+  }
 }
 
 async function checkBackend() {
@@ -190,6 +209,25 @@ function readStoredAuthor() {
   catch (_) { return null; }
 }
 
+function updateStages(request = null) {
+  const evidence = Boolean(request?.evidence_context);
+  const hasHuman = Boolean(request?.assigned_responder);
+  const accepted = request?.status === 'ACCEPTED';
+  const answered = request?.status === 'ANSWERED' || Boolean(request?.answer);
+  const mapping = [
+    ['#stagePost', true, Boolean(request)],
+    ['#stageEvidence', evidence, hasHuman || answered],
+    ['#stageHuman', hasHuman || accepted || answered, answered],
+    ['#stageResolved', answered, answered]
+  ];
+  mapping.forEach(([selector, active, done]) => {
+    const node = $(selector);
+    if (!node) return;
+    node.classList.toggle('active', Boolean(active));
+    node.classList.toggle('done', Boolean(done));
+  });
+}
+
 function renderReasons(values) {
   const target = $('#matchReasons');
   target.replaceChildren();
@@ -200,6 +238,20 @@ function renderReasons(values) {
   });
 }
 
+function appendDistortionComparison(row, distortions) {
+  if (!distortions.includes('CAUSALITY_SHIFT')) return;
+  const compare = document.createElement('div');
+  compare.className = 'wording-compare';
+  const claim = document.createElement('div');
+  claim.innerHTML = `<small>${t('claimWording')}</small><b>${t('causalityShift')}</b>`;
+  const arrow = document.createElement('span');
+  arrow.textContent = '→';
+  const source = document.createElement('div');
+  source.innerHTML = `<small>${t('sourceWording')}</small><b>${t('association')}</b>`;
+  compare.append(claim, arrow, source);
+  row.appendChild(compare);
+}
+
 function renderEvidence(context, target = $('#evidenceItems')) {
   target.replaceChildren();
   const items = Array.isArray(context?.evidence) ? context.evidence : [];
@@ -207,16 +259,22 @@ function renderEvidence(context, target = $('#evidenceItems')) {
     const row = document.createElement('div');
     row.className = target.id === 'evidenceItems' ? 'evidence-item' : 'inbox-evidence-item';
     const title = document.createElement('strong');
-    title.textContent = item.source_title || t('evidenceSource');
+    title.textContent = item.source_title || item.publisher || t('evidenceSource');
     row.appendChild(title);
+    if (item.publisher || item.publication_date) {
+      const provenance = document.createElement('small');
+      provenance.textContent = [item.publisher, item.publication_date].filter(Boolean).join(' · ');
+      row.appendChild(provenance);
+    }
     if (item.passage) {
       const quote = document.createElement('blockquote');
       quote.textContent = item.passage;
       row.appendChild(quote);
     }
+    const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
+    appendDistortionComparison(row, distortions);
     const signals = [];
     if (item.relation) signals.push(`${t('relation')}: ${item.relation}`);
-    const distortions = Array.isArray(item.distortions) ? item.distortions.filter((value) => value && value !== 'NONE') : [];
     if (distortions.length) signals.push(`${t('distortion')}: ${distortions.join(', ')}`);
     if (signals.length) {
       const small = document.createElement('small');
@@ -230,7 +288,6 @@ function renderEvidence(context, target = $('#evidenceItems')) {
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.textContent = t('evidenceSource');
-      row.appendChild(document.createElement('br'));
       row.appendChild(link);
     }
     target.appendChild(row);
@@ -244,8 +301,7 @@ function renderEvidence(context, target = $('#evidenceItems')) {
 
 function renderAuthorRequest(request) {
   currentAuthor = { request };
-  const card = $('#requestCard');
-  card.hidden = false;
+  $('#requestCard').hidden = false;
   $('#requestStatus').textContent = request.status || 'OPEN';
   $('#requestStatus').dataset.status = request.status || 'OPEN';
   $('#requestTextPreview').textContent = request.text || '';
@@ -268,22 +324,34 @@ function renderAuthorRequest(request) {
   const answered = Boolean(request.answer);
   $('#answerBlock').hidden = !answered;
   $('#humanAnswer').textContent = request.answer || '';
+  updateStages(request);
 }
 
 async function openAuthorRequest(mode) {
   if (requestBusy) return;
-  const text = $('#requestText').value.trim();
-  if (!text) { $('#requestText').focus(); return; }
+  const value = $('#requestText').value.trim();
+  if (!value) { $('#requestText').focus(); return; }
   requestBusy = true;
   $('#routeHuman').disabled = true;
   $('#resolveEvidence').disabled = true;
   setMessage($('#authorMessage'), t('checking'));
   try {
-    const result = await callApi({ action: mode, text });
+    const result = await callApi({ action: mode, text: value });
     if (!result.request) {
       sessionStorage.removeItem('drsk-live-author');
       currentAuthor = null;
       $('#requestCard').hidden = true;
+      updateStages(null);
+      if (result.evidence_context) {
+        const synthetic = {
+          text: value,
+          status: result.resolution?.path || 'EVIDENCE',
+          evidence_context: result.evidence_context,
+          assigned_responder: null,
+          answer: null
+        };
+        renderAuthorRequest(synthetic);
+      }
       setMessage($('#authorMessage'), t('noHumanNeeded'));
       return;
     }
@@ -305,17 +373,19 @@ async function refreshAuthor() {
   if (!stored?.request_id || !stored?.author_token) return;
   try {
     const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
-    const merged = { ...result.request, author_token: stored.author_token };
-    currentAuthor = { request: merged };
-    renderAuthorRequest(merged);
-    if (merged.status === 'ANSWERED') stopAuthorPoll();
+    if (!result.request) return;
+    currentAuthor = { request: { ...result.request, author_token: stored.author_token } };
+    renderAuthorRequest(currentAuthor.request);
+    if (result.request.status === 'ANSWERED') stopAuthorPoll();
   } catch (error) {
     if (error.message === 'request_not_found' || error.message === 'invalid_author_token') {
       stopAuthorPoll();
-      $('#restoreAuthor').hidden = true;
       sessionStorage.removeItem('drsk-live-author');
+      $('#restoreAuthor').hidden = true;
       setMessage($('#authorMessage'), t('invalidState'), true);
+      return;
     }
+    setMessage($('#authorMessage'), error.message || t('networkError'), true);
   }
 }
 
@@ -367,6 +437,9 @@ function renderInbox(requests) {
     return;
   }
 
+  const strongest = requests.find((item) => item.status === 'ACCEPTED') || requests[0];
+  updateStages(strongest);
+
   requests.forEach((request) => {
     const fragment = $('#inboxRequestTemplate').content.cloneNode(true);
     const card = $('.inbox-card', fragment);
@@ -402,8 +475,9 @@ function renderInbox(requests) {
       accept.disabled = true;
       skip.disabled = true;
       try {
-        await callApi({ action: 'accept', request_id: request.request_id, responder_id: selectedResponderId });
+        const result = await callApi({ action: 'accept', request_id: request.request_id, responder_id: selectedResponderId });
         setMessage($('#inboxMessage'), t('requestAccepted'));
+        if (result.request) updateStages(result.request);
         await refreshBackendAndInbox();
       } catch (error) {
         setMessage($('#inboxMessage'), error.message, true);
@@ -431,8 +505,9 @@ function renderInbox(requests) {
       if (!answer) { answerText.focus(); return; }
       send.disabled = true;
       try {
-        await callApi({ action: 'answer', request_id: request.request_id, responder_id: selectedResponderId, answer });
+        const result = await callApi({ action: 'answer', request_id: request.request_id, responder_id: selectedResponderId, answer });
         setMessage($('#inboxMessage'), t('answerSent'));
+        if (result.request) updateStages(result.request);
         await refreshBackendAndInbox();
       } catch (error) {
         setMessage($('#inboxMessage'), error.message, true);
@@ -481,9 +556,29 @@ async function toggleAvailability() {
 
 function restoreAuthorButton() {
   const stored = readStoredAuthor();
-  $('#restoreAuthor').hidden = !stored;
+  const restore = $('#restoreAuthor');
+  if (restore) restore.hidden = !stored;
   if (stored?.text && !$('#requestText').value) $('#requestText').value = stored.text;
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
+}
+
+async function resetDemo() {
+  if (!window.confirm(t('resetConfirm'))) return;
+  stopAuthorPoll();
+  stopInboxPoll();
+  try { await callApi({ action: 'reset' }); }
+  catch (error) { setMessage($('#authorMessage'), error.message || t('networkError'), true); return; }
+  sessionStorage.removeItem('drsk-live-author');
+  currentAuthor = null;
+  $('#requestCard').hidden = true;
+  $('#requestText').value = '';
+  $('#charCount').textContent = '0 / 1200';
+  $('#restoreAuthor')?.setAttribute('hidden', '');
+  setMessage($('#authorMessage'), t('resetDone'));
+  setMessage($('#inboxMessage'), '');
+  updateStages(null);
+  await checkBackend();
+  if (!$('#responderView').hidden) startInboxPoll();
 }
 
 $('#languageToggle').addEventListener('click', () => {
@@ -497,6 +592,12 @@ $('#responderTab').addEventListener('click', () => setRole('responder'));
 $('#routeHuman').addEventListener('click', () => openAuthorRequest('open'));
 $('#resolveEvidence').addEventListener('click', () => openAuthorRequest('resolve'));
 $('#copyResponderLink').addEventListener('click', copyResponderLink);
+$('#loadScenario').addEventListener('click', () => {
+  $('#requestText').value = juryScenario[language];
+  $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
+  $('#requestText').focus();
+});
+$('#resetDemo').addEventListener('click', resetDemo);
 $('#requestText').addEventListener('input', (event) => { $('#charCount').textContent = `${event.target.value.length} / 1200`; });
 $('#responderSelect').addEventListener('change', () => {
   selectedResponderId = $('#responderSelect').value;
@@ -507,20 +608,13 @@ $('#responderSelect').addEventListener('change', () => {
   refreshInbox();
 });
 $('#availabilityToggle').addEventListener('click', toggleAvailability);
-$('#restoreAuthor').addEventListener('click', async () => {
-  setRole('author');
-  await refreshAuthor();
-  if (currentAuthor?.request) {
-    setMessage($('#authorMessage'), t('restored'));
-    startAuthorPoll();
-  }
-});
 
 window.addEventListener('beforeunload', () => { stopAuthorPoll(); stopInboxPoll(); });
 
 (async function init() {
   applyLanguage();
   restoreAuthorButton();
+  updateStages(null);
   const params = new URL(location.href).searchParams;
   setRole(params.get('role') === 'responder' ? 'responder' : 'author', false);
   const live = await checkBackend();
@@ -531,5 +625,10 @@ window.addEventListener('beforeunload', () => { stopAuthorPoll(); stopInboxPoll(
   }
   if (params.get('role') === 'responder') startInboxPoll();
   const stored = readStoredAuthor();
-  if (stored && params.get('role') !== 'responder') $('#restoreAuthor').hidden = false;
+  if (stored && params.get('role') !== 'responder') {
+    $('#requestText').value = stored.text || '';
+    $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
+    await refreshAuthor();
+    if (currentAuthor?.request) startAuthorPoll();
+  }
 })();
