@@ -6,11 +6,13 @@ from .retrieval import SourceDocument
 
 
 def demo_documents() -> tuple[SourceDocument, ...]:
-    """Small, verified corpus for the deterministic product demonstration.
+    """Small, verified corpus for deterministic product demonstrations.
 
-    The passage is a short excerpt from the linked PubMed abstract. Keeping the
-    corpus in code makes the provenance inspectable and avoids network access at
-    request time. It is demonstration evidence, not comprehensive web search.
+    Every passage is a short excerpt from the linked primary/official page and
+    is stored with explicit provenance so the demo never depends on live web
+    retrieval. The corpus is intentionally bounded: it demonstrates evidence
+    relationships and failure behavior, not comprehensive web search or truth
+    verification.
     """
 
     return (
@@ -26,5 +28,30 @@ def demo_documents() -> tuple[SourceDocument, ...]:
             ),
             retrieved_at=datetime(2026, 8, 24, tzinfo=UTC),
             origin_cluster_id="pubmed-26572796",
+        ),
+        SourceDocument(
+            source_url="https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+            canonical_url="https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+            title="Physical activity",
+            publisher="World Health Organization",
+            publication_date="2024-06-26",
+            text=(
+                "Regular physical activity provides significant physical and mental health benefits."
+            ),
+            retrieved_at=datetime(2026, 9, 15, tzinfo=UTC),
+            origin_cluster_id="who-physical-activity-2024",
+        ),
+        SourceDocument(
+            source_url="https://science.nasa.gov/climate-change/causes/",
+            canonical_url="https://science.nasa.gov/climate-change/causes/",
+            title="Causes - NASA Science",
+            publisher="NASA",
+            publication_date=None,
+            text=(
+                "The industrial activities that our modern civilization depends upon have raised "
+                "atmospheric carbon dioxide levels by nearly 50% since 1750."
+            ),
+            retrieved_at=datetime(2026, 9, 15, tzinfo=UTC),
+            origin_cluster_id="nasa-climate-causes-co2",
         ),
     )
