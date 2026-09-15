@@ -29,6 +29,15 @@ MAX_REQUEST_BYTES = 32 * 1024
 MAX_TEXT_LENGTH = 1200
 MAX_ANSWER_LENGTH = 4000
 
+_CONFLICT_ERRORS = {
+    "request_not_assigned",
+    "request_not_open",
+    "request_not_accepted",
+    "responder_capacity_exhausted",
+}
+_NOT_FOUND_ERRORS = {"request_not_found", "unknown_responder"}
+_FORBIDDEN_ERRORS = {"invalid_author_token"}
+
 
 def _parse_json(raw: bytes) -> dict:
     value = json.loads(raw or b"{}")
@@ -47,6 +56,23 @@ def _clean_string(payload: dict, key: str, *, required: bool = True) -> str:
     if required and not value:
         raise ValueError(f"{key}_required")
     return value
+
+
+def _value_error_status(code: str) -> int:
+    if code in _CONFLICT_ERRORS:
+        return 409
+    if code in _NOT_FOUND_ERRORS:
+        return 404
+    if code in _FORBIDDEN_ERRORS:
+        return 403
+    return 400
+
+
+def _runtime_error_response(exc: RuntimeError) -> tuple[int, str]:
+    code = str(exc)
+    if code.startswith("state_store_"):
+        return 503, "state_temporarily_unavailable"
+    return 500, "human_help_failed"
 
 
 def _evidence_context(response: dict) -> dict | None:
@@ -94,7 +120,16 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:
-        state = service.responder_state()
+        try:
+            state = service.responder_state()
+        except RuntimeError as exc:
+            status, code = _runtime_error_response(exc)
+            self._json(status, {"error": code})
+            return
+        except Exception:
+            self._json(500, {"error": "human_help_failed"})
+            return
+
         durable = service.state_durable
         self._json(
             200,
@@ -155,7 +190,12 @@ class handler(BaseHTTPRequestHandler):
             self._json(400, {"error": "invalid_json"})
             return
         except ValueError as exc:
-            self._json(400, {"error": str(exc)})
+            code = str(exc)
+            self._json(_value_error_status(code), {"error": code})
+            return
+        except RuntimeError as exc:
+            status, code = _runtime_error_response(exc)
+            self._json(status, {"error": code})
             return
         except Exception:
             self._json(500, {"error": "human_help_failed"})
