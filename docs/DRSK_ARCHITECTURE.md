@@ -1,41 +1,123 @@
 # DRSK Architecture
 
-DRSK is a hybrid social-intelligence layer with one bounded request path:
+DRSK is a hybrid social-intelligence layer with two independently testable engines and one explicit resolution layer.
 
 ```text
-post -> SOURCECHAIN -> EvidenceBundle -> Resolution Engine
-                                           | EVIDENCE
-                                           | HUMAN/BOTH -> NIYET allocation
-                                           | NONE/DEFERRED
+post
+  |
+  v
+SOURCECHAIN
+  | statement -> claim -> controlled passage -> provenance -> relation -> distortion
+  v
+EvidenceBundle
+  |
+  v
+Resolution Engine
+  | EVIDENCE ------------------------------> evidence response
+  | NONE ----------------------------------> no intervention
+  | DEFERRED ------------------------------> explicit recoverable gap
+  | HUMAN / BOTH
+  v
+NIYET
+  | response intent -> responder retrieval -> hard eligibility
+  | -> bounded global allocation under shared capacity
+  v
+HumanHelpService
+  | OPEN / UNMATCHED -> ACCEPTED -> ANSWERED
+  |          \-> reallocation on window/state changes
+  v
+original request receives evidence and/or human context
 ```
 
 ## Ownership
 
-- `sourcechain` analyzes statements and claims, retrieves only from supplied or controlled evidence providers, preserves exact passages and provenance, aligns claims with passages, and reports typed distortion.
-- `niyet` detects response intent and allocates willing, relevant people under shared capacity.
-- `drsk` owns the explicit resolution policy and adapters between the two engines.
-- `api` validates the transport boundary; `web` renders the structured result with progressive disclosure.
+- `sourcechain` owns statement analysis, claim extraction, controlled evidence retrieval, exact passage provenance, claim/evidence alignment and typed distortion checks.
+- `niyet` owns response/intent classification, responder retrieval, willingness/active/capacity eligibility, pair utility and greedy/global allocation.
+- `drsk` owns the resolution policy, SOURCECHAIN→NIYET adapter, human-help request lifecycle and state-store abstraction.
+- `api` owns bounded transport validation and public error semantics.
+- `web` renders structured state; it does not own allocation truth or responder capacity.
 
-Neither engine treats a score as a probability of truth. An absent passage means insufficient evidence, not a false claim. Conflicting items stay independently visible in the bundle.
+Neither engine treats a score as a probability of truth. Missing evidence means insufficient evidence, not a false claim. Conflicting passages remain visible as individual evidence items.
 
-## Contract invariants
+## Evidence contracts
 
-An `EvidenceItem` requires an HTTP(S) source URL, canonical URL, retrieval timestamp, exact plain-text passage, passage location, document hash, relation and origin cluster. An `EvidenceBundle` rejects duplicate evidence IDs and explanations that cite evidence outside the bundle. Bundles are immutable, versioned and deterministically serializable.
+An `EvidenceItem` preserves at minimum:
+
+- HTTP(S) source URL and canonical URL
+- exact plain-text passage and passage location
+- publisher/publication metadata when available
+- retrieval timestamp and document hash
+- claim/evidence relation
+- typed distortion signals
+- origin-cluster identifier
+
+An `EvidenceBundle` is versioned and deterministic. Explanations may cite only evidence IDs that exist inside the bundle.
 
 The resolution paths are:
 
-- `EVIDENCE`: bounded evidence is sufficient and non-conflicting.
-- `HUMAN`: evidence is insufficient and human interpretation is requested.
-- `BOTH`: evidence is useful but conflicting or distorted, so it remains visible alongside a human route.
-- `NONE`: a subjective/non-checkable post needs neither path.
-- `DEFERRED`: a recoverable evidence operation is explicitly asynchronous or unavailable.
+- `EVIDENCE` — bounded evidence is sufficient and non-conflicting for the current path.
+- `HUMAN` — evidence is insufficient and human help is explicitly requested.
+- `BOTH` — evidence is useful but conflict/distortion or interpretation still warrants a human route.
+- `NONE` — the post is subjective/non-checkable or otherwise needs neither layer.
+- `DEFERRED` — a recoverable evidence operation is unavailable or intentionally postponed.
+
+## NIYET allocation invariants
+
+Eligibility is enforced before global optimization. A responder must be active, willing for the intent, above the relevance floor and have remaining capacity.
+
+Open requests are allocated as one bounded window rather than independently. Responder capacity is expanded into finite assignment slots; dummy assignments allow a request to remain unmatched instead of forcing a weak route.
+
+Human-help lifecycle invariants:
+
+- accepted requests remain pinned to the accepting responder
+- Accept consumes one responder slot exactly once
+- still-open or unmatched requests are reallocated together after relevant state changes
+- Skip excludes the current responder for that request and triggers reallocation when alternatives exist
+- Pause removes the responder from new allocation; Resume restores eligibility only when capacity remains
+- stale UI actions are rejected as conflicts instead of mutating a newer allocation state
+- no transition may drive capacity below zero
+
+The current utility is a transparent development baseline rather than a learned probability.
+
+## Mutable-state boundary
+
+`src/drsk/state_store.py` isolates mutable demo state behind a small transactional interface:
+
+```text
+read() -> snapshot
+mutate(fn) -> atomic/serialized state transition
+reset(state)
+```
+
+Two implementations are available:
+
+- `MemoryStateStore` — thread-safe, process-local fallback for tests and local development.
+- `UpstashRedisStateStore` — optional durable Redis REST backend using compare-and-set Lua mutations, TTL and bounded conflict retries.
+
+The domain service does not know Redis commands. This keeps request/allocation logic testable and lets the deployment backend change without rewriting NIYET or DRSK contracts.
+
+When durable state is not configured, the public health surface reports the fallback honestly; the UI does not claim multi-device durability.
+
+## API failure semantics
+
+Transport errors are separated from domain/state conflicts:
+
+- malformed/invalid input → `400`
+- invalid author token → `403`
+- missing request/entity → `404`
+- stale assignment or concurrent state conflict → `409`
+- temporary durable-state backend failure → `503`
+
+Internal storage errors are not exposed verbatim to the browser.
 
 ## Security boundary
 
-The sprint prototype uses controlled/cached evidence. It does not expose arbitrary URL fetching. A future network provider must independently enforce scheme, DNS/IP checks before and after redirects, private/link-local/metadata blocking, timeouts, byte and decompression limits, MIME restrictions, sanitization and redirect limits.
+The current SOURCECHAIN path uses controlled stored evidence and does not expose arbitrary URL fetching. A future network provider must independently enforce scheme validation, DNS/IP checks before and after redirects, private/link-local/metadata blocking, timeouts, byte/decompression limits, MIME restrictions, sanitization and redirect limits.
 
-API bodies and post text are bounded before analysis. Evidence passages are rendered as text, and source links come only from validated bundle provenance.
+API bodies, post text and answer text are bounded before analysis. Evidence passages are rendered as text, and source links originate from validated bundle provenance.
+
+The current shared-state layer is a prototype state mechanism, not an authentication system. Production identity, authorization, abuse controls and rate limiting remain separate requirements.
 
 ## Replaceable baselines
 
-Statement rules, lexical retrieval and structured alignment are transparent baselines behind module boundaries. They can be replaced by measured Turkish models without changing evidence provenance, bundle or resolution contracts.
+Statement rules, lexical retrieval and structured alignment are transparent baselines behind stable contracts. They can be replaced by measured Turkish models without changing provenance, EvidenceBundle, Resolution or human-allocation semantics.
