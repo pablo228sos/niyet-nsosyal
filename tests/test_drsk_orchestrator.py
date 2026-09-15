@@ -65,6 +65,7 @@ def test_orchestrator_routes_structured_human_escalation_and_returns_json_ready_
     assert result["human_routing"]["responder_id"] == "r_research"
     assert "evidence_status: INSUFFICIENT" in niyet.text
     assert "claim: Research proves X causes Y." in niyet.text
+    assert result["human_routing"]["routing_text"] == niyet.text
     assert niyet.state is state
 
 
