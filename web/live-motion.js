@@ -20,12 +20,76 @@
     }
   };
 
+  const responderDrafts = new Map();
+  let focusedDraftRequestId = null;
+  let draftRestoreFrame = null;
+
   function language() {
     return document.documentElement.lang === 'tr' ? 'tr' : 'en';
   }
 
   function copy(key) {
     return pendingCopy[language()][key] || pendingCopy.en[key] || '';
+  }
+
+  function requestIdFor(node) {
+    const card = node?.closest?.('.inbox-card');
+    return $('.request-id', card)?.textContent?.trim() || null;
+  }
+
+  function answerTextarea(card) {
+    return card ? $('.answer-editor textarea', card) : null;
+  }
+
+  function saveResponderDraft(textarea) {
+    if (!(textarea instanceof HTMLTextAreaElement)) return;
+    const requestId = requestIdFor(textarea);
+    if (!requestId) return;
+
+    responderDrafts.set(requestId, {
+      value: textarea.value,
+      selectionStart: textarea.selectionStart,
+      selectionEnd: textarea.selectionEnd
+    });
+  }
+
+  function restoreResponderDrafts() {
+    draftRestoreFrame = null;
+    const inbox = $('#inbox');
+    if (!inbox) return;
+
+    const liveRequestIds = new Set();
+    inbox.querySelectorAll('.inbox-card').forEach((card) => {
+      const requestId = $('.request-id', card)?.textContent?.trim();
+      if (!requestId) return;
+      liveRequestIds.add(requestId);
+
+      const textarea = answerTextarea(card);
+      const editor = $('.answer-editor', card);
+      const draft = responderDrafts.get(requestId);
+      if (!textarea || !draft || editor?.hidden) return;
+
+      if (textarea.value !== draft.value) textarea.value = draft.value;
+
+      if (focusedDraftRequestId === requestId && document.activeElement !== textarea) {
+        textarea.focus({ preventScroll: true });
+        const length = textarea.value.length;
+        const start = Math.min(draft.selectionStart ?? length, length);
+        const end = Math.min(draft.selectionEnd ?? start, length);
+        try { textarea.setSelectionRange(start, end); } catch (_) {}
+      }
+    });
+
+    for (const requestId of responderDrafts.keys()) {
+      if (!liveRequestIds.has(requestId) && focusedDraftRequestId !== requestId) {
+        responderDrafts.delete(requestId);
+      }
+    }
+  }
+
+  function scheduleResponderDraftRestore() {
+    if (draftRestoreFrame != null) return;
+    draftRestoreFrame = requestAnimationFrame(restoreResponderDrafts);
   }
 
   function setPendingMessage(target, key) {
@@ -82,6 +146,28 @@
     clearBusyWhenReady(button, card);
   }
 
+  document.addEventListener('input', (event) => {
+    const textarea = event.target?.closest?.('.answer-editor textarea');
+    if (!textarea) return;
+    saveResponderDraft(textarea);
+  }, true);
+
+  document.addEventListener('focusin', (event) => {
+    const textarea = event.target?.closest?.('.answer-editor textarea');
+    if (textarea) {
+      focusedDraftRequestId = requestIdFor(textarea);
+      saveResponderDraft(textarea);
+      return;
+    }
+
+    if (!event.target?.closest?.('.inbox-card')) focusedDraftRequestId = null;
+  }, true);
+
+  document.addEventListener('keyup', (event) => {
+    const textarea = event.target?.closest?.('.answer-editor textarea');
+    if (textarea) saveResponderDraft(textarea);
+  }, true);
+
   document.addEventListener('click', (event) => {
     const button = event.target.closest('button');
     if (!button) return;
@@ -111,9 +197,18 @@
       return;
     }
     if (button.classList.contains('send-answer')) {
+      const card = button.closest('.inbox-card');
+      const textarea = answerTextarea(card);
+      if (textarea) saveResponderDraft(textarea);
       markInboxPending(button, 'answer');
     }
   });
+
+  const inbox = $('#inbox');
+  if (inbox) {
+    const inboxObserver = new MutationObserver(scheduleResponderDraftRestore);
+    inboxObserver.observe(inbox, { childList: true });
+  }
 
   const revealTargets = ['requestCard', 'evidenceBlock', 'matchBlock', 'answerBlock'];
   revealTargets.forEach((id) => {
