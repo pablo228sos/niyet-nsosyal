@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
-  <title>DRSK × NSosyal — Final Prototype</title>
+  <meta name="description" content="DRSK adds evidence-aware resolution and capacity-aware human routing to a social feed.">
+  <title>DRSK × NSosyal — Resolution Layer</title>
   <link rel="stylesheet" href="/live.css">
   <link rel="stylesheet" href="/live-ux.css">
 </head>
@@ -12,7 +13,7 @@
   <a class="skip-link" href="#main">Skip to feed</a>
 
   <header class="topbar">
-    <a class="brand" href="/live" aria-label="DRSK final prototype">
+    <a class="brand" href="/live" aria-label="DRSK NSosyal concept integration">
       <span class="brand-n" aria-hidden="true">N</span>
       <span class="brand-copy"><b>N'SOSYAL</b><small>concept integration</small></span>
       <span class="brand-divider" aria-hidden="true"></span>
@@ -20,8 +21,8 @@
     </a>
     <div class="top-actions">
       <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
-      <button id="resetDemo" class="icon-button" type="button" title="Reset demo" aria-label="Reset demo">↻</button>
-      <button id="languageToggle" class="quiet-button" type="button">TR</button>
+      <button id="resetDemo" class="icon-button" type="button" title="Reset prototype" aria-label="Reset prototype">↻</button>
+      <button id="languageToggle" class="quiet-button language-button" type="button" aria-label="Switch language">TR</button>
     </div>
   </header>
 
@@ -29,10 +30,6 @@
     <aside class="left-rail" aria-label="Primary navigation">
       <nav class="main-nav">
         <a class="nav-item active" href="#feed" aria-current="page"><span aria-hidden="true">⌂</span><b data-copy="navFeed">Feed</b></a>
-        <button class="nav-item" type="button"><span aria-hidden="true">⌕</span><b data-copy="navExplore">Discover</b></button>
-        <button class="nav-item" type="button"><span aria-hidden="true">◎</span><b data-copy="navCommunities">Communities</b></button>
-        <button class="nav-item" type="button"><span aria-hidden="true">✉</span><b data-copy="navMessages">Messages</b></button>
-        <button class="nav-item" type="button"><span aria-hidden="true">○</span><b data-copy="navProfile">Profile</b></button>
       </nav>
       <div class="integration-note">
         <span class="drsk-dot" aria-hidden="true"></span>
@@ -40,13 +37,13 @@
       </div>
     </aside>
 
-    <section class="feed-column" aria-label="DRSK social flow">
+    <section id="feed" class="feed-column" aria-label="DRSK social flow">
       <div class="feed-head">
         <div>
-          <span class="feed-kicker" data-copy="prototypeLabel">Final prototype</span>
+          <span class="feed-kicker">DRSK integration</span>
           <h1 data-copy="feedTitle">Feed</h1>
         </div>
-        <nav class="role-tabs" aria-label="Demo device role">
+        <nav class="role-tabs" aria-label="Prototype role">
           <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">New user</button>
           <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
         </nav>
@@ -120,13 +117,6 @@
                   <p id="humanAnswer"></p>
                 </div>
               </section>
-
-              <div class="social-actions" aria-label="Post actions">
-                <button type="button" aria-label="Reply">◯ <span>0</span></button>
-                <button type="button" aria-label="Repost">↻ <span>0</span></button>
-                <button type="button" aria-label="Like">♡ <span>0</span></button>
-                <button type="button" aria-label="Share">⌁</button>
-              </div>
             </div>
           </div>
         </article>
@@ -161,14 +151,6 @@
           <li id="stageHuman"><span>3</span><div><b>Human</b><small data-copy="stageHumanText">NIYET routes the unresolved part to a willing person.</small></div></li>
           <li id="stageResolved"><span>4</span><div><b data-copy="resolved">Resolved</b><small data-copy="stageResolvedText">Evidence and human context return to the same post.</small></div></li>
         </ol>
-      </section>
-
-      <section class="context-card proof-card">
-        <span class="context-kicker" data-copy="whyItMatters">Why it matters</span>
-        <p data-copy="proofText">Reach should not decide whether a useful question gets an answer.</p>
-        <div class="proof-row"><b>0</b><span data-copy="followersUsed">followers required</span></div>
-        <div class="proof-row"><b>2</b><span data-copy="systemsTogether">evidence + human layers</span></div>
-        <div class="proof-row"><b>1</b><span data-copy="sharedOutcome">shared outcome</span></div>
       </section>
 
       <section class="context-card limit-card">
