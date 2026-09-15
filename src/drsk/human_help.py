@@ -6,10 +6,13 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any
 
-from niyet.runtime import NiyetRuntime, RouteDecision
+from niyet.runtime import NiyetRuntime
 from niyet.types import IntentType
 
 from .state_store import MemoryStateStore, StateStore
+
+
+MAX_ALLOCATION_WINDOW = 20
 
 
 class HumanRequestStatus(StrEnum):
@@ -95,9 +98,10 @@ class HumanRequest:
 class HumanHelpService:
     """Authoritative state machine for the evidence-to-human resolution loop.
 
-    Domain transitions are storage-independent. Local development uses a locked
-    in-memory store; deployments can supply a durable store so author and responder
-    devices do not depend on landing on the same serverless process.
+    Pending requests are reallocated as one bounded NIYET window. Accepted work
+    is pinned and has already consumed capacity; OPEN/UNMATCHED requests compete
+    for the remaining slots. Domain transitions stay storage-independent so the
+    same semantics work with local memory or a durable shared state store.
     """
 
     def __init__(self, runtime: NiyetRuntime, *, store: StateStore | None = None) -> None:
@@ -135,7 +139,6 @@ class HumanHelpService:
         *,
         routing_text: str | None = None,
         evidence_context: dict[str, Any] | None = None,
-        decision: RouteDecision | None = None,
     ) -> HumanRequest:
         display_text = display_text.strip()
         if not display_text:
@@ -143,19 +146,6 @@ class HumanHelpService:
         routing_text = (routing_text or display_text).strip()
 
         def mutation(state: dict[str, Any]) -> HumanRequest:
-            responder_state = state["responder_state"]
-            route = decision
-            if route is not None and not self._route_is_currently_eligible(
-                route, responder_state
-            ):
-                route = None
-            if route is None:
-                route = self.runtime.route(
-                    routing_text,
-                    intent_override=IntentType.ASK,
-                    responder_state=responder_state,
-                )
-
             now = time.time()
             request = HumanRequest(
                 request_id=f"hr-{secrets.token_urlsafe(9)}",
@@ -164,18 +154,12 @@ class HumanHelpService:
                 routing_text=routing_text,
                 created_at=now,
                 updated_at=now,
-                status=(
-                    HumanRequestStatus.OPEN
-                    if route.responder_id
-                    else HumanRequestStatus.UNMATCHED
-                ),
-                assigned_responder_id=route.responder_id,
-                assigned_responder_name=route.responder_name,
-                match_reason=tuple(route.reason),
+                status=HumanRequestStatus.UNMATCHED,
                 evidence_context=evidence_context,
             )
             state["requests"][request.request_id] = request.state_dict()
-            return request
+            self._rebalance_pending(state)
+            return self._request(state, request.request_id)
 
         return self.store.mutate(mutation)
 
@@ -187,23 +171,16 @@ class HumanHelpService:
         routing_text: str | None = None,
         evidence_context: dict[str, Any] | None = None,
     ) -> HumanRequest:
-        """Persist a DRSK -> NIYET route, rechecking live capacity before commit."""
-
-        decision = RouteDecision(
-            response_needed=bool(routing.get("response_needed")),
-            intent=routing.get("intent"),
-            responder_id=routing.get("responder_id"),
-            responder_name=routing.get("responder_name"),
-            reason=tuple(routing.get("reason") or ()),
-            development_utility=routing.get("development_utility"),
-            retrieval_similarity=routing.get("retrieval_similarity"),
-            request_id=routing.get("request_id"),
+        """Persist DRSK escalation inside the authoritative shared allocation window."""
+        stored_routing_text = (
+            routing_text
+            or str(routing.get("routing_text") or "").strip()
+            or display_text
         )
         return self.open_request(
             display_text,
-            routing_text=routing_text,
+            routing_text=stored_routing_text,
             evidence_context=evidence_context,
-            decision=decision,
         )
 
     def inbox(self, responder_id: str) -> list[dict[str, Any]]:
@@ -247,7 +224,8 @@ class HumanHelpService:
             request.status = HumanRequestStatus.ACCEPTED
             request.updated_at = time.time()
             state["requests"][request_id] = request.state_dict()
-            return request.public_dict()
+            self._rebalance_pending(state)
+            return self._request(state, request_id).public_dict()
 
         return self.store.mutate(mutation)
 
@@ -256,24 +234,16 @@ class HumanHelpService:
             request = self._assigned_request(state, request_id, responder_id)
             if request.status is not HumanRequestStatus.OPEN:
                 raise ValueError("request_not_open")
-            request.excluded_responder_ids.append(responder_id)
-            route = self.runtime.route(
-                request.routing_text,
-                intent_override=IntentType.ASK,
-                responder_state=state["responder_state"],
-                exclude_responder_ids=tuple(request.excluded_responder_ids),
-            )
-            request.assigned_responder_id = route.responder_id
-            request.assigned_responder_name = route.responder_name
-            request.match_reason = tuple(route.reason)
-            request.status = (
-                HumanRequestStatus.OPEN
-                if route.responder_id
-                else HumanRequestStatus.UNMATCHED
-            )
+            if responder_id not in request.excluded_responder_ids:
+                request.excluded_responder_ids.append(responder_id)
+            request.status = HumanRequestStatus.UNMATCHED
+            request.assigned_responder_id = None
+            request.assigned_responder_name = None
+            request.match_reason = ()
             request.updated_at = time.time()
             state["requests"][request_id] = request.state_dict()
-            return request.public_dict()
+            self._rebalance_pending(state)
+            return self._request(state, request_id).public_dict()
 
         return self.store.mutate(mutation)
 
@@ -303,27 +273,66 @@ class HumanHelpService:
                 responder_id,
                 action="resume" if active else "pause",
             )
+            self._rebalance_pending(state)
             return dict(state["responder_state"][responder_id])
 
         return self.store.mutate(mutation)
 
+    def _rebalance_pending(self, state: dict[str, Any]) -> None:
+        pending = [
+            HumanRequest.from_state_dict(value)
+            for value in state["requests"].values()
+            if HumanRequestStatus(value["status"])
+            in {HumanRequestStatus.OPEN, HumanRequestStatus.UNMATCHED}
+        ]
+        pending.sort(key=lambda item: (item.created_at, item.request_id))
+
+        for request in pending:
+            request.status = HumanRequestStatus.UNMATCHED
+            request.assigned_responder_id = None
+            request.assigned_responder_name = None
+            request.match_reason = ()
+            state["requests"][request.request_id] = request.state_dict()
+
+        window = pending[:MAX_ALLOCATION_WINDOW]
+        overflow = pending[MAX_ALLOCATION_WINDOW:]
+        if window:
+            decisions = self.runtime.route_many(
+                [
+                    {
+                        "id": request.request_id,
+                        "text": request.routing_text,
+                        "intent_override": IntentType.ASK,
+                        "exclude_responder_ids": tuple(request.excluded_responder_ids),
+                    }
+                    for request in window
+                ],
+                responder_state=state["responder_state"],
+            )
+            decisions_by_id = {
+                decision.request_id: decision
+                for decision in decisions
+                if decision.request_id is not None
+            }
+
+            for request in window:
+                decision = decisions_by_id.get(request.request_id)
+                if decision is not None and decision.responder_id is not None:
+                    request.status = HumanRequestStatus.OPEN
+                    request.assigned_responder_id = decision.responder_id
+                    request.assigned_responder_name = decision.responder_name
+                    request.match_reason = tuple(decision.reason)
+                request.updated_at = time.time()
+                state["requests"][request.request_id] = request.state_dict()
+
+        for request in overflow:
+            request.match_reason = ("waiting_for_next_allocation_window",)
+            request.updated_at = time.time()
+            state["requests"][request.request_id] = request.state_dict()
+
     def _known_responder(self, responder_id: str) -> None:
         if responder_id not in self.runtime.responder_by_id:
             raise ValueError("unknown_responder")
-
-    @staticmethod
-    def _route_is_currently_eligible(
-        decision: RouteDecision,
-        responder_state: dict[str, dict[str, Any]],
-    ) -> bool:
-        if decision.responder_id is None:
-            return True
-        state = responder_state.get(decision.responder_id)
-        return bool(
-            state
-            and state.get("active")
-            and int(state.get("remaining_slots", 0)) > 0
-        )
 
     @staticmethod
     def _request(state: dict[str, Any], request_id: str) -> HumanRequest:
