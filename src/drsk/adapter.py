@@ -27,7 +27,10 @@ class NiyetEscalationAdapter:
             intent_override=IntentType.ASK,
             responder_state=responder_state,
         )
-        return route_decision_to_dict(decision)
+        return {
+            "routing_text": context,
+            **route_decision_to_dict(decision),
+        }
 
     @staticmethod
     def _structured_context(request: HumanEscalationRequest) -> str:
