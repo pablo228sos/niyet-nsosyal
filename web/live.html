@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -9,29 +9,47 @@
   <link rel="stylesheet" href="/live.css">
   <link rel="stylesheet" href="/live-ux.css">
   <link rel="stylesheet" href="/live-motion.css">
+  <link rel="stylesheet" href="/live-nsosyal.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to feed</a>
 
-  <header class="topbar">
+  <header class="topbar mobile-topbar">
     <a class="brand" href="/live" aria-label="DRSK NSosyal concept integration">
       <span class="brand-n" aria-hidden="true">N</span>
-      <span class="brand-copy"><b>N'SOSYAL</b><small>concept integration</small></span>
-      <span class="brand-divider" aria-hidden="true"></span>
-      <span class="drsk-lockup"><b>DRSK</b><small>resolution layer</small></span>
+      <span class="drsk-lockup"><b>DRSK</b><small>concept integration</small></span>
     </a>
     <div class="top-actions">
       <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
       <button id="resetDemo" class="icon-button" type="button" title="Reset prototype" aria-label="Reset prototype">↻</button>
+      <button class="icon-button theme-button" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
       <button id="languageToggle" class="quiet-button language-button" type="button" aria-label="Switch language">TR</button>
     </div>
   </header>
 
   <main id="main" class="app-shell">
-    <aside class="left-rail" aria-label="Primary navigation">
-      <nav class="main-nav">
-        <a class="nav-item active" href="#feed" aria-current="page"><span aria-hidden="true">⌂</span><b data-copy="navFeed">Feed</b></a>
+    <aside class="left-rail ns-shell" aria-label="Primary navigation">
+      <div class="rail-brand" aria-label="NSosyal concept shell">
+        <span class="rail-logo" aria-hidden="true">N</span>
+        <small>BETA</small>
+      </div>
+      <nav class="main-nav shell-nav">
+        <a class="nav-item active" href="#feed" aria-current="page"><span aria-hidden="true">⌂</span><b data-shell-copy="home">Home</b></a>
+        <div class="nav-item shell-only"><span aria-hidden="true">♧</span><b data-shell-copy="notifications">Notifications</b><em>1</em></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">◌</span><b data-shell-copy="messages">Messages</b></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">◎</span><b data-shell-copy="discover">Discover</b></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">△</span><b data-shell-copy="gameHub">Game Hub</b></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">☆</span><b data-shell-copy="communities">Communities</b></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">▱</span><b data-shell-copy="saved">Saved</b></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">♨</span><b data-shell-copy="likes">Likes</b></div>
+        <div class="nav-item shell-only"><span aria-hidden="true">⌘</span><b>TEKNOFEST</b></div>
       </nav>
+      <button class="shell-post-button" type="button" data-shell-scroll-compose>
+        <span aria-hidden="true">✎</span><span data-shell-copy="newPost">New post</span>
+      </button>
+      <div class="rail-divider"></div>
+      <div class="rail-setting shell-only"><span aria-hidden="true">▷</span><b data-shell-copy="media">Media</b><span class="switch-mini" aria-hidden="true"></span></div>
+      <button class="rail-setting rail-theme" type="button" data-theme-toggle><span aria-hidden="true">◔</span><b data-shell-copy="theme">Dark mode</b><span class="switch-mini" aria-hidden="true"></span></button>
       <div class="integration-note">
         <span class="drsk-dot" aria-hidden="true"></span>
         <div><b>DRSK</b><small data-copy="integrationNote">Evidence + human resolution</small></div>
@@ -51,7 +69,7 @@
       </div>
 
       <section id="authorView" class="author-view" aria-labelledby="authorHeading">
-        <article class="composer-card">
+        <article class="composer-card" id="composer">
           <div class="avatar" aria-hidden="true">AY</div>
           <div class="composer-main">
             <div class="identity-line">
@@ -63,6 +81,7 @@
             <textarea id="requestText" maxlength="1200" rows="4" data-placeholder="requestPlaceholder" placeholder="Share a question, claim or idea..."></textarea>
             <div class="composer-tools">
               <div class="tool-row" aria-hidden="true"><span>▧</span><span>GIF</span><span>◉</span><span>⌖</span></div>
+              <span class="drsk-composer-chip">DRSK</span>
               <span id="charCount">0 / 1200</span>
             </div>
             <div class="composer-actions">
@@ -142,7 +161,19 @@
       </section>
     </section>
 
-    <aside class="right-rail" aria-label="Resolution context">
+    <aside class="right-rail ns-shell" aria-label="Discovery and DRSK context">
+      <div class="right-tools">
+        <label class="search-shell"><span aria-hidden="true">⌕</span><input type="search" readonly data-shell-placeholder="search" placeholder="Search"></label>
+        <button class="icon-button theme-button desktop-theme" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
+      </div>
+
+      <section class="context-card trends-card">
+        <div class="trends-head"><h2 data-shell-copy="popular">Popular</h2><span data-shell-copy="viewAll">View all</span></div>
+        <div class="trend-row"><span>#</span><div><b>TEKNOFEST</b><small data-shell-copy="trendActive">active now</small></div></div>
+        <div class="trend-row"><span>#</span><div><b>Türkiye</b><small data-shell-copy="trendGrowing">growing</small></div></div>
+        <div class="trend-row"><span>#</span><div><b>2026</b><small data-shell-copy="trendToday">today</small></div></div>
+      </section>
+
       <section class="context-card resolution-card">
         <span class="context-kicker">DRSK</span>
         <h2 data-copy="resolutionTitle">From attention to resolution</h2>
@@ -183,5 +214,6 @@
 
   <script src="/live.js" defer></script>
   <script src="/live-motion.js" defer></script>
+  <script src="/live-theme.js" defer></script>
 </body>
 </html>
