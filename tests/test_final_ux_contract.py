@@ -8,22 +8,28 @@ SCRIPT = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 UX = (ROOT / "web" / "live-ux.css").read_text(encoding="utf-8")
 MOTION_SCRIPT = (ROOT / "web" / "live-motion.js").read_text(encoding="utf-8")
 MOTION_CSS = (ROOT / "web" / "live-motion.css").read_text(encoding="utf-8")
+SHELL = (ROOT / "web" / "live-nsosyal.css").read_text(encoding="utf-8")
+THEME = (ROOT / "web" / "live-theme.js").read_text(encoding="utf-8")
 
 
-def test_final_surface_loads_the_product_design_layer():
+def test_final_surface_loads_the_product_design_layers():
     assert 'href="/live-ux.css"' in HTML
     assert 'href="/live-motion.css"' in HTML
+    assert 'href="/live-nsosyal.css"' in HTML
     assert 'src="/live-motion.js"' in HTML
+    assert 'src="/live-theme.js"' in HTML
     assert "DRSK × NSosyal — Resolution Layer" in HTML
     assert "DRSK integration" in HTML
 
 
-def test_final_surface_contains_only_real_product_controls():
-    # The final surface should not imitate a full social network with dead controls.
-    assert "Discover" not in HTML
-    assert "Communities" not in HTML
-    assert "Messages" not in HTML
-    assert "Profile</b>" not in HTML
+def test_host_shell_is_context_not_a_fake_social_network():
+    # Current NSosyal context is present, but non-demo destinations are inert shell
+    # labels rather than dead links/buttons pretending to be implemented features.
+    assert "Notifications" in HTML
+    assert "Messages" in HTML
+    assert "Discover" in HTML
+    assert "Communities" in HTML
+    assert HTML.count('class="nav-item shell-only"') >= 7
     assert 'class="social-actions"' not in HTML
 
     # Pitch-only proof metrics belong in the presentation, not in the product UI.
@@ -46,6 +52,35 @@ def test_touch_focus_and_small_screen_layout_contracts_are_explicit():
     assert "@media (max-width: 640px)" in MOTION_CSS
     assert ".feed-column" in MOTION_CSS
     assert "min-height: 0" in MOTION_CSS
+    assert "@media (max-width: 640px)" in SHELL
+    assert ".feed-column" in SHELL
+
+
+def test_nsosyal_shell_supports_light_dark_without_ai_spectacle():
+    assert "--ns-accent-a: #11c9de" in SHELL.lower()
+    assert "--ns-accent-b: #3658ff" in SHELL.lower()
+    assert 'html[data-theme="dark"]' in SHELL
+    assert ".rail-logo" in SHELL
+    assert ".trends-card" in SHELL
+    assert ".drsk-composer-chip" in SHELL
+    assert "gradient" in SHELL
+    assert "glassmorphism" not in SHELL.lower()
+    assert "ai orb" not in SHELL.lower()
+
+    assert "drsk-live-theme" in THEME
+    assert "prefers-color-scheme: dark" in THEME
+    assert "data-theme-toggle" in HTML
+    assert "metaTheme.content" in THEME
+
+
+def test_hidden_state_cannot_be_overridden_by_component_display_rules():
+    # Regression: .answer-block { display:grid } once overrode the browser's
+    # [hidden] rule, exposing an empty Resolved card while the request was OPEN.
+    assert "[hidden] { display: none !important; }" in SHELL
+    assert 'id="answerBlock" class="answer-block" hidden' in HTML
+    assert 'id="requestCard" class="post-card" hidden' in HTML
+    assert 'id="evidenceBlock" class="drsk-card evidence-card" hidden' in HTML
+    assert 'id="matchBlock" class="drsk-card niyet-card" hidden' in HTML
 
 
 def test_visual_system_is_restrained_and_semantic():
