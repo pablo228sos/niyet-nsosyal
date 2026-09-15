@@ -20,7 +20,7 @@ SOURCECHAIN does not emit an absolute truth score. Missing evidence means `INSUF
 ## What works now
 
 - deterministic statement/check-worthiness analysis and bounded claim extraction
-- controlled passage retrieval from a small verified source corpus
+- pluggable evidence acquisition with a verified local corpus and optional server-side live web context
 - exact passage, canonical URL, publisher, publication date, document hash and origin-cluster provenance
 - `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` and `INSUFFICIENT` claim/evidence relations
 - typed numeric, temporal, causality, certainty, scope and attribution-shift checks
@@ -39,7 +39,7 @@ The main architecture is documented in [`docs/DRSK_ARCHITECTURE.md`](docs/DRSK_A
 
 1. classify whether the post contains a check-worthy factual statement
 2. extract bounded, span-linked claims
-3. rank passages from the controlled evidence provider
+3. acquire candidate passages through the configured evidence provider
 4. preserve passage-level provenance before explanation
 5. align each claim with the retrieved evidence
 6. expose typed wording shifts instead of collapsing them into a truth score
@@ -50,19 +50,31 @@ The main architecture is documented in [`docs/DRSK_ARCHITECTURE.md`](docs/DRSK_A
 
 Accepted requests are pinned to the accepting responder and consume capacity. Open or unmatched requests are reallocated together when the matching window changes. A stale UI action is rejected as a conflict rather than silently consuming capacity twice.
 
-## Controlled evidence scenarios
+## Evidence acquisition modes
 
-The default SOURCECHAIN corpus is intentionally small and inspectable. Every stored passage points to the original primary/official page; request-time web search is not used.
+SOURCECHAIN keeps evidence acquisition separate from evidence interpretation.
+
+**Default / offline mode.** Without external credentials, the pipeline uses a small verified corpus committed with the project. Every stored passage points to its original primary/official page, so local tests and the fallback demo remain deterministic and inspectable.
+
+**Optional live-web mode.** When `BRAVE_SEARCH_API_KEY` is configured on the server, SOURCECHAIN uses Brave's LLM Context endpoint to retrieve current web passages and source metadata. Those passages are still processed by SOURCECHAIN's own passage ranking, relation and distortion logic. Brave does not provide the project verdict. If the live provider fails or returns no usable passages, the pipeline falls back to the verified corpus.
+
+```text
+BRAVE_SEARCH_API_KEY=...
+```
+
+The key is server-side only and is never exposed to the browser.
+
+Verified fallback scenarios:
 
 | Scenario | Stored source | Expected behavior |
 | --- | --- | --- |
 | coffee mortality wording | PubMed / *Circulation* | association evidence can expose a causality shift and produce `BOTH` |
 | physical-activity benefit statement | World Health Organization | exact supported wording can resolve through `EVIDENCE` |
 | industrial CO₂ increase | NASA Science | changing “nearly 50%” to another numeric claim exposes a numeric distortion and can produce `BOTH` |
-| factual claim outside the corpus | none | remains `INSUFFICIENT`; an explicit request for help can produce `HUMAN` |
+| factual claim outside available evidence | none | remains `INSUFFICIENT`; an explicit request for help can produce `HUMAN` |
 | subjective opinion | none | stays outside factual verification and resolves to `NONE` |
 
-This corpus demonstrates evidence relationships and failure behavior. It is **not** general web coverage and is not presented as a universal fact checker.
+Live web retrieval broadens evidence coverage; it does **not** turn SOURCECHAIN into a universal fact checker. Source quality, completeness and recency remain explicit limitations.
 
 ## NIYET evaluation
 
@@ -128,7 +140,7 @@ The repository CI also runs JavaScript syntax checks for the shipped web surface
 
 ## Repository structure
 
-- `src/sourcechain/` — statement/claim analysis, controlled retrieval, alignment, distortion, lineage baseline and EvidenceBundle assembly
+- `src/sourcechain/` — statement/claim analysis, evidence acquisition, passage ranking, alignment, distortion, lineage baseline and EvidenceBundle assembly
 - `src/niyet/` — response/intent classification, responder retrieval, eligibility, scoring, greedy/global allocation and runtime
 - `src/drsk/` — resolution policy, SOURCECHAIN→NIYET adapter, human-help service and state-store abstraction
 - `api/` — bounded transport handlers for analysis, experiments and human-help state transitions
@@ -140,15 +152,16 @@ The repository CI also runs JavaScript syntax checks for the shipped web surface
 
 ## Current boundaries
 
-- SOURCECHAIN uses a bounded controlled corpus; arbitrary live URL retrieval is intentionally disabled
+- without `BRAVE_SEARCH_API_KEY`, SOURCECHAIN uses the bounded verified corpus only
+- optional live web evidence retrieval broadens coverage but does not infer source reliability or guarantee complete evidence
 - SOURCEBENCH-TR v0 is a 15-example development regression set, not benchmark-grade model validation
-- SOURCECHAIN retrieval/alignment/distortion logic is currently a deterministic lexical/structured baseline
-- Evidence Lineage uses supplied origin-cluster IDs; automatic common-origin discovery is not implemented
+- SOURCECHAIN passage ranking/alignment/distortion logic is currently a deterministic lexical/structured baseline
+- Evidence Lineage uses supplied origin-cluster IDs; live web retrieval conservatively groups pages by hostname rather than claiming automatic syndication detection
 - the Distortion Lens is single-hop claim↔evidence comparison, not arbitrary repost-chain reconstruction
 - responder profiles in the prototype are synthetic
 - durable shared demo state requires external Upstash configuration; the default memory fallback is process-local
 - authentication, platform identity, production abuse controls and production rate limiting are not implemented
-- the semantic retriever is evaluated offline rather than loaded into the lightweight runtime
+- the semantic NIYET retriever is evaluated offline rather than loaded into the lightweight runtime
 - offline relevance is not the same as a real-world resolved interaction
 - usability samples are small prototype studies and are not presented as population estimates
 
