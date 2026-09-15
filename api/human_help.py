@@ -12,10 +12,10 @@ if SRC not in sys.path:
 
 from drsk.human_help import HumanHelpService  # noqa: E402
 from drsk.orchestrator import DrskOrchestrator  # noqa: E402
-from niyet.runtime import NiyetRuntime  # noqa: E402
+from niyet.final_runtime import FinalDemoRuntime  # noqa: E402
 
 
-runtime = NiyetRuntime(os.path.join(ROOT, "data"))
+runtime = FinalDemoRuntime(os.path.join(ROOT, "data"))
 service = HumanHelpService(runtime)
 orchestrator = DrskOrchestrator(niyet_runtime=runtime)
 
@@ -55,8 +55,10 @@ def _evidence_context(response: dict) -> dict | None:
             continue
         evidence_items.append(
             {
-                "source_title": item.get("source_title"),
-                "source_url": item.get("source_url"),
+                "source_title": item.get("title") or item.get("publisher"),
+                "source_url": item.get("source_url") or item.get("canonical_url"),
+                "publisher": item.get("publisher"),
+                "publication_date": item.get("publication_date"),
                 "passage": item.get("passage"),
                 "relation": item.get("relation"),
                 "distortions": item.get("distortions", []),
@@ -66,6 +68,7 @@ def _evidence_context(response: dict) -> dict | None:
     return {
         "status": bundle.get("status"),
         "sufficient": bundle.get("sufficient"),
+        "explanation": bundle.get("explanation"),
         "resolution": resolution,
         "evidence": evidence_items,
     }
@@ -85,6 +88,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:
+        state = service.responder_state()
         self._json(
             200,
             {
@@ -96,10 +100,8 @@ class handler(BaseHTTPRequestHandler):
                     {
                         "id": item.responder.id,
                         "name": item.display_name,
-                        "remaining_slots": service.responder_state()[item.responder.id][
-                            "remaining_slots"
-                        ],
-                        "active": service.responder_state()[item.responder.id]["active"],
+                        "remaining_slots": state[item.responder.id]["remaining_slots"],
+                        "active": state[item.responder.id]["active"],
                     }
                     for item in runtime.responders
                 ],
@@ -122,7 +124,10 @@ class handler(BaseHTTPRequestHandler):
             self._json(400, {"error": "invalid_content_length"})
             return
         if length < 0 or length > MAX_REQUEST_BYTES:
-            self._json(413 if length > MAX_REQUEST_BYTES else 400, {"error": "invalid_content_length"})
+            self._json(
+                413 if length > MAX_REQUEST_BYTES else 400,
+                {"error": "invalid_content_length"},
+            )
             return
 
         try:
@@ -158,17 +163,18 @@ class handler(BaseHTTPRequestHandler):
                 ask_human=True,
                 responder_state=service.responder_state(),
             )
+            context = _evidence_context(response)
             routing = response.get("human_routing")
             if not isinstance(routing, dict) or not routing.get("responder_id"):
                 return {
                     "resolution": response.get("resolution"),
-                    "evidence_context": _evidence_context(response),
+                    "evidence_context": context,
                     "request": None,
                 }
             request = service.open_from_routing(
                 text,
                 routing,
-                evidence_context=_evidence_context(response),
+                evidence_context=context,
             )
             return {
                 "resolution": response.get("resolution"),
@@ -192,7 +198,10 @@ class handler(BaseHTTPRequestHandler):
                 if action == "accept"
                 else service.skip(request_id, responder_id)
             )
-            return {"request": request, "responder_state": service.responder_state()}
+            return {
+                "request": request,
+                "responder_state": service.responder_state(),
+            }
 
         if action == "answer":
             request_id = _clean_string(payload, "request_id")
