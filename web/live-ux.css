@@ -56,9 +56,39 @@ textarea:focus-visible {
   overflow-wrap: anywhere;
 }
 
+/* Claim ↔ source explanation is fully externalized so the strict CSP can stay intact. */
+.wording-compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+  padding: 9px;
+  border-radius: 10px;
+  background: #f7f9fc;
+}
+
+.wording-compare div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wording-compare small {
+  font-size: 0.58rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8793a3;
+}
+
 .wording-compare b {
+  font-size: 0.73rem;
   line-height: 1.42;
   font-weight: 650;
+}
+
+.wording-compare > span {
+  color: #8793a3;
 }
 
 .responder-controls select {
@@ -127,6 +157,17 @@ textarea:focus-visible {
   /* Transparency should not disappear on the phone used by the responder. */
   .limit-card {
     display: block;
+  }
+}
+
+@media (max-width: 520px) {
+  .wording-compare {
+    grid-template-columns: 1fr;
+  }
+
+  .wording-compare > span {
+    transform: rotate(90deg);
+    justify-self: center;
   }
 }
 
