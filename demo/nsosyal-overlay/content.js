@@ -167,10 +167,12 @@
       trigger.dataset.fallback = 'true';
       trigger.style.removeProperty('--drsk-trigger-x');
       trigger.style.removeProperty('--drsk-trigger-y');
+      trigger.style.setProperty('right', '24px');
       return;
     }
 
     trigger.dataset.fallback = 'false';
+    trigger.style.setProperty('right', 'auto');
     const rect = composer.getBoundingClientRect();
     const x = Math.max(16, Math.min(innerWidth - 96, rect.right - 176));
     const y = Math.max(74, Math.min(innerHeight - 64, rect.bottom - 42));
