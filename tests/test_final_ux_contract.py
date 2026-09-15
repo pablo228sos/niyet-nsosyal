@@ -8,14 +8,25 @@ SCRIPT = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 UX = (ROOT / "web" / "live-ux.css").read_text(encoding="utf-8")
 
 
-def test_final_surface_loads_the_ux_hardening_layer():
+def test_final_surface_loads_the_product_design_layer():
     assert 'href="/live-ux.css"' in HTML
+    assert "DRSK × NSosyal — Resolution Layer" in HTML
+    assert "DRSK integration" in HTML
 
 
-def test_final_surface_hides_controls_that_have_no_product_action():
-    assert ".main-nav button.nav-item" in UX
-    assert ".social-actions" in UX
-    assert "display: none" in UX
+def test_final_surface_contains_only_real_product_controls():
+    # The final surface should not imitate a full social network with dead controls.
+    assert "Discover" not in HTML
+    assert "Communities" not in HTML
+    assert "Messages" not in HTML
+    assert "Profile</b>" not in HTML
+    assert 'class="social-actions"' not in HTML
+
+    # Pitch-only proof metrics belong in the presentation, not in the product UI.
+    assert 'class="context-card proof-card"' not in HTML
+    assert "followers required" not in HTML
+    assert "evidence + human layers" not in HTML
+    assert "shared outcome" not in HTML
 
 
 def test_touch_focus_and_small_screen_layout_contracts_are_explicit():
@@ -24,8 +35,18 @@ def test_touch_focus_and_small_screen_layout_contracts_are_explicit():
     assert "overflow-wrap: anywhere" in UX
     assert "@media (max-width: 640px)" in UX
     assert "@media (max-width: 480px)" in UX
-    assert ".limit-card" in UX and "display: block" in UX
     assert ".responder-controls select" in UX and "min-width: 0" in UX
+    assert "prefers-reduced-motion" in UX
+
+
+def test_visual_system_is_restrained_and_semantic():
+    assert "--canvas: #f6f8fb" in UX.lower()
+    assert "--blue: #155eef" in UX.lower()
+    assert "--violet: #6941c6" in UX.lower()
+    assert ".evidence-card" not in UX or ".drsk-card::before" in UX
+    assert ".niyet-card::before" in UX
+    assert ".answer-block" in UX
+    assert "surface-in" in UX
 
 
 def test_final_surface_does_not_depend_on_inline_css_blocked_by_csp():
@@ -60,8 +81,7 @@ def test_responder_evidence_keeps_context_and_can_open_the_source():
     assert "wrap.append(title, items)" in SCRIPT
     assert "renderEvidence(context, items)" in SCRIPT
 
-    # The source link used to be author-only. The current renderer creates it
-    # whenever a validated HTTP(S) provenance URL exists.
+    # The source link must remain available on both author and responder sides.
     assert "if (href)" in SCRIPT
     assert "if (href && target.id === 'evidenceItems')" not in SCRIPT
     assert ".inbox-evidence-item a" in UX
