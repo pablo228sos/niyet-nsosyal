@@ -81,7 +81,13 @@ def test_live_surface_keeps_resolution_story_and_honest_boundaries():
     assert "action: 'status'" in script
     assert "action: 'accept'" in script
     assert "action: 'answer'" in script
-    assert "CAUSALITY_SHIFT" in script
+
+    # Explainability is generic: typed distortions come from the API while the
+    # UI compares the actual claim with the actual stored evidence passage.
+    assert "item.claim_text" in script
+    assert "item.passage" in script
+    assert "item.distortions" in script
+    assert "appendDistortionComparison" in script
 
 
 def test_public_live_surface_is_product_facing_not_jury_prep():
