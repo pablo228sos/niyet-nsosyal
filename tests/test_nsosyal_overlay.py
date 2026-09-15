@@ -15,6 +15,7 @@ def test_overlay_requests_only_the_hosts_it_needs():
     assert MANIFEST["manifest_version"] == 3
     assert MANIFEST.get("permissions", []) == []
     assert MANIFEST["host_permissions"] == ["https://niyet-nsosyal.vercel.app/*"]
+    assert "action" not in MANIFEST
 
     script = MANIFEST["content_scripts"][0]
     assert script["matches"] == ["https://nsosyal.com/*", "https://www.nsosyal.com/*"]
@@ -52,6 +53,16 @@ def test_overlay_is_css_isolated_and_does_not_mutate_nsosyal_actions():
     assert "requestAnimationFrame" in CONTENT
     assert "MutationObserver" in CONTENT
     assert ":host" in CSS
+
+
+def test_composer_anchored_trigger_stays_compact():
+    # Regression: base CSS has a fallback `right` value. When a composer also
+    # supplied `left`, the button stretched across the viewport. The anchored
+    # path must explicitly release the right edge; fallback restores it.
+    assert "trigger.style.setProperty('right', 'auto')" in CONTENT
+    assert "trigger.style.setProperty('right', '24px')" in CONTENT
+    assert "trigger.dataset.fallback = 'false'" in CONTENT
+    assert "trigger.dataset.fallback = 'true'" in CONTENT
 
 
 def test_overlay_is_explicitly_a_concept_integration():
