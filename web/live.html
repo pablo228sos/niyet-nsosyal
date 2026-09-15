@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>DRSK Live Resolution</title>
+  <link rel="stylesheet" href="/live.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="DRSK home">
+      <span class="brand-mark" aria-hidden="true">D</span>
+      <span><b>DRSK</b><small>live resolution</small></span>
+    </a>
+    <div class="top-actions">
+      <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
+      <button id="languageToggle" class="quiet-button" type="button">TR</button>
+    </div>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="intro" aria-labelledby="pageTitle">
+      <p class="eyebrow" data-copy="eyebrow">Evidence when it is enough. People when it is not.</p>
+      <h1 id="pageTitle" data-copy="title">One request. Two devices. One shared resolution.</h1>
+      <p data-copy="subtitle">This surface is intentionally narrow: it demonstrates the real human-help lifecycle without pretending the prototype is a production social network.</p>
+    </section>
+
+    <nav class="role-tabs" aria-label="Demo role">
+      <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">Author</button>
+      <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
+    </nav>
+
+    <section id="authorView" class="view-card" aria-labelledby="authorHeading">
+      <div class="section-head">
+        <div>
+          <span class="role-label" data-copy="authorSide">Author side</span>
+          <h2 id="authorHeading" data-copy="authorHeading">Ask without an audience.</h2>
+        </div>
+        <button id="restoreAuthor" class="quiet-button" type="button" hidden data-copy="restore">Restore request</button>
+      </div>
+
+      <label class="composer-label" for="requestText" data-copy="requestLabel">What do you need help with?</label>
+      <textarea id="requestText" maxlength="1200" rows="5" data-placeholder="requestPlaceholder" placeholder="My line-following robot oscillates in turns. Which PID term should I tune first?"></textarea>
+      <div class="composer-meta"><span id="charCount">0 / 1200</span><span data-copy="noFollowers">No follower count is used for routing.</span></div>
+
+      <div class="action-row">
+        <button id="routeHuman" class="primary-button" type="button" data-copy="routeHuman">Find a relevant person</button>
+        <button id="resolveEvidence" class="secondary-button" type="button" data-copy="resolveEvidence">Check evidence, then escalate if needed</button>
+      </div>
+
+      <div id="authorMessage" class="inline-message" role="status" aria-live="polite"></div>
+
+      <article id="requestCard" class="request-card" hidden>
+        <div class="request-card-head">
+          <div>
+            <span id="requestStatus" class="request-state">OPEN</span>
+            <h3 id="requestTextPreview"></h3>
+          </div>
+          <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Open responder device</button>
+        </div>
+
+        <div id="matchBlock" class="match-block" hidden>
+          <span class="mini-label" data-copy="routedTo">Routed to</span>
+          <strong id="matchedResponder"></strong>
+          <div id="matchReasons" class="reason-list"></div>
+        </div>
+
+        <details id="evidenceBlock" class="evidence-block" hidden>
+          <summary><span data-copy="evidenceContext">Evidence context</span> · <b id="evidenceStatus"></b></summary>
+          <div id="evidenceItems"></div>
+        </details>
+
+        <div id="answerBlock" class="answer-block" hidden>
+          <span class="mini-label" data-copy="humanAnswer">Human answer</span>
+          <p id="humanAnswer"></p>
+        </div>
+      </article>
+    </section>
+
+    <section id="responderView" class="view-card" aria-labelledby="responderHeading" hidden>
+      <div class="section-head responder-head">
+        <div>
+          <span class="role-label" data-copy="responderSide">Responder side</span>
+          <h2 id="responderHeading" data-copy="responderHeading">Only receive requests you can actually help with.</h2>
+        </div>
+        <div class="responder-controls">
+          <label for="responderSelect" data-copy="identity">Identity</label>
+          <select id="responderSelect"></select>
+          <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
+        </div>
+      </div>
+
+      <div id="responderMeta" class="responder-meta"></div>
+      <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
+      <div id="inbox" class="inbox" aria-live="polite"></div>
+    </section>
+
+    <section class="truth-strip" aria-label="Prototype limits">
+      <strong data-copy="truthTitle">What this demo proves</strong>
+      <p data-copy="truthText">Shared request state, server-side responder capacity, accept / skip / pause, human answers, and evidence context carried into escalation. State is demo-process memory, not a production database.</p>
+    </section>
+  </main>
+
+  <template id="inboxRequestTemplate">
+    <article class="inbox-card">
+      <div class="inbox-card-head">
+        <span class="request-state"></span>
+        <small class="request-id"></small>
+      </div>
+      <h3 class="inbox-text"></h3>
+      <div class="inbox-evidence" hidden></div>
+      <div class="inbox-actions">
+        <button class="accept-request primary-button" type="button">Accept</button>
+        <button class="skip-request quiet-button" type="button">Skip</button>
+      </div>
+      <div class="answer-editor" hidden>
+        <label>Answer</label>
+        <textarea rows="4" maxlength="4000" placeholder="Give the person a concise, useful answer."></textarea>
+        <button class="send-answer primary-button" type="button">Send answer</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="/live.js" defer></script>
+</body>
+</html>
