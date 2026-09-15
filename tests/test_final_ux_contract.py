@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 
@@ -25,6 +26,21 @@ def test_touch_focus_and_small_screen_layout_contracts_are_explicit():
     assert "@media (max-width: 480px)" in UX
     assert ".limit-card" in UX and "display: block" in UX
     assert ".responder-controls select" in UX and "min-width: 0" in UX
+
+
+def test_final_surface_does_not_depend_on_inline_css_blocked_by_csp():
+    config = json.loads((ROOT / "vercel.json").read_text(encoding="utf-8"))
+    csp = next(
+        header["value"]
+        for rule in config["headers"]
+        for header in rule["headers"]
+        if header["key"] == "Content-Security-Policy"
+    )
+
+    assert "<style" not in HTML.lower()
+    assert "style-src 'self'" in csp
+    assert "'unsafe-inline'" not in csp
+    assert ".wording-compare" in UX
 
 
 def test_distortion_explanation_uses_real_claim_and_passage_not_hardcoded_words():
