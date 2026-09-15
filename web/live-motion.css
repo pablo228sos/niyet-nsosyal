@@ -72,6 +72,15 @@ button[aria-busy="true"]::after {
   animation: drsk-message-in 160ms ease-out both;
 }
 
+/* On phones the context rail follows the composer. The desktop feed uses a
+   viewport-height canvas, but keeping that minimum on mobile created a large
+   empty gap before the resolution context. */
+@media (max-width: 640px) {
+  .feed-column {
+    min-height: 0;
+  }
+}
+
 @keyframes drsk-spin {
   to { transform: rotate(360deg); }
 }
