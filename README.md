@@ -1,212 +1,155 @@
-# DRSK — Hybrid Social Intelligence Layer
+# DRSK — Evidence + Human Resolution for Social Platforms
 
-## Rebuilt interface
-
-The feed and allocation laboratory share an accessible, responsive interface with English/Turkish localization and automatic dark mode. See [the redesign and QA report](docs/REDESIGN_REPORT.md) and [design tokens](DESIGN.md).
-
-For local Python development, run `python scripts/serve_local.py --port 8766`.
-For the Sites production build, run `python scripts/build_site.py`, then `node scripts/preview_worker.mjs` and open `http://127.0.0.1:8767`.
-The Sites Worker serves bundled frontend assets and forwards `/api` and `/api/experiment` to the existing Python deployment at `https://niyet-nsosyal.vercel.app`; it does not execute Python itself. `.openai/hosting.json` identifies the private Sites project.
-
-DRSK combines evidence intelligence and human interaction intelligence in one social-feed flow:
+DRSK is a hybrid social-intelligence prototype for social platforms. It combines bounded evidence analysis with capacity-aware human routing instead of pretending that every ambiguous post can be solved by one model.
 
 ```text
-DRSK
-├── SOURCECHAIN — claim, passage, provenance, relation and distortion
-├── NIYET       — willing-human retrieval and capacity-aware allocation
-└── Resolution  — EVIDENCE | HUMAN | BOTH | NONE | DEFERRED
+post
+  ↓
+SOURCECHAIN ── claim → passage → provenance → relation → distortion
+  ↓
+Resolution Engine ── EVIDENCE | HUMAN | BOTH | NONE | DEFERRED
+  ↓                                  │
+  └──────────────────────────────────┴→ NIYET
+                                      willing + relevant + available human
 ```
 
-**When evidence is enough, show the evidence. When it is not, find the right human.**
+**When evidence is enough, show the evidence. When it is not, route the unresolved part to a willing person.**
 
-SOURCECHAIN never emits an absolute truth score. It preserves individual sources and conflicting passages. NIYET remains the tested interaction-allocation engine for posts that need a useful human response; it is reused through a structured escalation adapter rather than rewritten.
+SOURCECHAIN does not emit an absolute truth score. Missing evidence means `INSUFFICIENT`, not false. NIYET does not infer hidden psychological traits: it routes explicit response needs under willingness and finite attention capacity.
 
-## Capability status
+## What works now
 
-### WORKING NOW
+- deterministic statement/check-worthiness analysis and bounded claim extraction
+- controlled passage retrieval from a small verified source corpus
+- exact passage, canonical URL, publisher, publication date, document hash and origin-cluster provenance
+- `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` and `INSUFFICIENT` claim/evidence relations
+- typed numeric, temporal, causality, certainty, scope and attribution-shift checks
+- explicit `EVIDENCE`, `HUMAN`, `BOTH`, `NONE` and `DEFERRED` resolution policy
+- structured SOURCECHAIN → NIYET escalation that preserves claim and evidence context
+- response-needed and four-way intent classification for NIYET
+- hard responder willingness, active-state and remaining-capacity constraints
+- bounded global allocation across multiple open requests competing for shared responder capacity
+- Accept / Skip / Pause / Resume transitions with reallocation of still-open requests
+- transactional demo-state abstraction with process-local memory fallback and optional durable Upstash Redis REST storage
+- bilingual English/Turkish author and responder surfaces with evidence disclosure and source links
 
-- deterministic statement/claim analysis over a controlled evidence corpus
-- exact passage, canonical URL, publication metadata, document hash and origin-cluster provenance
-- supported/partial/conflicting/insufficient alignment plus typed distortion checks
-- explicit EVIDENCE/HUMAN/BOTH/NONE/DEFERRED resolution and structured escalation into NIYET
-- willingness and capacity constrained global human allocation
-- bilingual desktop/mobile feed, evidence disclosure and source links
+The main architecture is documented in [`docs/DRSK_ARCHITECTURE.md`](docs/DRSK_ARCHITECTURE.md). Reproducible product scenarios are in [`docs/DRSK_DEMO.md`](docs/DRSK_DEMO.md).
 
-### EXPERIMENTAL
+## End-to-end flow
 
-- SOURCEBENCH-TR v0 is a 15-example development regression set, not a benchmark-grade evaluation
-- source alignment and distortion detection are deterministic lexical/structured baselines
-- Evidence Lineage counts supplied origin clusters; it does not discover common origins automatically
-- the Distortion Lens exposes typed single-hop changes, not arbitrary multi-hop transformation chains
-- browser-held responder capacity is useful prototype behavior, not durable multi-user state
+1. classify whether the post contains a check-worthy factual statement
+2. extract bounded, span-linked claims
+3. rank passages from the controlled evidence provider
+4. preserve passage-level provenance before explanation
+5. align each claim with the retrieved evidence
+6. expose typed wording shifts instead of collapsing them into a truth score
+7. choose an explicit DRSK resolution path
+8. when human interpretation is needed, pass structured claim/evidence context into NIYET
+9. globally allocate the current open request window under responder willingness and remaining capacity
+10. return evidence and/or the human answer to the original request
 
-### PLANNED
+Accepted requests are pinned to the accepting responder and consume capacity. Open or unmatched requests are reallocated together when the matching window changes. A stale UI action is rejected as a conflict rather than silently consuming capacity twice.
 
-- SOURCEBENCH v1 at the scale specified in the technical report
-- trained/hybrid SOURCECHAIN retrieval and alignment with measured Turkish evaluation
-- secure bounded external-source ingestion, persistent evidence cache and re-evaluation jobs
-- automatic lineage clustering and multi-hop distortion visualization
-- authenticated, rate-limited, server-authoritative production capacity
+## Controlled evidence scenarios
 
-Report claims are mapped to executable code and explicit gaps in [`docs/DRSK_REPORT_CODE_TRACEABILITY.md`](docs/DRSK_REPORT_CODE_TRACEABILITY.md).
+The default SOURCECHAIN corpus is intentionally small and inspectable. Every stored passage points to the original primary/official page; request-time web search is not used.
 
-## Product flow
+| Scenario | Stored source | Expected behavior |
+| --- | --- | --- |
+| coffee mortality wording | PubMed / *Circulation* | association evidence can expose a causality shift and produce `BOTH` |
+| physical-activity benefit statement | World Health Organization | exact supported wording can resolve through `EVIDENCE` |
+| industrial CO₂ increase | NASA Science | changing “nearly 50%” to another numeric claim exposes a numeric distortion and can produce `BOTH` |
+| factual claim outside the corpus | none | remains `INSUFFICIENT`; an explicit request for help can produce `HUMAN` |
+| subjective opinion | none | stays outside factual verification and resolves to `NONE` |
 
-1. classify the statement and extract bounded, span-linked claims
-2. rank passages from the controlled evidence provider
-3. preserve URL, exact passage, location, hash and independent-origin metadata
-4. align each claim with `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` or `INSUFFICIENT`
-5. detect numeric, causality, certainty and attribution shifts
-6. resolve to evidence, human help, both, none or deferred work
-7. when needed, pass structured evidence context into NIYET retrieval, willingness, capacity and global allocation
+This corpus demonstrates evidence relationships and failure behavior. It is **not** general web coverage and is not presented as a universal fact checker.
 
-Opinions stay outside factual verification. Missing evidence is reported as insufficient, not false. Arbitrary live URL fetching is intentionally disabled in the MVP.
+## NIYET evaluation
 
-## Live prototype
+Two team reviewers independently labeled the same 256 query↔responder relevance pairs. They agreed exactly on 243/256 pairs (94.92%); quadratic weighted Cohen’s κ was 0.9756. A third team member adjudicated the 13 disagreements, producing the frozen reviewed benchmark.
 
-Prototype: https://niyet-nsosyal.vercel.app/
-
-Allocation lab: https://niyet-nsosyal.vercel.app/lab
-
-The web prototype calls the Python pipeline in `api/`. The current deployed path stays lightweight and reproducible:
-
-- deterministic SOURCECHAIN statement/claim rules and controlled real-source corpus
-- lexical passage ranking plus structured alignment and distortion checks
-- immutable citation-first EvidenceBundles and an explicit DRSK resolution policy
-- word and character TF-IDF with Logistic Regression for response-needed detection
-- word and character TF-IDF with Logistic Regression for four-way intent classification
-- weighted character TF-IDF for deployed responder retrieval
-- explicit interaction willingness as a hard eligibility constraint
-- session-level remaining responder capacity
-- bounded global assignment across the current matching window
-
-The browser keeps a small session state for the prototype and passes it to the API on each routing call. Accept decreases the matched responder's remaining capacity for later calls in that browser session. Pause removes the responder from subsequent allocation until resumed. This is a prototype session mechanism, not a production database.
-
-The interface supports English and Turkish, including dynamic routing states. Desktop and mobile expose both the author and responder sides of the flow. The primary navigation is a small functional concept shell rather than a set of decorative controls.
-
-ModernBERT-TR-Embed is evaluated offline as the leading Turkish semantic-retrieval candidate. It is not loaded into the public Vercel runtime yet because deployment cost and latency should be considered separately from retrieval quality.
-
-## Allocation model
-
-NIYET includes both a capacity-aware greedy baseline and a batch-level global allocator.
-
-The allocator only sees candidates that already pass retrieval and eligibility checks. Willingness is therefore a hard constraint, not a ranking signal in the current implementation.
-
-For an eligible edge, the current development utility is:
-
-```text
-utility = (topic relevance + availability) / 2
-```
-
-This is a transparent baseline. It is not a calibrated probability and the weights are not claimed to be learned or optimal.
-
-Responder capacity is expanded into assignment slots. Dummy assignments allow an open request to remain unmatched instead of forcing a weak route. The minimum score threshold is applied before optimization.
-
-The main prototype keeps multiple unresolved requests in a short matching window. When another request enters, the batch is allocated again under the same session capacity. This makes the shared-capacity behavior part of the product flow, not only a separate experiment.
-
-## Data
-
-`data/` contains:
-
-- `response_gate_seed_v1.csv`: controlled RESPONSE / NONE development data
-- `intent_seed_v1.csv`: controlled ASK / FEEDBACK / COLLABORATE / DISCUSS development data
-- `intent_challenge_v1.csv`: shorter, conversational and code-switched Turkish examples
-- `responder_profiles_v1.json`: synthetic responder profiles for the prototype
-- `matching_benchmark_v1_draft.json`: original 32-query matching draft
-- `matching_benchmark_v1_reviewed.json`: frozen human-reviewed benchmark
-- `sourcebench_tr/`: small SOURCEBENCH-TR v0 statement/alignment/distortion development set
-- annotation and review templates
-
-Two team members independently reviewed all 256 query-responder relevance pairs. Exact agreement was 243/256 (94.92%) and quadratic weighted Cohen's kappa was 0.9756. The third team member adjudicated all 13 disagreements. The resulting `v1-reviewed` benchmark is now frozen. No participant names are stored.
-
-## Current checks
-
-Response-needed model on the repaired 96-row controlled set, four-fold grouped CV in the pinned environment:
-
-- Accuracy: 0.917 +/- 0.030
-- Macro F1: 0.915 +/- 0.030
-
-Four-way intent baseline on the repaired 96-row controlled set, four-fold grouped CV in the pinned environment:
-
-- Accuracy: 0.885 +/- 0.062
-- Macro F1: 0.880 +/- 0.061
-
-These replace dependency-drifted local checks; the exact NumPy, SciPy and scikit-learn versions used by CI are recorded in `constraints.txt`. The values remain controlled-development evidence, not population estimates.
-
-Retrieval on the frozen 32-query x 8-responder human-reviewed benchmark:
+Retrieval on the frozen 32-query × 8-responder benchmark:
 
 | Retriever | Precision@3 | Recall@3 | NDCG@3 |
 | --- | ---: | ---: | ---: |
-| Weighted lexical TF-IDF | 0.4688 | 0.8438 | 0.8450 |
+| weighted lexical TF-IDF | 0.4688 | 0.8438 | 0.8450 |
 | ModernBERT-TR-Embed | **0.5417** | **0.9583** | **0.9025** |
 
-The ModernBERT ranking order was produced by the fixed GitHub Actions experiment using the Yildiz Technical University COSMOS model. Final metrics above are computed against the frozen adjudicated human labels, not draft labels or copied model-card scores.
+At lexical similarity floor `0.02`, the bounded global allocator covers 78.12% of reviewed requests versus 65.62% for the capacity-aware greedy baseline and increases total reviewed relevance from 45 to 52. Mean assigned relevance is 2.08 for global versus 2.14 for greedy, making the coverage/quality trade-off explicit rather than hiding it.
 
-At lexical similarity floor 0.02 on the frozen labels, global allocation covers 78.12% of requests versus 65.62% for the capacity-aware greedy baseline and increases total reviewed relevance from 45 to 52. Mean assigned relevance is 2.08 for global versus 2.14 for greedy, showing the expected coverage-quality tradeoff rather than hiding it. At stricter floors the candidate graph becomes sparse and the two methods can converge to the same feasible assignments.
+ModernBERT-TR-Embed is evaluated offline. The lightweight runtime intentionally keeps the lexical retriever so deployment cost and semantic-model quality remain separable engineering decisions.
 
-Human usability testing is documented separately. The team records an eight-participant initial study and a five-session targeted retest, which exposed and then retested a mobile responder-side dead end. The reported responder-control completion changed from 0/3 phone sessions to 2/2 mobile sessions. De-identified row-level observations are not included in this repository, so these aggregates are documented study results rather than independently reproducible repository evidence. The remaining explainability-discoverability issue is kept explicit rather than presented as solved.
+## Classification checks
 
-## Evaluation
+On the repaired controlled development sets with pinned dependencies and grouped four-fold cross-validation:
 
-Routing methods:
+- response-needed: accuracy `0.917 ± 0.030`, macro-F1 `0.915 ± 0.030`
+- four-way intent: accuracy `0.885 ± 0.062`, macro-F1 `0.880 ± 0.061`
 
-1. random capacity-aware routing
-2. topic-only routing
-3. greedy pair-utility routing
-4. NIYET global allocation
+These are controlled-development measurements, not population estimates.
 
-Main metrics:
+## Shared demo state
 
-- intent coverage
-- reviewed match relevance
-- Precision@K, Recall@K and NDCG@K
-- responder overload
-- responder-load concentration
-- runtime as candidate batches grow
+`src/drsk/state_store.py` defines the mutable-state boundary used by the human-help flow.
 
-## Repository structure
+- without external credentials, local/test execution uses a thread-safe process-local `MemoryStateStore`
+- when Upstash credentials are supplied, `UpstashRedisStateStore` stores the JSON state with TTL and compare-and-set Lua mutations
+- concurrent writers retry rather than overwriting a newer snapshot
+- the UI distinguishes durable shared state from the process-local prototype fallback
 
-- `src/niyet/`: classifiers, retrieval, scoring, allocation, metrics and runtime
-- `src/sourcechain/`: statement/claim analysis, controlled retrieval, alignment, distortion, lineage and EvidenceBundle assembly
-- `src/drsk/`: resolution policy, NIYET adapter and end-to-end orchestrator
-- `api/`: deployed routing and experiment endpoints
-- `data/`: development datasets, responder profiles and benchmark fixtures
-- `experiments/`: reproducible evaluation and scaling checks
-- `docs/`: architecture, data documentation, prior work, safety and product decisions
-- `scripts/`: dataset and evaluation utilities
-- `tests/`: unit and end-to-end runtime tests
-- `web/`: bilingual product prototype and allocation lab
+Environment variables for durable multi-instance demo state:
+
+```text
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+DRSK_STATE_NAMESPACE=final-demo        # optional
+DRSK_STATE_TTL_SECONDS=86400           # optional
+```
+
+The memory fallback is suitable for local development and single-process tests; it is not represented as cross-device durable state.
 
 ## Run locally
 
-Python 3.11 or newer is required.
+Python 3.11+ is required.
 
 ```bash
 python -m pip install -c constraints.txt -e . pytest
 pytest -q
-python scripts/train_intent_baseline.py --cv
-python scripts/train_intent_baseline.py data/response_gate_seed_v1.csv --cv
+python -m compileall -q src api scripts experiments
 python experiments/evaluate_matching_draft.py
-python experiments/benchmark_scaling.py
-python scripts/validate_sourcebench.py data/sourcebench_tr
 python experiments/evaluate_sourcechain_v0.py
-python scripts/competition_check.py
-python scripts/generate_results.py
-python scripts/serve_local.py
+python scripts/validate_annotations.py data/intent_seed_v1.csv
+python scripts/validate_annotations.py data/response_gate_seed_v1.csv
+python scripts/validate_sourcebench.py data/sourcebench_tr
+python scripts/serve_local.py --port 8766
 ```
 
-Semantic retrieval comparison requires the optional embedding dependencies and is intentionally kept outside the lightweight deployed runtime.
+The repository CI also runs JavaScript syntax checks for the shipped web surfaces.
 
-## Current limitations
+## Repository structure
 
-- classification data are controlled development data
-- SOURCEBENCH-TR v0 is a tiny team-authored regression set, not a definitive benchmark
-- the default SOURCECHAIN corpus contains only a bounded verified demo source, not general web coverage
-- arbitrary URL fetching and production evidence persistence are not implemented
-- responder profiles are synthetic prototype profiles
-- browser-session capacity is not a production persistence layer
-- the semantic model is evaluated offline but is not yet the deployed Vercel retriever
-- offline relevance is not the same as a real response or resolved interaction
-- usability samples are small prototype studies, not population estimates
+- `src/sourcechain/` — statement/claim analysis, controlled retrieval, alignment, distortion, lineage baseline and EvidenceBundle assembly
+- `src/niyet/` — response/intent classification, responder retrieval, eligibility, scoring, greedy/global allocation and runtime
+- `src/drsk/` — resolution policy, SOURCECHAIN→NIYET adapter, human-help service and state-store abstraction
+- `api/` — bounded transport handlers for analysis, experiments and human-help state transitions
+- `web/` — bilingual final product surface and allocation lab
+- `data/` — controlled development data, synthetic responder profiles, reviewed matching benchmark and SOURCEBENCH-TR v0
+- `experiments/` — reproducible retrieval/allocation/SOURCECHAIN development evaluation
+- `tests/` — unit, integration and end-to-end contract tests
+- `docs/` — current architecture, dataset, safety and product documentation
 
-These limits are kept explicit because the current goal is a reproducible prototype whose claims match what is actually implemented.
+## Current boundaries
+
+- SOURCECHAIN uses a bounded controlled corpus; arbitrary live URL retrieval is intentionally disabled
+- SOURCEBENCH-TR v0 is a 15-example development regression set, not benchmark-grade model validation
+- SOURCECHAIN retrieval/alignment/distortion logic is currently a deterministic lexical/structured baseline
+- Evidence Lineage uses supplied origin-cluster IDs; automatic common-origin discovery is not implemented
+- the Distortion Lens is single-hop claim↔evidence comparison, not arbitrary repost-chain reconstruction
+- responder profiles in the prototype are synthetic
+- durable shared demo state requires external Upstash configuration; the default memory fallback is process-local
+- authentication, platform identity, production abuse controls and production rate limiting are not implemented
+- the semantic retriever is evaluated offline rather than loaded into the lightweight runtime
+- offline relevance is not the same as a real-world resolved interaction
+- usability samples are small prototype studies and are not presented as population estimates
+
+The project keeps these limits explicit so the public claims remain narrower than — or equal to — what the code and reproducible evidence support.
