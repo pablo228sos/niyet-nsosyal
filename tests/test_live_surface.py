@@ -62,7 +62,7 @@ def test_live_surface_exposes_every_javascript_contract():
     assert required <= parser.ids
 
 
-def test_live_surface_keeps_jury_story_and_honest_boundaries():
+def test_live_surface_keeps_resolution_story_and_honest_boundaries():
     html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 
@@ -70,7 +70,13 @@ def test_live_surface_keeps_jury_story_and_honest_boundaries():
     assert "Bounded evidence, not a truth score." in html
     assert "Need" in html and "Evidence" in html and "Human" in html and "Resolved" in html
     assert "Research proves coffee consumption causes lower mortality" in script
-    assert "action: 'resolve'" in script
+
+    # The evidence button must select resolve mode, and the request function must
+    # forward that mode as the API action. Keep this contract independent of
+    # whether the action is written as a literal or passed through a variable.
+    assert "openAuthorRequest('resolve')" in script
+    assert "callApi({ action: mode, text: value })" in script
+
     assert "action: 'status'" in script
     assert "action: 'accept'" in script
     assert "action: 'answer'" in script
