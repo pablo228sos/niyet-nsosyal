@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from .alignment import align_claim
 from .explanation import build_explanation
 from .mismatch import source_mismatch
-from .retrieval import ControlledEvidenceProvider
+from .retrieval import EvidenceProvider
 from .schemas import BundleStatus, DistortionType, EvidenceBundle, EvidenceItem, EvidenceRelation, PostAnalysis
 from .structured_checks import detect_distortions
 
@@ -29,7 +29,7 @@ def _bundle_status(evidence: tuple[EvidenceItem, ...]) -> BundleStatus:
 
 def build_evidence_bundle(
     analysis: PostAnalysis,
-    provider: ControlledEvidenceProvider,
+    provider: EvidenceProvider,
     *,
     now: datetime | None = None,
     version: int = 1,
@@ -64,7 +64,7 @@ def build_evidence_bundle(
                 relation=relation,
                 distortions=tuple(distortions),
                 origin_cluster_id=hit.document.origin_cluster_id,
-                metadata={"provider": "controlled", "lexical_score": round(hit.score, 6)},
+                metadata={"provider": hit.provider, "lexical_score": round(hit.score, 6)},
             ))
     evidence = tuple(items)
     status = _bundle_status(evidence)
