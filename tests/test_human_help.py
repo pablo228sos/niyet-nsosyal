@@ -1,3 +1,4 @@
+from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
@@ -71,6 +72,28 @@ class StubRuntime:
             request_id="stub-route",
         )
 
+    def route_many(self, requests, *, responder_state=None, **kwargs):
+        state = {
+            key: dict(value)
+            for key, value in (responder_state or self.default_responder_state()).items()
+        }
+        decisions = []
+        for request in requests:
+            decision = self.route(
+                request["text"],
+                intent_override=request.get("intent_override"),
+                responder_state=state,
+                exclude_responder_ids=request.get("exclude_responder_ids", ()),
+            )
+            decision = replace(decision, request_id=request["id"])
+            decisions.append(decision)
+            if decision.responder_id:
+                current = state[decision.responder_id]
+                current["remaining_slots"] -= 1
+                if current["remaining_slots"] <= 0:
+                    current["active"] = False
+        return decisions
+
 
 def build_service() -> HumanHelpService:
     return HumanHelpService(StubRuntime())
@@ -107,12 +130,8 @@ def test_author_status_requires_unpredictable_token():
     service = build_service()
     request = service.open_request("I need help")
 
-    try:
+    with pytest.raises(ValueError, match="invalid_author_token"):
         service.status(request.request_id, "wrong-token")
-    except ValueError as exc:
-        assert str(exc) == "invalid_author_token"
-    else:
-        raise AssertionError("wrong author token unexpectedly accepted")
 
 
 def test_skip_reallocates_without_consuming_skipped_responder_capacity():
@@ -126,13 +145,16 @@ def test_skip_reallocates_without_consuming_skipped_responder_capacity():
     assert updated["assigned_responder"]["id"] == "r_two"
 
 
-def test_pause_changes_authoritative_availability_for_later_routes():
+def test_pause_rebalances_an_already_open_request():
     service = build_service()
+    request = service.open_request("I need help")
+    assert request.assigned_responder_id == "r_one"
+
     service.set_responder_active("r_one", False)
 
+    author_view = service.status(request.request_id, request.author_token)
+    assert author_view["assigned_responder"]["id"] == "r_two"
     assert service.responder_state()["r_one"]["active"] is False
-    request = service.open_request("I need help")
-    assert request.assigned_responder_id == "r_two"
 
 
 def test_evidence_context_survives_human_resolution_lifecycle():
@@ -179,15 +201,77 @@ def test_two_service_instances_observe_one_shared_store():
     assert author_service.status(request.request_id, request.author_token)["answer"] == "Shared state works."
 
 
-def test_accept_rejects_stale_open_request_after_capacity_is_exhausted():
+def test_pending_window_never_overbooks_responder_capacity():
+    service = build_service()
+    requests = [
+        service.open_request("First request"),
+        service.open_request("Second request"),
+        service.open_request("Third request"),
+        service.open_request("Fourth request"),
+    ]
+
+    assignments = [
+        service.status(request.request_id, request.author_token)["assigned_responder"]
+        for request in requests
+    ]
+    assigned_ids = [item["id"] for item in assignments if item is not None]
+
+    assert assigned_ids.count("r_one") == 2
+    assert assigned_ids.count("r_two") == 1
+    assert len(assigned_ids) == 3
+    assert assignments[3] is None
+
+
+def test_accept_rebalances_remaining_pending_requests_after_capacity_changes():
     service = build_service()
     first = service.open_request("First request")
     second = service.open_request("Second request")
-    stale = service.open_request("Third request")
+    third = service.open_request("Third request")
+    fourth = service.open_request("Fourth request")
 
-    assert first.assigned_responder_id == second.assigned_responder_id == stale.assigned_responder_id == "r_one"
     service.accept(first.request_id, "r_one")
-    service.accept(second.request_id, "r_one")
 
-    with pytest.raises(ValueError, match="responder_capacity_exhausted"):
-        service.accept(stale.request_id, "r_one")
+    second_view = service.status(second.request_id, second.author_token)
+    third_view = service.status(third.request_id, third.author_token)
+    fourth_view = service.status(fourth.request_id, fourth.author_token)
+
+    assert second_view["assigned_responder"]["id"] == "r_one"
+    assert third_view["assigned_responder"]["id"] == "r_two"
+    assert fourth_view["assigned_responder"] is None
+
+    service.accept(second.request_id, "r_one")
+    with pytest.raises(ValueError, match="request_not_assigned"):
+        service.accept(fourth.request_id, "r_one")
+
+
+def test_resume_reconsiders_previously_unmatched_request():
+    service = build_service()
+    service.set_responder_active("r_one", False)
+    service.set_responder_active("r_two", False)
+    request = service.open_request("Waiting request")
+
+    assert request.status is HumanRequestStatus.UNMATCHED
+
+    service.set_responder_active("r_two", True)
+    updated = service.status(request.request_id, request.author_token)
+
+    assert updated["status"] == HumanRequestStatus.OPEN.value
+    assert updated["assigned_responder"]["id"] == "r_two"
+
+
+def test_open_from_routing_preserves_structured_context_for_future_reallocation():
+    runtime = StubRuntime()
+    store = MemoryStateStore(
+        {"requests": {}, "responder_state": runtime.default_responder_state()}
+    )
+    service = HumanHelpService(runtime, store=store)
+    routing_text = "topic: research\nclaim: X\nevidence_status: INSUFFICIENT"
+
+    request = service.open_from_routing(
+        "Visible user wording",
+        {"routing_text": routing_text, "responder_id": "r_one"},
+    )
+
+    stored = store.read()["requests"][request.request_id]
+    assert stored["display_text"] == "Visible user wording"
+    assert stored["routing_text"] == routing_text
