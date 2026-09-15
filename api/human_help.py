@@ -1,0 +1,215 @@
+from __future__ import annotations
+
+import json
+import os
+import sys
+from http.server import BaseHTTPRequestHandler
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(ROOT, "src")
+if SRC not in sys.path:
+    sys.path.insert(0, SRC)
+
+from drsk.human_help import HumanHelpService  # noqa: E402
+from drsk.orchestrator import DrskOrchestrator  # noqa: E402
+from niyet.runtime import NiyetRuntime  # noqa: E402
+
+
+runtime = NiyetRuntime(os.path.join(ROOT, "data"))
+service = HumanHelpService(runtime)
+orchestrator = DrskOrchestrator(niyet_runtime=runtime)
+
+MAX_REQUEST_BYTES = 32 * 1024
+MAX_TEXT_LENGTH = 1200
+MAX_ANSWER_LENGTH = 4000
+
+
+def _parse_json(raw: bytes) -> dict:
+    value = json.loads(raw or b"{}")
+    if not isinstance(value, dict):
+        raise ValueError("json_object_required")
+    return value
+
+
+def _clean_string(payload: dict, key: str, *, required: bool = True) -> str:
+    raw = payload.get(key)
+    if raw is None and not required:
+        return ""
+    if not isinstance(raw, str):
+        raise ValueError(f"{key}_required")
+    value = raw.strip()
+    if required and not value:
+        raise ValueError(f"{key}_required")
+    return value
+
+
+def _evidence_context(response: dict) -> dict | None:
+    bundle = response.get("evidence_bundle")
+    resolution = response.get("resolution")
+    if not isinstance(bundle, dict):
+        return None
+
+    evidence_items = []
+    for item in bundle.get("evidence", [])[:3]:
+        if not isinstance(item, dict):
+            continue
+        evidence_items.append(
+            {
+                "source_title": item.get("source_title"),
+                "source_url": item.get("source_url"),
+                "passage": item.get("passage"),
+                "relation": item.get("relation"),
+                "distortions": item.get("distortions", []),
+            }
+        )
+
+    return {
+        "status": bundle.get("status"),
+        "sufficient": bundle.get("sufficient"),
+        "resolution": resolution,
+        "evidence": evidence_items,
+    }
+
+
+class handler(BaseHTTPRequestHandler):
+    def _json(self, status: int, payload: dict) -> None:
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self) -> None:
+        self._json(
+            200,
+            {
+                "status": "ok",
+                "service": "DRSK human-help demo service",
+                "state_model": "server-process authoritative demo state",
+                "durability": "non-durable; reset on process restart",
+                "responders": [
+                    {
+                        "id": item.responder.id,
+                        "name": item.display_name,
+                        "remaining_slots": service.responder_state()[item.responder.id][
+                            "remaining_slots"
+                        ],
+                        "active": service.responder_state()[item.responder.id]["active"],
+                    }
+                    for item in runtime.responders
+                ],
+            },
+        )
+
+    def do_POST(self) -> None:
+        content_type = self.headers.get("Content-Type", "").split(";", 1)[0].strip()
+        if content_type != "application/json":
+            self._json(415, {"error": "unsupported_media_type"})
+            return
+
+        raw_length = self.headers.get("Content-Length")
+        if raw_length is None:
+            self._json(411, {"error": "content_length_required"})
+            return
+        try:
+            length = int(raw_length)
+        except ValueError:
+            self._json(400, {"error": "invalid_content_length"})
+            return
+        if length < 0 or length > MAX_REQUEST_BYTES:
+            self._json(413 if length > MAX_REQUEST_BYTES else 400, {"error": "invalid_content_length"})
+            return
+
+        try:
+            payload = _parse_json(self.rfile.read(length))
+            action = _clean_string(payload, "action").lower()
+            result = self._dispatch(action, payload)
+        except json.JSONDecodeError:
+            self._json(400, {"error": "invalid_json"})
+            return
+        except ValueError as exc:
+            self._json(400, {"error": str(exc)})
+            return
+        except Exception:
+            self._json(500, {"error": "human_help_failed"})
+            return
+
+        self._json(200, {"status": "ok", **result})
+
+    def _dispatch(self, action: str, payload: dict) -> dict:
+        if action == "open":
+            text = _clean_string(payload, "text")
+            if len(text) > MAX_TEXT_LENGTH:
+                raise ValueError("text_too_long")
+            request = service.open_request(text)
+            return {"request": request.public_dict(include_author_token=True)}
+
+        if action == "resolve":
+            text = _clean_string(payload, "text")
+            if len(text) > MAX_TEXT_LENGTH:
+                raise ValueError("text_too_long")
+            response = orchestrator.analyze(
+                text,
+                ask_human=True,
+                responder_state=service.responder_state(),
+            )
+            routing = response.get("human_routing")
+            if not isinstance(routing, dict) or not routing.get("responder_id"):
+                return {
+                    "resolution": response.get("resolution"),
+                    "evidence_context": _evidence_context(response),
+                    "request": None,
+                }
+            request = service.open_from_routing(
+                text,
+                routing,
+                evidence_context=_evidence_context(response),
+            )
+            return {
+                "resolution": response.get("resolution"),
+                "request": request.public_dict(include_author_token=True),
+            }
+
+        if action == "inbox":
+            responder_id = _clean_string(payload, "responder_id")
+            return {"requests": service.inbox(responder_id)}
+
+        if action == "status":
+            request_id = _clean_string(payload, "request_id")
+            author_token = _clean_string(payload, "author_token")
+            return {"request": service.status(request_id, author_token)}
+
+        if action in {"accept", "skip"}:
+            request_id = _clean_string(payload, "request_id")
+            responder_id = _clean_string(payload, "responder_id")
+            request = (
+                service.accept(request_id, responder_id)
+                if action == "accept"
+                else service.skip(request_id, responder_id)
+            )
+            return {"request": request, "responder_state": service.responder_state()}
+
+        if action == "answer":
+            request_id = _clean_string(payload, "request_id")
+            responder_id = _clean_string(payload, "responder_id")
+            answer = _clean_string(payload, "answer")
+            if len(answer) > MAX_ANSWER_LENGTH:
+                raise ValueError("answer_too_long")
+            request = service.answer(request_id, responder_id, answer)
+            return {"request": request}
+
+        if action in {"pause", "resume"}:
+            responder_id = _clean_string(payload, "responder_id")
+            state = service.set_responder_active(responder_id, action == "resume")
+            return {"responder_id": responder_id, "responder_state": state}
+
+        if action == "reset":
+            service.reset()
+            return {"reset": True}
+
+        raise ValueError("invalid_action")
