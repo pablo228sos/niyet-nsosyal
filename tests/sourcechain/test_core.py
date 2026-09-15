@@ -35,6 +35,21 @@ def test_statement_gate_excludes_question_opinion_and_experience():
     assert factual.check_worthy
 
 
+def test_statement_gate_keeps_declarative_claim_before_follow_up_question():
+    text = (
+        "Research proves coffee consumption causes lower mortality. "
+        "Can someone explain what the study actually shows?"
+    )
+    analysis = analyze_post(text)
+
+    assert analysis.statement_type is StatementType.MIXED
+    assert analysis.check_worthy
+    assert [claim.text for claim in analysis.claims] == [
+        "Research proves coffee consumption causes lower mortality."
+    ]
+    assert analyze_post("Can someone explain this study?").statement_type is StatementType.QUESTION
+
+
 def test_claim_extraction_is_bounded_and_preserves_exact_offsets():
     text = "Satışlar yüzde 20 arttı. Enflasyon yüzde 10 düştü. Üçüncü iddia doğrudur."
     claims = extract_claims(text, max_claims=2)
