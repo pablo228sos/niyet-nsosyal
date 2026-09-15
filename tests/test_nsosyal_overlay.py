@@ -6,7 +6,7 @@ ROOT = Path(__file__).parents[1]
 OVERLAY = ROOT / "demo" / "nsosyal-overlay"
 MANIFEST = json.loads((OVERLAY / "manifest.json").read_text(encoding="utf-8"))
 BACKGROUND = (OVERLAY / "background.js").read_text(encoding="utf-8")
-CONTENT = (OVERLAY / "content.js").read_text(encoding="utf-8")
+CONTENT = (OVERLAY / "content-v2.js").read_text(encoding="utf-8")
 CSS = (OVERLAY / "overlay.css").read_text(encoding="utf-8")
 README = (OVERLAY / "README.md").read_text(encoding="utf-8")
 
@@ -19,7 +19,7 @@ def test_overlay_requests_only_the_hosts_it_needs():
 
     script = MANIFEST["content_scripts"][0]
     assert script["matches"] == ["https://nsosyal.com/*", "https://www.nsosyal.com/*"]
-    assert script["js"] == ["content.js"]
+    assert script["js"] == ["content-v2.js"]
     assert "css" not in script
     assert script["run_at"] == "document_idle"
 
@@ -49,18 +49,28 @@ def test_overlay_is_css_isolated_and_does_not_mutate_nsosyal_actions():
     assert "document.cookie" not in CONTENT
     assert ".click()" not in CONTENT
     assert "fetch(" not in CONTENT
-    assert "score < 6" in CONTENT
     assert "requestAnimationFrame" in CONTENT
     assert "MutationObserver" in CONTENT
     assert ":host" in CSS
 
 
+def test_live_composer_detection_handles_rich_text_editors_and_nsosyal_send_action():
+    assert "[contenteditable]:not([contenteditable=\"false\"])" in CONTENT
+    assert "[data-lexical-editor]" in CONTENT
+    assert "[data-slate-editor]" in CONTENT
+    assert ".ProseMirror" in CONTENT
+    assert "'gönder'" in CONTENT
+    assert "findSendButtonNear" in CONTENT
+    assert "state.lastEditable" in CONTENT
+    assert "document.addEventListener('focusin'" in CONTENT
+    assert "document.addEventListener('input'" in CONTENT
+    assert "editableText(node)" in CONTENT
+
+
 def test_composer_anchored_trigger_stays_compact():
-    # Regression: base CSS has a fallback `right` value. When a composer also
-    # supplied `left`, the button stretched across the viewport. The anchored
-    # path must explicitly release the right edge; fallback restores it.
     assert "trigger.style.setProperty('right', 'auto')" in CONTENT
     assert "trigger.style.setProperty('right', '24px')" in CONTENT
+    assert "sendRect.left - 82" in CONTENT
     assert "trigger.dataset.fallback = 'false'" in CONTENT
     assert "trigger.dataset.fallback = 'true'" in CONTENT
 
