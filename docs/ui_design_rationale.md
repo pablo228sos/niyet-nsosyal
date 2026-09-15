@@ -1,85 +1,131 @@
 # UI design rationale
 
-The prototype is designed as an integration inside a social feed, not as a separate AI dashboard.
+The final prototype is designed as a capability inside a social feed, not as a separate AI dashboard or expert marketplace.
 
 ## Host product first
 
-Public NSosyal web and app material shows a conventional social product structure around feed content, search, discovery, communities, profiles and real-time interaction. We therefore keep the host interface visually quiet and familiar.
+Public NSosyal material presents a conventional social product around feed content, discovery, profiles and real-time interaction. The prototype therefore keeps the host surface visually quiet and familiar: a feed, composer, author identity, post state and responder mode.
 
-We do not claim that the prototype is a pixel-perfect copy of the current private or authenticated NSosyal application. It is an NSosyal-inspired concept integration built from public product patterns.
+We do not claim a pixel-perfect copy of an authenticated NSosyal application. This is an NSosyal-inspired concept integration built from public product patterns.
 
-The primary navigation is functional in the prototype. Feed returns to the real NIYET composer and interaction flow; Explore, Communities, Messages and Profile open lightweight concept surfaces. This avoids presenting decorative controls as working product navigation.
+The final surface intentionally removes decorative navigation and social actions that do not perform a real prototype action. It is better to show fewer real controls than to create the impression of a complete social network through dead UI.
 
-## Two sides of the interaction
+## One product, two roles
 
-NIYET has an author side and a responder side. Both need to be visible because routing quality and responder capacity are part of the same product decision.
+DRSK has an author side and a responder side, but both live inside the same feed shell.
 
-On desktop the responder inbox is kept in the right rail. On mobile that rail becomes an explicit responder drawer rather than disappearing at the responsive breakpoint. The main route result also provides a direct action to open the responder view.
+The author sees:
 
-A short role label distinguishes Author side from Responder side so Accept, Skip, Pause and capacity do not look like controls belonging to the person who wrote the request.
+- the original post
+- bounded evidence when available
+- claim-to-passage explanation
+- the routed responder when human context is needed
+- the returned human answer
 
-## Where NIYET becomes visible
+The responder sees:
 
-NIYET should appear only when the product has a reason to interrupt the normal feed flow.
+- only requests currently allocated to that responder profile
+- the same evidence/provenance available to the author
+- remaining capacity and routing availability
+- Accept / Skip / Pause / Resume / Answer actions
 
-The prototype uses a stronger visual language in three places:
+The role switch exists because capacity-aware routing is part of the product behavior, not a back-office implementation detail.
 
-1. response-needed suggestion below the composer
-2. matched request in the NIYET inbox
-3. transparent match explanation sheet
+## Where DRSK becomes visible
 
-These surfaces use a moving gradient border, a small animated orb and short reveal transitions. The rest of the social interface avoids decorative motion.
+DRSK should not dominate an ordinary post. It appears only when the system has something useful to add.
 
-## Why we did not use full-page WebGL
+The interaction progresses through four plain states:
 
-We reviewed visual techniques such as WebGL effects, liquid-metal surfaces, animated borders and AI orbs. Full-page effects can create a stronger first impression but do not explain the product and can make a social-network integration look less credible.
+1. **Need** — a person posts without depending on follower count for eligibility.
+2. **Evidence** — SOURCECHAIN exposes what bounded evidence actually supports.
+3. **Human** — NIYET routes the unresolved part to a willing responder with remaining capacity.
+4. **Resolved** — human context returns to the same social object.
 
-For this prototype we use the interaction patterns, not the spectacle:
+This is deliberately different from an AI-chat pattern where every interaction ends in a model-generated answer.
 
-- Beam-style animated border only on AI surfaces
-- panel reveal and state transitions inspired by modern product micro-interactions
-- small orb as a persistent NIYET identity
-- state changes after Accept, Skip and routing actions
+## Visual language
 
-This keeps the visual distinction between normal NSosyal behavior and AI-assisted routing clear.
+The host surface uses neutral whites, grays and one action blue. DRSK uses semantic accents rather than decorative AI effects:
 
-## Bilingual interface
+- SOURCECHAIN: restrained evidence blue
+- NIYET: restrained routing violet
+- resolved human context: green
+- warning/conflict: amber or red with explicit text labels
 
-English is the default prototype language because the technical report and planned pitch are in English. Turkish can be enabled from the header without reloading the page.
+There is no glowing orb, full-page gradient, glassmorphism shell, generic confidence gauge or animated neural-network decoration. The goal is for the feature to look shippable inside a real social product.
 
-Static labels and dynamic routing states use the same translation source. Match reasons returned by the Python API are localized at the presentation layer so switching language does not leave mixed English/Turkish result cards.
+## Evidence readability
 
-The bilingual UI does not imply bilingual model evaluation. The first model evaluation scope remains Turkish.
+The key explanatory component is generic and data-driven:
 
-## Feed actions
+**Post claim ↔ Source passage**
 
-Posts created inside the prototype use the same reply, repost, like and share icon system as the static feed examples. These actions are intentionally lightweight demo interactions, but they behave consistently instead of leaving a user-created post visually incomplete.
+It uses the actual claim text and stored evidence passage returned by the API. It is not hard-coded to the coffee causality example, so numeric and other typed distortions can use the same interaction pattern.
+
+Publisher/title/date and the original source link remain accessible. The responder receives the same provenance context before answering.
+
+## Progressive disclosure
+
+Normal users first see the smallest useful explanation. Exact provenance remains available without turning every post into a research dashboard.
+
+We avoid a generic `trust score` because it compresses a claim/evidence relationship into a number that the current system does not justify. SOURCECHAIN surfaces bounded evidence and explicit relation/distortion states instead.
+
+## Product versus presentation
+
+The public product surface does not contain pitch-only metrics, jury messaging or internal evaluation material. Those belong in the final presentation and the private BEYMAX defense repository.
+
+The live product keeps only a small prototype-boundary note because that prevents overclaiming during hands-on use.
+
+## State and persistence
+
+The human-help lifecycle is server-authoritative rather than browser-authoritative. Request state, responder availability and remaining capacity are handled by the HumanHelpService through a storage boundary.
+
+The current code supports:
+
+- process-local memory for local development / single-process demonstrations
+- an external durable state backend when configured for multi-instance deployment
+
+The UI must not claim durable production state when the process-local fallback is active.
+
+## Responsive behavior
+
+Desktop uses a three-part workspace: orientation rail, feed, and resolution context.
+
+At tablet widths the orientation rail disappears and the resolution context moves below the feed.
+
+On mobile the interface becomes one feed column. Author and responder modes remain accessible, controls stack without horizontal overflow, long request IDs/passages wrap safely and primary touch targets remain at least 44px high.
+
+## Motion
+
+Motion is intentionally small and functional:
+
+- evidence/routing/answer surfaces reveal with a short fade/translate
+- connection checking can pulse subtly
+- controls have hover/press feedback
+- no decorative background animation runs continuously
+- `prefers-reduced-motion` disables nonessential motion
 
 ## Accessibility
 
-The interface includes:
+The final surface includes or requires:
 
 - visible keyboard focus
-- semantic buttons and form labels
-- accessible live status regions
-- Escape and backdrop close behavior for the explanation dialog
-- reduced-motion support through `prefers-reduced-motion`
+- semantic form labels and buttons
+- live status regions for asynchronous changes
 - no critical state communicated by color alone
-- responsive mobile navigation
-- a mobile responder drawer so responder controls remain reachable on small screens
+- minimum 44px primary touch targets
+- reduced-motion support
+- safe text wrapping at small widths
+- source links on author and responder views
+- prototype limitations still visible on mobile
 
-## Demo state
+## Bilingual surface
 
-The browser stores a small amount of session state to demonstrate open requests and remaining responder capacity. A versioned reset prevents old prototype sessions from carrying stale queues or exhausted capacity into a later release. A visible Reset demo action is also available on desktop.
+English and Turkish share the same product states and dynamic routing data. Language switching changes presentation copy only; it does not imply that every underlying model or benchmark was evaluated bilingually.
 
-This is prototype state, not production persistence.
+## Why this direction
 
-## Demo behavior
+The earlier prototype explored more visibly "AI" design patterns. For the final stage we chose the opposite direction: make DRSK feel like a native social capability and let technical depth appear through behavior, evidence provenance, shared capacity and cross-device resolution.
 
-The prototype uses clearly marked demo data. The user can test three composer cases:
-
-- a help request
-- a collaboration request
-- a normal post that should not activate NIYET
-
-The user can also manually activate NIYET after a response-gate miss. This makes both false-positive and false-negative recovery visible without pretending to use production NSosyal data.
+That makes the product easier to understand in a short live demonstration and harder to dismiss as a styled AI dashboard.
