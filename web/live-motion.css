@@ -4,25 +4,30 @@
 button[aria-busy="true"] {
   position: relative;
   pointer-events: none;
+  color: transparent !important;
 }
 
-button[aria-busy="true"]::before {
+.primary-button[aria-busy="true"] { --busy-spinner: #fff; }
+.quiet-button[aria-busy="true"] { --busy-spinner: var(--blue); }
+
+button[aria-busy="true"]::after {
   content: "";
-  width: 13px;
-  height: 13px;
-  margin-right: 8px;
-  display: inline-block;
-  vertical-align: -2px;
-  border: 2px solid currentColor;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid var(--busy-spinner, var(--blue));
   border-right-color: transparent;
   border-radius: 50%;
   animation: drsk-spin 0.72s linear infinite;
-  opacity: 0.78;
 }
 
 .author-view.is-pending .composer-card,
 .inbox-card.is-pending,
 .responder-profile-card.is-pending {
+  position: relative;
   cursor: progress;
 }
 
@@ -30,10 +35,12 @@ button[aria-busy="true"]::before {
 .inbox-card.is-pending::after,
 .responder-profile-card.is-pending::after {
   content: "";
-  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 2px;
-  margin-top: 10px;
-  border-radius: 999px;
+  pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(21, 94, 239, 0.48), transparent);
   background-size: 180% 100%;
   animation: drsk-progress 1.25s ease-in-out infinite;
@@ -92,7 +99,7 @@ button[aria-busy="true"]::before {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  button[aria-busy="true"]::before,
+  button[aria-busy="true"]::after,
   .author-view.is-pending .composer-card::after,
   .inbox-card.is-pending::after,
   .responder-profile-card.is-pending::after,
