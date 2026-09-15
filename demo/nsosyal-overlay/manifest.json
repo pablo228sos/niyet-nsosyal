@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DRSK × NSosyal Concept Integration",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A transparent concept-integration overlay that connects the live NSosyal surface to the DRSK prototype backend.",
   "host_permissions": [
     "https://niyet-nsosyal.vercel.app/*"
