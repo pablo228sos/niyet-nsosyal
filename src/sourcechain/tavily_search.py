@@ -47,6 +47,7 @@ class TavilyEvidenceProvider:
         *,
         max_results: int = 8,
         timeout: float = 8.0,
+        search_depth: str = "basic",
         transport: Transport | None = None,
     ) -> None:
         api_key = api_key.strip()
@@ -56,16 +57,19 @@ class TavilyEvidenceProvider:
             raise ValueError("max_results must be between 1 and 20")
         if timeout <= 0:
             raise ValueError("timeout must be positive")
+        if search_depth not in {"basic", "advanced"}:
+            raise ValueError("search_depth must be 'basic' or 'advanced'")
         self._api_key = api_key
         self.max_results = max_results
         self.timeout = timeout
+        self.search_depth = search_depth
         self._transport = transport or self._http_transport
 
     def _http_transport(self, query: str, timeout: float) -> dict[str, Any]:
         payload = json.dumps(
             {
                 "query": query[:600],
-                "search_depth": "basic",
+                "search_depth": self.search_depth,
                 "max_results": self.max_results,
                 "topic": "general",
                 "include_answer": False,
