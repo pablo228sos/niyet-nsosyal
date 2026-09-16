@@ -29,6 +29,7 @@ const copy = {
     requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
     noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a person directly', postWithDrsk: 'Post with DRSK', loadScenario: 'Load example',
     restore: 'Restore request', routedTo: 'Routed to', copyResponder: 'Open responder device', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
+    publishedContext: 'Published NSosyal post',
     evidenceHeading: 'What does the source actually say?', boundedNote: 'Bounded evidence, not a truth score.', humanNeeded: 'Evidence needs human context',
     capacityNote: 'Willingness and remaining capacity are hard constraints.', identity: 'Demo identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
     resolutionTitle: 'From attention to resolution', stagePost: 'Need', stagePostText: 'A new user asks without an audience.',
@@ -53,6 +54,7 @@ const copy = {
     requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
     noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'Doğrudan birine sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Örneği yükle',
     restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', copyResponder: 'Cevaplayıcı cihazını aç', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
+    publishedContext: 'Yayınlanan NSosyal gönderisi',
     evidenceHeading: 'Kaynak aslında ne söylüyor?', boundedNote: 'Sınırlı kanıt, doğruluk puanı değil.', humanNeeded: 'Kanıt insan bağlamına ihtiyaç duyuyor',
     capacityNote: 'İsteklilik ve kalan kapasite kesin kısıtlardır.', identity: 'Demo kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
     resolutionTitle: 'Dikkatten çözüme', stagePost: 'İhtiyaç', stagePostText: 'Yeni kullanıcı kitlesi olmadan soruyor.',
@@ -95,6 +97,20 @@ function safeUrl(value) {
     const url = new URL(value);
     return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
   } catch (_) { return null; }
+}
+
+function buildPublishedContext(context) {
+  if (!context?.published_observed) return null;
+  const href = safeUrl(context.post_url);
+  const node = document.createElement(href ? 'a' : 'span');
+  node.className = 'published-context';
+  node.textContent = t('publishedContext');
+  if (href) {
+    node.href = href;
+    node.target = '_blank';
+    node.rel = 'noopener noreferrer';
+  }
+  return node;
 }
 
 async function rawApi(endpoint, payload = null) {
@@ -355,6 +371,9 @@ function renderAuthorRequest(request) {
   $('#requestStatus').textContent = request.status || 'OPEN';
   $('#requestStatus').dataset.status = request.status || 'OPEN';
   $('#requestTextPreview').textContent = request.text || '';
+  $('.published-context', $('#requestCard'))?.remove();
+  const publishedContext = buildPublishedContext(request.social_context);
+  if (publishedContext) $('#requestTextPreview').insertAdjacentElement('afterend', publishedContext);
 
   const match = request.assigned_responder;
   $('#matchBlock').hidden = !match;
@@ -513,6 +532,8 @@ function renderInbox(requests) {
     state.dataset.status = request.status;
     $('.request-id', card).textContent = request.request_id;
     $('.inbox-text', card).textContent = request.text;
+    const publishedContext = buildPublishedContext(request.social_context);
+    if (publishedContext) $('.inbox-text', card).insertAdjacentElement('afterend', publishedContext);
 
     const evidenceTarget = $('.inbox-evidence', card);
     if (request.evidence_context) {

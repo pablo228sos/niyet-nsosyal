@@ -13,6 +13,7 @@ THEME = (ROOT / "web" / "live-theme.js").read_text(encoding="utf-8")
 
 
 def test_final_surface_loads_the_product_design_layers():
+    assert 'href="/live-published.css"' in HTML
     assert 'href="/live-ux.css"' in HTML
     assert 'href="/live-motion.css"' in HTML
     assert 'href="/live-nsosyal.css"' in HTML
@@ -20,6 +21,12 @@ def test_final_surface_loads_the_product_design_layers():
     assert 'src="/live-theme.js"' in HTML
     assert "DRSK × NSosyal — Resolution Layer" in HTML
     assert "DRSK integration" in HTML
+
+
+def test_published_nsosyal_context_returns_with_the_request():
+    assert "buildPublishedContext" in SCRIPT
+    assert "request.social_context" in SCRIPT
+    assert "publishedContext" in SCRIPT
 
 
 def test_host_shell_is_context_not_a_fake_social_network():

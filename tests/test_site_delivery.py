@@ -12,6 +12,7 @@ def test_sites_bundle_contains_final_surface_assets():
     for asset in (
         "live.html",
         "live.css",
+        "live-published.css",
         "live-ux.css",
         "live-motion.css",
         "live-nsosyal.css",
