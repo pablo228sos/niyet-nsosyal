@@ -36,13 +36,17 @@ The explicit resolution paths are:
 
 This keeps uncertainty visible instead of forcing every post through one model response.
 
-## 4. The user confirms human escalation
+## 4. A draft stays private until it becomes a post
 
-A `HUMAN` or `BOTH` decision is a recommendation, not permission to contact a person. The interface first shows the evidence and explains why interpretation is still useful. A request enters NIYET only after the author explicitly chooses **Ask a relevant person**.
+A `HUMAN` or `BOTH` decision is a recommendation, not permission to contact a person. In the NSosyal adapter, SOURCECHAIN can inspect composer text and explain why interpretation may still be useful, but the human-routing action remains locked while that text is a draft.
 
-This distinction is essential for unpublished drafts: checking evidence must never silently expose draft text to another user.
+The user publishes through NSosyal's own control. The adapter then waits until the exact inspected text is visible as a non-editable post on the host page. This keeps publication under NSosyal and the account holder's control.
 
-## 5. Structured context enters NIYET
+## 5. The user confirms human escalation
+
+Once the published post is visible, the author may explicitly choose **Ask a relevant person**. Only this second action creates a NIYET request. The request keeps a bounded social-context marker so the responder can see that it belongs to a published NSosyal post.
+
+## 6. Structured context enters NIYET
 
 When the path needs a person, DRSK sends NIYET structured context rather than only the raw post:
 
@@ -56,7 +60,7 @@ NIYET then retrieves responders and applies hard eligibility constraints.
 
 A responder must be active, willing for the interaction type, have remaining capacity and clear the current relevance floor. Follower count is not used as an eligibility signal.
 
-## 6. Open requests compete in one bounded allocation window
+## 7. Open requests compete in one bounded allocation window
 
 NIYET does not permanently lock the locally best responder independently for each request.
 
@@ -64,7 +68,7 @@ Every still-open/unmatched request is allocated together under the same responde
 
 A request can remain unmatched when no eligible candidate clears the quality rules.
 
-## 7. Responder receives an actionable request card
+## 8. Responder receives an actionable request card
 
 The responder side shows the request, attached evidence context when present, remaining capacity and controls to:
 
@@ -87,7 +91,7 @@ Pause removes the responder from new allocation. Resume re-enables routing only 
 
 If the UI is stale because another action already changed the shared window, the backend rejects the action as a conflict and the client refreshes the current queue.
 
-## 8. Answer returns to the same request
+## 9. Answer returns to the same request
 
 After acceptance, the matched responder can submit a concise answer. The author path polls the same request state and displays the answer next to the evidence context.
 
@@ -102,7 +106,7 @@ need
 
 The active author token is kept in extension session storage and the authoritative request remains in shared server state. Reloading the NSosyal page therefore resumes the same request instead of detaching the returning answer.
 
-## 9. State persistence boundary
+## 10. State persistence boundary
 
 The integrated human-help flow is implemented behind a `StateStore` abstraction.
 

@@ -20,7 +20,9 @@
     composer: null,
     lastEditable: null,
     author: null,
+    inspection: null,
     pollTimer: null,
+    publishTimer: null,
     positionFrame: null,
     busy: false,
     dark: false,
@@ -51,8 +53,19 @@
       consent: 'Nothing is sent to a person until you press this button.',
       candidate: 'Available now',
       unavailableResponder: 'Human context is recommended, but no eligible responder has capacity right now.',
-      activeRequest: 'This draft already has an active human request.',
+      activeRequest: 'This post already has an active human request.',
       restoreFailed: 'The previous request is no longer available. You can run a new check.',
+      draftStage: 'Draft checked',
+      publishedStage: 'Published',
+      routedStage: 'Routed',
+      resolvedStage: 'Resolved',
+      publishFirst: 'Publish this text in NSosyal first. Human routing unlocks only after the published post is visible.',
+      publicationWaiting: 'Waiting for the published post to appear in the feed…',
+      publicationMissing: 'The published post is not visible yet. Keep the panel open, then check again.',
+      checkPublication: 'Find published post',
+      publicationFound: 'Published NSosyal post detected',
+      publicationRequired: 'Human routing is available only after the inspected text is visible as a published NSosyal post.',
+      publishedContext: 'Published on NSosyal',
       postClaim: 'Post claim',
       sourcePassage: 'Source passage',
       routedTo: 'Routed to',
@@ -82,8 +95,19 @@
       consent: 'Bu düğmeye basılana kadar hiçbir kişiye istek gönderilmez.',
       candidate: 'Şu anda uygun',
       unavailableResponder: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.',
-      activeRequest: 'Bu taslak için zaten etkin bir insan isteği var.',
+      activeRequest: 'Bu gönderi için zaten etkin bir insan isteği var.',
       restoreFailed: 'Önceki istek artık kullanılamıyor. Yeni bir kontrol başlatabilirsin.',
+      draftStage: 'Taslak kontrol edildi',
+      publishedStage: 'Yayınlandı',
+      routedStage: 'Yönlendirildi',
+      resolvedStage: 'Çözüldü',
+      publishFirst: 'Önce bu metni NSosyal’de yayınla. İnsan yönlendirmesi yalnızca yayınlanan gönderi görünür olduğunda açılır.',
+      publicationWaiting: 'Yayınlanan gönderinin akışta görünmesi bekleniyor…',
+      publicationMissing: 'Yayınlanan gönderi henüz görünmüyor. Paneli açık tutup tekrar kontrol et.',
+      checkPublication: 'Yayınlanan gönderiyi bul',
+      publicationFound: 'Yayınlanan NSosyal gönderisi algılandı',
+      publicationRequired: 'İnsan yönlendirmesi, incelenen metin yayınlanmış bir NSosyal gönderisi olarak görünür olduktan sonra kullanılabilir.',
+      publishedContext: 'NSosyal’de yayınlandı',
       postClaim: 'Gönderi iddiası',
       sourcePassage: 'Kaynak pasajı',
       routedTo: 'Yönlendirilen kişi',
@@ -238,6 +262,56 @@
     return state.composer ? editableText(state.composer) : '';
   }
 
+  function sameText(left, right) {
+    return normalize(left) === normalize(right);
+  }
+
+  function publishedCandidates(text) {
+    const target = normalize(text);
+    if (!target) return [];
+    const root = document.querySelector('main') || document.body;
+    const selectors = [
+      'article',
+      '[role="article"]',
+      '[data-testid*="post" i]',
+      '[class*="post" i]',
+      'p',
+      'div'
+    ].join(', ');
+
+    return [...root.querySelectorAll(selectors)]
+      .filter((node) => {
+        if (!(node instanceof HTMLElement) || node.closest(`#${HOST_ID}`) || !visible(node)) return false;
+        if (node.matches(EDITABLE_SELECTOR) || node.closest(EDITABLE_SELECTOR)) return false;
+        if (node.querySelector(EDITABLE_SELECTOR)) return false;
+        if (state.composer && (node === state.composer || node.contains(state.composer))) return false;
+        return normalize(node.innerText || node.textContent).includes(target);
+      })
+      .map((node) => {
+        const value = normalize(node.innerText || node.textContent);
+        const exact = value === target;
+        const semanticContainer = node.matches('article, [role="article"], [data-testid*="post" i], [class*="post" i]');
+        const excess = Math.max(0, value.length - target.length);
+        const score = (exact ? 80 : 0) + (semanticContainer ? 30 : 0) - Math.min(40, excess / 20);
+        return { node, score, excess };
+      })
+      .sort((a, b) => b.score - a.score || a.excess - b.excess);
+  }
+
+  function findPublishedPost(text) {
+    return publishedCandidates(text)[0]?.node || null;
+  }
+
+  function publishedPostUrl() {
+    try {
+      const url = new URL(location.href);
+      if (['nsosyal.com', 'www.nsosyal.com'].includes(url.hostname) && url.protocol === 'https:') {
+        return url.href;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   function parseBackground(node) {
     if (!node) return null;
     const match = getComputedStyle(node).backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/);
@@ -279,6 +353,10 @@
   stylesheet.rel = 'stylesheet';
   stylesheet.href = chrome.runtime.getURL('overlay.css');
 
+  const publishedStylesheet = document.createElement('link');
+  publishedStylesheet.rel = 'stylesheet';
+  publishedStylesheet.href = chrome.runtime.getURL('published-flow.css');
+
   const trigger = el('button', 'drsk-overlay-trigger', t('button'));
   trigger.type = 'button';
   trigger.setAttribute('aria-label', t('title'));
@@ -298,7 +376,7 @@
   const body = el('div', 'drsk-overlay-body');
   const foot = el('div', 'drsk-overlay-foot', t('concept'));
   panel.append(head, body, foot);
-  shadow.append(stylesheet, trigger, panel);
+  shadow.append(stylesheet, publishedStylesheet, trigger, panel);
   document.body.appendChild(host);
 
   function applyTheme() {
@@ -348,6 +426,22 @@
     const wrap = el('div', 'drsk-overlay-loading');
     wrap.append(el('span', 'drsk-overlay-spinner'), el('p', '', message));
     body.append(wrap);
+  }
+
+  function renderLifecycle({ evidence = false, published = false, request = null } = {}) {
+    const answered = Boolean(request?.answer || request?.status === 'ANSWERED');
+    const routed = Boolean(request?.assigned_responder);
+    const completed = answered ? 4 : routed ? 3 : published ? 2 : evidence ? 1 : 0;
+    const labels = [t('draftStage'), t('publishedStage'), t('routedStage'), t('resolvedStage')];
+    const wrap = el('ol', 'drsk-overlay-lifecycle');
+    labels.forEach((label, index) => {
+      const step = el('li', '', label);
+      const position = index + 1;
+      if (position < completed) step.dataset.state = 'done';
+      else if (position === completed) step.dataset.state = answered ? 'done' : 'active';
+      wrap.append(step);
+    });
+    return wrap;
   }
 
   function renderEvidence(context) {
@@ -406,6 +500,17 @@
     if (request?.status) cardHead.append(el('span', 'drsk-overlay-status', request.status));
     wrap.append(cardHead);
 
+    if (request?.social_context?.published_observed) {
+      const published = el('a', 'drsk-overlay-published', t('publishedContext'));
+      const href = safeUrl(request.social_context.post_url);
+      if (href) {
+        published.href = href;
+        published.target = '_blank';
+        published.rel = 'noopener noreferrer';
+      }
+      wrap.append(published);
+    }
+
     const responder = request?.assigned_responder;
     if (!responder) {
       wrap.append(el('p', 'drsk-overlay-muted', t('unavailableResponder')));
@@ -434,7 +539,7 @@
     return wrap;
   }
 
-  function renderHumanRecommendation(result, text) {
+  function renderHumanRecommendation(result, text, published = false) {
     const wrap = el('section', 'drsk-overlay-card drsk-overlay-recommendation');
     const cardHead = el('div', 'drsk-overlay-card-head');
     cardHead.append(el('span', 'drsk-overlay-brand human', 'NIYET'), el('b', '', t('human')));
@@ -442,6 +547,20 @@
 
     if (!result?.human_available) {
       wrap.append(el('p', 'drsk-overlay-capacity', t('unavailableResponder')));
+      return wrap;
+    }
+
+    if (!published) {
+      const message = state.inspection?.publishing
+        ? t('publicationWaiting')
+        : state.inspection?.publicationMissing
+          ? t('publicationMissing')
+          : t('publishFirst');
+      wrap.append(el('p', 'drsk-overlay-publish-gate', message));
+      const check = el('button', 'drsk-overlay-secondary', t('checkPublication'));
+      check.type = 'button';
+      check.addEventListener('click', () => confirmPublishedPost(text, true));
+      wrap.append(check);
       return wrap;
     }
 
@@ -456,15 +575,21 @@
     return wrap;
   }
 
-  function renderResult(result, text = '') {
+  function renderResult(result, text = '', options = {}) {
     body.replaceChildren();
     const request = result?.request || null;
     const evidence = result?.evidence_context || request?.evidence_context;
+    const published = Boolean(
+      options.published
+      || request?.social_context?.published_observed
+      || (state.inspection && sameText(state.inspection.text, text) && state.inspection.published)
+    );
+    body.append(renderLifecycle({ evidence: Boolean(evidence), published, request }));
     if (evidence) body.append(renderEvidence(evidence));
 
     if (!request) {
       if (result?.human_recommended) {
-        body.append(renderHumanRecommendation(result, text));
+        body.append(renderHumanRecommendation(result, text, published));
       } else if (result?.resolution?.path === 'NONE') {
         body.append(el('p', 'drsk-overlay-empty', t('noAction')));
       } else {
@@ -480,6 +605,56 @@
       const message = request.status === 'ACCEPTED' ? t('accepted') : t('waiting');
       body.append(el('p', 'drsk-overlay-waiting', message));
     }
+  }
+
+  function stopPublicationWatch() {
+    if (state.publishTimer) clearTimeout(state.publishTimer);
+    state.publishTimer = null;
+  }
+
+  function confirmPublishedPost(text, manual = false) {
+    const inspection = state.inspection;
+    if (!inspection || !sameText(inspection.text, text)) return false;
+    const post = findPublishedPost(text);
+    const postUrl = publishedPostUrl();
+    if (!post || !postUrl) {
+      if (manual) {
+        inspection.publishing = false;
+        inspection.publicationMissing = true;
+        renderResult(inspection.result, inspection.text, { published: false });
+      }
+      return false;
+    }
+
+    stopPublicationWatch();
+    inspection.published = true;
+    inspection.publishing = false;
+    inspection.publicationMissing = false;
+    inspection.postUrl = postUrl;
+    inspection.post = post;
+    renderResult(inspection.result, inspection.text, { published: true });
+    const found = el('p', 'drsk-overlay-published-confirmation', t('publicationFound'));
+    body.insertBefore(found, body.children[1] || null);
+    return true;
+  }
+
+  function watchForPublishedPost(text, attempts = 20) {
+    stopPublicationWatch();
+    const tick = () => {
+      state.publishTimer = null;
+      if (confirmPublishedPost(text)) return;
+      if (attempts <= 1 || !state.inspection || !sameText(state.inspection.text, text)) {
+        if (state.inspection && sameText(state.inspection.text, text)) {
+          state.inspection.publishing = false;
+          state.inspection.publicationMissing = true;
+          renderResult(state.inspection.result, text, { published: false });
+        }
+        return;
+      }
+      attempts -= 1;
+      state.publishTimer = setTimeout(tick, 650);
+    };
+    state.publishTimer = setTimeout(tick, 450);
   }
 
   function stopPoll() {
@@ -557,10 +732,15 @@
 
   async function escalateToHuman(text) {
     if (state.busy) return;
+    const inspection = state.inspection;
+    if (!inspection?.published || !sameText(inspection.text, text) || !inspection.postUrl) {
+      body.append(el('p', 'drsk-overlay-error', t('publicationRequired')));
+      return;
+    }
     state.busy = true;
     trigger.disabled = true;
     setBusy(t('routing'));
-    const response = await api({ action: 'resolve', text });
+    const response = await api({ action: 'resolve', text, post_url: inspection.postUrl });
     state.busy = false;
     trigger.disabled = false;
 
@@ -569,7 +749,7 @@
       return;
     }
 
-    renderResult(response.data || {}, text);
+    renderResult(response.data || {}, text, { published: true });
     if (response.data?.request) await startPoll(response.data.request, text);
   }
 
@@ -607,7 +787,16 @@
       return;
     }
 
-    renderResult(response.data || {}, text);
+    state.inspection = {
+      text,
+      result: response.data || {},
+      published: false,
+      publishing: false,
+      publicationMissing: false,
+      postUrl: null,
+      post: null
+    };
+    renderResult(response.data || {}, text, { published: false });
   }
 
   document.addEventListener('focusin', (event) => {
@@ -626,6 +815,20 @@
       state.composer = editable;
     }
     schedulePosition();
+  }, true);
+
+  document.addEventListener('click', (event) => {
+    const action = event.target instanceof Element
+      ? event.target.closest('button, [role="button"]')
+      : null;
+    if (!action || !isSendAction(action) || !state.inspection) return;
+    const text = composerText();
+    if (!text || !sameText(state.inspection.text, text)) return;
+    state.inspection.publishing = true;
+    state.inspection.publicationMissing = false;
+    panel.hidden = false;
+    renderResult(state.inspection.result, text, { published: false });
+    watchForPublishedPost(text);
   }, true);
 
   trigger.addEventListener('click', resolveCurrentPost);

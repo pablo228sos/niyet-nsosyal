@@ -1,0 +1,125 @@
+.drsk-overlay-lifecycle {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.drsk-overlay-lifecycle li {
+  position: relative;
+  padding: 18px 4px 0;
+  color: #8a96a7;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.drsk-overlay-lifecycle li::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  margin-left: -5px;
+  border: 2px solid #cdd6e3;
+  border-radius: 50%;
+  background: #f7f9fc;
+}
+
+.drsk-overlay-lifecycle li::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: calc(-50% + 6px);
+  width: calc(100% - 12px);
+  height: 2px;
+  background: #dfe6f0;
+}
+
+.drsk-overlay-lifecycle li:first-child::after {
+  display: none;
+}
+
+.drsk-overlay-lifecycle li[data-state="done"],
+.drsk-overlay-lifecycle li[data-state="active"] {
+  color: #285fd0;
+}
+
+.drsk-overlay-lifecycle li[data-state="done"]::before {
+  border-color: #2f6cff;
+  background: #2f6cff;
+}
+
+.drsk-overlay-lifecycle li[data-state="active"]::before {
+  border-color: #2f6cff;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(47, 108, 255, 0.12);
+}
+
+.drsk-overlay-publish-gate,
+.drsk-overlay-published-confirmation {
+  margin: 0;
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.drsk-overlay-publish-gate {
+  background: #edf4ff;
+  color: #285990;
+}
+
+.drsk-overlay-published-confirmation {
+  margin-bottom: 10px;
+  background: #edf9f1;
+  color: #23704a;
+  font-weight: 750;
+}
+
+.drsk-overlay-published {
+  display: inline-flex;
+  width: max-content;
+  margin: 0 0 9px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #edf9f1;
+  color: #23704a;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-lifecycle li::before {
+  border-color: #455164;
+  background: #171c26;
+}
+
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-lifecycle li::after {
+  background: #374153;
+}
+
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-lifecycle li[data-state="done"]::before {
+  border-color: #6f94ff;
+  background: #6f94ff;
+}
+
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-lifecycle li[data-state="active"]::before {
+  border-color: #6f94ff;
+  background: #202633;
+}
+
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-publish-gate {
+  background: #182a43;
+  color: #a7c9ff;
+}
+
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-published-confirmation,
+.drsk-overlay-panel[data-theme="dark"] .drsk-overlay-published {
+  background: #183226;
+  color: #9ad8b5;
+}

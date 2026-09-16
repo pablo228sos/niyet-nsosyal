@@ -16,6 +16,7 @@ RUNTIME_FILES = (
     "background.js",
     "content-v2.js",
     "overlay.css",
+    "published-flow.css",
 )
 
 
