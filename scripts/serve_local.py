@@ -24,6 +24,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
     """
 
     _json = ApiHandler._json
+    _dispatch = HumanHelpHandler._dispatch
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(WEB), **kwargs)

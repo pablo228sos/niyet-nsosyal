@@ -36,7 +36,13 @@ The explicit resolution paths are:
 
 This keeps uncertainty visible instead of forcing every post through one model response.
 
-## 4. Structured context enters NIYET
+## 4. The user confirms human escalation
+
+A `HUMAN` or `BOTH` decision is a recommendation, not permission to contact a person. The interface first shows the evidence and explains why interpretation is still useful. A request enters NIYET only after the author explicitly chooses **Ask a relevant person**.
+
+This distinction is essential for unpublished drafts: checking evidence must never silently expose draft text to another user.
+
+## 5. Structured context enters NIYET
 
 When the path needs a person, DRSK sends NIYET structured context rather than only the raw post:
 
@@ -50,7 +56,7 @@ NIYET then retrieves responders and applies hard eligibility constraints.
 
 A responder must be active, willing for the interaction type, have remaining capacity and clear the current relevance floor. Follower count is not used as an eligibility signal.
 
-## 5. Open requests compete in one bounded allocation window
+## 6. Open requests compete in one bounded allocation window
 
 NIYET does not permanently lock the locally best responder independently for each request.
 
@@ -58,7 +64,7 @@ Every still-open/unmatched request is allocated together under the same responde
 
 A request can remain unmatched when no eligible candidate clears the quality rules.
 
-## 6. Responder receives an actionable request card
+## 7. Responder receives an actionable request card
 
 The responder side shows the request, attached evidence context when present, remaining capacity and controls to:
 
@@ -81,7 +87,7 @@ Pause removes the responder from new allocation. Resume re-enables routing only 
 
 If the UI is stale because another action already changed the shared window, the backend rejects the action as a conflict and the client refreshes the current queue.
 
-## 7. Answer returns to the same request
+## 8. Answer returns to the same request
 
 After acceptance, the matched responder can submit a concise answer. The author path polls the same request state and displays the answer next to the evidence context.
 
@@ -94,7 +100,9 @@ need
 -> shared outcome
 ```
 
-## 8. State persistence boundary
+The active author token is kept in extension session storage and the authoritative request remains in shared server state. Reloading the NSosyal page therefore resumes the same request instead of detaching the returning answer.
+
+## 9. State persistence boundary
 
 The integrated human-help flow is implemented behind a `StateStore` abstraction.
 

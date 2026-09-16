@@ -49,7 +49,9 @@ Expected:
 - the exact stored passage says coffee consumption was **associated with** lower mortality risk
 - `CAUSALITY_SHIFT` is exposed rather than silently accepting `causes/proves`
 - the evidence remains visible
-- the unresolved interpretation is routed through NIYET
+- no human request is created by the evidence check alone
+- the author explicitly presses **Ask a relevant person**
+- the unresolved interpretation is then routed through NIYET
 - resolution is `BOTH`
 
 ## D — BOTH: numeric distortion

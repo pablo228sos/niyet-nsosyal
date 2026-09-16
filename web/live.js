@@ -14,6 +14,10 @@ let selectedResponderId = null;
 let currentAuthor = null;
 let authorPoll = null;
 let inboxPoll = null;
+let inboxPollGeneration = 0;
+let inboxPollCycle = 0;
+let responderSnapshot = '';
+let inboxSnapshot = '';
 let requestBusy = false;
 
 const copy = {
@@ -35,7 +39,7 @@ const copy = {
     capacity: 'slots remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
     accept: 'Accept', skip: 'Skip', answer: 'Answer', answerPlaceholder: 'Give the person a concise, useful answer.', send: 'Send answer',
     requestOpened: 'Request opened. NIYET is looking for a willing person.', evidenceRouted: 'Evidence checked. The unresolved part was routed with its source context.',
-    noHumanNeeded: 'Evidence was sufficient for this path; no human request was opened.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
+    noHumanNeeded: 'The bounded evidence was sufficient; no human request was opened.', noHumanAvailable: 'Human context is recommended, but no eligible responder has capacity right now.', noActionNeeded: 'This content does not need evidence or human resolution.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
     routingChanged: 'Availability changed, so NIYET reallocated this request. The latest queue is shown.', capacityChanged: 'Responder capacity changed. NIYET recalculated the pending window.', serviceBusy: 'Shared state is temporarily unavailable. Try again in a moment.',
     copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
     networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored.',
@@ -59,7 +63,7 @@ const copy = {
     capacity: 'slot kaldı', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
     accept: 'Kabul et', skip: 'Geç', answer: 'Yanıt', answerPlaceholder: 'Kısa ve faydalı bir yanıt yaz.', send: 'Yanıtı gönder',
     requestOpened: 'İstek açıldı. NIYET istekli birini arıyor.', evidenceRouted: 'Kanıt kontrol edildi. Çözülmeyen kısım kaynak bağlamıyla birlikte yönlendirildi.',
-    noHumanNeeded: 'Bu yol için kanıt yeterliydi; insan isteği açılmadı.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
+    noHumanNeeded: 'Sınırlandırılmış kanıt yeterliydi; insan isteği açılmadı.', noHumanAvailable: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.', noActionNeeded: 'Bu içerik için kanıt veya insan çözümü gerekmiyor.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
     routingChanged: 'Uygunluk değiştiği için NIYET bu isteği yeniden yönlendirdi. Güncel kuyruk gösteriliyor.', capacityChanged: 'Cevaplayıcı kapasitesi değişti. NIYET bekleyen istekleri yeniden hesapladı.', serviceBusy: 'Ortak durum geçici olarak kullanılamıyor. Birazdan tekrar dene.',
     copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
     networkError: 'Prototip backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
@@ -168,11 +172,16 @@ async function checkBackend() {
   badge.textContent = t('checking');
   try {
     const data = await callApi();
-    responders = Array.isArray(data.responders) ? data.responders : [];
+    const nextResponders = Array.isArray(data.responders) ? data.responders : [];
+    const nextSnapshot = JSON.stringify(nextResponders);
     badge.dataset.state = 'live';
     badge.dataset.durable = String(Boolean(data.state_durable));
     badge.textContent = t(data.state_durable ? 'backendDurable' : 'backendMemory');
-    populateResponders();
+    if (nextSnapshot !== responderSnapshot) {
+      responders = nextResponders;
+      responderSnapshot = nextSnapshot;
+      populateResponders();
+    }
     return true;
   } catch (_) {
     badge.dataset.state = 'error';
@@ -183,6 +192,7 @@ async function checkBackend() {
 
 function populateResponders() {
   const select = $('#responderSelect');
+  const previousResponderId = selectedResponderId;
   const desired = new URL(location.href).searchParams.get('responder') || selectedResponderId;
   select.replaceChildren();
   responders.forEach((responder) => {
@@ -193,6 +203,7 @@ function populateResponders() {
   });
   if (desired && responders.some((item) => item.id === desired)) select.value = desired;
   selectedResponderId = select.value || responders[0]?.id || null;
+  if (selectedResponderId !== previousResponderId) inboxSnapshot = '';
   $('#availabilityToggle').disabled = !selectedResponderId;
   renderResponderMeta();
 }
@@ -391,7 +402,13 @@ async function openAuthorRequest(mode) {
         };
         renderAuthorRequest(synthetic);
       }
-      setMessage($('#authorMessage'), t('noHumanNeeded'));
+      const path = result.resolution?.path;
+      const message = result.human_recommended
+        ? t('noHumanAvailable')
+        : path === 'NONE'
+          ? t('noActionNeeded')
+          : t('noHumanNeeded');
+      setMessage($('#authorMessage'), message);
       return;
     }
     persistAuthor(result.request);
@@ -578,27 +595,50 @@ function renderInbox(requests) {
   });
 }
 
-async function refreshInbox() {
+async function refreshInbox(force = false) {
   if (!selectedResponderId) return;
   try {
     const result = await callApi({ action: 'inbox', responder_id: selectedResponderId });
-    renderInbox(Array.isArray(result.requests) ? result.requests : []);
+    const requests = Array.isArray(result.requests) ? result.requests : [];
+    const snapshot = JSON.stringify(requests);
+    if (!force && snapshot === inboxSnapshot) return;
+    inboxSnapshot = snapshot;
+    renderInbox(requests);
   } catch (error) {
     setMessage($('#inboxMessage'), friendlyError(error), true);
   }
 }
 
-async function refreshBackendAndInbox() {
+async function refreshBackendAndInbox(forceInbox = false) {
   await checkBackend();
-  await refreshInbox();
+  await refreshInbox(forceInbox);
 }
 
 function startInboxPoll() {
   stopInboxPoll();
-  refreshBackendAndInbox();
-  inboxPoll = window.setInterval(refreshBackendAndInbox, 1300);
+  const generation = ++inboxPollGeneration;
+  inboxPollCycle = 0;
+  refreshBackendAndInbox(true).finally(() => {
+    if (generation === inboxPollGeneration) {
+      inboxPoll = window.setTimeout(() => runInboxPoll(generation), 1800);
+    }
+  });
 }
-function stopInboxPoll() { if (inboxPoll) clearInterval(inboxPoll); inboxPoll = null; }
+async function runInboxPoll(generation) {
+  if (generation !== inboxPollGeneration) return;
+  inboxPoll = null;
+  await refreshInbox();
+  inboxPollCycle += 1;
+  if (inboxPollCycle % 5 === 0) await checkBackend();
+  if (generation === inboxPollGeneration) {
+    inboxPoll = window.setTimeout(() => runInboxPoll(generation), 1800);
+  }
+}
+function stopInboxPoll() {
+  inboxPollGeneration += 1;
+  if (inboxPoll) clearTimeout(inboxPoll);
+  inboxPoll = null;
+}
 
 async function toggleAvailability() {
   const record = responderRecord();
@@ -628,6 +668,8 @@ async function resetDemo() {
   try { await callApi({ action: 'reset' }); }
   catch (error) { setMessage($('#authorMessage'), friendlyError(error), true); return; }
   sessionStorage.removeItem('drsk-live-author');
+  inboxSnapshot = '';
+  responderSnapshot = '';
   currentAuthor = null;
   $('#requestCard').hidden = true;
   $('#requestText').value = '';
@@ -644,7 +686,8 @@ $('#languageToggle').addEventListener('click', () => {
   language = language === 'en' ? 'tr' : 'en';
   localStorage.setItem('drsk-live-language', language);
   applyLanguage();
-  if (!$('#responderView').hidden) refreshInbox();
+  inboxSnapshot = '';
+  if (!$('#responderView').hidden) refreshInbox(true);
 });
 $('#authorTab').addEventListener('click', () => setRole('author'));
 $('#responderTab').addEventListener('click', () => setRole('responder'));
@@ -660,11 +703,12 @@ $('#resetDemo').addEventListener('click', resetDemo);
 $('#requestText').addEventListener('input', (event) => { $('#charCount').textContent = `${event.target.value.length} / 1200`; });
 $('#responderSelect').addEventListener('change', () => {
   selectedResponderId = $('#responderSelect').value;
+  inboxSnapshot = '';
   const url = new URL(location.href);
   url.searchParams.set('responder', selectedResponderId);
   history.replaceState(null, '', url);
   renderResponderMeta();
-  refreshInbox();
+  refreshInbox(true);
 });
 $('#availabilityToggle').addEventListener('click', toggleAvailability);
 

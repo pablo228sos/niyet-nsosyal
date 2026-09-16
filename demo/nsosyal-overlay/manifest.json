@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "DRSK × NSosyal Concept Integration",
+  "version": "0.4.0",
+  "description": "A transparent concept-integration overlay that connects the live NSosyal surface to the DRSK prototype backend.",
+  "host_permissions": [
+    "https://niyet-nsosyal.vercel.app/*"
+  ],
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://nsosyal.com/*", "https://www.nsosyal.com/*"],
+      "js": ["content-v2.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["overlay.css"],
+      "matches": ["https://nsosyal.com/*", "https://www.nsosyal.com/*"]
+    }
+  ]
+}
