@@ -26,6 +26,39 @@ def _payload():
     }
 
 
+def _weak_unrelated_payload():
+    return {
+        "query": "2026 Karakol sensor pilot reduced PM2.5 by 37 percent",
+        "results": [
+            {
+                "title": "Seasonal particulate matter sensors",
+                "url": "https://example.org/pm-sensors",
+                "content": (
+                    "A 2023 study measured annual PM2.5 concentrations with higher winter values "
+                    "using municipal low-cost particulate matter sensors in another city."
+                ),
+                "score": 0.82,
+            }
+        ],
+    }
+
+
+def _strong_turkish_payload():
+    return {
+        "query": "Düzenli fiziksel aktivite kalp hastalığı riski",
+        "results": [
+            {
+                "title": "Fiziksel aktivite ve kalp sağlığı",
+                "url": "https://example.org/tr/activity",
+                "content": (
+                    "Düzenli fiziksel aktivite daha düşük kardiyovasküler hastalık riski ile ilişkilidir."
+                ),
+                "score": 0.89,
+            }
+        ],
+    }
+
+
 def test_tavily_provider_turns_search_results_into_provenanced_hits():
     calls = []
 
@@ -53,6 +86,28 @@ def test_tavily_evidence_still_uses_sourcechain_relation_and_distortion_logic():
     assert bundle.evidence
     assert bundle.evidence[0].metadata["provider"] == "tavily_search"
     assert DistortionType.CAUSALITY_SHIFT in bundle.evidence[0].distortions
+
+
+def test_tavily_fails_closed_on_weak_live_match():
+    provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _weak_unrelated_payload())
+    hits = provider.retrieve(
+        "The 2026 Karakol municipal sensor pilot reduced winter PM2.5 by exactly 37 percent.",
+        limit=3,
+    )
+
+    assert hits == ()
+
+
+def test_tavily_keeps_strong_turkish_live_match():
+    provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _strong_turkish_payload())
+    hits = provider.retrieve(
+        "Düzenli fiziksel aktivite daha düşük kalp hastalığı riski ile ilişkilidir.",
+        limit=3,
+    )
+
+    assert hits
+    assert hits[0].provider == "tavily_search"
+    assert hits[0].score >= 0.30
 
 
 def test_environment_prefers_tavily_then_brave_then_controlled(monkeypatch):
