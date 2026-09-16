@@ -96,6 +96,19 @@ def test_bundle_is_citation_first_and_counts_independent_origins():
     assert independent_origin_count(bundle.evidence) == 1
 
 
+def test_bundle_explanation_does_not_mislabel_live_evidence_as_controlled():
+    analysis = analyze_post("Satışlar yüzde 20 arttı.")
+    provider = ControlledEvidenceProvider(
+        (document("https://example.org/live", "Satışlar yüzde 20 arttı."),),
+        provider_name="tavily_search",
+    )
+
+    bundle = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert "retrieved evidence" in bundle.explanation.lower()
+    assert "controlled evidence" not in bundle.explanation.lower()
+
+
 def test_bundle_fails_closed_when_controlled_corpus_has_no_match():
     analysis = analyze_post("Satışlar yüzde 20 arttı.")
     provider = ControlledEvidenceProvider((document("https://example.org/weather", "Bugün hava yağmurlu."),))
