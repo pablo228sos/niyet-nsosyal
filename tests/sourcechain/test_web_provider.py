@@ -110,6 +110,6 @@ def test_environment_provider_adds_brave_after_verified_priority_when_only_brave
     assert isinstance(provider, FallbackEvidenceProvider)
     assert isinstance(provider.providers[0], MinimumScoreEvidenceProvider)
     assert isinstance(provider.providers[0].provider, ControlledEvidenceProvider)
-    assert provider.providers[0].min_score == 0.30
+    assert provider.providers[0].min_score == 0.38
     assert isinstance(provider.providers[1], BraveContextEvidenceProvider)
     assert isinstance(provider.providers[2], ControlledEvidenceProvider)
