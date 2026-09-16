@@ -1,0 +1,35 @@
+name: live-sourcechain-audit
+
+on:
+  push:
+    branches:
+      - experiment/live-evidence-audit
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Audit production SOURCECHAIN live evidence
+        run: python experiments/audit_live_sourcechain.py
+
+      - name: Upload audit result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-sourcechain-audit
+          path: live_sourcechain_audit.json
+          if-no-files-found: warn
+          retention-days: 7
