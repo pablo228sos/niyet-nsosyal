@@ -5,37 +5,52 @@ from datetime import datetime
 
 from .corpus import demo_documents
 from .evidence import build_evidence_bundle
-from .retrieval import ControlledEvidenceProvider, EvidenceProvider, FallbackEvidenceProvider
+from .retrieval import (
+    ControlledEvidenceProvider,
+    EvidenceProvider,
+    FallbackEvidenceProvider,
+    MinimumScoreEvidenceProvider,
+)
 from .schemas import EvidenceBundle
 from .statement_classifier import analyze_post
+
+
+# Keep only genuinely strong verified-corpus matches on the fast path. The
+# coffee judge case scores about 0.40 and the NASA case about 0.67, while a
+# topic-only physical-activity match sits around 0.35 and should continue to
+# live retrieval for more specific evidence.
+CONTROLLED_PRIORITY_SCORE = 0.38
 
 
 def provider_from_environment() -> EvidenceProvider:
     """Build the evidence acquisition chain without exposing credentials client-side.
 
-    The verified in-repo corpus remains the deterministic fallback. Tavily is the
-    preferred live provider when TAVILY_API_KEY is configured. Brave remains an
-    optional secondary provider. Local/tests and offline demo behavior stay fully
-    reproducible when no live-search credentials are present.
+    A strong match in the small verified corpus is preferred because it is fast,
+    deterministic and provenance-stable. Unseen claims then use Tavily advanced
+    retrieval when configured. The full controlled corpus remains the final
+    offline fallback so provider failure never creates invented evidence.
     """
 
     controlled = ControlledEvidenceProvider(demo_documents())
-    providers: list[EvidenceProvider] = []
 
     tavily_key = os.getenv("TAVILY_API_KEY", "").strip()
+    brave_key = os.getenv("BRAVE_SEARCH_API_KEY", "").strip()
+    if not tavily_key and not brave_key:
+        return controlled
+
+    providers: list[EvidenceProvider] = [
+        MinimumScoreEvidenceProvider(controlled, min_score=CONTROLLED_PRIORITY_SCORE)
+    ]
+
     if tavily_key:
         from .tavily_search import TavilyEvidenceProvider
 
-        providers.append(TavilyEvidenceProvider(tavily_key))
+        providers.append(TavilyEvidenceProvider(tavily_key, search_depth="advanced"))
 
-    brave_key = os.getenv("BRAVE_SEARCH_API_KEY", "").strip()
     if brave_key:
         from .brave_context import BraveContextEvidenceProvider
 
         providers.append(BraveContextEvidenceProvider(brave_key))
-
-    if not providers:
-        return controlled
 
     providers.append(controlled)
     return FallbackEvidenceProvider(providers)

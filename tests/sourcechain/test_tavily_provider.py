@@ -6,7 +6,11 @@ import pytest
 
 from sourcechain.evidence import build_evidence_bundle
 from sourcechain.pipeline import provider_from_environment
-from sourcechain.retrieval import ControlledEvidenceProvider, FallbackEvidenceProvider
+from sourcechain.retrieval import (
+    ControlledEvidenceProvider,
+    FallbackEvidenceProvider,
+    MinimumScoreEvidenceProvider,
+)
 from sourcechain.schemas import BundleStatus, DistortionType
 from sourcechain.statement_classifier import analyze_post
 from sourcechain.tavily_search import TavilyEvidenceProvider
@@ -175,16 +179,46 @@ def test_tavily_rejects_unknown_search_depth():
         TavilyEvidenceProvider("secret", search_depth="deep")
 
 
-def test_environment_prefers_tavily_then_brave_then_controlled(monkeypatch):
+def test_environment_uses_verified_first_advanced_live_cascade(monkeypatch):
     monkeypatch.setenv("TAVILY_API_KEY", "tavily-secret")
     monkeypatch.setenv("BRAVE_SEARCH_API_KEY", "brave-secret")
 
     provider = provider_from_environment()
 
     assert isinstance(provider, FallbackEvidenceProvider)
-    assert isinstance(provider.providers[0], TavilyEvidenceProvider)
-    assert provider.providers[1].__class__.__name__ == "BraveContextEvidenceProvider"
-    assert isinstance(provider.providers[2], ControlledEvidenceProvider)
+    assert isinstance(provider.providers[0], MinimumScoreEvidenceProvider)
+    assert isinstance(provider.providers[0].provider, ControlledEvidenceProvider)
+    assert provider.providers[0].min_score == 0.38
+    assert isinstance(provider.providers[1], TavilyEvidenceProvider)
+    assert provider.providers[1].search_depth == "advanced"
+    assert provider.providers[2].__class__.__name__ == "BraveContextEvidenceProvider"
+    assert isinstance(provider.providers[3], ControlledEvidenceProvider)
+
+
+def test_verified_judge_case_short_circuits_live_search(monkeypatch):
+    monkeypatch.setenv("TAVILY_API_KEY", "tavily-secret")
+    monkeypatch.delenv("BRAVE_SEARCH_API_KEY", raising=False)
+    provider = provider_from_environment()
+
+    hits = provider.retrieve("Research proves coffee consumption causes lower mortality.", limit=3)
+
+    assert hits
+    assert all(hit.provider == "controlled" for hit in hits)
+    assert hits[0].document.publisher == "Circulation"
+
+
+def test_topic_only_controlled_match_does_not_block_live_retrieval(monkeypatch):
+    monkeypatch.setenv("TAVILY_API_KEY", "tavily-secret")
+    monkeypatch.delenv("BRAVE_SEARCH_API_KEY", raising=False)
+    provider = provider_from_environment()
+    priority_provider = provider.providers[0]
+
+    hits = priority_provider.retrieve(
+        "Regular physical activity is associated with a lower risk of cardiovascular disease.",
+        limit=3,
+    )
+
+    assert hits == ()
 
 
 def test_environment_stays_controlled_without_live_provider_keys(monkeypatch):

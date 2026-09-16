@@ -3,7 +3,12 @@ from __future__ import annotations
 from sourcechain.brave_context import BraveContextEvidenceProvider
 from sourcechain.evidence import build_evidence_bundle
 from sourcechain.pipeline import provider_from_environment
-from sourcechain.retrieval import ControlledEvidenceProvider, FallbackEvidenceProvider, SourceDocument
+from sourcechain.retrieval import (
+    ControlledEvidenceProvider,
+    FallbackEvidenceProvider,
+    MinimumScoreEvidenceProvider,
+    SourceDocument,
+)
 from sourcechain.schemas import BundleStatus, DistortionType
 from sourcechain.statement_classifier import analyze_post
 
@@ -97,10 +102,14 @@ def test_environment_provider_keeps_offline_default_without_api_key(monkeypatch)
     assert isinstance(provider, ControlledEvidenceProvider)
 
 
-def test_environment_provider_adds_brave_when_only_brave_key_is_configured(monkeypatch):
+def test_environment_provider_adds_brave_after_verified_priority_when_only_brave_key_is_configured(monkeypatch):
     monkeypatch.delenv("TAVILY_API_KEY", raising=False)
     monkeypatch.setenv("BRAVE_SEARCH_API_KEY", "test-key")
     provider = provider_from_environment()
+
     assert isinstance(provider, FallbackEvidenceProvider)
-    assert isinstance(provider.providers[0], BraveContextEvidenceProvider)
-    assert isinstance(provider.providers[1], ControlledEvidenceProvider)
+    assert isinstance(provider.providers[0], MinimumScoreEvidenceProvider)
+    assert isinstance(provider.providers[0].provider, ControlledEvidenceProvider)
+    assert provider.providers[0].min_score == 0.38
+    assert isinstance(provider.providers[1], BraveContextEvidenceProvider)
+    assert isinstance(provider.providers[2], ControlledEvidenceProvider)
