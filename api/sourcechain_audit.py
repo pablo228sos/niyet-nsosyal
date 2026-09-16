@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 
@@ -34,6 +35,53 @@ def _provider_chain(provider) -> list[str]:
     return [item.__class__.__name__ for item in providers]
 
 
+def _run_case(case_id: str) -> dict:
+    pipeline = SourcechainPipeline()
+    started = time.perf_counter()
+    try:
+        bundle = pipeline.analyze(CASES[case_id])
+    except Exception as exc:
+        return {
+            "status": "error",
+            "case": case_id,
+            "text": CASES[case_id],
+            "provider_chain": _provider_chain(pipeline.provider),
+            "latency_ms": round((time.perf_counter() - started) * 1000.0, 1),
+            "error_type": type(exc).__name__,
+        }
+
+    latency_ms = round((time.perf_counter() - started) * 1000.0, 1)
+    result = bundle.to_dict()
+    evidence_rows = []
+    for item in result.get("evidence", [])[:3]:
+        metadata = item.get("metadata", {}) if isinstance(item, dict) else {}
+        evidence_rows.append(
+            {
+                "provider": metadata.get("provider"),
+                "title": item.get("title"),
+                "source_url": item.get("source_url"),
+                "passage": item.get("passage"),
+                "relation": item.get("relation"),
+                "distortions": item.get("distortions", []),
+                "lexical_score": metadata.get("lexical_score"),
+            }
+        )
+
+    analysis = result.get("analysis", {})
+    return {
+        "status": "ok",
+        "case": case_id,
+        "text": CASES[case_id],
+        "provider_chain": _provider_chain(pipeline.provider),
+        "latency_ms": latency_ms,
+        "statement_type": analysis.get("statement_type"),
+        "check_worthy": analysis.get("check_worthy"),
+        "bundle_status": result.get("status"),
+        "sufficient": result.get("sufficient"),
+        "evidence": evidence_rows,
+    }
+
+
 class handler(BaseHTTPRequestHandler):
     def _json(self, status: int, payload: dict) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -57,46 +105,40 @@ class handler(BaseHTTPRequestHandler):
                     "purpose": "fixed SOURCECHAIN live-evidence audit",
                     "cases": sorted(CASES),
                     "arbitrary_input": False,
+                    "all_cases": "?case=all",
                 },
             )
             return
+
+        if case_id == "all":
+            started = time.perf_counter()
+            rows: dict[str, dict] = {}
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                futures = {pool.submit(_run_case, key): key for key in CASES}
+                for future in as_completed(futures):
+                    key = futures[future]
+                    try:
+                        rows[key] = future.result()
+                    except Exception as exc:
+                        rows[key] = {
+                            "status": "error",
+                            "case": key,
+                            "error_type": type(exc).__name__,
+                        }
+            self._json(
+                200,
+                {
+                    "status": "ok",
+                    "purpose": "fixed SOURCECHAIN live-evidence audit",
+                    "total_latency_ms": round((time.perf_counter() - started) * 1000.0, 1),
+                    "results": [rows[key] for key in CASES],
+                },
+            )
+            return
+
         if case_id not in CASES:
             self._json(404, {"error": "unknown_case"})
             return
 
-        pipeline = SourcechainPipeline()
-        started = time.perf_counter()
-        try:
-            bundle = pipeline.analyze(CASES[case_id])
-        except Exception as exc:
-            self._json(
-                500,
-                {
-                    "status": "error",
-                    "case": case_id,
-                    "provider_chain": _provider_chain(pipeline.provider),
-                    "error_type": type(exc).__name__,
-                },
-            )
-            return
-
-        elapsed_ms = round((time.perf_counter() - started) * 1000.0, 1)
-        result = bundle.to_dict()
-        evidence = result.get("evidence", [])
-        provider_values = []
-        for item in evidence:
-            metadata = item.get("metadata", {}) if isinstance(item, dict) else {}
-            provider_values.append(metadata.get("provider"))
-
-        self._json(
-            200,
-            {
-                "status": "ok",
-                "case": case_id,
-                "text": CASES[case_id],
-                "provider_chain": _provider_chain(pipeline.provider),
-                "evidence_providers": provider_values,
-                "latency_ms": elapsed_ms,
-                "bundle": result,
-            },
-        )
+        row = _run_case(case_id)
+        self._json(200 if row["status"] == "ok" else 500, row)
