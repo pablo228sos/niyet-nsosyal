@@ -43,6 +43,26 @@ def _weak_unrelated_payload():
     }
 
 
+def _numeric_coincidence_payload():
+    return {
+        "query": "2026 Karakol sensor pilot reduced PM2.5 by exactly 37 percent",
+        "results": [
+            {
+                "title": "Largest number divisible by 37",
+                "url": "https://example.org/math/37",
+                "content": "What is the largest 5-digit number which is exactly divisible by 37?",
+                "score": 0.95,
+            },
+            {
+                "title": "Calculate 37 percent of 5",
+                "url": "https://example.org/math/percentage",
+                "content": "What is 37 percent of 5? For example: 37% of 5 = 1.85.",
+                "score": 0.91,
+            },
+        ],
+    }
+
+
 def _strong_turkish_payload():
     return {
         "query": "Düzenli fiziksel aktivite kalp hastalığı riski",
@@ -90,6 +110,16 @@ def test_tavily_evidence_still_uses_sourcechain_relation_and_distortion_logic():
 
 def test_tavily_fails_closed_on_weak_live_match():
     provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _weak_unrelated_payload())
+    hits = provider.retrieve(
+        "The 2026 Karakol municipal sensor pilot reduced winter PM2.5 by exactly 37 percent.",
+        limit=3,
+    )
+
+    assert hits == ()
+
+
+def test_tavily_fails_closed_when_numbers_create_spurious_overlap():
+    provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _numeric_coincidence_payload())
     hits = provider.retrieve(
         "The 2026 Karakol municipal sensor pilot reduced winter PM2.5 by exactly 37 percent.",
         limit=3,
