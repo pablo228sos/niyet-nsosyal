@@ -1,0 +1,137 @@
+name: tavily-advanced-ab
+
+on:
+  push:
+    branches:
+      - experiment/tavily-advanced-ab
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Wait for preview and compare basic vs advanced
+        shell: bash
+        run: |
+          cat > /tmp/compare.py <<'PY'
+          import json
+          import time
+          from urllib.error import HTTPError, URLError
+          from urllib.parse import urlencode
+          from urllib.request import Request, urlopen
+
+          PROD = "https://niyet-nsosyal.vercel.app"
+          PREVIEW = "https://niyet-nsosyal-git-experiment-tavily-advanced-ab-teknofest-2026.vercel.app"
+          CASES = {
+              "en_supported": "Regular physical activity is associated with a lower risk of cardiovascular disease.",
+              "en_causality": "Research proves that drinking coffee causes people to live longer.",
+              "tr_supported": "Düzenli fiziksel aktivite daha düşük kalp hastalığı riski ile ilişkilidir.",
+              "tr_causality": "Araştırmalar kahve içmenin insanların daha uzun yaşamasına neden olduğunu kanıtlıyor.",
+              "tr_certainty": "Yeni tedavi bütün hastalarda kesin iyileşme sağlıyor.",
+              "conflicting": "Eating eggs definitely increases cardiovascular mortality in everyone.",
+              "obscure": "The 2026 Karakol municipal sensor pilot reduced winter PM2.5 by exactly 37 percent.",
+              "subjective": "I think dark mode looks much better than light mode.",
+          }
+
+          def request_json(req, timeout=20):
+              started = time.perf_counter()
+              try:
+                  with urlopen(req, timeout=timeout) as response:
+                      payload = json.loads(response.read().decode("utf-8"))
+                      return int(response.status), payload, round((time.perf_counter() - started) * 1000, 1)
+              except HTTPError as exc:
+                  body = exc.read().decode("utf-8", errors="replace")
+                  try:
+                      payload = json.loads(body)
+                  except Exception:
+                      payload = {"raw": body}
+                  return int(exc.code), payload, round((time.perf_counter() - started) * 1000, 1)
+              except URLError as exc:
+                  return 0, {"error": str(exc.reason)}, round((time.perf_counter() - started) * 1000, 1)
+
+          def prod_case(text):
+              body = json.dumps({"action": "analyze", "text": text}, ensure_ascii=False).encode("utf-8")
+              req = Request(
+                  PROD + "/api",
+                  data=body,
+                  headers={"Content-Type": "application/json", "Accept": "application/json", "User-Agent": "DRSK-AB/1.0"},
+                  method="POST",
+              )
+              status, payload, latency = request_json(req)
+              bundle = payload.get("evidence_bundle", {}) if isinstance(payload, dict) else {}
+              return status, bundle, latency
+
+          def preview_case(case_id):
+              url = PREVIEW + "/api/sourcechain_audit?" + urlencode({"case": case_id})
+              req = Request(url, headers={"Accept": "application/json", "User-Agent": "DRSK-AB/1.0"})
+              status, payload, latency = request_json(req)
+              bundle = payload.get("bundle", {}) if isinstance(payload, dict) else {}
+              return status, bundle, latency, payload
+
+          def summarize(bundle):
+              evidence = bundle.get("evidence", []) if isinstance(bundle, dict) else []
+              rows = []
+              for item in evidence[:3] if isinstance(evidence, list) else []:
+                  meta = item.get("metadata", {}) if isinstance(item, dict) else {}
+                  passage = item.get("passage") or ""
+                  rows.append({
+                      "provider": meta.get("provider"),
+                      "title": item.get("title"),
+                      "source_url": item.get("source_url"),
+                      "relation": item.get("relation"),
+                      "distortions": item.get("distortions", []),
+                      "lexical_score": meta.get("lexical_score"),
+                      "passage_chars": len(passage),
+                      "passage": passage[:500],
+                  })
+              return {
+                  "status": bundle.get("status") if isinstance(bundle, dict) else None,
+                  "sufficient": bundle.get("sufficient") if isinstance(bundle, dict) else None,
+                  "evidence": rows,
+              }
+
+          # Branch aliases can lag the commit that triggered this workflow.
+          preview_ready = False
+          last_probe = None
+          for _ in range(36):
+              req = Request(PREVIEW + "/api/sourcechain_audit", headers={"Accept": "application/json", "User-Agent": "DRSK-AB/1.0"})
+              status, payload, _ = request_json(req, timeout=8)
+              last_probe = {"status": status, "payload": payload}
+              if status == 200 and isinstance(payload, dict) and payload.get("purpose") == "fixed SOURCECHAIN Tavily advanced A/B audit":
+                  preview_ready = True
+                  break
+              time.sleep(5)
+          if not preview_ready:
+              print(json.dumps({"error": "preview_not_ready", "last_probe": last_probe}, ensure_ascii=False, indent=2))
+              raise SystemExit(2)
+
+          out = {"production": PROD, "preview": PREVIEW, "cases": []}
+          for case_id, text in CASES.items():
+              p_status, p_bundle, p_latency = prod_case(text)
+              a_status, a_bundle, a_latency, raw = preview_case(case_id)
+              row = {
+                  "case": case_id,
+                  "text": text,
+                  "basic": {"http": p_status, "latency_ms": p_latency, **summarize(p_bundle)},
+                  "advanced": {"http": a_status, "latency_ms": a_latency, **summarize(a_bundle)},
+                  "advanced_provider_chain": raw.get("provider_chain") if isinstance(raw, dict) else None,
+              }
+              out["cases"].append(row)
+              b = row["basic"]
+              a = row["advanced"]
+              print(f"{case_id}: basic={b['status']} ev={len(b['evidence'])} {b['latency_ms']}ms | advanced={a['status']} ev={len(a['evidence'])} {a['latency_ms']}ms")
+
+          with open("tavily_advanced_ab.json", "w", encoding="utf-8") as f:
+              json.dump(out, f, ensure_ascii=False, indent=2)
+          PY
+          python /tmp/compare.py
+
+      - name: Upload A/B result
+        uses: actions/upload-artifact@v4
+        with:
+          name: tavily-advanced-ab
+          path: tavily_advanced_ab.json
+          retention-days: 7
