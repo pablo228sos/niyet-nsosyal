@@ -12,11 +12,11 @@ def citation_line(item: EvidenceItem) -> str:
 def build_explanation(status: BundleStatus, evidence: tuple[EvidenceItem, ...]) -> tuple[str, tuple[str, ...]]:
     cited = tuple(item for item in evidence if item.relation is not EvidenceRelation.INSUFFICIENT)
     if not cited:
-        return "No sufficiently relevant passage was found in the controlled evidence corpus.", ()
+        return "No sufficiently relevant evidence passage was found.", ()
     prefix = {
-        BundleStatus.SUPPORTED: "The controlled evidence supports the claim.",
-        BundleStatus.PARTIAL: "The controlled evidence supports only part of the claim.",
-        BundleStatus.CONFLICTING: "The controlled evidence conflicts with at least one part of the claim.",
-        BundleStatus.INSUFFICIENT: "The controlled evidence is insufficient.",
+        BundleStatus.SUPPORTED: "The retrieved evidence supports the claim.",
+        BundleStatus.PARTIAL: "The retrieved evidence supports only part of the claim.",
+        BundleStatus.CONFLICTING: "The retrieved evidence conflicts with at least one part of the claim.",
+        BundleStatus.INSUFFICIENT: "The retrieved evidence is insufficient.",
     }[status]
     return " ".join((prefix, *(citation_line(item) for item in cited))), tuple(item.evidence_id for item in cited)
