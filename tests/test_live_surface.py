@@ -145,3 +145,15 @@ def test_live_surface_does_not_overclaim_state_durability():
     assert "durable shared state live" in script
     assert "prototype state live" in script
     assert "server-process demo state" not in script
+
+
+def test_successful_author_restore_hides_the_accessible_restore_control():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    refresh_author = script.split("async function refreshAuthor()", 1)[1].split(
+        "function startAuthorPoll()", 1
+    )[0]
+
+    assert "$('#restoreAuthor').hidden = true" in refresh_author
+    assert refresh_author.index("$('#restoreAuthor').hidden = true") < refresh_author.index(
+        "renderAuthorRequest(currentAuthor.request)"
+    )

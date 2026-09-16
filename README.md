@@ -44,9 +44,10 @@ The main architecture is documented in [`docs/DRSK_ARCHITECTURE.md`](docs/DRSK_A
 5. align each claim with the retrieved evidence
 6. expose typed wording shifts instead of collapsing them into a truth score
 7. choose an explicit DRSK resolution path
-8. when human interpretation is needed, pass structured claim/evidence context into NIYET
-9. globally allocate the current open request window under responder willingness and remaining capacity
-10. return evidence and/or the human answer to the original request
+8. when human interpretation is recommended, ask the author for explicit confirmation
+9. after confirmation, pass structured claim/evidence context into NIYET
+10. globally allocate the current open request window under responder willingness and remaining capacity
+11. return evidence and/or the human answer to the original request
 
 Accepted requests are pinned to the accepting responder and consume capacity. Open or unmatched requests are reallocated together when the matching window changes. A stale UI action is rejected as a conflict rather than silently consuming capacity twice.
 

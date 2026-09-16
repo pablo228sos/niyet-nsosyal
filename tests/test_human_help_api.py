@@ -59,6 +59,49 @@ def test_health_exposes_state_backend_contract(api_server):
     assert payload["responders"]
 
 
+def test_inspect_recommends_human_without_opening_a_request(api_server):
+    text = (
+        "Research proves coffee consumption causes lower mortality. "
+        "Can someone explain what the study actually shows?"
+    )
+
+    status, inspected = post(api_server, {"action": "inspect", "text": text})
+    assert status == 200
+    assert inspected["resolution"]["path"] == "BOTH"
+    assert inspected["evidence_context"]["status"] in {"PARTIAL", "CONFLICTING"}
+    assert inspected["human_recommended"] is True
+    assert inspected["human_available"] is True
+    assert inspected["routing_preview"]["id"] == "r_research"
+    assert inspected["request"] is None
+
+    status, inbox = post(
+        api_server,
+        {"action": "inbox", "responder_id": "r_research"},
+    )
+    assert status == 200
+    assert inbox["requests"] == []
+
+
+def test_inspect_reports_recommended_but_unavailable_human_capacity(api_server):
+    for responder in human_api.runtime.responders:
+        human_api.service.set_responder_active(responder.responder.id, False)
+
+    status, inspected = post(
+        api_server,
+        {
+            "action": "inspect",
+            "text": "Research proves coffee consumption causes lower mortality.",
+        },
+    )
+
+    assert status == 200
+    assert inspected["resolution"]["path"] == "BOTH"
+    assert inspected["human_recommended"] is True
+    assert inspected["human_available"] is False
+    assert inspected["routing_preview"] is None
+    assert inspected["request"] is None
+
+
 def test_evidence_to_human_to_answer_round_trip(api_server):
     text = (
         "Research proves coffee consumption causes lower mortality. "
@@ -69,6 +112,8 @@ def test_evidence_to_human_to_answer_round_trip(api_server):
     assert status == 200
     request = opened["request"]
     assert opened["resolution"]["path"] == "BOTH"
+    assert opened["human_recommended"] is True
+    assert opened["human_available"] is True
     assert request["assigned_responder"]["id"] == "r_research"
     assert request["evidence_context"]["status"] in {"PARTIAL", "CONFLICTING"}
     evidence = request["evidence_context"]["evidence"][0]

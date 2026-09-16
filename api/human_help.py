@@ -37,6 +37,7 @@ _CONFLICT_ERRORS = {
 }
 _NOT_FOUND_ERRORS = {"request_not_found", "unknown_responder"}
 _FORBIDDEN_ERRORS = {"invalid_author_token"}
+_HUMAN_RESOLUTION_PATHS = {"HUMAN", "BOTH", "DEFERRED"}
 
 
 def _parse_json(raw: bytes) -> dict:
@@ -116,6 +117,37 @@ def _evidence_context(response: dict) -> dict | None:
         "explanation": bundle.get("explanation"),
         "resolution": resolution,
         "evidence": evidence_items,
+    }
+
+
+def _resolution_metadata(response: dict) -> dict:
+    """Expose the recommendation without creating a human request.
+
+    The browser integration uses this contract to keep evidence inspection and
+    human escalation as two explicit user actions.  Routing remains advisory
+    until the user confirms; no author token or internal routing text is
+    returned in the preview.
+    """
+    resolution = response.get("resolution")
+    path = resolution.get("path") if isinstance(resolution, dict) else None
+    routing = response.get("human_routing")
+    recommended = path in _HUMAN_RESOLUTION_PATHS
+    available = bool(
+        recommended
+        and isinstance(routing, dict)
+        and routing.get("responder_id")
+    )
+    preview = None
+    if available:
+        preview = {
+            "id": routing.get("responder_id"),
+            "name": routing.get("responder_name"),
+            "reason": routing.get("reason", []),
+        }
+    return {
+        "human_recommended": recommended,
+        "human_available": available,
+        "routing_preview": preview,
     }
 
 
@@ -224,7 +256,7 @@ class handler(BaseHTTPRequestHandler):
             request = service.open_request(text)
             return {"request": request.public_dict(include_author_token=True)}
 
-        if action == "resolve":
+        if action in {"inspect", "resolve"}:
             text = _clean_string(payload, "text")
             if len(text) > MAX_TEXT_LENGTH:
                 raise ValueError("text_too_long")
@@ -234,12 +266,21 @@ class handler(BaseHTTPRequestHandler):
                 responder_state=service.responder_state(),
             )
             context = _evidence_context(response)
+            metadata = _resolution_metadata(response)
+            if action == "inspect":
+                return {
+                    "resolution": response.get("resolution"),
+                    "evidence_context": context,
+                    "request": None,
+                    **metadata,
+                }
             routing = response.get("human_routing")
             if not isinstance(routing, dict) or not routing.get("responder_id"):
                 return {
                     "resolution": response.get("resolution"),
                     "evidence_context": context,
                     "request": None,
+                    **metadata,
                 }
             request = service.open_from_routing(
                 text,
@@ -249,6 +290,7 @@ class handler(BaseHTTPRequestHandler):
             return {
                 "resolution": response.get("resolution"),
                 "request": request.public_dict(include_author_token=True),
+                **metadata,
             }
 
         if action == "inbox":
