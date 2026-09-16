@@ -7,10 +7,13 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from .retrieval import ControlledEvidenceProvider, RetrievalHit, SourceDocument
+from .text import tokens
 
 
 TAVILY_SEARCH_URL = "https://api.tavily.com/search"
 MIN_LIVE_LEXICAL_SCORE = 0.30
+MIN_LIVE_TEXTUAL_ANCHORS = 2
+MIN_LIVE_TEXTUAL_COVERAGE = 0.25
 Transport = Callable[[str, float], dict[str, Any]]
 
 
@@ -19,6 +22,15 @@ def _clean(value: Any) -> str | None:
         return None
     text = " ".join(value.split()).strip()
     return text or None
+
+
+def _textual_anchor_coverage(query: str, passage: str) -> tuple[int, float]:
+    query_terms = {token for token in tokens(query, meaningful=True) if token.isalpha()}
+    passage_terms = {token for token in tokens(passage, meaningful=True) if token.isalpha()}
+    if not query_terms:
+        return 0, 0.0
+    shared = query_terms & passage_terms
+    return len(shared), len(shared) / len(query_terms)
 
 
 class TavilyEvidenceProvider:
@@ -134,8 +146,18 @@ class TavilyEvidenceProvider:
             provider_name="tavily_search",
         )
         hits = provider.retrieve(clean_query, limit=limit)
-        # Live search results are much broader than the verified local corpus.
-        # Fail closed on weak lexical matches until the semantic reranker has
-        # reproducible SOURCECHAIN evidence. This prevents unrelated web pages
-        # from being promoted into a confident evidence bundle.
-        return tuple(hit for hit in hits if hit.score >= MIN_LIVE_LEXICAL_SCORE)
+
+        # Live search is broader than the verified local corpus. A numeric match
+        # (for example only "37") must not turn an unrelated web page into
+        # evidence. Until a semantic reranker is reproducibly validated, require
+        # both a conservative lexical score and shared textual anchors.
+        accepted: list[RetrievalHit] = []
+        for hit in hits:
+            anchor_count, anchor_coverage = _textual_anchor_coverage(clean_query, hit.passage)
+            if (
+                hit.score >= MIN_LIVE_LEXICAL_SCORE
+                and anchor_count >= MIN_LIVE_TEXTUAL_ANCHORS
+                and anchor_coverage >= MIN_LIVE_TEXTUAL_COVERAGE
+            ):
+                accepted.append(hit)
+        return tuple(accepted)
