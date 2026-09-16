@@ -10,6 +10,7 @@ from .retrieval import ControlledEvidenceProvider, RetrievalHit, SourceDocument
 
 
 TAVILY_SEARCH_URL = "https://api.tavily.com/search"
+MIN_LIVE_LEXICAL_SCORE = 0.30
 Transport = Callable[[str, float], dict[str, Any]]
 
 
@@ -132,4 +133,9 @@ class TavilyEvidenceProvider:
             max_passages_per_document=8,
             provider_name="tavily_search",
         )
-        return provider.retrieve(clean_query, limit=limit)
+        hits = provider.retrieve(clean_query, limit=limit)
+        # Live search results are much broader than the verified local corpus.
+        # Fail closed on weak lexical matches until the semantic reranker has
+        # reproducible SOURCECHAIN evidence. This prevents unrelated web pages
+        # from being promoted into a confident evidence bundle.
+        return tuple(hit for hit in hits if hit.score >= MIN_LIVE_LEXICAL_SCORE)
