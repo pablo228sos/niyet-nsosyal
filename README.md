@@ -115,11 +115,13 @@ Environment variables for durable multi-instance demo state:
 ```text
 UPSTASH_REDIS_REST_URL=...
 UPSTASH_REDIS_REST_TOKEN=...
-DRSK_STATE_NAMESPACE=jury-demo-v2      # optional
+DRSK_STATE_NAMESPACE=jury-demo-v2      # optional override
 DRSK_STATE_TTL_SECONDS=86400           # optional
 ```
 
 The memory fallback is suitable for local development and single-process tests; it is not represented as cross-device durable state.
+Without an override, Vercel Preview uses `jury-demo-v2-preview` while Production
+uses `jury-demo-v2`, so preview verification cannot consume the jury session.
 
 ## Run locally
 

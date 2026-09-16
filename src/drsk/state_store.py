@@ -228,6 +228,14 @@ def _redis_credentials_from_environment() -> tuple[str, str]:
     return "", ""
 
 
+def _default_state_namespace() -> str:
+    """Keep preview mutations separate from the production jury session."""
+
+    if os.getenv("VERCEL_ENV", "").strip().lower() == "preview":
+        return "jury-demo-v2-preview"
+    return "jury-demo-v2"
+
+
 def state_store_from_environment(initial_state: State) -> StateStore:
     """Select durable state when configured, otherwise explicit local fallback."""
 
@@ -235,9 +243,10 @@ def state_store_from_environment(initial_state: State) -> StateStore:
     if not url:
         return MemoryStateStore(initial_state)
 
+    default_namespace = _default_state_namespace()
     namespace = (
-        os.getenv("DRSK_STATE_NAMESPACE", "jury-demo-v2").strip()
-        or "jury-demo-v2"
+        os.getenv("DRSK_STATE_NAMESPACE", default_namespace).strip()
+        or default_namespace
     )
     ttl_raw = os.getenv("DRSK_STATE_TTL_SECONDS", "86400")
     try:
