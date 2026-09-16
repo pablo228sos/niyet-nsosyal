@@ -87,6 +87,20 @@ class ControlledEvidenceProvider:
         )
 
 
+class MinimumScoreEvidenceProvider:
+    """Expose only sufficiently strong hits from another bounded provider."""
+
+    def __init__(self, provider: EvidenceProvider, *, min_score: float) -> None:
+        if not 0.0 < min_score <= 1.0:
+            raise ValueError("min_score must be in (0, 1]")
+        self.provider = provider
+        self.min_score = min_score
+
+    def retrieve(self, query: str, *, limit: int = 5) -> tuple[RetrievalHit, ...]:
+        hits = self.provider.retrieve(query, limit=limit)
+        return tuple(hit for hit in hits if hit.score >= self.min_score)
+
+
 class FallbackEvidenceProvider:
     """Try providers in order and fail closed if every provider is unavailable or empty."""
 
