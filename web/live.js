@@ -431,6 +431,7 @@ async function refreshAuthor() {
     const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
     if (!result.request) return;
     currentAuthor = { request: { ...result.request, author_token: stored.author_token } };
+    $('#restoreAuthor').hidden = true;
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();
   } catch (error) {
