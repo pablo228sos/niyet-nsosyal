@@ -174,6 +174,11 @@ def test_evidence_context_survives_human_resolution_lifecycle():
         "The study proves X causes Y.",
         routing_text="research statistics causality evidence review",
         evidence_context=evidence,
+        social_context={
+            "platform": "NSosyal",
+            "post_url": "https://nsosyal.com/home",
+            "published_observed": True,
+        },
     )
 
     service.accept(request.request_id, "r_one")
@@ -181,6 +186,7 @@ def test_evidence_context_survives_human_resolution_lifecycle():
 
     author_view = service.status(request.request_id, request.author_token)
     assert author_view["evidence_context"] == evidence
+    assert author_view["social_context"]["published_observed"] is True
     assert author_view["answer"] == "Association does not establish causation."
 
 

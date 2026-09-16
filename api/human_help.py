@@ -4,6 +4,7 @@ import json
 import os
 import sys
 from http.server import BaseHTTPRequestHandler
+from urllib.parse import urlparse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
@@ -67,6 +68,32 @@ def _value_error_status(code: str) -> int:
     if code in _FORBIDDEN_ERRORS:
         return 403
     return 400
+
+
+def _published_social_context(payload: dict) -> dict | None:
+    """Accept only a visible NSosyal publication reference from the adapter.
+
+    The extension never receives account cookies or publishes on the user's
+    behalf.  This marker records that the exact inspected text was observed on
+    the NSosyal page before NIYET routing was requested.
+    """
+
+    raw_url = payload.get("post_url")
+    if raw_url is None:
+        return None
+    if not isinstance(raw_url, str) or len(raw_url) > 2048:
+        raise ValueError("invalid_post_url")
+    parsed = urlparse(raw_url.strip())
+    if parsed.scheme != "https" or parsed.hostname not in {
+        "nsosyal.com",
+        "www.nsosyal.com",
+    }:
+        raise ValueError("invalid_post_url")
+    return {
+        "platform": "NSosyal",
+        "post_url": parsed.geturl(),
+        "published_observed": True,
+    }
 
 
 def _runtime_error_response(exc: RuntimeError) -> tuple[int, str]:
@@ -260,6 +287,11 @@ class handler(BaseHTTPRequestHandler):
             text = _clean_string(payload, "text")
             if len(text) > MAX_TEXT_LENGTH:
                 raise ValueError("text_too_long")
+            social_context = (
+                _published_social_context(payload)
+                if action == "resolve"
+                else None
+            )
             response = orchestrator.analyze(
                 text,
                 ask_human=True,
@@ -286,6 +318,7 @@ class handler(BaseHTTPRequestHandler):
                 text,
                 routing,
                 evidence_context=context,
+                social_context=social_context,
             )
             return {
                 "resolution": response.get("resolution"),
