@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+
+import pytest
+
 from sourcechain.evidence import build_evidence_bundle
 from sourcechain.pipeline import provider_from_environment
 from sourcechain.retrieval import ControlledEvidenceProvider, FallbackEvidenceProvider
@@ -138,6 +142,37 @@ def test_tavily_keeps_strong_turkish_live_match():
     assert hits
     assert hits[0].provider == "tavily_search"
     assert hits[0].score >= 0.30
+
+
+def test_tavily_sends_configured_search_depth(monkeypatch):
+    captured = {}
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self, _limit):
+            return json.dumps({"results": []}).encode("utf-8")
+
+    def fake_urlopen(request, timeout):
+        captured["payload"] = json.loads(request.data.decode("utf-8"))
+        captured["timeout"] = timeout
+        return Response()
+
+    monkeypatch.setattr("sourcechain.tavily_search.urlopen", fake_urlopen)
+    provider = TavilyEvidenceProvider("secret", search_depth="advanced")
+
+    assert provider.retrieve("coffee mortality", limit=1) == ()
+    assert captured["payload"]["search_depth"] == "advanced"
+    assert captured["timeout"] == 8.0
+
+
+def test_tavily_rejects_unknown_search_depth():
+    with pytest.raises(ValueError, match="search_depth"):
+        TavilyEvidenceProvider("secret", search_depth="deep")
 
 
 def test_environment_prefers_tavily_then_brave_then_controlled(monkeypatch):
