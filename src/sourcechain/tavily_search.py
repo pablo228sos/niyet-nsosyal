@@ -65,7 +65,7 @@ class TavilyEvidenceProvider:
         payload = json.dumps(
             {
                 "query": query[:600],
-                "search_depth": "basic",
+                "search_depth": "advanced",
                 "max_results": self.max_results,
                 "topic": "general",
                 "include_answer": False,
