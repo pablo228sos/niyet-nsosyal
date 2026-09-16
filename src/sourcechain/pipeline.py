@@ -15,7 +15,11 @@ from .schemas import EvidenceBundle
 from .statement_classifier import analyze_post
 
 
-CONTROLLED_PRIORITY_SCORE = 0.30
+# Keep only genuinely strong verified-corpus matches on the fast path. The
+# coffee judge case scores about 0.40 and the NASA case about 0.67, while a
+# topic-only physical-activity match sits around 0.35 and should continue to
+# live retrieval for more specific evidence.
+CONTROLLED_PRIORITY_SCORE = 0.38
 
 
 def provider_from_environment() -> EvidenceProvider:
