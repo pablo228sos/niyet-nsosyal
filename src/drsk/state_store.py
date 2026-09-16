@@ -235,7 +235,10 @@ def state_store_from_environment(initial_state: State) -> StateStore:
     if not url:
         return MemoryStateStore(initial_state)
 
-    namespace = os.getenv("DRSK_STATE_NAMESPACE", "final-demo").strip() or "final-demo"
+    namespace = (
+        os.getenv("DRSK_STATE_NAMESPACE", "jury-demo-v2").strip()
+        or "jury-demo-v2"
+    )
     ttl_raw = os.getenv("DRSK_STATE_TTL_SECONDS", "86400")
     try:
         ttl_seconds = int(ttl_raw)

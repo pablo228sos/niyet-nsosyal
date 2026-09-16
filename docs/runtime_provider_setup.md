@@ -19,7 +19,7 @@ For cross-device and multi-instance demo state, configure:
 ```text
 UPSTASH_REDIS_REST_URL=...
 UPSTASH_REDIS_REST_TOKEN=...
-DRSK_STATE_NAMESPACE=final-demo        # optional
+DRSK_STATE_NAMESPACE=jury-demo-v2      # optional
 DRSK_STATE_TTL_SECONDS=86400           # optional
 ```
 
