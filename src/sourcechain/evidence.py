@@ -75,7 +75,9 @@ def build_evidence_bundle(
         analysis=analysis,
         evidence=evidence,
         status=status,
-        sufficient=status is not BundleStatus.INSUFFICIENT,
+        # PARTIAL and CONFLICTING evidence remains useful context, but it is not
+        # enough to close the claim without qualification or human review.
+        sufficient=status is BundleStatus.SUPPORTED,
         explanation=explanation,
         cited_evidence_ids=citations,
         created_at=created_at,

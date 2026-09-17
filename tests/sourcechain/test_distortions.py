@@ -54,6 +54,24 @@ def test_numeric_change_and_negation_are_conflicts():
     assert align_claim("X increases Y.", "X does not increase Y.") is EvidenceRelation.CONFLICTING
 
 
+def test_numbers_with_different_meaning_do_not_create_numeric_distortion():
+    distortions = detect_distortions(
+        "A 2024 study links dark chocolate with type 2 diabetes risk.",
+        "Dark chocolate was associated with a 21% lower risk.",
+    )
+
+    assert DistortionType.NUMERIC_DISTORTION not in distortions
+
+
+def test_turkish_conditional_suffix_exposes_certainty_shift():
+    distortions = detect_distortions(
+        "Mikroplastiklerin kalp krizine kesin olarak yol açtığı kanıtlandı.",
+        "Mikroplastiklerin kalp krizine yol açabileceği bildirildi.",
+    )
+
+    assert DistortionType.CERTAINTY_SHIFT in distortions
+
+
 def test_shared_stopwords_do_not_create_false_conflict():
     assert align_claim(
         "The medicine causes nausea.",
