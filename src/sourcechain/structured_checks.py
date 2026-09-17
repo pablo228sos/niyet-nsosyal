@@ -15,7 +15,8 @@ _PERCENT_RE = re.compile(
 _MEASURE_RE = re.compile(
     r"(?<!\w)(\d+(?:[.,]\d+)*)\s*"
     r"(metres?|meters?|kilometres?|kilometers?|km|kilograms?|kg|"
-    r"people|persons?|kişi(?:ydi|dir)?)\b",
+    r"people|persons?|kişi(?:ydi|dir)?|member\s+(?:states?|countries?)|"
+    r"üye\s+ülke(?:ler)?)\b",
     re.I,
 )
 _INCREASE = ("arttı", "yükseldi", "increased", "rose", "grew")
@@ -77,10 +78,17 @@ def _comparable_numeric_facts(text: str) -> tuple[tuple[str, str], ...]:
             kind = "length_km"
         elif unit.startswith("kilogram") or unit == "kg":
             kind = "mass_kg"
-        else:
+        elif unit.startswith(("people", "person", "kişi")):
             kind = "people"
+        else:
+            kind = "count"
         facts.append((kind, _canonical_number(match.group(1))))
     return tuple(facts)
+
+
+def comparable_numeric_facts(text: str) -> tuple[tuple[str, str], ...]:
+    """Expose typed numeric facts for conservative claim alignment."""
+    return _comparable_numeric_facts(text)
 
 
 def detect_distortions(claim: str, evidence: str) -> tuple[DistortionType, ...]:

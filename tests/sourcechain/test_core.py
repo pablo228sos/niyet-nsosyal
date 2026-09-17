@@ -105,7 +105,7 @@ def test_contextual_year_does_not_manufacture_temporal_conflict():
     distortions = detect_distortions(claim, passage)
 
     assert DistortionType.TEMPORAL_SHIFT not in distortions
-    assert align_claim(claim, passage) is not EvidenceRelation.CONFLICTING
+    assert align_claim(claim, passage) is EvidenceRelation.SUPPORTED
 
 
 def test_disjoint_years_remain_a_temporal_conflict():
@@ -115,6 +115,20 @@ def test_disjoint_years_remain_a_temporal_conflict():
     )
 
     assert DistortionType.TEMPORAL_SHIFT in distortions
+
+
+def test_typed_numeric_match_supports_a_high_coverage_paraphrase():
+    assert align_claim(
+        "The Eiffel Tower is 330 metres tall.",
+        "The tower is 330 metres tall and remains the tallest structure in Paris.",
+    ) is EvidenceRelation.SUPPORTED
+
+
+def test_equal_bare_number_with_different_units_is_not_support():
+    assert align_claim(
+        "The prototype is 330 metres tall.",
+        "The prototype weighs 330 kilograms.",
+    ) is not EvidenceRelation.SUPPORTED
 
 
 def test_bundle_is_citation_first_and_counts_independent_origins():
