@@ -413,7 +413,8 @@ async function openAuthorRequest(mode) {
       currentAuthor = null;
       $('#requestCard').hidden = true;
       updateStages(null);
-      if (result.evidence_context) {
+      const path = result.resolution?.path;
+      if (result.evidence_context && path !== 'NONE') {
         const synthetic = {
           text: value,
           status: result.resolution?.path || 'EVIDENCE',
@@ -423,7 +424,6 @@ async function openAuthorRequest(mode) {
         };
         renderAuthorRequest(synthetic);
       }
-      const path = result.resolution?.path;
       const message = result.human_recommended
         ? t('noHumanAvailable')
         : path === 'NONE'
