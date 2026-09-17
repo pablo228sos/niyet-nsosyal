@@ -15,6 +15,7 @@ WEB = ROOT / "web"
 FILES = [
     "live.html",
     "live.css",
+    "live-published.css",
     "live-ux.css",
     "live-motion.css",
     "live-nsosyal.css",

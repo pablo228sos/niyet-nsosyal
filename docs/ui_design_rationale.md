@@ -129,3 +129,5 @@ English and Turkish share the same product states and dynamic routing data. Lang
 The earlier prototype explored more visibly "AI" design patterns. For the final stage we chose the opposite direction: make DRSK feel like a native social capability and let technical depth appear through behavior, evidence provenance, shared capacity and cross-device resolution.
 
 That makes the product easier to understand in a short live demonstration and harder to dismiss as a styled AI dashboard.
+
+The real-site adapter also separates draft assistance from the social lifecycle. SOURCECHAIN may inspect composer text, but NIYET remains locked until NSosyal's own publish action completes and the exact text appears as a visible post. The extension never presses the host action or claims access to a private platform API.

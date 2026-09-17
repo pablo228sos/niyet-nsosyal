@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from .passage_ranker import lexical_score
 from .schemas import DistortionType, EvidenceRelation
-from .structured_checks import detect_distortions, has_negation, numeric_values
+from .structured_checks import (
+    comparable_numeric_facts,
+    detect_distortions,
+    has_negation,
+    numeric_values,
+    years,
+)
 from .text import normalize, tokens
 
 
@@ -30,6 +36,23 @@ def align_claim(claim: str, passage: str) -> EvidenceRelation:
     if overlap < 0.25:
         return EvidenceRelation.INSUFFICIENT
     if normalize(claim).rstrip(".!") == normalize(passage).rstrip(".!"):
+        return EvidenceRelation.SUPPORTED
+    claim_facts = set(comparable_numeric_facts(claim))
+    evidence_facts = set(comparable_numeric_facts(passage))
+    claim_years = set(years(claim))
+    evidence_years = set(years(passage))
+    # Long passages naturally have lower lexical precision than short claims.
+    # A high claim-side overlap plus identical typed facts is still strong
+    # support, provided every claimed year is present and no conflict signal
+    # was detected. Equal bare numbers with different units never qualify.
+    if (
+        claim_facts
+        and claim_facts <= evidence_facts
+        and (not claim_years or claim_years <= evidence_years)
+        and overlap >= 0.6
+        and not distortions & _CONFLICT_TYPES
+        and not polarity_conflict
+    ):
         return EvidenceRelation.SUPPORTED
     if numeric_values(claim) and not numeric_values(passage):
         return EvidenceRelation.PARTIALLY_SUPPORTED

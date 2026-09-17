@@ -19,7 +19,7 @@ For cross-device and multi-instance demo state, configure:
 ```text
 UPSTASH_REDIS_REST_URL=...
 UPSTASH_REDIS_REST_TOKEN=...
-DRSK_STATE_NAMESPACE=final-demo        # optional
+DRSK_STATE_NAMESPACE=jury-demo-v2      # optional override
 DRSK_STATE_TTL_SECONDS=86400           # optional
 ```
 
@@ -32,3 +32,6 @@ GET /api/human_help
 ```
 
 A durable production configuration reports `state_durable: true` and a Redis-backed `state_backend`. A process-local fallback reports `state_durable: false` and must not be represented as durable cross-device state.
+
+The built-in default separates Vercel Preview (`jury-demo-v2-preview`) from
+Production (`jury-demo-v2`) so preview tests do not spend production capacity.

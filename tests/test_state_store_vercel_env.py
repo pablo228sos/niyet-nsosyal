@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from drsk.state_store import _redis_credentials_from_environment
+from drsk.state_store import (
+    _default_state_namespace,
+    _redis_credentials_from_environment,
+)
 
 
 def _clear(monkeypatch):
@@ -11,6 +14,8 @@ def _clear(monkeypatch):
         "UPSTASH_REDIS_REST_TOKEN",
         "KV_REST_API_URL",
         "KV_REST_API_TOKEN",
+        "DRSK_STATE_NAMESPACE",
+        "VERCEL_ENV",
     ):
         monkeypatch.delenv(name, raising=False)
 
@@ -46,3 +51,18 @@ def test_half_configured_pair_is_rejected(monkeypatch, name):
 
     with pytest.raises(RuntimeError, match="state_store_configuration_incomplete"):
         _redis_credentials_from_environment()
+
+
+def test_preview_uses_isolated_default_namespace(monkeypatch):
+    _clear(monkeypatch)
+    monkeypatch.setenv("VERCEL_ENV", "preview")
+
+    assert _default_state_namespace() == "jury-demo-v2-preview"
+
+
+@pytest.mark.parametrize("vercel_env", ["production", "development", ""])
+def test_non_preview_uses_jury_default_namespace(monkeypatch, vercel_env):
+    _clear(monkeypatch)
+    monkeypatch.setenv("VERCEL_ENV", vercel_env)
+
+    assert _default_state_namespace() == "jury-demo-v2"

@@ -50,6 +50,7 @@ Expected:
 - `CAUSALITY_SHIFT` is exposed rather than silently accepting `causes/proves`
 - the evidence remains visible
 - no human request is created by the evidence check alone
+- in the real NSosyal adapter, the author publishes with the native NSosyal control and DRSK detects the visible published post
 - the author explicitly presses **Ask a relevant person**
 - the unresolved interpretation is then routed through NIYET
 - resolution is `BOTH`

@@ -1,0 +1,28 @@
+.published-context {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  border: 1px solid #cfe8d8;
+  border-radius: 999px;
+  background: #f0faf4;
+  color: #176b43;
+  font-size: 0.67rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.published-context::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #21a365;
+}
+
+a.published-context:hover {
+  border-color: #96d1ad;
+  background: #e7f7ed;
+}

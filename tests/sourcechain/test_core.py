@@ -8,6 +8,7 @@ from sourcechain.pipeline import SourcechainPipeline
 from sourcechain.retrieval import ControlledEvidenceProvider, SourceDocument
 from sourcechain.schemas import BundleStatus, DistortionType, EvidenceRelation, StatementType
 from sourcechain.statement_classifier import analyze_post
+from sourcechain.structured_checks import detect_distortions
 
 
 NOW = datetime(2026, 8, 24, tzinfo=UTC)
@@ -57,6 +58,21 @@ def test_claim_extraction_is_bounded_and_preserves_exact_offsets():
     assert [item.claim_id for item in claims] == ["claim-1", "claim-2"]
 
 
+def test_claim_extraction_preserves_dotted_numbers_and_versions():
+    text = (
+        "Türkiye'nin nüfusu 2023 yılında 85.372.377 kişiydi. "
+        "Python 3.13 free-threaded build sunar."
+    )
+
+    claims = extract_claims(text)
+
+    assert [item.text for item in claims] == [
+        "Türkiye'nin nüfusu 2023 yılında 85.372.377 kişiydi.",
+        "Python 3.13 free-threaded build sunar.",
+    ]
+    assert [text[item.start:item.end] for item in claims] == [item.text for item in claims]
+
+
 def test_controlled_provider_ranks_passages_and_never_fetches_network():
     provider = ControlledEvidenceProvider(
         (
@@ -77,6 +93,42 @@ def test_alignment_has_all_four_relations():
     assert align_claim("Satışlar yüzde 20 arttı.", "Satışlar arttı.") is EvidenceRelation.PARTIALLY_SUPPORTED
     assert align_claim("Satışlar yüzde 20 arttı.", "Satışlar yüzde 10 azaldı.") is EvidenceRelation.CONFLICTING
     assert align_claim("Satışlar yüzde 20 arttı.", "Bugün hava yağmurlu.") is EvidenceRelation.INSUFFICIENT
+
+
+def test_contextual_year_does_not_manufacture_temporal_conflict():
+    claim = "The European Union had 27 member states in 2025."
+    passage = (
+        "As of 2025, the European Union has 27 member countries after the "
+        "United Kingdom departed in 2020."
+    )
+
+    distortions = detect_distortions(claim, passage)
+
+    assert DistortionType.TEMPORAL_SHIFT not in distortions
+    assert align_claim(claim, passage) is EvidenceRelation.SUPPORTED
+
+
+def test_disjoint_years_remain_a_temporal_conflict():
+    distortions = detect_distortions(
+        "The service launched in 2025.",
+        "The service launched in 2022.",
+    )
+
+    assert DistortionType.TEMPORAL_SHIFT in distortions
+
+
+def test_typed_numeric_match_supports_a_high_coverage_paraphrase():
+    assert align_claim(
+        "The Eiffel Tower is 330 metres tall.",
+        "The tower is 330 metres tall and remains the tallest structure in Paris.",
+    ) is EvidenceRelation.SUPPORTED
+
+
+def test_equal_bare_number_with_different_units_is_not_support():
+    assert align_claim(
+        "The prototype is 330 metres tall.",
+        "The prototype weighs 330 kilograms.",
+    ) is not EvidenceRelation.SUPPORTED
 
 
 def test_bundle_is_citation_first_and_counts_independent_origins():
@@ -107,6 +159,20 @@ def test_bundle_explanation_does_not_mislabel_live_evidence_as_controlled():
 
     assert "retrieved evidence" in bundle.explanation.lower()
     assert "controlled evidence" not in bundle.explanation.lower()
+
+
+def test_partial_evidence_is_visible_but_not_marked_sufficient():
+    analysis = analyze_post("Satışlar yüzde 20 arttı.")
+    provider = ControlledEvidenceProvider(
+        (document("https://example.org/live", "Satışlar arttı."),),
+        provider_name="tavily_search",
+    )
+
+    bundle = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert bundle.status is BundleStatus.PARTIAL
+    assert bundle.evidence
+    assert bundle.sufficient is False
 
 
 def test_bundle_fails_closed_when_controlled_corpus_has_no_match():

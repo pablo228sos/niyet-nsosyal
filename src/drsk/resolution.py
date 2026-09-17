@@ -34,6 +34,18 @@ class ResolutionEngine:
         ask_human: bool = False,
     ) -> ResolutionDecision:
         analysis = bundle.analysis
+        if analysis.statement_type is StatementType.QUESTION:
+            if ask_human:
+                return ResolutionDecision(
+                    path=ResolutionPath.HUMAN,
+                    reasons=("human_resolution_requested",),
+                    escalation=self._escalation(bundle, "answer the user's question"),
+                )
+            return ResolutionDecision(
+                path=ResolutionPath.NONE,
+                reasons=("human_consent_required",),
+            )
+
         if analysis.statement_type in _NON_FACTUAL or not analysis.check_worthy:
             return ResolutionDecision(
                 path=ResolutionPath.NONE,

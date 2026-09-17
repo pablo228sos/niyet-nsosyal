@@ -5,6 +5,17 @@ const API_URLS = [
 const ALLOWED_ACTIONS = new Set(['inspect', 'resolve', 'status']);
 const NSOSYAL_HOSTS = new Set(['nsosyal.com', 'www.nsosyal.com']);
 
+function trustedPostUrl(value) {
+  if (value == null) return null;
+  if (typeof value !== 'string' || value.length > 2048) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && NSOSYAL_HOSTS.has(url.hostname) ? url.href : false;
+  } catch (_) {
+    return false;
+  }
+}
+
 function trustedSender(sender) {
   try {
     const raw = sender?.url || sender?.tab?.url || '';
@@ -46,7 +57,16 @@ function validatePayload(value) {
     if (typeof value.text !== 'string') return { ok: false, error: 'text_required' };
     const text = value.text.trim();
     if (!text || text.length > 1200) return { ok: false, error: 'invalid_text_length' };
-    return { ok: true, payload: { action, text } };
+    const postUrl = trustedPostUrl(value.post_url);
+    if (postUrl === false) return { ok: false, error: 'invalid_post_url' };
+    return {
+      ok: true,
+      payload: {
+        action,
+        text,
+        ...(action === 'resolve' && postUrl ? { post_url: postUrl } : {})
+      }
+    };
   }
 
   if (action === 'status') {

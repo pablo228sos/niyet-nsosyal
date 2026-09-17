@@ -8,6 +8,7 @@ MANIFEST = json.loads((OVERLAY / "manifest.json").read_text(encoding="utf-8"))
 BACKGROUND = (OVERLAY / "background.js").read_text(encoding="utf-8")
 CONTENT = (OVERLAY / "content-v2.js").read_text(encoding="utf-8")
 CSS = (OVERLAY / "overlay.css").read_text(encoding="utf-8")
+PUBLISHED_CSS = (OVERLAY / "published-flow.css").read_text(encoding="utf-8")
 README = (OVERLAY / "README.md").read_text(encoding="utf-8")
 
 
@@ -25,7 +26,7 @@ def test_overlay_requests_only_the_hosts_it_needs():
 
     resources = MANIFEST["web_accessible_resources"]
     assert resources == [{
-        "resources": ["overlay.css"],
+        "resources": ["overlay.css", "published-flow.css"],
         "matches": ["https://nsosyal.com/*", "https://www.nsosyal.com/*"],
     }]
 
@@ -56,6 +57,7 @@ def test_backend_errors_are_always_renderable_strings():
 def test_overlay_is_css_isolated_and_does_not_mutate_nsosyal_actions():
     assert "attachShadow({ mode: 'closed' })" in CONTENT
     assert "chrome.runtime.getURL('overlay.css')" in CONTENT
+    assert "chrome.runtime.getURL('published-flow.css')" in CONTENT
     assert "panel.innerHTML" not in CONTENT
     assert "document.cookie" not in CONTENT
     assert ".click()" not in CONTENT
@@ -104,3 +106,20 @@ def test_overlay_separates_evidence_inspection_from_human_consent():
     assert "human_available" in CONTENT
     assert "chrome.storage.session" in CONTENT
     assert "Evidence was sufficient for this path" not in CONTENT
+
+
+def test_human_routing_unlocks_only_after_the_post_is_visible():
+    assert "findPublishedPost" in CONTENT
+    assert "confirmPublishedPost" in CONTENT
+    assert "watchForPublishedPost" in CONTENT
+    assert "publicationRequired" in CONTENT
+    assert "post_url: inspection.postUrl" in CONTENT
+    assert "publishedCandidates" in CONTENT
+    assert ".drsk-overlay-lifecycle" in PUBLISHED_CSS
+    assert ".drsk-overlay-publish-gate" in PUBLISHED_CSS
+
+
+def test_background_accepts_only_nsosyal_publication_urls():
+    assert "function trustedPostUrl" in BACKGROUND
+    assert "NSOSYAL_HOSTS.has(url.hostname)" in BACKGROUND
+    assert "invalid_post_url" in BACKGROUND

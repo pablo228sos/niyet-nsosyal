@@ -108,7 +108,11 @@ def test_evidence_to_human_to_answer_round_trip(api_server):
         "Can someone explain what the study actually shows?"
     )
 
-    status, opened = post(api_server, {"action": "resolve", "text": text})
+    post_url = "https://nsosyal.com/home"
+    status, opened = post(
+        api_server,
+        {"action": "resolve", "text": text, "post_url": post_url},
+    )
     assert status == 200
     request = opened["request"]
     assert opened["resolution"]["path"] == "BOTH"
@@ -116,6 +120,11 @@ def test_evidence_to_human_to_answer_round_trip(api_server):
     assert opened["human_available"] is True
     assert request["assigned_responder"]["id"] == "r_research"
     assert request["evidence_context"]["status"] in {"PARTIAL", "CONFLICTING"}
+    assert request["social_context"] == {
+        "platform": "NSosyal",
+        "post_url": post_url,
+        "published_observed": True,
+    }
     evidence = request["evidence_context"]["evidence"][0]
     assert evidence["source_title"].startswith("Association of Coffee Consumption")
     assert evidence["source_url"] == "https://pubmed.ncbi.nlm.nih.gov/26572796/"
@@ -165,6 +174,29 @@ def test_evidence_to_human_to_answer_round_trip(api_server):
     assert status == 200
     assert author["request"]["answer"] == answer
     assert author["request"]["evidence_context"]["evidence"][0]["source_url"] == evidence["source_url"]
+    assert author["request"]["social_context"]["post_url"] == post_url
+
+
+@pytest.mark.parametrize(
+    "post_url",
+    [
+        "http://nsosyal.com/home",
+        "https://example.com/home",
+        "javascript:alert(1)",
+    ],
+)
+def test_resolve_rejects_untrusted_published_post_urls(api_server, post_url):
+    status, payload = post(
+        api_server,
+        {
+            "action": "resolve",
+            "text": "Can someone help me understand this study?",
+            "post_url": post_url,
+        },
+    )
+
+    assert status == 400
+    assert payload["error"] == "invalid_post_url"
 
 
 def test_stale_assignment_returns_conflict_instead_of_generic_bad_request(api_server):

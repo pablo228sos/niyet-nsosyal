@@ -149,7 +149,7 @@ def test_live_surface_does_not_overclaim_state_durability():
 
 def test_successful_author_restore_hides_the_accessible_restore_control():
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
-    refresh_author = script.split("async function refreshAuthor()", 1)[1].split(
+    refresh_author = script.split("async function refreshAuthor(", 1)[1].split(
         "function startAuthorPoll()", 1
     )[0]
 
@@ -157,3 +157,45 @@ def test_successful_author_restore_hides_the_accessible_restore_control():
     assert refresh_author.index("$('#restoreAuthor').hidden = true") < refresh_author.index(
         "renderAuthorRequest(currentAuthor.request)"
     )
+
+
+def test_no_request_result_stops_stale_author_poll_before_rendering():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    no_request = script.split("if (!result.request) {", 1)[1].split(
+        "persistAuthor(result.request)", 1
+    )[0]
+
+    assert "stopAuthorPoll();" in no_request
+    assert no_request.index("stopAuthorPoll();") < no_request.index(
+        "currentAuthor = null"
+    )
+
+    assert "let authorPollGeneration = 0" in script
+    assert "generation !== authorPollGeneration" in script
+    assert "const generation = ++authorPollGeneration" in script
+    assert "runAuthorPoll(generation)" in script
+
+
+def test_none_resolution_does_not_render_a_stale_evidence_card():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    no_request = script.split("if (!result.request) {", 1)[1].split(
+        "persistAuthor(result.request)", 1
+    )[0]
+
+    assert "const path = result.resolution?.path" in no_request
+    assert "result.evidence_context || path === 'NONE'" in no_request
+    assert "status: path === 'NONE' ? 'PUBLISHED'" in no_request
+    assert "evidence_context: path === 'NONE' ? null" in no_request
+    assert no_request.index("$('#requestCard').hidden = true") < no_request.index(
+        "result.evidence_context || path === 'NONE'"
+    )
+
+
+def test_responder_handoff_and_loading_copy_match_actual_behavior():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "copyResponder: 'Copy responder link'" in script
+    assert "copyResponder: 'Cevaplayıcı bağlantısını kopyala'" in script
+    assert "await navigator.clipboard.writeText(link)" in script
+    assert "checking: 'Checking evidence and routing…'" in script
+    assert "checking: 'Kanıt ve yönlendirme kontrol ediliyor…'" in script

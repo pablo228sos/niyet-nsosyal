@@ -36,6 +36,7 @@ class HumanRequest:
     match_reason: tuple[str, ...] = ()
     excluded_responder_ids: list[str] = field(default_factory=list)
     evidence_context: dict[str, Any] | None = None
+    social_context: dict[str, Any] | None = None
     answer: str | None = None
 
     def public_dict(self, *, include_author_token: bool = False) -> dict[str, Any]:
@@ -53,6 +54,7 @@ class HumanRequest:
                 else None
             ),
             "evidence_context": self.evidence_context,
+            "social_context": self.social_context,
             "answer": self.answer,
         }
         if include_author_token:
@@ -73,6 +75,7 @@ class HumanRequest:
             "match_reason": list(self.match_reason),
             "excluded_responder_ids": list(self.excluded_responder_ids),
             "evidence_context": self.evidence_context,
+            "social_context": self.social_context,
             "answer": self.answer,
         }
 
@@ -91,6 +94,7 @@ class HumanRequest:
             match_reason=tuple(value.get("match_reason") or ()),
             excluded_responder_ids=list(value.get("excluded_responder_ids") or ()),
             evidence_context=value.get("evidence_context"),
+            social_context=value.get("social_context"),
             answer=value.get("answer"),
         )
 
@@ -139,6 +143,7 @@ class HumanHelpService:
         *,
         routing_text: str | None = None,
         evidence_context: dict[str, Any] | None = None,
+        social_context: dict[str, Any] | None = None,
     ) -> HumanRequest:
         display_text = display_text.strip()
         if not display_text:
@@ -156,6 +161,7 @@ class HumanHelpService:
                 updated_at=now,
                 status=HumanRequestStatus.UNMATCHED,
                 evidence_context=evidence_context,
+                social_context=social_context,
             )
             state["requests"][request.request_id] = request.state_dict()
             self._rebalance_pending(state)
@@ -170,6 +176,7 @@ class HumanHelpService:
         *,
         routing_text: str | None = None,
         evidence_context: dict[str, Any] | None = None,
+        social_context: dict[str, Any] | None = None,
     ) -> HumanRequest:
         """Persist DRSK escalation inside the authoritative shared allocation window."""
         stored_routing_text = (
@@ -181,6 +188,7 @@ class HumanHelpService:
             display_text,
             routing_text=stored_routing_text,
             evidence_context=evidence_context,
+            social_context=social_context,
         )
 
     def inbox(self, responder_id: str) -> list[dict[str, Any]]:

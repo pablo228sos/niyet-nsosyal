@@ -20,14 +20,16 @@ from .statement_classifier import analyze_post
 # topic-only physical-activity match sits around 0.35 and should continue to
 # live retrieval for more specific evidence.
 CONTROLLED_PRIORITY_SCORE = 0.38
+LIVE_BASIC_PRIORITY_SCORE = 0.40
 
 
 def provider_from_environment() -> EvidenceProvider:
     """Build the evidence acquisition chain without exposing credentials client-side.
 
     A strong match in the small verified corpus is preferred because it is fast,
-    deterministic and provenance-stable. Unseen claims then use Tavily advanced
-    retrieval when configured. The full controlled corpus remains the final
+    deterministic and provenance-stable. Unseen claims first use a cheap Tavily
+    basic search with a stricter quality gate, then advanced search only when the
+    basic result is too weak. The full controlled corpus remains the final
     offline fallback so provider failure never creates invented evidence.
     """
 
@@ -45,6 +47,12 @@ def provider_from_environment() -> EvidenceProvider:
     if tavily_key:
         from .tavily_search import TavilyEvidenceProvider
 
+        providers.append(
+            MinimumScoreEvidenceProvider(
+                TavilyEvidenceProvider(tavily_key, search_depth="basic"),
+                min_score=LIVE_BASIC_PRIORITY_SCORE,
+            )
+        )
         providers.append(TavilyEvidenceProvider(tavily_key, search_depth="advanced"))
 
     if brave_key:
