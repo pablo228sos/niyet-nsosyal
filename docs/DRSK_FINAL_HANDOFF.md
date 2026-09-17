@@ -1,6 +1,6 @@
 # DRSK MVP final handoff
 
-Status: core freeze candidate, 2026-09-17.
+Status: core frozen in production, 2026-09-17.
 
 ## Product contract
 
@@ -13,9 +13,10 @@ The backend is the source of truth. `/live`, the NSosyal overlay, and the respon
 ## Release state
 
 - Production: <https://niyet-nsosyal.vercel.app>
-- Release chain: PR #29 into PR #28, then PR #28 into `main`.
-- PR #29 head at freeze gate: `d3fb3d3a14b0e19803e749124e025aa616dc5812`.
-- Latest verified Preview deployment: `dpl_8XsshYAgNSLcK7LvE5dEFGKKUtfJ`.
+- PR #29 was merged into PR #28; PR #28 was merged into `main`.
+- Frozen core merge commit: `fc7f056af74eb0ba7d69d494014d2505969c53d0`.
+- Production deployment: `dpl_Fh2r6gYHw9P1S3Yi9zUvupKAQhdb` (`READY`).
+- Final release-candidate Preview: `dpl_4QJJDHQbdhZU9ptmLoKTLmk5Syfd` (`READY`).
 - Upstash Redis REST is the durable shared state backend in deployed environments.
 - `TAVILY_API_KEY` is configured in Vercel. Live acquisition uses a cheap-to-expensive cascade: basic search, quality gate, advanced only when needed, then `INSUFFICIENT`.
 - `experiment/tavily-depth-audit` remains isolated and must not be merged into the core.
