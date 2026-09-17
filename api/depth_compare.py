@@ -94,7 +94,7 @@ class handler(BaseHTTPRequestHandler):
                 200,
                 {
                     "status": "ok",
-                    "purpose": "fixed Tavily basic-vs-advanced evidence audit",
+                    "purpose": "fixed Tavily basic-vs-advanced evidence comparison",
                     "cases": sorted(CASES),
                     "arbitrary_input": False,
                 },
