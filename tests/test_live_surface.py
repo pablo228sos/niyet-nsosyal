@@ -189,3 +189,13 @@ def test_none_resolution_does_not_render_a_stale_evidence_card():
     assert no_request.index("$('#requestCard').hidden = true") < no_request.index(
         "result.evidence_context || path === 'NONE'"
     )
+
+
+def test_responder_handoff_and_loading_copy_match_actual_behavior():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "copyResponder: 'Copy responder link'" in script
+    assert "copyResponder: 'Cevaplayıcı bağlantısını kopyala'" in script
+    assert "await navigator.clipboard.writeText(link)" in script
+    assert "checking: 'Checking evidence and routing…'" in script
+    assert "checking: 'Kanıt ve yönlendirme kontrol ediliyor…'" in script
