@@ -183,7 +183,9 @@ def test_none_resolution_does_not_render_a_stale_evidence_card():
     )[0]
 
     assert "const path = result.resolution?.path" in no_request
-    assert "result.evidence_context && path !== 'NONE'" in no_request
+    assert "result.evidence_context || path === 'NONE'" in no_request
+    assert "status: path === 'NONE' ? 'PUBLISHED'" in no_request
+    assert "evidence_context: path === 'NONE' ? null" in no_request
     assert no_request.index("$('#requestCard').hidden = true") < no_request.index(
-        "result.evidence_context && path !== 'NONE'"
+        "result.evidence_context || path === 'NONE'"
     )
