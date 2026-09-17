@@ -149,7 +149,7 @@ def test_live_surface_does_not_overclaim_state_durability():
 
 def test_successful_author_restore_hides_the_accessible_restore_control():
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
-    refresh_author = script.split("async function refreshAuthor()", 1)[1].split(
+    refresh_author = script.split("async function refreshAuthor(", 1)[1].split(
         "function startAuthorPoll()", 1
     )[0]
 
@@ -169,3 +169,8 @@ def test_no_request_result_stops_stale_author_poll_before_rendering():
     assert no_request.index("stopAuthorPoll();") < no_request.index(
         "currentAuthor = null"
     )
+
+    assert "let authorPollGeneration = 0" in script
+    assert "generation !== authorPollGeneration" in script
+    assert "const generation = ++authorPollGeneration" in script
+    assert "runAuthorPoll(generation)" in script
