@@ -1,4 +1,4 @@
-RÇ­¢Ç©j¶­z–­†Çë¢jÞ¾+"¢{%ŠG­†+ Š×(šf§v·¯ŠÈ¨ø¥yÝ^ã}Ú¶·žconst $ = (selector, root = document) => root.querySelector(selector);
+const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const apiCandidates = ['/api/human-help', '/api/human_help'];
