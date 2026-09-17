@@ -14,7 +14,7 @@
     {"source": "/", "destination": "/live", "permanent": false}
   ],
   "rewrites": [
-    {"source": "/quality-lab", "destination": "/api/depth_compare"}
+    {"source": "/q", "destination": "/api/depth_compare"}
   ],
   "headers": [
     {
