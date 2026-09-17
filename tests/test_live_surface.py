@@ -157,3 +157,15 @@ def test_successful_author_restore_hides_the_accessible_restore_control():
     assert refresh_author.index("$('#restoreAuthor').hidden = true") < refresh_author.index(
         "renderAuthorRequest(currentAuthor.request)"
     )
+
+
+def test_no_request_result_stops_stale_author_poll_before_rendering():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    no_request = script.split("if (!result.request) {", 1)[1].split(
+        "persistAuthor(result.request)", 1
+    )[0]
+
+    assert "stopAuthorPoll();" in no_request
+    assert no_request.index("stopAuthorPoll();") < no_request.index(
+        "currentAuthor = null"
+    )
