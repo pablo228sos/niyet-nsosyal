@@ -407,6 +407,7 @@ async function openAuthorRequest(mode) {
   try {
     const result = await callApi({ action: mode, text: value });
     if (!result.request) {
+      stopAuthorPoll();
       sessionStorage.removeItem('drsk-live-author');
       currentAuthor = null;
       $('#requestCard').hidden = true;
