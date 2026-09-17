@@ -13,6 +13,7 @@ let responders = [];
 let selectedResponderId = null;
 let currentAuthor = null;
 let authorPoll = null;
+let authorPollGeneration = 0;
 let inboxPoll = null;
 let inboxPollGeneration = 0;
 let inboxPollCycle = 0;
@@ -444,17 +445,19 @@ async function openAuthorRequest(mode) {
   }
 }
 
-async function refreshAuthor() {
+async function refreshAuthor(generation = authorPollGeneration) {
   const stored = readStoredAuthor();
   if (!stored?.request_id || !stored?.author_token) return;
   try {
     const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
+    if (generation !== authorPollGeneration) return;
     if (!result.request) return;
     currentAuthor = { request: { ...result.request, author_token: stored.author_token } };
     $('#restoreAuthor').hidden = true;
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();
   } catch (error) {
+    if (generation !== authorPollGeneration) return;
     const code = errorCode(error);
     if (code === 'request_not_found' || code === 'invalid_author_token') {
       stopAuthorPoll();
@@ -469,10 +472,26 @@ async function refreshAuthor() {
 
 function startAuthorPoll() {
   stopAuthorPoll();
-  refreshAuthor();
-  authorPoll = window.setInterval(refreshAuthor, 1200);
+  const generation = ++authorPollGeneration;
+  refreshAuthor(generation).finally(() => {
+    if (generation === authorPollGeneration) {
+      authorPoll = window.setTimeout(() => runAuthorPoll(generation), 1200);
+    }
+  });
 }
-function stopAuthorPoll() { if (authorPoll) clearInterval(authorPoll); authorPoll = null; }
+async function runAuthorPoll(generation) {
+  if (generation !== authorPollGeneration) return;
+  authorPoll = null;
+  await refreshAuthor(generation);
+  if (generation === authorPollGeneration) {
+    authorPoll = window.setTimeout(() => runAuthorPoll(generation), 1200);
+  }
+}
+function stopAuthorPoll() {
+  authorPollGeneration += 1;
+  if (authorPoll) clearTimeout(authorPoll);
+  authorPoll = null;
+}
 
 function responderLink() {
   const match = currentAuthor?.request?.assigned_responder;
