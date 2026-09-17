@@ -174,3 +174,16 @@ def test_no_request_result_stops_stale_author_poll_before_rendering():
     assert "generation !== authorPollGeneration" in script
     assert "const generation = ++authorPollGeneration" in script
     assert "runAuthorPoll(generation)" in script
+
+
+def test_none_resolution_does_not_render_a_stale_evidence_card():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    no_request = script.split("if (!result.request) {", 1)[1].split(
+        "persistAuthor(result.request)", 1
+    )[0]
+
+    assert "const path = result.resolution?.path" in no_request
+    assert "result.evidence_context && path !== 'NONE'" in no_request
+    assert no_request.index("$('#requestCard').hidden = true") < no_request.index(
+        "result.evidence_context && path !== 'NONE'"
+    )
