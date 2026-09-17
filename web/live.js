@@ -757,10 +757,23 @@ $('#availabilityToggle').addEventListener('click', toggleAvailability);
 window.addEventListener('beforeunload', () => { stopAuthorPoll(); stopInboxPoll(); });
 
 (async function init() {
+  const params = new URL(location.href).searchParams;
+  const probe = params.get('probe');
+  if (probe) {
+    try {
+      const response = await fetch(`/api/depth_compare?case=${encodeURIComponent(probe)}`, {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store'
+      });
+      document.body.textContent = await response.text();
+    } catch (error) {
+      document.body.textContent = JSON.stringify({ error: error?.name || 'probe_failed' });
+    }
+    return;
+  }
   applyLanguage();
   restoreAuthorButton();
   updateStages(null);
-  const params = new URL(location.href).searchParams;
   setRole(params.get('role') === 'responder' ? 'responder' : 'author', false);
   const live = await checkBackend();
   if (!live) {
