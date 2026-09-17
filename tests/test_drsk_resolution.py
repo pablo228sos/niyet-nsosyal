@@ -84,6 +84,22 @@ def test_insufficient_claim_escalates_only_when_requested():
     assert escalated.escalation is not None
 
 
+def test_question_routes_to_human_only_when_requested():
+    engine = ResolutionEngine()
+    question = bundle(
+        BundleStatus.INSUFFICIENT,
+        statement_type=StatementType.QUESTION,
+    )
+
+    deferred = engine.resolve(question)
+    escalated = engine.resolve(question, ask_human=True)
+
+    assert deferred.path is ResolutionPath.NONE
+    assert deferred.escalation is None
+    assert escalated.path is ResolutionPath.HUMAN
+    assert escalated.escalation is not None
+
+
 def test_source_mismatch_requires_evidence_and_human_interpretation():
     base = bundle(BundleStatus.PARTIAL, sufficient=True)
     evidence = EvidenceItem(

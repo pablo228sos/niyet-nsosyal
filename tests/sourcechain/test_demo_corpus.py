@@ -82,6 +82,18 @@ def test_unknown_factual_claim_stays_insufficient_and_can_route_to_human():
     assert result["human_routing"]["responder_id"] == "r_ml"
 
 
+def test_arbitrary_technical_question_can_bypass_evidence_and_route_to_human():
+    result = DrskOrchestrator().analyze(
+        "React'te büyük bir listede gereksiz render'ları nasıl azaltabilirim?",
+        ask_human=True,
+    )
+
+    assert result["evidence_bundle"]["analysis"]["statement_type"] == "QUESTION"
+    assert result["evidence_bundle"]["evidence"] == []
+    assert result["resolution"]["path"] == "HUMAN"
+    assert result["human_routing"] is not None
+
+
 def test_opinion_bypasses_evidence_and_human_resolution():
     result = DrskOrchestrator().analyze(
         "I think this interface feels calmer.",
