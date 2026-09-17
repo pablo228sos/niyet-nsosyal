@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from .retrieval import ControlledEvidenceProvider, RetrievalHit, SourceDocument
+from .structured_checks import numeric_values
 from .text import tokens
 
 
@@ -15,6 +16,17 @@ MIN_LIVE_LEXICAL_SCORE = 0.30
 MIN_LIVE_TEXTUAL_ANCHORS = 2
 MIN_LIVE_TEXTUAL_COVERAGE = 0.25
 Transport = Callable[[str, float], dict[str, Any]]
+_DEICTIC_OPENERS = ("this ", "that ", "these ", "those ", "bu ", "şu ", "sun ", "o ")
+_USER_GENERATED_HOSTS = (
+    "facebook.com",
+    "instagram.com",
+    "quora.com",
+    "reddit.com",
+    "tiktok.com",
+    "x.com",
+    "youtube.com",
+    "youtu.be",
+)
 
 
 def _clean(value: Any) -> str | None:
@@ -31,6 +43,18 @@ def _textual_anchor_coverage(query: str, passage: str) -> tuple[int, float]:
         return 0, 0.0
     shared = query_terms & passage_terms
     return len(shared), len(shared) / len(query_terms)
+
+
+def _is_underspecified(query: str) -> bool:
+    value = " ".join(query.casefold().split())
+    return value.startswith(_DEICTIC_OPENERS)
+
+
+def _is_user_generated_host(hostname: str) -> bool:
+    host = hostname.lower().rstrip(".")
+    if any(host == blocked or host.endswith(f".{blocked}") for blocked in _USER_GENERATED_HOSTS):
+        return True
+    return any(label in {"forum", "forums"} for label in host.split("."))
 
 
 class TavilyEvidenceProvider:
@@ -119,6 +143,8 @@ class TavilyEvidenceProvider:
             if parsed.scheme not in {"http", "https"} or not parsed.netloc:
                 continue
             hostname = (parsed.hostname or "unknown").lower()
+            if _is_user_generated_host(hostname):
+                continue
             documents.append(
                 SourceDocument(
                     source_url=url,
@@ -137,7 +163,7 @@ class TavilyEvidenceProvider:
 
     def retrieve(self, query: str, *, limit: int = 5) -> tuple[RetrievalHit, ...]:
         clean_query = " ".join(query.split()).strip()
-        if not clean_query or limit < 1:
+        if not clean_query or limit < 1 or _is_underspecified(clean_query):
             return ()
         payload = self._transport(clean_query, self.timeout)
         documents = self._documents(payload)
@@ -158,10 +184,13 @@ class TavilyEvidenceProvider:
         accepted: list[RetrievalHit] = []
         for hit in hits:
             anchor_count, anchor_coverage = _textual_anchor_coverage(clean_query, hit.passage)
+            query_numbers = numeric_values(clean_query)
+            passage_numbers = numeric_values(hit.passage)
             if (
                 hit.score >= MIN_LIVE_LEXICAL_SCORE
                 and anchor_count >= MIN_LIVE_TEXTUAL_ANCHORS
                 and anchor_coverage >= MIN_LIVE_TEXTUAL_COVERAGE
+                and (not query_numbers or bool(passage_numbers))
             ):
                 accepted.append(hit)
         return tuple(accepted)

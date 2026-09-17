@@ -148,6 +148,41 @@ def test_tavily_keeps_strong_turkish_live_match():
     assert hits[0].score >= 0.30
 
 
+def test_tavily_rejects_underspecified_deictic_claim_without_search():
+    calls = []
+    provider = TavilyEvidenceProvider(
+        "secret",
+        transport=lambda query, timeout: calls.append((query, timeout)) or _payload(),
+    )
+
+    hits = provider.retrieve("This new battery lasts twice as long.", limit=3)
+
+    assert hits == ()
+    assert calls == []
+
+
+def test_tavily_excludes_user_generated_sources_from_evidence():
+    payload = {
+        "results": [
+            {
+                "title": "Social post",
+                "url": "https://www.facebook.com/example/posts/1",
+                "content": "The Eiffel Tower is 330 metres tall.",
+            },
+            {
+                "title": "Official visitor information",
+                "url": "https://www.toureiffel.paris/en/monument/key-figures",
+                "content": "The Eiffel Tower is 330 metres tall including its antenna.",
+            },
+        ]
+    }
+    provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: payload)
+
+    hits = provider.retrieve("The Eiffel Tower is 330 metres tall.", limit=3)
+
+    assert [hit.document.publisher for hit in hits] == ["www.toureiffel.paris"]
+
+
 def test_tavily_sends_configured_search_depth(monkeypatch):
     captured = {}
 
