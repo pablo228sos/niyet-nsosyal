@@ -87,6 +87,21 @@ def _strong_turkish_payload():
     }
 
 
+def _fabricated_named_claim_payload():
+    return {
+        "results": [
+            {
+                "title": "Hydrogen public transport",
+                "url": "https://example.org/hydrogen-transit",
+                "content": (
+                    "Almanya, 2022 yılında dünyanın ilk hidrojenle çalışan "
+                    "trenlerini tanıtma yolunda ilerlemektedir."
+                ),
+            }
+        ]
+    }
+
+
 def test_tavily_provider_turns_search_results_into_provenanced_hits():
     calls = []
 
@@ -130,6 +145,20 @@ def test_tavily_fails_closed_when_numbers_create_spurious_overlap():
     provider = TavilyEvidenceProvider("secret", transport=lambda _q, _t: _numeric_coincidence_payload())
     hits = provider.retrieve(
         "The 2026 Karakol municipal sensor pilot reduced winter PM2.5 by exactly 37 percent.",
+        limit=3,
+    )
+
+    assert hits == ()
+
+
+def test_tavily_requires_named_claim_anchors_in_live_passage():
+    provider = TavilyEvidenceProvider(
+        "secret", transport=lambda _q, _t: _fabricated_named_claim_payload()
+    )
+
+    hits = provider.retrieve(
+        "Kırgızistan'ın Ak-Terek köyünde 2025 yılında dünyanın ilk "
+        "hidrojenle çalışan okul otobüsü hizmete girdi.",
         limit=3,
     )
 
@@ -214,7 +243,7 @@ def test_tavily_rejects_unknown_search_depth():
         TavilyEvidenceProvider("secret", search_depth="deep")
 
 
-def test_environment_uses_verified_first_advanced_live_cascade(monkeypatch):
+def test_environment_uses_verified_then_quality_gated_live_cascade(monkeypatch):
     monkeypatch.setenv("TAVILY_API_KEY", "tavily-secret")
     monkeypatch.setenv("BRAVE_SEARCH_API_KEY", "brave-secret")
 
@@ -224,10 +253,14 @@ def test_environment_uses_verified_first_advanced_live_cascade(monkeypatch):
     assert isinstance(provider.providers[0], MinimumScoreEvidenceProvider)
     assert isinstance(provider.providers[0].provider, ControlledEvidenceProvider)
     assert provider.providers[0].min_score == 0.38
-    assert isinstance(provider.providers[1], TavilyEvidenceProvider)
-    assert provider.providers[1].search_depth == "advanced"
-    assert provider.providers[2].__class__.__name__ == "BraveContextEvidenceProvider"
-    assert isinstance(provider.providers[3], ControlledEvidenceProvider)
+    assert isinstance(provider.providers[1], MinimumScoreEvidenceProvider)
+    assert provider.providers[1].min_score == 0.40
+    assert isinstance(provider.providers[1].provider, TavilyEvidenceProvider)
+    assert provider.providers[1].provider.search_depth == "basic"
+    assert isinstance(provider.providers[2], TavilyEvidenceProvider)
+    assert provider.providers[2].search_depth == "advanced"
+    assert provider.providers[3].__class__.__name__ == "BraveContextEvidenceProvider"
+    assert isinstance(provider.providers[4], ControlledEvidenceProvider)
 
 
 def test_verified_judge_case_short_circuits_live_search(monkeypatch):

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import UTC, datetime
 from typing import Any, Callable
 from urllib.parse import urlparse
@@ -8,13 +9,14 @@ from urllib.request import Request, urlopen
 
 from .retrieval import ControlledEvidenceProvider, RetrievalHit, SourceDocument
 from .structured_checks import numeric_values
-from .text import tokens
+from .text import normalize, tokens
 
 
 TAVILY_SEARCH_URL = "https://api.tavily.com/search"
 MIN_LIVE_LEXICAL_SCORE = 0.30
 MIN_LIVE_TEXTUAL_ANCHORS = 2
 MIN_LIVE_TEXTUAL_COVERAGE = 0.25
+MIN_LIVE_SPECIFIC_ANCHOR_COVERAGE = 0.50
 Transport = Callable[[str, float], dict[str, Any]]
 _DEICTIC_OPENERS = ("this ", "that ", "these ", "those ", "bu ", "şu ", "sun ", "o ")
 _USER_GENERATED_HOSTS = (
@@ -27,6 +29,7 @@ _USER_GENERATED_HOSTS = (
     "youtube.com",
     "youtu.be",
 )
+_SPECIFIC_TOKEN_RE = re.compile(r"[^\W_]+(?:[-'’][^\W_]+)*", re.UNICODE)
 
 
 def _clean(value: Any) -> str | None:
@@ -43,6 +46,23 @@ def _textual_anchor_coverage(query: str, passage: str) -> tuple[int, float]:
         return 0, 0.0
     shared = query_terms & passage_terms
     return len(shared), len(shared) / len(query_terms)
+
+
+def _specific_anchors(text: str) -> frozenset[str]:
+    """Extract capitalized entity-like anchors without trusting capitalization alone."""
+    anchors: set[str] = set()
+    for match in _SPECIFIC_TOKEN_RE.finditer(text):
+        raw = match.group(0)
+        if not raw[:1].isupper():
+            continue
+        # Turkish possessive suffixes after an apostrophe are grammatical, not
+        # part of the entity. Hyphenated names keep each meaningful component.
+        entity = re.split(r"['’]", raw, maxsplit=1)[0]
+        for part in entity.split("-"):
+            value = normalize(part)
+            if tokens(value, meaningful=True):
+                anchors.add(value)
+    return frozenset(anchors)
 
 
 def _is_underspecified(query: str) -> bool:
@@ -182,14 +202,22 @@ class TavilyEvidenceProvider:
         # evidence. Until a semantic reranker is reproducibly validated, require
         # both a conservative lexical score and shared textual anchors.
         accepted: list[RetrievalHit] = []
+        specific_query_anchors = _specific_anchors(clean_query)
         for hit in hits:
             anchor_count, anchor_coverage = _textual_anchor_coverage(clean_query, hit.passage)
             query_numbers = numeric_values(clean_query)
             passage_numbers = numeric_values(hit.passage)
+            passage_terms = set(tokens(hit.passage, meaningful=True))
+            specific_anchor_coverage = (
+                len(specific_query_anchors & passage_terms) / len(specific_query_anchors)
+                if len(specific_query_anchors) >= 2
+                else 1.0
+            )
             if (
                 hit.score >= MIN_LIVE_LEXICAL_SCORE
                 and anchor_count >= MIN_LIVE_TEXTUAL_ANCHORS
                 and anchor_coverage >= MIN_LIVE_TEXTUAL_COVERAGE
+                and specific_anchor_coverage >= MIN_LIVE_SPECIFIC_ANCHOR_COVERAGE
                 and (not query_numbers or bool(passage_numbers))
             ):
                 accepted.append(hit)

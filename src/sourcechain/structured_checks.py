@@ -97,7 +97,7 @@ def detect_distortions(claim: str, evidence: str) -> tuple[DistortionType, ...]:
     if numeric_conflict:
         found.append(DistortionType.NUMERIC_DISTORTION)
     claim_years, evidence_years = years(claim), years(evidence)
-    if claim_years and evidence_years and claim_years != evidence_years:
+    if claim_years and evidence_years and set(claim_years).isdisjoint(evidence_years):
         found.append(DistortionType.TEMPORAL_SHIFT)
     if _contains_any(claim, _CAUSAL) and _contains_any(evidence, _ASSOCIATION) and not _contains_any(evidence, _CAUSAL):
         found.append(DistortionType.CAUSALITY_SHIFT)

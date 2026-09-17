@@ -8,6 +8,7 @@ from sourcechain.pipeline import SourcechainPipeline
 from sourcechain.retrieval import ControlledEvidenceProvider, SourceDocument
 from sourcechain.schemas import BundleStatus, DistortionType, EvidenceRelation, StatementType
 from sourcechain.statement_classifier import analyze_post
+from sourcechain.structured_checks import detect_distortions
 
 
 NOW = datetime(2026, 8, 24, tzinfo=UTC)
@@ -92,6 +93,28 @@ def test_alignment_has_all_four_relations():
     assert align_claim("Satışlar yüzde 20 arttı.", "Satışlar arttı.") is EvidenceRelation.PARTIALLY_SUPPORTED
     assert align_claim("Satışlar yüzde 20 arttı.", "Satışlar yüzde 10 azaldı.") is EvidenceRelation.CONFLICTING
     assert align_claim("Satışlar yüzde 20 arttı.", "Bugün hava yağmurlu.") is EvidenceRelation.INSUFFICIENT
+
+
+def test_contextual_year_does_not_manufacture_temporal_conflict():
+    claim = "The European Union had 27 member states in 2025."
+    passage = (
+        "As of 2025, the European Union has 27 member countries after the "
+        "United Kingdom departed in 2020."
+    )
+
+    distortions = detect_distortions(claim, passage)
+
+    assert DistortionType.TEMPORAL_SHIFT not in distortions
+    assert align_claim(claim, passage) is not EvidenceRelation.CONFLICTING
+
+
+def test_disjoint_years_remain_a_temporal_conflict():
+    distortions = detect_distortions(
+        "The service launched in 2025.",
+        "The service launched in 2022.",
+    )
+
+    assert DistortionType.TEMPORAL_SHIFT in distortions
 
 
 def test_bundle_is_citation_first_and_counts_independent_origins():
