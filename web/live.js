@@ -414,11 +414,11 @@ async function openAuthorRequest(mode) {
       $('#requestCard').hidden = true;
       updateStages(null);
       const path = result.resolution?.path;
-      if (result.evidence_context && path !== 'NONE') {
+      if (result.evidence_context || path === 'NONE') {
         const synthetic = {
           text: value,
-          status: result.resolution?.path || 'EVIDENCE',
-          evidence_context: result.evidence_context,
+          status: path === 'NONE' ? 'PUBLISHED' : path || 'EVIDENCE',
+          evidence_context: path === 'NONE' ? null : result.evidence_context,
           assigned_responder: null,
           answer: null
         };
