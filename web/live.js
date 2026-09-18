@@ -168,7 +168,7 @@ function applyLanguage() {
   document.documentElement.lang = language;
   $$('[data-copy]').forEach((node) => { node.textContent = t(node.dataset.copy); });
   $$('[data-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.placeholder); });
-  $('[data-language-toggle]').forEach((button) => {
+  $$('[data-language-toggle]').forEach((button) => {
     button.textContent = language === 'en' ? 'TR' : 'EN';
   });
   if (responders.length) renderResponderMeta();
@@ -775,7 +775,7 @@ async function prepareDemo() {
   }
 }
 
-$('[data-language-toggle]').forEach((button) => {
+$$('[data-language-toggle]').forEach((button) => {
   button.addEventListener('click', () => {
     language = language === 'en' ? 'tr' : 'en';
     localStorage.setItem('drsk-live-language', language);
@@ -795,7 +795,7 @@ $('#loadScenario').addEventListener('click', () => {
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
   $('#requestText').focus();
 });
-$('[data-reset-demo]').forEach((button) => button.addEventListener('click', resetDemo));
+$$('[data-reset-demo]').forEach((button) => button.addEventListener('click', resetDemo));
 $('#prepareDemo').addEventListener('click', prepareDemo);
 $('#requestText').addEventListener('input', (event) => { $('#charCount').textContent = `${event.target.value.length} / 1200`; });
 $('#responderSelect').addEventListener('change', () => {

@@ -275,3 +275,12 @@ def test_live_check_is_stateless_and_human_routing_requires_a_separate_action():
     assert "$('#resolveEvidence').addEventListener('click', () => openAuthorRequest('inspect'))" in script
     assert "$('#routeHuman').addEventListener('click', () => openAuthorRequest('resolve'))" in script
     assert "humanOptional: 'Evidence checked. Human context is available only if you choose Ask a relevant person.'" in script
+
+
+def test_multi_control_bindings_use_query_selector_all_helper():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "$$('[data-language-toggle]').forEach" in script
+    assert "$$('[data-reset-demo]').forEach" in script
+    assert "$('[data-language-toggle]').forEach" not in script
+    assert "$('[data-reset-demo]').forEach" not in script
