@@ -138,3 +138,17 @@ def test_background_accepts_only_nsosyal_publication_urls():
     assert "function trustedPostUrl" in BACKGROUND
     assert "NSOSYAL_HOSTS.has(url.hostname)" in BACKGROUND
     assert "invalid_post_url" in BACKGROUND
+
+def test_preview_packaging_keeps_backend_url_and_host_permission_in_sync():
+    from scripts.package_nsosyal_overlay import build_runtime_files
+
+    origin = "https://niyet-nsosyal-preview-test.vercel.app"
+    runtime = build_runtime_files(origin)
+    manifest = json.loads(runtime["manifest.json"].decode("utf-8"))
+    background = runtime["background.js"].decode("utf-8")
+
+    assert manifest["host_permissions"] == [f"{origin}/*"]
+    assert f"{origin}/api/human_help" in background
+    assert f"{origin}/api/human-help" in background
+    assert "https://niyet-nsosyal.vercel.app/api/human_help" not in background
+
