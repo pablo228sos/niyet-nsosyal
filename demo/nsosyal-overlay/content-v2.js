@@ -140,7 +140,7 @@
 
   async function storageGet(key) {
     try {
-      return await storageGet(key);
+      return await chrome.storage.session.get(key);
     } catch (_) {
       return chrome.storage.local.get(key);
     }
@@ -148,7 +148,7 @@
 
   async function storageSet(value) {
     try {
-      await storageSet(value);
+      await chrome.storage.session.set(value);
     } catch (_) {
       await chrome.storage.local.set(value);
     }
@@ -156,7 +156,7 @@
 
   async function storageRemove(key) {
     try {
-      await storageRemove(key);
+      await chrome.storage.session.remove(key);
     } catch (_) {
       await chrome.storage.local.remove(key);
     }
