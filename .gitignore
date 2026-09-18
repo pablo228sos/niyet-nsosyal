@@ -15,3 +15,6 @@ ui-debug.log
 .env
 .env.*
 !.env.example
+*firebase-adminsdk*.json
+firebase-service-account*.json
+service-account*.json
