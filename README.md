@@ -1,201 +1,273 @@
-# DRSK — Evidence + Human Resolution for Social Platforms
+# DRSK — Hybrid Social Intelligence Layer
 
 > **Evidence first. Human context by choice.**
 
-DRSK is a hybrid social-intelligence prototype for social platforms. It combines bounded evidence analysis with capacity-aware human routing instead of pretending that every ambiguous post can be solved by one model.
+DRSK is a resolution layer for social platforms. It does not force every post through the same AI pipeline. It decides what the post actually needs next: evidence, a person, both, or nothing.
 
-DRSK does not ask only, “Is this post true?” It asks:
+**[Open the final live demo](https://niyet-nsosyal-git-fix-judge-ux-stabilization-teknofest-2026.vercel.app/live)** · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
 
-1. What does the source actually support?
-2. Is evidence enough for the user's need?
-3. If not, should a willing relevant person enter the loop?
+![DRSK exposes the exact coffee claim-to-source mismatch and causality shift](docs/screenshots/01_live_coffee_conflict.png)
 
-The Resolution Engine returns one of four user-facing paths:
+## Why DRSK exists
 
-- `EVIDENCE` — bounded evidence is the useful response
-- `HUMAN` — relevant human context is the useful response
-- `BOTH` — evidence exposes the gap and a person can interpret what remains
-- `NONE` — neither evidence nor a human request is warranted
+Social platforms already distribute content and attention extremely well. Two harder problems remain.
 
-![Coffee claim showing a conflicting source passage and causality shift](docs/screenshots/01_live_coffee_conflict.png)
+A real citation can still be used to tell the wrong story. A paper may say coffee consumption was **associated with** lower mortality while a post claims research **proves coffee causes** lower mortality.
 
-```text
-post
-  ↓
-SOURCECHAIN ── claim → passage → provenance → relation → distortion
-  ↓
-Resolution Engine ── EVIDENCE | HUMAN | BOTH | NONE | DEFERRED
-  ↓                                  │
-  └──────────────────────────────────┴→ NIYET
-                                      willing + relevant + available human
-```
+At the same time, a useful question from a new or low-reach user may never reach the person who can actually help. The knowledge can already exist inside the community and still fail to meet the need.
 
-**When evidence is enough, show the evidence. When it is not, route the unresolved part to a willing person.**
+DRSK treats both as resolution problems.
 
-SOURCECHAIN does not emit an absolute truth score. Missing evidence means `INSUFFICIENT`, not false. NIYET does not infer hidden psychological traits: it routes explicit response needs under willingness and finite attention capacity.
+- **SOURCECHAIN** asks what the available evidence actually supports.
+- **NIYET** asks whether human context is useful and, if so, which relevant, willing and available responder should receive the request.
+- The **Resolution Engine** chooses the user-facing path.
 
-## What works now
+| Path | Meaning |
+| --- | --- |
+| **EVIDENCE** | the factual need can be closed with bounded evidence |
+| **HUMAN** | the useful answer is contextual, experiential or practical |
+| **BOTH** | evidence exposes a gap or conflict and human interpretation can still add value |
+| **NONE** | the post needs neither evidence nor human routing |
 
-- deterministic statement/check-worthiness analysis and bounded claim extraction
-- pluggable evidence acquisition with a verified local corpus and optional server-side live web context
-- exact passage, canonical URL, publisher, publication date, document hash and origin-cluster provenance
-- `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` and `INSUFFICIENT` claim/evidence relations
-- typed numeric, temporal, causality, certainty, scope and attribution-shift checks
-- explicit `EVIDENCE`, `HUMAN`, `BOTH`, `NONE` and `DEFERRED` resolution policy
-- structured SOURCECHAIN → NIYET escalation that preserves claim and evidence context
-- response-needed and four-way intent classification for NIYET
-- hard responder willingness, active-state and remaining-capacity constraints
-- bounded global allocation across multiple open requests competing for shared responder capacity
-- Accept / Skip / Pause / Resume transitions with reallocation of still-open requests
-- transactional demo-state abstraction with process-local memory fallback and optional durable Upstash Redis REST storage
-- bilingual English/Turkish author and responder surfaces with evidence disclosure and source links
+An internal deferred state is allowed when an evidence operation cannot be completed safely. Weak evidence is never promoted just to make the interface look complete.
 
-The main architecture is documented in [`docs/DRSK_ARCHITECTURE.md`](docs/DRSK_ARCHITECTURE.md). Reproducible product scenarios are in [`docs/DRSK_DEMO.md`](docs/DRSK_DEMO.md).
+## The interaction contract
 
-## Judge demo flow
+A normal evidence check is private and repeatable.
 
-1. Open `/live`, choose **Prepare demo**, then select **Check with DRSK**.
-2. Inspect the exact source passage, relation and typed wording shift. No human request is opened by this check.
-3. Choose **Ask a relevant person** only when human context is wanted.
-4. Switch to the routed Responder view, Accept and answer the request.
-5. Return to Author and see the answer attached to the same post as `Resolved`.
+~~~text
+Check with DRSK
+        |
+        v
+   inspect only
+        |
+        +--> EVIDENCE
+        +--> HUMAN
+        +--> BOTH
+        +--> NONE
+~~~
 
-The final branch validation completed with 283 passing tests, JavaScript syntax checks and the complete local two-device round trip.
+No responder capacity is consumed by a check.
 
-## End-to-end flow
+Human routing is a separate explicit action:
 
-1. classify whether the post contains a check-worthy factual statement
-2. extract bounded, span-linked claims
-3. acquire candidate passages through the configured evidence provider
-4. preserve passage-level provenance before explanation
-5. align each claim with the retrieved evidence
-6. expose typed wording shifts instead of collapsing them into a truth score
-7. choose an explicit DRSK resolution path
-8. when human interpretation is recommended, ask the author for explicit confirmation
-9. after confirmation, pass structured claim/evidence context into NIYET
-10. globally allocate the current open request window under responder willingness and remaining capacity
-11. return evidence and/or the human answer to the original request
+~~~text
+Ask a relevant person
+        |
+        v
+      NIYET
+        |
+relevance + willingness
++ availability + capacity
+        |
+        v
+     responder
+        |
+ Accept -> Answer
+        |
+        v
+     Resolved
+~~~
 
-Accepted requests are pinned to the accepting responder and consume capacity. Open or unmatched requests are reallocated together when the matching window changes. A stale UI action is rejected as a conflict rather than silently consuming capacity twice.
+On the real NSosyal concept adapter, SOURCECHAIN can inspect a draft privately. Publication still happens through NSosyal's own control. The adapter waits until the exact text appears as a visible published post before human routing can be requested.
 
-## Evidence acquisition modes
+## What SOURCECHAIN shows
 
 SOURCECHAIN keeps evidence acquisition separate from evidence interpretation.
 
-**Default / offline mode.** Without external credentials, the pipeline uses a small verified corpus committed with the project. Every stored passage points to its original primary/official page, so local tests and the fallback demo remain deterministic and inspectable.
+For a checked factual claim it can preserve:
 
-**Optional live-web mode.** When `BRAVE_SEARCH_API_KEY` is configured on the server, SOURCECHAIN uses Brave's LLM Context endpoint to retrieve current web passages and source metadata. Those passages are still processed by SOURCECHAIN's own passage ranking, relation and distortion logic. Brave does not provide the project verdict. If the live provider fails or returns no usable passages, the pipeline falls back to the verified corpus.
+- exact claim text;
+- exact source passage;
+- source title, canonical URL and publication metadata;
+- passage-level relation: `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` or `INSUFFICIENT`;
+- typed wording shifts such as causality, certainty, quantity, scope, attribution and explicit temporal mismatch;
+- provenance metadata used by the EvidenceBundle.
 
-```text
-BRAVE_SEARCH_API_KEY=...
-```
+It does **not** emit a universal truth score. Missing evidence means insufficient evidence, not false.
 
-The key is server-side only and is never exposed to the browser.
+### Evidence acquisition
 
-Verified fallback scenarios:
+The live pipeline is verified-first and fail-closed:
 
-| Scenario | Stored source | Expected behavior |
-| --- | --- | --- |
-| coffee mortality wording | PubMed / *Circulation* | association evidence can expose a causality shift and produce `BOTH` |
-| physical-activity benefit statement | World Health Organization | exact supported wording can resolve through `EVIDENCE` |
-| industrial CO₂ increase | NASA Science | changing “nearly 50%” to another numeric claim exposes a numeric distortion and can produce `BOTH` |
-| factual claim outside available evidence | none | remains `INSUFFICIENT`; an explicit request for help can produce `HUMAN` |
-| subjective opinion | none | stays outside factual verification and resolves to `NONE` |
+1. a strong match in the committed verified corpus is used as a fast deterministic path;
+2. unseen claims can use Tavily basic search behind a quality gate;
+3. Tavily advanced search is used only when the basic result is too weak;
+4. Brave remains an optional secondary provider when configured;
+5. the verified corpus is the final deterministic fallback.
 
-Live web retrieval broadens evidence coverage; it does **not** turn SOURCECHAIN into a universal fact checker. Source quality, completeness and recency remain explicit limitations.
+Candidate web text is still processed by SOURCECHAIN's own passage ranking, relation and distortion logic. Search providers do not decide the verdict.
 
-## NIYET evaluation
+~~~text
+TAVILY_API_KEY=...
+BRAVE_SEARCH_API_KEY=...        # optional
+~~~
 
-Two team reviewers independently labeled the same 256 query↔responder relevance pairs. They agreed exactly on 243/256 pairs (94.92%); quadratic weighted Cohen’s κ was 0.9756. A third team member adjudicated the 13 disagreements, producing the frozen reviewed benchmark.
+## What NIYET does differently
 
-Retrieval on the frozen 32-query × 8-responder benchmark:
+NIYET is not a popularity recommender. Follower count is not an eligibility signal.
+
+A responder must satisfy hard product constraints before allocation:
+
+- topic relevance;
+- explicit willingness for the request type;
+- active / available state;
+- remaining attention capacity.
+
+Open requests can be allocated together under shared capacity instead of greedily locking the locally best responder one request at a time. Requests are allowed to remain unmatched when no eligible route clears the quality floor.
+
+Responder controls include **Accept**, **Skip**, **Pause / Resume** and a finite attention budget. Accept consumes capacity exactly once and pins the request to the accepting responder.
+
+## Working prototype
+
+The final judge surface supports repeated arbitrary checks and a complete evidence-to-human round trip.
+
+![NIYET routes the unresolved coffee claim to Research Reviewer](docs/screenshots/02_live_routed_research_reviewer.png)
+
+![The assigned responder receives the request with the same evidence context](docs/screenshots/03_live_responder_accept.png)
+
+![The human answer returns to the original post as Resolved](docs/screenshots/04_live_resolved.png)
+
+The same surface also makes the four product states visible in context:
+
+![EVIDENCE, HUMAN, BOTH and NONE inside the shared feed](docs/screenshots/05_live_four_states.png)
+
+### Final verified flow
+
+~~~text
+Prepare demo
+-> Check with DRSK
+-> SOURCECHAIN: CONFLICTING + CAUSALITY_SHIFT
+-> Ask a relevant person
+-> NIYET: Research Reviewer
+-> Responder: Accept
+-> Answer
+-> Author: Resolved
+~~~
+
+The same-page Author/Responder switch and a separate responder-device link are both supported.
+
+## Validation
+
+The final stabilization pass completed with:
+
+- **57 targeted tests passed** for the judge-facing flow;
+- **283 full-suite tests passed**;
+- JavaScript syntax checks passed for the live surface and extension;
+- site build passed with **25 assets**;
+- extension packaging passed;
+- repeated private checks preserved responder capacity;
+- GitHub Actions passed;
+- the final Vercel Preview was Ready.
+
+These software checks are separate from the project's model/development measurements.
+
+### NIYET matching
+
+Two team reviewers independently labeled the same 256 query-to-responder pairs.
+
+- exact agreement: **243 / 256 = 94.92%**
+- quadratic weighted Cohen's κ: **0.9756**
+
+Frozen benchmark retrieval:
 
 | Retriever | Precision@3 | Recall@3 | NDCG@3 |
 | --- | ---: | ---: | ---: |
 | weighted lexical TF-IDF | 0.4688 | 0.8438 | 0.8450 |
 | ModernBERT-TR-Embed | **0.5417** | **0.9583** | **0.9025** |
 
-At lexical similarity floor `0.02`, the bounded global allocator covers 78.12% of reviewed requests versus 65.62% for the capacity-aware greedy baseline and increases total reviewed relevance from 45 to 52. Mean assigned relevance is 2.08 for global versus 2.14 for greedy, making the coverage/quality trade-off explicit rather than hiding it.
+At lexical similarity floor `0.02`, the bounded global allocator covered **78.12%** of reviewed requests versus **65.62%** for the capacity-aware greedy baseline. Total reviewed relevance increased from 45 to 52.
 
-ModernBERT-TR-Embed is evaluated offline. The lightweight runtime intentionally keeps the lexical retriever so deployment cost and semantic-model quality remain separable engineering decisions.
+ModernBERT-TR-Embed is an **offline evaluation result**, not the lightweight deployed runtime.
 
-## Classification checks
+### Response-needed classification
 
-On the repaired controlled development sets with pinned dependencies and grouped four-fold cross-validation:
+On controlled development data with grouped four-fold cross-validation:
 
 - response-needed: accuracy `0.917 ± 0.030`, macro-F1 `0.915 ± 0.030`
 - four-way intent: accuracy `0.885 ± 0.062`, macro-F1 `0.880 ± 0.061`
 
-These are controlled-development measurements, not population estimates.
+These are controlled-development measurements, not population estimates or claimed NSosyal production accuracy.
 
-## Shared demo state
+## Product surfaces
 
-`src/drsk/state_store.py` defines the mutable-state boundary used by the human-help flow.
+### `/live`
 
-- without external credentials, local/test execution uses a thread-safe process-local `MemoryStateStore`
-- when Upstash credentials are supplied, `UpstashRedisStateStore` stores the JSON state with TTL and compare-and-set Lua mutations
-- concurrent writers retry rather than overwriting a newer snapshot
-- the UI distinguishes durable shared state from the process-local prototype fallback
+The judge-safe interactive surface. It supports arbitrary repeated checks, Author/Responder device views, the four resolution states, responder capacity and the complete Resolved lifecycle.
 
-Environment variables for durable multi-instance demo state:
+### NSosyal concept overlay
 
-```text
+A Manifest V3 browser extension demonstrates how DRSK can sit over the real NSosyal composer without pretending to be an official NSosyal client.
+
+The overlay reads composer text only after the user presses DRSK, never presses NSosyal publish/edit/delete controls, detects the exact published text before human routing, keeps routing opt-in, never forwards NSosyal cookies and preserves request state through guarded extension storage.
+
+The adapter is a **concept integration**, not an official platform integration.
+
+## Durable demo state
+
+The human-help lifecycle is behind a small transactional `StateStore` boundary.
+
+- `MemoryStateStore` is the explicit local/test fallback.
+- `UpstashRedisStateStore` provides durable shared state when configured, using compare-and-set mutations, TTL and bounded retries.
+
+~~~text
 UPSTASH_REDIS_REST_URL=...
 UPSTASH_REDIS_REST_TOKEN=...
-DRSK_STATE_NAMESPACE=jury-demo-v2      # optional override
-DRSK_STATE_TTL_SECONDS=86400           # optional
-```
+DRSK_STATE_NAMESPACE=jury-demo-v2
+DRSK_STATE_TTL_SECONDS=86400
+~~~
 
-The memory fallback is suitable for local development and single-process tests; it is not represented as cross-device durable state.
-Without an override, Vercel Preview uses `jury-demo-v2-preview` while Production
-uses `jury-demo-v2`, so preview verification cannot consume the jury session.
+Preview and production use separate default namespaces so verification does not spend the production jury session.
 
 ## Run locally
 
 Python 3.11+ is required.
 
-```bash
+~~~bash
 python -m pip install -c constraints.txt -e . pytest
 pytest -q
-python -m compileall -q src api scripts experiments
+python scripts/build_site.py
+python scripts/package_nsosyal_overlay.py
+python scripts/serve_local.py --port 8766
+~~~
+
+Reproduce the main development evaluations:
+
+~~~bash
 python experiments/evaluate_matching_draft.py
 python experiments/evaluate_sourcechain_v0.py
 python scripts/validate_annotations.py data/intent_seed_v1.csv
 python scripts/validate_annotations.py data/response_gate_seed_v1.csv
 python scripts/validate_sourcebench.py data/sourcebench_tr
-python scripts/serve_local.py --port 8766
-```
+~~~
 
-The repository CI also runs JavaScript syntax checks for the shipped web surfaces.
+## Repository map
 
-## Repository structure
+| Path | Purpose |
+| --- | --- |
+| [`src/sourcechain/`](src/sourcechain/) | statement analysis, evidence acquisition, passage ranking, claim/evidence alignment and distortion checks |
+| [`src/niyet/`](src/niyet/) | response/intent classification, responder retrieval, eligibility, scoring and capacity-aware allocation |
+| [`src/drsk/`](src/drsk/) | Resolution Engine, SOURCECHAIN→NIYET adapter, human-help lifecycle and state boundary |
+| [`api/`](api/) | bounded transport handlers and public state transitions |
+| [`web/`](web/) | final bilingual judge surface and supporting web assets |
+| [`demo/nsosyal-overlay/`](demo/nsosyal-overlay/) | scoped NSosyal concept adapter |
+| [`data/`](data/) | controlled development sets, synthetic responder fixtures and reviewed benchmarks |
+| [`experiments/`](experiments/) | reproducible retrieval, classification, allocation and SOURCECHAIN evaluation |
+| [`tests/`](tests/) | unit, integration, regression and end-to-end contract tests |
+| [`docs/`](docs/) | architecture, product, safety, datasets, demo and engineering history |
 
-- `src/sourcechain/` — statement/claim analysis, evidence acquisition, passage ranking, alignment, distortion, lineage baseline and EvidenceBundle assembly
-- `src/niyet/` — response/intent classification, responder retrieval, eligibility, scoring, greedy/global allocation and runtime
-- `src/drsk/` — resolution policy, SOURCECHAIN→NIYET adapter, human-help service and state-store abstraction
-- `api/` — bounded transport handlers for analysis, experiments and human-help state transitions
-- `web/` — bilingual final product surface and allocation lab
-- `data/` — controlled development data, synthetic responder profiles, reviewed matching benchmark and SOURCEBENCH-TR v0
-- `experiments/` — reproducible retrieval/allocation/SOURCECHAIN development evaluation
-- `tests/` — unit, integration and end-to-end contract tests
-- `docs/` — current architecture, dataset, safety and product documentation
+Start with the [documentation index](docs/README.md) for the evidence behind each public claim.
 
-## Current boundaries
+## Boundaries
 
-- the browser extension is a concept integration, not an official NSosyal integration
-- arbitrary reader-side button injection under other users' feed posts is future/native product scope, not current stable extension behavior
-- Firebase is not required for the demo core; `/live` uses the human-help state-store boundary described above
-- without `BRAVE_SEARCH_API_KEY`, SOURCECHAIN uses the bounded verified corpus only
-- optional live web evidence retrieval broadens coverage but does not infer source reliability or guarantee complete evidence
-- SOURCEBENCH-TR v0 is a 15-example development regression set, not benchmark-grade model validation
-- SOURCECHAIN passage ranking/alignment/distortion logic is currently a deterministic lexical/structured baseline
-- Evidence Lineage uses supplied origin-cluster IDs; live web retrieval conservatively groups pages by hostname rather than claiming automatic syndication detection
-- the Distortion Lens is single-hop claim↔evidence comparison, not arbitrary repost-chain reconstruction
-- responder profiles in the prototype are synthetic
-- durable shared demo state requires external Upstash configuration; the default memory fallback is process-local
-- authentication, platform identity, production abuse controls and production rate limiting are not implemented
-- the semantic NIYET retriever is evaluated offline rather than loaded into the lightweight runtime
-- offline relevance is not the same as a real-world resolved interaction
-- usability samples are small prototype studies and are not presented as population estimates
+- DRSK is not an official NSosyal integration.
+- SOURCECHAIN is bounded evidence analysis, not universal web truth detection.
+- Arbitrary reader-side injection under every existing NSosyal feed post is future native-integration scope.
+- Synthetic responder profiles are prototype fixtures.
+- Firebase is an isolated production-hardening track and is not required for the judge demo.
+- ModernBERT-TR is evaluated offline and is not loaded into the lightweight runtime.
+- SOURCEBENCH-TR is a small development regression set, not benchmark-grade proof.
+- Live retrieval can miss good evidence; `INSUFFICIENT` is an intentional safe outcome.
+- Production authentication, abuse controls and rate limiting remain separate hardening work.
 
-The project keeps these limits explicit so the public claims remain narrower than — or equal to — what the code and reproducible evidence support.
+The core design rule is simple: **show what the evidence supports, preserve uncertainty, and spend human attention only when it adds value.**
