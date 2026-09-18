@@ -188,3 +188,19 @@ def test_extension_responder_handoff_actions_stay_mobile_safe():
     compact_css = CSS.replace(" ", "")
     assert ".drsk-overlay-handoff-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}" in compact_css
     assert "@media(max-width:760px){.drsk-overlay-handoff-actions,.drsk-overlay-handoff-actions.drsk-overlay-secondary{width:100%}}" in compact_css
+
+
+def test_extension_keeps_latest_answer_available_after_the_composer_is_cleared():
+    assert "RESOLVED_STORAGE_KEY = 'drsk-latest-resolved-v1'" in CONTENT
+    assert "async function storeResolved(" in CONTENT
+    assert "async function showLatestResolved()" in CONTENT
+    assert "if (latest.status === 'ANSWERED') await storeResolved(latest, author.text)" in CONTENT
+    assert "if (await showLatestResolved()) return;" in CONTENT
+
+
+def test_final_demo_profiles_start_with_their_full_attention_budget():
+    import json
+
+    profiles = json.loads((ROOT / "data" / "responder_profiles_final_v2.json").read_text(encoding="utf-8"))
+    assert profiles
+    assert all(item["remaining_slots"] == item["daily_budget"] for item in profiles)

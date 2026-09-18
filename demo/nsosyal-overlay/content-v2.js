@@ -3,6 +3,7 @@
 
   const HOST_ID = 'drsk-concept-overlay-host';
   const AUTHOR_STORAGE_KEY = 'drsk-active-author-v1';
+  const RESOLVED_STORAGE_KEY = 'drsk-latest-resolved-v1';
   const LIVE_URL = 'https://niyet-nsosyal.vercel.app/live';
   if (document.getElementById(HOST_ID)) return;
 
@@ -736,6 +737,47 @@
     }
   }
 
+  async function storeResolved(request, text = '') {
+    const token = request?.author_token || state.author?.author_token;
+    if (!request?.request_id || !token || request.status !== 'ANSWERED') return;
+    const value = {
+      request_id: request.request_id,
+      author_token: token,
+      text: text || state.author?.text || request.text || ''
+    };
+    try { await chrome.storage.session.set({ [RESOLVED_STORAGE_KEY]: value }); } catch (_) {}
+  }
+
+  async function loadResolved() {
+    try {
+      const stored = await chrome.storage.session.get(RESOLVED_STORAGE_KEY);
+      const value = stored?.[RESOLVED_STORAGE_KEY];
+      if (!value?.request_id || !value?.author_token) return null;
+      return value;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function showLatestResolved() {
+    const resolved = await loadResolved();
+    if (!resolved) return false;
+    const response = await api({
+      action: 'status',
+      request_id: resolved.request_id,
+      author_token: resolved.author_token
+    });
+    if (!response?.ok || !response.data?.request) {
+      if ([403, 404].includes(response?.status)) {
+        try { await chrome.storage.session.remove(RESOLVED_STORAGE_KEY); } catch (_) {}
+      }
+      return false;
+    }
+    const latest = { ...response.data.request, author_token: resolved.author_token };
+    renderResult({ request: latest, evidence_context: latest.evidence_context }, resolved.text);
+    return true;
+  }
+
   async function clearAuthor() {
     stopPoll();
     state.author = null;
@@ -760,6 +802,7 @@
 
     const latest = { ...response.data.request, author_token: author.author_token };
     await storeAuthor(latest, author.text);
+    if (latest.status === 'ANSWERED') await storeResolved(latest, author.text);
     renderResult({ request: latest, evidence_context: latest.evidence_context }, author.text);
     return latest.status !== 'ANSWERED';
   }
@@ -775,7 +818,10 @@
   async function startPoll(request, text = '') {
     stopPoll();
     if (!(await storeAuthor(request, text))) return;
-    if (request.status === 'ANSWERED') return;
+    if (request.status === 'ANSWERED') {
+      await storeResolved(request, text);
+      return;
+    }
     state.pollTimer = setTimeout(pollAuthor, 2200);
   }
 
@@ -807,6 +853,11 @@
     const text = composerText();
     panel.hidden = false;
     if (!text) {
+      if (state.author) {
+        const restored = await refreshAuthor();
+        if (restored || state.author) return;
+      }
+      if (await showLatestResolved()) return;
       body.replaceChildren(el('p', 'drsk-overlay-empty', t('empty')));
       return;
     }
