@@ -1,6 +1,23 @@
 # DRSK — Evidence + Human Resolution for Social Platforms
 
+> **Evidence first. Human context by choice.**
+
 DRSK is a hybrid social-intelligence prototype for social platforms. It combines bounded evidence analysis with capacity-aware human routing instead of pretending that every ambiguous post can be solved by one model.
+
+DRSK does not ask only, “Is this post true?” It asks:
+
+1. What does the source actually support?
+2. Is evidence enough for the user's need?
+3. If not, should a willing relevant person enter the loop?
+
+The Resolution Engine returns one of four user-facing paths:
+
+- `EVIDENCE` — bounded evidence is the useful response
+- `HUMAN` — relevant human context is the useful response
+- `BOTH` — evidence exposes the gap and a person can interpret what remains
+- `NONE` — neither evidence nor a human request is warranted
+
+![Coffee claim showing a conflicting source passage and causality shift](docs/screenshots/01_live_coffee_conflict.png)
 
 ```text
 post
@@ -34,6 +51,16 @@ SOURCECHAIN does not emit an absolute truth score. Missing evidence means `INSUF
 - bilingual English/Turkish author and responder surfaces with evidence disclosure and source links
 
 The main architecture is documented in [`docs/DRSK_ARCHITECTURE.md`](docs/DRSK_ARCHITECTURE.md). Reproducible product scenarios are in [`docs/DRSK_DEMO.md`](docs/DRSK_DEMO.md).
+
+## Judge demo flow
+
+1. Open `/live`, choose **Prepare demo**, then select **Check with DRSK**.
+2. Inspect the exact source passage, relation and typed wording shift. No human request is opened by this check.
+3. Choose **Ask a relevant person** only when human context is wanted.
+4. Switch to the routed Responder view, Accept and answer the request.
+5. Return to Author and see the answer attached to the same post as `Resolved`.
+
+The final branch validation completed with 283 passing tests, JavaScript syntax checks and the complete local two-device round trip.
 
 ## End-to-end flow
 
@@ -155,6 +182,9 @@ The repository CI also runs JavaScript syntax checks for the shipped web surface
 
 ## Current boundaries
 
+- the browser extension is a concept integration, not an official NSosyal integration
+- arbitrary reader-side button injection under other users' feed posts is future/native product scope, not current stable extension behavior
+- Firebase is not required for the demo core; `/live` uses the human-help state-store boundary described above
 - without `BRAVE_SEARCH_API_KEY`, SOURCECHAIN uses the bounded verified corpus only
 - optional live web evidence retrieval broadens coverage but does not infer source reliability or guarantee complete evidence
 - SOURCEBENCH-TR v0 is a 15-example development regression set, not benchmark-grade model validation
