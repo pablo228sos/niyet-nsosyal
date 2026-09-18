@@ -1,66 +1,105 @@
-# DRSK MVP final handoff
+# DRSK final judge build
 
-Status: core frozen in production, 2026-09-17.
+Status: final judge-facing release candidate, 2026-09-18.
 
 ## Product contract
 
-DRSK is the resolution layer for NSosyal. SOURCECHAIN provides bounded evidence intelligence. NIYET provides capacity-aware human interaction intelligence. The Resolution Engine selects exactly one path: `EVIDENCE`, `HUMAN`, `BOTH`, or `NONE`.
+DRSK is a resolution layer for social content.
 
-The operating rule is: when evidence is enough, show the evidence; when it is not, find the right willing human. Weak, ambiguous, deictic, or irrelevant evidence must fail closed as `INSUFFICIENT`.
+- SOURCECHAIN provides bounded claim-to-evidence intelligence.
+- NIYET provides capacity-aware human routing.
+- The Resolution Engine exposes four user-facing paths: `EVIDENCE`, `HUMAN`, `BOTH`, `NONE`.
+- A private Check is stateless and never consumes responder attention.
+- A human request opens only after explicit user action.
+- Weak evidence fails closed as `INSUFFICIENT`; the system does not manufacture a source or truth score.
 
-The backend is the source of truth. `/live`, the NSosyal overlay, and the responder surface are thin clients. The overlay is a concept integration adapter, not the product and not a replacement for NSosyal.
+## Final branch state
 
-## Release state
-
+- final stabilization branch: `fix/judge-ux-stabilization`
+- Codex stabilization head before repository polish: `a6457a3f9e669997d788d1b82137b10cb4541b24`
+- PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31)
+- final tested Preview: <https://niyet-nsosyal-git-fix-judge-ux-stabilization-teknofest-2026.vercel.app/live>
 - Production: <https://niyet-nsosyal.vercel.app>
-- PR #29 was merged into PR #28; PR #28 was merged into `main`.
-- Frozen core merge commit: `fc7f056af74eb0ba7d69d494014d2505969c53d0`.
-- Production deployment: `dpl_Fh2r6gYHw9P1S3Yi9zUvupKAQhdb` (`READY`).
-- Final release-candidate Preview: `dpl_4QJJDHQbdhZU9ptmLoKTLmk5Syfd` (`READY`).
-- Upstash Redis REST is the durable shared state backend in deployed environments.
-- `TAVILY_API_KEY` is configured in Vercel. Live acquisition uses a cheap-to-expensive cascade: basic search, quality gate, advanced only when needed, then `INSUFFICIENT`.
-- `experiment/tavily-depth-audit` remains isolated and must not be merged into the core.
 
-## What is proved
+Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KEY` is the primary live evidence credential. Brave remains an optional provider when configured.
 
-- Arbitrary Turkish and English inputs are not limited to fixed audit cases.
-- `EVIDENCE`, `HUMAN`, `BOTH`, and `NONE` paths have regression coverage and deployed API checks.
-- Live evidence requires lexical relevance, textual anchors, and entity/date/number compatibility. Numeric coincidence alone is rejected.
-- Only `SUPPORTED` is sufficient. `PARTIAL`, `CONFLICTING`, and `INSUFFICIENT` remain visibly bounded and can route the unresolved part to NIYET.
-- Draft inspection never creates a human request. The extension unlocks NIYET only after detecting the same text as a visible published NSosyal post and after explicit user action.
-- Published post URL and evidence context survive routing, accept, answer, and resolved states.
-- Responder willingness and remaining capacity are hard constraints. Stale polling, stale assignment, empty queue, pause/resume, capacity exhaustion, and shared-state conflicts have guarded states.
-- The latest local suite passed: 253 tests. GitHub Actions run #450 passed. Latest Preview was `READY`; runtime error query returned no errors.
+## Proved in the final build
+
+- repeated `Check with DRSK` calls do not open human requests or consume capacity;
+- `EVIDENCE`, `HUMAN`, `BOTH` and `NONE` have regression coverage;
+- coffee produces `BOTH`, `CONFLICTING` and `CAUSALITY_SHIFT`;
+- a PID/control question produces `HUMAN` without a fake insufficient-evidence card;
+- an opinion produces `NONE`;
+- arbitrary factual claims can safely end at supported, partial, conflicting or insufficient evidence;
+- only explicit `Ask a relevant person` opens NIYET routing;
+- relevance, willingness, active state and remaining attention budget are hard constraints;
+- same-page Responder switching follows the assigned responder;
+- a separate responder-device link works in an independent browser session;
+- Accept consumes capacity once;
+- Answer persists;
+- returning to Author refreshes to `Resolved` and shows the human answer;
+- Preview extension packaging keeps API origin, manifest permission and responder link on one backend;
+- extension storage has guarded session access and a local fallback.
+
+## Final verification
+
+- targeted: **57 passed**
+- full suite: **283 passed**
+- live + extension JavaScript syntax: PASS
+- site build: **25 assets**
+- extension package: PASS
+- repeated-check capacity invariant: PASS
+- GitHub Actions: PASS
+- Vercel Preview: READY
+
+Five final `/live` screenshots are committed under [`docs/screenshots/`](screenshots/).
+
+## Judge flow
+
+Use **Prepare demo** once, then:
+
+1. coffee claim → **Check with DRSK**;
+2. show the source passage and `CAUSALITY_SHIFT`;
+3. point out that the check contacted nobody;
+4. press **Ask a relevant person**;
+5. show **Research Reviewer** and attention budget;
+6. switch to Responder or open the responder-device link;
+7. Accept;
+8. answer;
+9. return to Author;
+10. show **Resolved**.
+
+For judge-supplied text, use Check repeatedly without reset. `INSUFFICIENT` is a valid safe outcome.
+
+## Real NSosyal concept adapter
+
+The extension was manually exercised on a real authenticated NSosyal page during final development.
+
+~~~text
+private draft inspect
+-> no human request
+-> native NSosyal publish
+-> exact published text detected
+-> explicit Ask a relevant person
+-> NIYET request
+-> responder
+-> answer
+-> resolved author state
+~~~
+
+The final Codex browser environment did not repeat the authenticated real-NSosyal desktop/mobile visual pass. Recheck it on presentation hardware. The `/live` flow is the judge-safe fallback.
 
 ## Deliberate boundaries
 
-- SOURCEBENCH alignment stays at 3/4. The remaining Turkish semantic paraphrase has low lexical overlap. Fixing it safely needs a general semantic mechanism; a synonym rule tailored to one benchmark case would reduce trust.
-- Reader-side SOURCECHAIN for arbitrary existing feed posts is not in the frozen core. Reliable post selection, anchoring, and consent are not a small change; adding it now would raise demo risk.
-- ModernBERT-TR remains an offline evaluation signal, not a production dependency.
-- No truth score, hidden psychological profile, reputation score, blockchain, agent layer, chatbot, or generated summary is part of the MVP.
-
-## Manual checks still required
-
-Run these on the actual presentation hardware after installing the packaged extension:
-
-1. Real NSosyal composer on device A: enter a new claim/question and verify private SOURCECHAIN inspection.
-2. Confirm no NIYET request exists before publication.
-3. Publish the same text, let the overlay detect the post, then press the explicit human-help action.
-4. Open the copied responder link on device B, accept, answer, and verify the author reaches `Resolved`.
-5. Repeat once at a narrow/mobile viewport and once with a long Turkish post and long source title.
-6. Verify the presentation network allows NSosyal, Vercel, Tavily, and Upstash. Keep the controlled example as fallback if live web acquisition is slow.
-
-Cloud-browser tabs are useful integration verification, but they are not physical two-device or human usability testing.
-
-## Judge demo flow
-
-1. Ask the judge for an unknown post.
-2. Show draft evidence inspection without creating a human request.
-3. Publish it on real NSosyal.
-4. Let the Resolution Engine choose the path and explain why.
-5. If evidence is sufficient, stop at SOURCECHAIN. If not, request human context explicitly.
-6. On the responder device, show matching reason and capacity, accept, answer, and return to the same published post as `Resolved`.
+- concept integration, not official NSosyal integration;
+- arbitrary reader-side analysis under every foreign feed post is future native scope;
+- ModernBERT-TR remains offline evaluation;
+- responder profiles are synthetic fixtures;
+- Firebase is isolated production hardening, not judge-core dependency;
+- SOURCEBENCH-TR is a development regression set;
+- live search provides candidate evidence, not truth verification;
+- production identity, abuse controls and rate limiting remain separate hardening work.
 
 ## Freeze rule
 
-Do not add features to the core before the final. Accept only a reproduced blocker with a minimal fix, a regression test, green CI, Preview verification, and Technical Report alignment.
+After this point accept only reproduced blockers: minimal diff, regression coverage, green checks and Preview verification. No new product scope before the final.

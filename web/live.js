@@ -2,9 +2,11 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const apiCandidates = ['/api/human-help', '/api/human_help'];
+const canonicalExampleScenario =
+  'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?';
 const exampleScenario = {
-  en: 'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?',
-  tr: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor. Çalışmanın aslında ne gösterdiğini biri açıklayabilir mi?'
+  en: canonicalExampleScenario,
+  tr: canonicalExampleScenario
 };
 
 let apiEndpoint = sessionStorage.getItem('drsk-human-help-endpoint') || null;
@@ -24,49 +26,59 @@ let requestBusy = false;
 const copy = {
   en: {
     navFeed: 'Feed', navExplore: 'Discover', navCommunities: 'Communities', navMessages: 'Messages', navProfile: 'Profile',
-    integrationNote: 'Evidence + human resolution', prototypeLabel: 'Final prototype', feedTitle: 'Feed',
-    authorTab: 'New user', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'Responder side',
+    integrationNote: 'Evidence + human resolution', prototypeLabel: 'Final prototype', feedTitle: 'Feed', prepareDemo: 'Prepare demo', resetDemoLabel: 'Reset',
+    nativeTarget: 'Native feed concept', stateFeedTitle: 'Four resolution states', stateFeedNote: 'Static examples explain the Resolution Engine. They are not injected into real NSosyal posts.',
+    stateEvidenceText: 'Regular physical activity provides significant physical and mental health benefits.', stateEvidenceMeta: 'Supported evidence is enough. No person is needed.',
+    stateHumanText: 'My line-following robot oscillates in turns. Which PID term should I tune first?', stateHumanMeta: 'No factual claim to verify. Relevant human context is the useful path.',
+    stateBothText: 'Research proves coffee consumption causes lower mortality.', stateBothMeta: 'Evidence exposes an overclaim; a willing responder can interpret the unresolved part.',
+    stateNoneText: 'Dark mode looks better than light mode.', stateNoneMeta: 'Opinion. No evidence card and no human request.',
+    demoDevice: 'Demo device', authorTab: 'Author', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'DRSK Requests',
     authorHeading: 'Ask without an audience.', responderHeading: 'Requests that match what you can help with.',
     requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
-    noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a person directly', postWithDrsk: 'Post with DRSK', loadScenario: 'Load example',
-    restore: 'Restore request', routedTo: 'Routed to', copyResponder: 'Copy responder link', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
+    noFollowers: 'Check as many posts as you want. A human request opens only when you choose Ask a relevant person. Follower count is never used.', routeHuman: 'Ask a relevant person', postWithDrsk: 'Check with DRSK', loadScenario: 'Load example',
+    restore: 'Restore request', routedTo: 'Routed to', openResponder: 'Open responder device', copyResponder: 'Copy responder link', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
     publishedContext: 'Published NSosyal post',
     evidenceHeading: 'What does the source actually say?', boundedNote: 'Bounded evidence, not a truth score.', humanNeeded: 'Evidence needs human context',
-    capacityNote: 'Willingness and remaining capacity are hard constraints.', identity: 'Demo identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
+    capacityNote: 'Willingness and remaining attention budget are hard constraints.', identity: 'Demo identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
     resolutionTitle: 'From attention to resolution', stagePost: 'Need', stagePostText: 'A new user asks without an audience.',
     stageEvidenceText: 'SOURCECHAIN exposes what the source supports.', stageHumanText: 'NIYET routes the unresolved part to a willing person.', stageResolvedText: 'Evidence and human context return to the same post.',
     whyItMatters: 'Why it matters', proofText: 'Reach should not decide whether a useful question gets an answer.', followersUsed: 'followers required', systemsTogether: 'evidence + human layers', sharedOutcome: 'shared outcome',
     truthTitle: 'Prototype boundary', truthText: 'Controlled evidence corpus and explicit prototype state. No generic truth score, no hidden psychological profiling.',
     backendDurable: 'durable shared state live', backendMemory: 'prototype state live', backendDown: 'backend unavailable', checking: 'Checking evidence and routing…', pause: 'Pause', resume: 'Resume',
-    capacity: 'slots remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
+    capacity: 'Attention budget remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
     accept: 'Accept', skip: 'Skip', answer: 'Answer', answerPlaceholder: 'Give the person a concise, useful answer.', send: 'Send answer',
     requestOpened: 'Request opened. NIYET is looking for a willing person.', evidenceRouted: 'Evidence checked. The unresolved part was routed with its source context.',
-    noHumanNeeded: 'The bounded evidence was sufficient; no human request was opened.', noHumanAvailable: 'Human context is recommended, but no eligible responder has capacity right now.', noActionNeeded: 'This content does not need evidence or human resolution.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
+    noHumanNeeded: 'The bounded evidence was sufficient; no human request was opened.', humanOptional: 'Evidence checked. Human context is available only if you choose Ask a relevant person.', noHumanAvailable: 'Human context is recommended, but no eligible responder is available right now.', noActionNeeded: 'This content does not need evidence or human resolution.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
     routingChanged: 'Availability changed, so NIYET reallocated this request. The latest queue is shown.', capacityChanged: 'Responder capacity changed. NIYET recalculated the pending window.', serviceBusy: 'Shared state is temporarily unavailable. Try again in a moment.',
     copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
-    networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored.',
+    networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored. Start a new request or reset the demo.',
     evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post claim', sourceWording: 'Source passage', resetDone: 'Demo reset.', resetConfirm: 'Reset the prototype state for every connected device?'
   },
   tr: {
     navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
-    integrationNote: 'Kanıt + insan çözümü', prototypeLabel: 'Final prototipi', feedTitle: 'Akış',
-    authorTab: 'Yeni kullanıcı', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'Cevaplayıcı tarafı',
+    integrationNote: 'Kanıt + insan çözümü', prototypeLabel: 'Final prototipi', feedTitle: 'Akış', prepareDemo: 'Demoyu hazırla', resetDemoLabel: 'Sıfırla',
+    nativeTarget: 'Yerel akış konsepti', stateFeedTitle: 'Dört çözüm durumu', stateFeedNote: 'Bu sabit örnekler Resolution Engine mantığını açıklar. Gerçek NSosyal gönderilerine enjekte edilmez.',
+    stateEvidenceText: 'Düzenli fiziksel aktivite önemli fiziksel ve zihinsel sağlık faydaları sağlar.', stateEvidenceMeta: 'Destekleyici kanıt yeterli. İnsan yanıtı gerekmiyor.',
+    stateHumanText: 'Çizgi izleyen robotum virajlarda salınım yapıyor. Önce hangi PID terimini ayarlamalıyım?', stateHumanMeta: 'Doğrulanacak olgusal iddia yok. İlgili insan bağlamı faydalı yol.',
+    stateBothText: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor.', stateBothMeta: 'Kanıt aşırı iddiayı gösterir; istekli bir cevaplayıcı çözülmeyen kısmı yorumlayabilir.',
+    stateNoneText: 'Karanlık mod açık moddan daha iyi görünüyor.', stateNoneMeta: 'Görüş. Kanıt kartı veya insan isteği açılmaz.',
+    demoDevice: 'Demo cihazı', authorTab: 'Gönderi sahibi', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'DRSK İstekleri',
     authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Gerçekten yardımcı olabileceğin istekler.',
     requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
-    noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'Doğrudan birine sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Örneği yükle',
-    restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', copyResponder: 'Cevaplayıcı bağlantısını kopyala', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
+    noFollowers: 'İstediğin kadar gönderiyi kontrol et. İnsan isteği yalnızca İlgili bir kişiye sor seçeneğini seçtiğinde açılır. Takipçi sayısı uygunluk sinyali değildir.', routeHuman: 'İlgili bir kişiye sor', postWithDrsk: 'DRSK ile kontrol et', loadScenario: 'Örneği yükle',
+    restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', openResponder: 'Cevaplayıcı cihazını aç', copyResponder: 'Cevaplayıcı bağlantısını kopyala', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
     publishedContext: 'Yayınlanan NSosyal gönderisi',
     evidenceHeading: 'Kaynak aslında ne söylüyor?', boundedNote: 'Sınırlı kanıt, doğruluk puanı değil.', humanNeeded: 'Kanıt insan bağlamına ihtiyaç duyuyor',
-    capacityNote: 'İsteklilik ve kalan kapasite kesin kısıtlardır.', identity: 'Demo kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
+    capacityNote: 'İsteklilik ve kalan dikkat bütçesi kesin kısıtlardır.', identity: 'Demo kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
     resolutionTitle: 'Dikkatten çözüme', stagePost: 'İhtiyaç', stagePostText: 'Yeni kullanıcı kitlesi olmadan soruyor.',
     stageEvidenceText: 'SOURCECHAIN kaynağın neyi desteklediğini gösteriyor.', stageHumanText: 'NIYET çözülmeyen kısmı istekli bir kişiye yönlendiriyor.', stageResolvedText: 'Kanıt ve insan bağlamı aynı gönderiye dönüyor.',
     whyItMatters: 'Neden önemli', proofText: 'Faydalı bir sorunun yanıt alıp almamasını erişim belirlememeli.', followersUsed: 'gerekli takipçi', systemsTogether: 'kanıt + insan katmanı', sharedOutcome: 'ortak sonuç',
     truthTitle: 'Prototip sınırı', truthText: 'Kontrollü kanıt derlemi ve açık prototip durumu. Genel doğruluk puanı veya gizli psikolojik profilleme yok.',
     backendDurable: 'kalıcı ortak durum aktif', backendMemory: 'prototip durumu aktif', backendDown: 'backend erişilemiyor', checking: 'Kanıt ve yönlendirme kontrol ediliyor…', pause: 'Duraklat', resume: 'Devam et',
-    capacity: 'slot kaldı', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
+    capacity: 'Kalan dikkat bütçesi', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
     accept: 'Kabul et', skip: 'Geç', answer: 'Yanıt', answerPlaceholder: 'Kısa ve faydalı bir yanıt yaz.', send: 'Yanıtı gönder',
     requestOpened: 'İstek açıldı. NIYET istekli birini arıyor.', evidenceRouted: 'Kanıt kontrol edildi. Çözülmeyen kısım kaynak bağlamıyla birlikte yönlendirildi.',
-    noHumanNeeded: 'Sınırlandırılmış kanıt yeterliydi; insan isteği açılmadı.', noHumanAvailable: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.', noActionNeeded: 'Bu içerik için kanıt veya insan çözümü gerekmiyor.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
+    noHumanNeeded: 'Sınırlandırılmış kanıt yeterliydi; insan isteği açılmadı.', humanOptional: 'Kanıt kontrol edildi. İnsan bağlamı yalnızca İlgili bir kişiye sor seçeneğini seçersen açılır.', noHumanAvailable: 'İnsan bağlamı öneriliyor, ancak şu anda uygun bir cevaplayıcı yok.', noActionNeeded: 'Bu içerik için kanıt veya insan çözümü gerekmiyor.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
     routingChanged: 'Uygunluk değiştiği için NIYET bu isteği yeniden yönlendirdi. Güncel kuyruk gösteriliyor.', capacityChanged: 'Cevaplayıcı kapasitesi değişti. NIYET bekleyen istekleri yeniden hesapladı.', serviceBusy: 'Ortak durum geçici olarak kullanılamıyor. Birazdan tekrar dene.',
     copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
     networkError: 'Prototip backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
@@ -156,13 +168,16 @@ function applyLanguage() {
   document.documentElement.lang = language;
   $$('[data-copy]').forEach((node) => { node.textContent = t(node.dataset.copy); });
   $$('[data-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.placeholder); });
-  $('#languageToggle').textContent = language === 'en' ? 'TR' : 'EN';
+  $$('[data-language-toggle]').forEach((button) => {
+    button.textContent = language === 'en' ? 'TR' : 'EN';
+  });
   if (responders.length) renderResponderMeta();
   if (currentAuthor?.request) renderAuthorRequest(currentAuthor.request);
 }
 
 function setRole(role, updateUrl = true) {
   const responder = role === 'responder';
+  const followedAssignedResponder = responder && updateUrl && selectAssignedResponderForDemo();
   $('#authorView').hidden = responder;
   $('#responderView').hidden = !responder;
   $('#authorTab').classList.toggle('active', !responder);
@@ -172,6 +187,7 @@ function setRole(role, updateUrl = true) {
   if (updateUrl) {
     const url = new URL(location.href);
     url.searchParams.set('role', responder ? 'responder' : 'author');
+    if (followedAssignedResponder) url.searchParams.set('responder', selectedResponderId);
     history.replaceState(null, '', url);
   }
   if (responder) {
@@ -179,7 +195,8 @@ function setRole(role, updateUrl = true) {
     startInboxPoll();
   } else {
     stopInboxPoll();
-    if (currentAuthor?.request) startAuthorPoll();
+    const stored = readStoredAuthor();
+    if (stored?.request_id && stored?.author_token) startAuthorPoll();
   }
 }
 
@@ -225,6 +242,21 @@ function populateResponders() {
   renderResponderMeta();
 }
 
+function assignedResponderId() {
+  return currentAuthor?.request?.assigned_responder?.id || null;
+}
+
+function selectAssignedResponderForDemo() {
+  const assigned = assignedResponderId();
+  const select = $('#responderSelect');
+  if (!assigned || !select || ![...select.options].some((option) => option.value === assigned)) return false;
+  select.value = assigned;
+  selectedResponderId = assigned;
+  inboxSnapshot = '';
+  renderResponderMeta();
+  return true;
+}
+
 function responderRecord() { return responders.find((item) => item.id === selectedResponderId) || null; }
 
 function renderResponderMeta() {
@@ -233,7 +265,7 @@ function renderResponderMeta() {
   target.replaceChildren();
   if (!record) return;
   const capacity = document.createElement('span');
-  capacity.textContent = `${record.remaining_slots} ${t('capacity')}`;
+  capacity.textContent = `${t('capacity')}: ${record.remaining_slots}`;
   const active = document.createElement('span');
   active.textContent = t(record.active ? 'active' : 'paused');
   target.append(capacity, active);
@@ -246,7 +278,8 @@ function persistAuthor(request) {
   sessionStorage.setItem('drsk-live-author', JSON.stringify({
     request_id: request.request_id,
     author_token: request.author_token,
-    text: request.text
+    text: request.text,
+    resolution_path: request.resolution_path || request.evidence_context?.resolution?.path || null
   }));
   $('#restoreAuthor').hidden = true;
 }
@@ -283,6 +316,15 @@ function renderReasons(values) {
     chip.textContent = String(value).replaceAll('_', ' ');
     target.appendChild(chip);
   });
+}
+
+function renderCheckedResolution(value) {
+  const chip = $('#checkedResolution');
+  const path = ['EVIDENCE', 'HUMAN', 'BOTH', 'NONE'].includes(value) ? value : null;
+  chip.hidden = !path;
+  chip.textContent = path || '';
+  chip.className = 'resolution-chip checked-resolution';
+  if (path) chip.classList.add(path.toLowerCase());
 }
 
 function appendDistortionComparison(row, item, distortions) {
@@ -369,6 +411,7 @@ function renderEvidence(context, target = $('#evidenceItems')) {
 function renderAuthorRequest(request) {
   currentAuthor = { request };
   $('#requestCard').hidden = false;
+  renderCheckedResolution(request.resolution_path || request.evidence_context?.resolution?.path || null);
   $('#requestStatus').textContent = request.status || 'OPEN';
   $('#requestStatus').dataset.status = request.status || 'OPEN';
   $('#requestTextPreview').textContent = request.text || '';
@@ -378,10 +421,16 @@ function renderAuthorRequest(request) {
 
   const match = request.assigned_responder;
   $('#matchBlock').hidden = !match;
+  $('#openResponderDevice').hidden = !match;
   $('#copyResponderLink').hidden = !match;
+  $('#attentionBudget').hidden = !match;
   if (match) {
     $('#matchedResponder').textContent = match.name || match.id;
     renderReasons(match.reason);
+    const responder = responders.find((item) => item.id === match.id);
+    $('#attentionBudget').textContent = responder
+      ? `${t('capacity')}: ${responder.remaining_slots}`
+      : '';
   }
 
   const evidence = request.evidence_context;
@@ -414,10 +463,11 @@ async function openAuthorRequest(mode) {
       $('#requestCard').hidden = true;
       updateStages(null);
       const path = result.resolution?.path;
-      if (result.evidence_context || path === 'NONE') {
+      if (path) {
         const synthetic = {
           text: value,
-          status: path === 'NONE' ? 'PUBLISHED' : path || 'EVIDENCE',
+          status: path,
+          resolution_path: path,
           evidence_context: path === 'NONE' ? null : result.evidence_context,
           assigned_responder: null,
           answer: null
@@ -425,15 +475,18 @@ async function openAuthorRequest(mode) {
         renderAuthorRequest(synthetic);
       }
       const message = result.human_recommended
-        ? t('noHumanAvailable')
+        ? result.human_available
+          ? t('humanOptional')
+          : t('noHumanAvailable')
         : path === 'NONE'
           ? t('noActionNeeded')
           : t('noHumanNeeded');
       setMessage($('#authorMessage'), message);
       return;
     }
-    persistAuthor(result.request);
-    renderAuthorRequest(result.request);
+    const request = { ...result.request, resolution_path: result.resolution?.path || null };
+    persistAuthor(request);
+    renderAuthorRequest(request);
     setMessage($('#authorMessage'), t(mode === 'resolve' ? 'evidenceRouted' : 'requestOpened'));
     startAuthorPoll();
   } catch (error) {
@@ -452,7 +505,11 @@ async function refreshAuthor(generation = authorPollGeneration) {
     const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
     if (generation !== authorPollGeneration) return;
     if (!result.request) return;
-    currentAuthor = { request: { ...result.request, author_token: stored.author_token } };
+    currentAuthor = { request: {
+      ...result.request,
+      author_token: stored.author_token,
+      resolution_path: stored.resolution_path || result.request.evidence_context?.resolution?.path || null
+    } };
     $('#restoreAuthor').hidden = true;
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();
@@ -500,6 +557,12 @@ function responderLink() {
   url.searchParams.set('role', 'responder');
   url.searchParams.set('responder', match.id);
   return url.href;
+}
+
+function openResponderDevice() {
+  const link = responderLink();
+  if (!link) return;
+  window.open(link, '_blank', 'noopener,noreferrer');
 }
 
 async function copyResponderLink() {
@@ -703,45 +766,73 @@ function restoreAuthorButton() {
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
 }
 
+function clearLocalDemoState() {
+  sessionStorage.removeItem('drsk-live-author');
+  inboxSnapshot = '';
+  responderSnapshot = '';
+  currentAuthor = null;
+  $('#requestCard').hidden = true;
+  renderCheckedResolution(null);
+  $('#requestText').value = '';
+  $('#charCount').textContent = '0 / 1200';
+  $('#restoreAuthor')?.setAttribute('hidden', '');
+  setMessage($('#inboxMessage'), '');
+  updateStages(null);
+}
+
 async function resetDemo() {
   if (!window.confirm(t('resetConfirm'))) return;
   stopAuthorPoll();
   stopInboxPoll();
   try { await callApi({ action: 'reset' }); }
   catch (error) { setMessage($('#authorMessage'), friendlyError(error), true); return; }
-  sessionStorage.removeItem('drsk-live-author');
-  inboxSnapshot = '';
-  responderSnapshot = '';
-  currentAuthor = null;
-  $('#requestCard').hidden = true;
-  $('#requestText').value = '';
-  $('#charCount').textContent = '0 / 1200';
-  $('#restoreAuthor')?.setAttribute('hidden', '');
+  clearLocalDemoState();
   setMessage($('#authorMessage'), t('resetDone'));
-  setMessage($('#inboxMessage'), '');
-  updateStages(null);
   await checkBackend();
   if (!$('#responderView').hidden) startInboxPoll();
 }
 
-$('#languageToggle').addEventListener('click', () => {
-  language = language === 'en' ? 'tr' : 'en';
-  localStorage.setItem('drsk-live-language', language);
-  applyLanguage();
-  inboxSnapshot = '';
-  if (!$('#responderView').hidden) refreshInbox(true);
+async function prepareDemo() {
+  if (requestBusy) return;
+  stopAuthorPoll();
+  stopInboxPoll();
+  setMessage($('#authorMessage'), t('checking'));
+  try {
+    await callApi({ action: 'reset' });
+    clearLocalDemoState();
+    setRole('author');
+    await checkBackend();
+    $('#requestText').value = exampleScenario[language];
+    $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
+    setMessage($('#authorMessage'), '');
+    $('#requestText').focus();
+  } catch (error) {
+    setMessage($('#authorMessage'), friendlyError(error), true);
+  }
+}
+
+$$('[data-language-toggle]').forEach((button) => {
+  button.addEventListener('click', () => {
+    language = language === 'en' ? 'tr' : 'en';
+    localStorage.setItem('drsk-live-language', language);
+    applyLanguage();
+    inboxSnapshot = '';
+    if (!$('#responderView').hidden) refreshInbox(true);
+  });
 });
 $('#authorTab').addEventListener('click', () => setRole('author'));
 $('#responderTab').addEventListener('click', () => setRole('responder'));
-$('#routeHuman').addEventListener('click', () => openAuthorRequest('open'));
-$('#resolveEvidence').addEventListener('click', () => openAuthorRequest('resolve'));
+$('#routeHuman').addEventListener('click', () => openAuthorRequest('resolve'));
+$('#resolveEvidence').addEventListener('click', () => openAuthorRequest('inspect'));
+$('#openResponderDevice').addEventListener('click', openResponderDevice);
 $('#copyResponderLink').addEventListener('click', copyResponderLink);
 $('#loadScenario').addEventListener('click', () => {
   $('#requestText').value = exampleScenario[language];
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
   $('#requestText').focus();
 });
-$('#resetDemo').addEventListener('click', resetDemo);
+$$('[data-reset-demo]').forEach((button) => button.addEventListener('click', resetDemo));
+$('#prepareDemo').addEventListener('click', prepareDemo);
 $('#requestText').addEventListener('input', (event) => { $('#charCount').textContent = `${event.target.value.length} / 1200`; });
 $('#responderSelect').addEventListener('change', () => {
   selectedResponderId = $('#responderSelect').value;

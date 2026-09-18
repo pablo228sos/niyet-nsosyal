@@ -112,7 +112,7 @@ Internal storage errors are not exposed verbatim to the browser.
 
 ## Security boundary
 
-The current SOURCECHAIN path uses controlled stored evidence and does not expose arbitrary URL fetching. A future network provider must independently enforce scheme validation, DNS/IP checks before and after redirects, private/link-local/metadata blocking, timeouts, byte/decompression limits, MIME restrictions, sanitization and redirect limits.
+The current SOURCECHAIN path can use server-side Tavily/Brave provider clients as bounded candidate-evidence sources; the browser does not receive provider credentials and does not expose an arbitrary URL-fetch proxy. Retrieved text is treated as untrusted candidate evidence and still passes SOURCECHAIN relevance, passage, relation and distortion logic. Any future direct document-fetch layer must independently enforce scheme/DNS/IP validation, redirect checks, private/link-local/metadata blocking, timeouts, byte/decompression limits, MIME restrictions and sanitization.
 
 API bodies, post text and answer text are bounded before analysis. Evidence passages are rendered as text, and source links originate from validated bundle provenance.
 

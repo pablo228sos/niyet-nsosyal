@@ -5,6 +5,21 @@ const API_URLS = [
 const ALLOWED_ACTIONS = new Set(['inspect', 'resolve', 'status']);
 const NSOSYAL_HOSTS = new Set(['nsosyal.com', 'www.nsosyal.com']);
 
+async function configureSessionStorageAccess() {
+  try {
+    await chrome.storage.session.setAccessLevel({
+      accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS'
+    });
+  } catch (_) {
+    // Older Chromium builds may not expose setAccessLevel. The overlay still
+    // works without persistence in those builds; current Chrome supports it.
+  }
+}
+
+configureSessionStorageAccess();
+chrome.runtime.onInstalled.addListener(configureSessionStorageAccess);
+chrome.runtime.onStartup.addListener(configureSessionStorageAccess);
+
 function trustedPostUrl(value) {
   if (value == null) return null;
   if (typeof value !== 'string' || value.length > 2048) return false;

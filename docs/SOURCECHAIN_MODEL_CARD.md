@@ -10,12 +10,12 @@ SOURCECHAIN is a development prototype for checking whether a Turkish or English
 - span-linked sentence/coordination claim extraction;
 - pluggable evidence-provider boundary with lexical passage ranking;
 - deterministic verified-corpus provider for offline/reproducible behavior;
-- optional server-side Brave LLM Context provider for live web evidence acquisition;
+- verified-first live evidence cascade: Tavily basic behind a quality gate, Tavily advanced when needed, optional Brave fallback;
 - lexical, negation and structured number/certainty/causality checks;
 - evidence aggregation with citation-first templates;
 - source-attribution mismatch and parent-to-child Distortion Lens baselines.
 
-No generative model invents sources, passages or explanations. The optional Brave provider supplies retrieved web passages and source metadata only; SOURCECHAIN still determines claim/evidence relations and typed findings. Explanations are assembled from evidence IDs and typed findings.
+No generative model invents sources, passages or explanations. Live providers supply candidate URLs/passages only; SOURCECHAIN still owns passage ranking, claim/evidence relations, typed distortions and the decision to stay `INSUFFICIENT`. Explanations are assembled from evidence IDs and typed findings.
 
 ## Output meaning
 
@@ -23,9 +23,9 @@ No generative model invents sources, passages or explanations. The optional Brav
 
 ## Evidence acquisition modes
 
-Without external credentials, SOURCECHAIN uses the committed verified corpus and remains deterministic. When `BRAVE_SEARCH_API_KEY` is configured on the server, the pipeline first requests bounded live web context from Brave's LLM Context endpoint and falls back to the verified corpus if the provider is unavailable or returns no usable passages.
+Without external credentials, SOURCECHAIN uses the committed verified corpus and remains deterministic. With `TAVILY_API_KEY`, the runtime keeps strong verified matches on the deterministic fast path, then tries Tavily basic search behind a quality gate and Tavily advanced only when basic evidence is too weak. `BRAVE_SEARCH_API_KEY` is an optional later fallback when configured. The full verified corpus remains the final deterministic fallback.
 
-The API key is server-side only. The browser never receives it. Provider output is treated as candidate evidence, not as a verdict.
+Provider credentials stay server-side. Provider output is candidate evidence, not a verdict. Numeric coincidence alone is not enough to qualify live evidence; weak results fail closed.
 
 ## Limitations
 

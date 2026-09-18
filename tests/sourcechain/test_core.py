@@ -36,6 +36,28 @@ def test_statement_gate_excludes_question_opinion_and_experience():
     assert factual.check_worthy
 
 
+def test_subjective_comparisons_are_opinion_without_hiding_mixed_facts():
+    english = analyze_post("Dark mode looks better than light mode.")
+    turkish = analyze_post("Karanlık mod açık moddan daha iyi görünüyor.")
+    factual_contrast = analyze_post("Dark mode uses 20% less battery than light mode.")
+    mixed = analyze_post(
+        "Dark mode looks better than light mode. "
+        "A 2025 study found it uses 20% less battery."
+    )
+
+    assert english.statement_type is StatementType.OPINION
+    assert not english.check_worthy
+    assert turkish.statement_type is StatementType.OPINION
+    assert not turkish.check_worthy
+    assert factual_contrast.statement_type is StatementType.FACTUAL_CLAIM
+    assert factual_contrast.check_worthy
+    assert mixed.statement_type is StatementType.MIXED
+    assert mixed.check_worthy
+    assert [claim.text for claim in mixed.claims] == [
+        "A 2025 study found it uses 20% less battery."
+    ]
+
+
 def test_statement_gate_keeps_declarative_claim_before_follow_up_question():
     text = (
         "Research proves coffee consumption causes lower mortality. "
@@ -159,6 +181,62 @@ def test_bundle_explanation_does_not_mislabel_live_evidence_as_controlled():
 
     assert "retrieved evidence" in bundle.explanation.lower()
     assert "controlled evidence" not in bundle.explanation.lower()
+
+
+def test_supported_claim_is_not_downgraded_by_secondary_partial_candidate():
+    text = "The Bosphorus connects the Black Sea with the Sea of Marmara."
+    analysis = analyze_post(text)
+    provider = ControlledEvidenceProvider(
+        (
+            document(
+                "https://example.org/bosphorus-exact",
+                "The Bosphorus connects the Black Sea with the Sea of Marmara.",
+                cluster="nasa-like",
+            ),
+            document(
+                "https://example.org/bosphorus-context",
+                "The Bosphorus is a major strait in northwest Turkey beside the Sea of Marmara.",
+                cluster="context-source",
+            ),
+        ),
+        max_documents=2,
+        max_passages_per_document=1,
+    )
+
+    bundle = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert EvidenceRelation.SUPPORTED in {item.relation for item in bundle.evidence}
+    assert EvidenceRelation.PARTIALLY_SUPPORTED in {
+        item.relation for item in bundle.evidence
+    }
+    assert bundle.status is BundleStatus.SUPPORTED
+    assert bundle.sufficient is True
+
+
+def test_multiclaim_post_remains_partial_until_every_claim_is_supported():
+    text = "The Bosphorus connects the Black Sea with the Sea of Marmara. Sales increased 20%."
+    analysis = analyze_post(text)
+    provider = ControlledEvidenceProvider(
+        (
+            document(
+                "https://example.org/bosphorus",
+                "The Bosphorus connects the Black Sea with the Sea of Marmara.",
+                cluster="source-a",
+            ),
+            document(
+                "https://example.org/sales",
+                "Sales increased.",
+                cluster="source-b",
+            ),
+        ),
+        max_documents=2,
+        max_passages_per_document=1,
+    )
+
+    bundle = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert bundle.status is BundleStatus.PARTIAL
+    assert bundle.sufficient is False
 
 
 def test_partial_evidence_is_visible_but_not_marked_sufficient():

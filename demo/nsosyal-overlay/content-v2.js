@@ -3,6 +3,8 @@
 
   const HOST_ID = 'drsk-concept-overlay-host';
   const AUTHOR_STORAGE_KEY = 'drsk-active-author-v1';
+  const RESOLVED_STORAGE_KEY = 'drsk-latest-resolved-v1';
+  const LIVE_URL = 'https://niyet-nsosyal.vercel.app/live';
   if (document.getElementById(HOST_ID)) return;
 
   const EDITABLE_SELECTOR = [
@@ -43,23 +45,28 @@
       source: 'Open source',
       sourceFallback: 'Source',
       responder: 'Open responder device',
+      copyResponder: 'Copy responder link',
+      copiedResponder: 'Responder link copied.',
       answered: 'Human context received',
       waiting: 'Waiting for human response',
       accepted: 'Accepted. A response is being prepared.',
       evidenceEnough: 'The bounded evidence is sufficient for this path.',
-      noAction: 'No evidence or human action is needed for this content.',
+      noAction: 'No factual claim to verify. No DRSK action is needed for this content.',
+      noFactualClaim: 'No factual claim to verify.',
+      humanContextNeeded: 'Human context is needed for this question.',
       humanRecommended: 'The evidence leaves an interpretive gap. Human context is recommended.',
       askPerson: 'Ask a relevant person',
       consent: 'Nothing is sent to a person until you press this button.',
       candidate: 'Available now',
-      unavailableResponder: 'Human context is recommended, but no eligible responder has capacity right now.',
+      unavailableResponder: 'Human context is recommended, but no eligible responder is available right now.',
       activeRequest: 'This post already has an active human request.',
       restoreFailed: 'The previous request is no longer available. You can run a new check.',
-      draftStage: 'Draft checked',
+      draftStage: 'Private check',
       publishedStage: 'Published',
       routedStage: 'Routed',
       resolvedStage: 'Resolved',
-      publishFirst: 'Publish this text in NSosyal first. Human routing unlocks only after the published post is visible.',
+      privateInspect: 'Private draft check only. Nothing has been posted or sent to a person.',
+      publishFirst: 'If you want human context, publish this text normally first. Routing unlocks only after the published post is visible.',
       publicationWaiting: 'Waiting for the published post to appear in the feed…',
       publicationMissing: 'The published post is not visible yet. Keep the panel open, then check again.',
       checkPublication: 'Find published post',
@@ -85,23 +92,28 @@
       source: 'Kaynağı aç',
       sourceFallback: 'Kaynak',
       responder: 'Cevaplayıcı cihazını aç',
+      copyResponder: 'Cevaplayıcı bağlantısını kopyala',
+      copiedResponder: 'Cevaplayıcı bağlantısı kopyalandı.',
       answered: 'İnsan bağlamı geldi',
       waiting: 'İnsan yanıtı bekleniyor',
       accepted: 'Kabul edildi. Yanıt hazırlanıyor.',
       evidenceEnough: 'Sınırlandırılmış kanıt bu yol için yeterli.',
-      noAction: 'Bu içerik için kanıt veya insan adımı gerekmiyor.',
+      noAction: 'Doğrulanacak olgusal iddia yok. Bu içerik için ek DRSK adımı gerekmiyor.',
+      noFactualClaim: 'Doğrulanacak olgusal iddia yok.',
+      humanContextNeeded: 'Bu soru için insan bağlamı gerekiyor.',
       humanRecommended: 'Kanıt yorumlama boşluğu bırakıyor. İnsan bağlamı öneriliyor.',
       askPerson: 'İlgili bir kişiye sor',
       consent: 'Bu düğmeye basılana kadar hiçbir kişiye istek gönderilmez.',
       candidate: 'Şu anda uygun',
-      unavailableResponder: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.',
+      unavailableResponder: 'İnsan bağlamı öneriliyor, ancak şu anda uygun bir cevaplayıcı yok.',
       activeRequest: 'Bu gönderi için zaten etkin bir insan isteği var.',
       restoreFailed: 'Önceki istek artık kullanılamıyor. Yeni bir kontrol başlatabilirsin.',
-      draftStage: 'Taslak kontrol edildi',
+      draftStage: 'Özel kontrol',
       publishedStage: 'Yayınlandı',
       routedStage: 'Yönlendirildi',
       resolvedStage: 'Çözüldü',
-      publishFirst: 'Önce bu metni NSosyal’de yayınla. İnsan yönlendirmesi yalnızca yayınlanan gönderi görünür olduğunda açılır.',
+      privateInspect: 'Bu yalnızca özel taslak kontrolüdür. Hiçbir şey yayınlanmadı veya bir kişiye gönderilmedi.',
+      publishFirst: 'İnsan bağlamı istiyorsan bu metni normal şekilde yayınla. Yönlendirme yalnızca yayınlanan gönderi görünür olduktan sonra açılır.',
       publicationWaiting: 'Yayınlanan gönderinin akışta görünmesi bekleniyor…',
       publicationMissing: 'Yayınlanan gönderi henüz görünmüyor. Paneli açık tutup tekrar kontrol et.',
       checkPublication: 'Yayınlanan gönderiyi bul',
@@ -125,6 +137,30 @@
 
   state.language = detectLanguage();
   function t(key) { return copy[state.language]?.[key] || copy.en[key] || key; }
+
+  async function storageGet(key) {
+    try {
+      return await chrome.storage.session.get(key);
+    } catch (_) {
+      return chrome.storage.local.get(key);
+    }
+  }
+
+  async function storageSet(value) {
+    try {
+      await chrome.storage.session.set(value);
+    } catch (_) {
+      await chrome.storage.local.set(value);
+    }
+  }
+
+  async function storageRemove(key) {
+    try {
+      await chrome.storage.session.remove(key);
+    } catch (_) {
+      await chrome.storage.local.remove(key);
+    }
+  }
 
   async function api(payload) {
     try {
@@ -389,19 +425,34 @@
     applyTheme();
     const composer = findComposer();
     state.composer = composer;
+    const narrow = innerWidth <= 760;
 
     if (!composer) {
       trigger.dataset.fallback = 'true';
+      trigger.dataset.entrypoint = 'floating';
       trigger.style.removeProperty('--drsk-trigger-x');
       trigger.style.removeProperty('--drsk-trigger-y');
-      trigger.style.setProperty('right', '24px');
+      trigger.style.setProperty('right', narrow ? 'auto' : '24px');
       return;
     }
 
     trigger.dataset.fallback = 'false';
+    trigger.dataset.entrypoint = 'composer';
     trigger.style.setProperty('right', 'auto');
-    const send = findSendButtonNear(composer);
+
     const rect = composer.getBoundingClientRect();
+    if (narrow) {
+      // NSosyal uses a modal composer on narrow screens.  Do not compete with
+      // its audience/send toolbar: keep the DRSK entrypoint in the header
+      // gutter immediately above the editable field.
+      const x = Math.max(12, Math.min(innerWidth - 70, rect.right - 142));
+      const y = Math.max(12, Math.min(innerHeight - 48, rect.top - 38));
+      trigger.style.setProperty('--drsk-trigger-x', `${Math.round(x)}px`);
+      trigger.style.setProperty('--drsk-trigger-y', `${Math.round(y)}px`);
+      return;
+    }
+
+    const send = findSendButtonNear(composer);
     const sendRect = send?.getBoundingClientRect();
     const x = sendRect
       ? Math.max(16, Math.min(innerWidth - 96, sendRect.left - 82))
@@ -521,14 +572,28 @@
     const reasons = Array.isArray(responder.reason) ? responder.reason : [];
     if (reasons.length) wrap.append(el('small', 'drsk-overlay-muted', reasons.join(' · ')));
 
-    const button = el('a', 'drsk-overlay-secondary', t('responder'));
-    const url = new URL('https://niyet-nsosyal.vercel.app/live');
+    const url = new URL(LIVE_URL);
     url.searchParams.set('role', 'responder');
     url.searchParams.set('responder', responder.id);
+
+    const actions = el('div', 'drsk-overlay-handoff-actions');
+    const button = el('a', 'drsk-overlay-secondary', t('responder'));
     button.href = url.href;
     button.target = '_blank';
     button.rel = 'noopener noreferrer';
-    wrap.append(button);
+
+    const copy = el('button', 'drsk-overlay-secondary drsk-overlay-copy-link', t('copyResponder'));
+    copy.type = 'button';
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url.href);
+        copy.textContent = t('copiedResponder');
+      } catch (_) {
+        copy.textContent = url.href;
+      }
+    });
+    actions.append(button, copy);
+    wrap.append(actions);
     return wrap;
   }
 
@@ -543,10 +608,20 @@
     const wrap = el('section', 'drsk-overlay-card drsk-overlay-recommendation');
     const cardHead = el('div', 'drsk-overlay-card-head');
     cardHead.append(el('span', 'drsk-overlay-brand human', 'NIYET'), el('b', '', t('human')));
-    wrap.append(cardHead, el('p', 'drsk-overlay-route', t('humanRecommended')));
+    const recommendation = result?.check_worthy === false
+      ? t('humanContextNeeded')
+      : t('humanRecommended');
+    wrap.append(cardHead, el('p', 'drsk-overlay-route', recommendation));
 
     if (!result?.human_available) {
       wrap.append(el('p', 'drsk-overlay-capacity', t('unavailableResponder')));
+      if (published) {
+        const button = el('button', 'drsk-overlay-primary', t('askPerson'));
+        button.type = 'button';
+        button.disabled = true;
+        button.setAttribute('aria-disabled', 'true');
+        wrap.append(button);
+      }
       return wrap;
     }
 
@@ -585,7 +660,13 @@
       || (state.inspection && sameText(state.inspection.text, text) && state.inspection.published)
     );
     body.append(renderLifecycle({ evidence: Boolean(evidence), published, request }));
+    if (!published && !request) {
+      body.append(el('p', 'drsk-overlay-private-note', t('privateInspect')));
+    }
     if (evidence) body.append(renderEvidence(evidence));
+    else if (result?.check_worthy === false && result?.human_recommended) {
+      body.append(el('p', 'drsk-overlay-empty', t('noFactualClaim')));
+    }
 
     if (!request) {
       if (result?.human_recommended) {
@@ -672,13 +753,13 @@
       status: request.status || state.author?.status || 'OPEN'
     };
     state.author = value;
-    await chrome.storage.session.set({ [AUTHOR_STORAGE_KEY]: value });
+    await storageSet({ [AUTHOR_STORAGE_KEY]: value });
     return true;
   }
 
   async function loadAuthor() {
     try {
-      const stored = await chrome.storage.session.get(AUTHOR_STORAGE_KEY);
+      const stored = await storageGet(AUTHOR_STORAGE_KEY);
       const value = stored?.[AUTHOR_STORAGE_KEY];
       if (!value?.request_id || !value?.author_token) return null;
       return value;
@@ -687,10 +768,51 @@
     }
   }
 
+  async function storeResolved(request, text = '') {
+    const token = request?.author_token || state.author?.author_token;
+    if (!request?.request_id || !token || request.status !== 'ANSWERED') return;
+    const value = {
+      request_id: request.request_id,
+      author_token: token,
+      text: text || state.author?.text || request.text || ''
+    };
+    try { await storageSet({ [RESOLVED_STORAGE_KEY]: value }); } catch (_) {}
+  }
+
+  async function loadResolved() {
+    try {
+      const stored = await storageGet(RESOLVED_STORAGE_KEY);
+      const value = stored?.[RESOLVED_STORAGE_KEY];
+      if (!value?.request_id || !value?.author_token) return null;
+      return value;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function showLatestResolved() {
+    const resolved = await loadResolved();
+    if (!resolved) return false;
+    const response = await api({
+      action: 'status',
+      request_id: resolved.request_id,
+      author_token: resolved.author_token
+    });
+    if (!response?.ok || !response.data?.request) {
+      if ([403, 404].includes(response?.status)) {
+        try { await storageRemove(RESOLVED_STORAGE_KEY); } catch (_) {}
+      }
+      return false;
+    }
+    const latest = { ...response.data.request, author_token: resolved.author_token };
+    renderResult({ request: latest, evidence_context: latest.evidence_context }, resolved.text);
+    return true;
+  }
+
   async function clearAuthor() {
     stopPoll();
     state.author = null;
-    try { await chrome.storage.session.remove(AUTHOR_STORAGE_KEY); } catch (_) {}
+    try { await storageRemove(AUTHOR_STORAGE_KEY); } catch (_) {}
   }
 
   async function refreshAuthor() {
@@ -711,6 +833,7 @@
 
     const latest = { ...response.data.request, author_token: author.author_token };
     await storeAuthor(latest, author.text);
+    if (latest.status === 'ANSWERED') await storeResolved(latest, author.text);
     renderResult({ request: latest, evidence_context: latest.evidence_context }, author.text);
     return latest.status !== 'ANSWERED';
   }
@@ -726,7 +849,10 @@
   async function startPoll(request, text = '') {
     stopPoll();
     if (!(await storeAuthor(request, text))) return;
-    if (request.status === 'ANSWERED') return;
+    if (request.status === 'ANSWERED') {
+      await storeResolved(request, text);
+      return;
+    }
     state.pollTimer = setTimeout(pollAuthor, 2200);
   }
 
@@ -758,6 +884,11 @@
     const text = composerText();
     panel.hidden = false;
     if (!text) {
+      if (state.author) {
+        const restored = await refreshAuthor();
+        if (restored || state.author) return;
+      }
+      if (await showLatestResolved()) return;
       body.replaceChildren(el('p', 'drsk-overlay-empty', t('empty')));
       return;
     }

@@ -52,6 +52,10 @@ def test_overlay_has_safe_dom_fallback_and_mobile_surface():
     assert "data-fallback" in css
     assert "MutationObserver" in content
     assert "requestAnimationFrame" in content
-    assert "@media(max-width:700px)" in css.replace(" ", "")
+    compact_css = css.replace(" ", "")
+    assert "@media(max-width:760px)" in compact_css
+    assert 'data-entrypoint="composer"' in compact_css
+    assert 'data-entrypoint="floating"' in compact_css
+    assert "width:100vw" in compact_css
     assert "prefers-reduced-motion" in css
     assert "attachShadow({ mode: 'closed' })" in content

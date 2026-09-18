@@ -110,6 +110,9 @@ def _evidence_context(response: dict) -> dict | None:
         return None
 
     analysis = bundle.get("analysis")
+    if isinstance(analysis, dict) and analysis.get("check_worthy") is False:
+        return None
+
     claims_by_id: dict[str, str] = {}
     if isinstance(analysis, dict):
         for claim in analysis.get("claims", []):
@@ -157,6 +160,10 @@ def _resolution_metadata(response: dict) -> dict:
     """
     resolution = response.get("resolution")
     path = resolution.get("path") if isinstance(resolution, dict) else None
+    bundle = response.get("evidence_bundle")
+    analysis = bundle.get("analysis") if isinstance(bundle, dict) else None
+    statement_type = analysis.get("statement_type") if isinstance(analysis, dict) else None
+    check_worthy = analysis.get("check_worthy") if isinstance(analysis, dict) else None
     routing = response.get("human_routing")
     recommended = path in _HUMAN_RESOLUTION_PATHS
     available = bool(
@@ -175,6 +182,8 @@ def _resolution_metadata(response: dict) -> dict:
         "human_recommended": recommended,
         "human_available": available,
         "routing_preview": preview,
+        "statement_type": statement_type,
+        "check_worthy": check_worthy,
     }
 
 

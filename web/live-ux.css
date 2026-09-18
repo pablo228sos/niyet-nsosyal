@@ -512,6 +512,15 @@ textarea:focus-visible {
   line-height: 1.58;
 }
 
+.checked-resolution {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.checked-resolution[hidden] {
+  display: none;
+}
+
 /* DRSK surfaces */
 .drsk-card {
   position: relative;
@@ -1281,4 +1290,144 @@ textarea:focus-visible {
 @keyframes status-pulse {
   0%, 100% { opacity: 0.45; transform: scale(0.9); }
   50% { opacity: 1; transform: scale(1); }
+}
+
+
+.role-device-label {
+  align-self: center;
+  margin-right: 4px;
+  color: var(--muted, #7a8495);
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.handoff-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.handoff-primary {
+  min-width: 170px;
+}
+
+.attention-budget {
+  display: inline-flex;
+  width: max-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(47, 108, 255, 0.08);
+  color: #285fd0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .role-device-label {
+    width: 100%;
+    margin: 0 0 3px;
+    text-align: center;
+  }
+
+  .handoff-actions,
+  .handoff-actions > button {
+    width: 100%;
+  }
+}
+
+
+.resolution-state-feed {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 28px;
+}
+
+.resolution-state-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 4px;
+}
+
+.resolution-state-head h2 {
+  margin: 2px 0 0;
+  font-size: 17px;
+}
+
+.resolution-state-head > small {
+  max-width: 320px;
+  color: var(--muted, #7a8495);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.state-post {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border, #e7ebf0);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+}
+
+.state-post-copy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.state-post p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.state-post > small {
+  max-width: 260px;
+  color: var(--muted, #7a8495);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.resolution-chip {
+  flex: 0 0 auto;
+  min-width: 72px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-align: center;
+}
+
+.resolution-chip.evidence { background: rgba(47,108,255,.10); color: #285fd0; }
+.resolution-chip.human { background: rgba(124,58,237,.10); color: #6d3fd0; }
+.resolution-chip.both { background: rgba(14,165,233,.10); color: #0579a8; }
+.resolution-chip.none { background: rgba(100,116,139,.12); color: #5f6f83; }
+
+@media (max-width: 720px) {
+  .resolution-state-head,
+  .state-post {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .resolution-state-head > small,
+  .state-post > small {
+    max-width: none;
+    text-align: left;
+  }
+
+  .state-post-copy {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

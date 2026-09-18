@@ -83,12 +83,12 @@ and passages wrap safely, and touch targets remain at least 44px high.
 
 ### Author
 
-1. write a normal social post
-2. choose `Post with DRSK` or explicitly request a person
-3. see bounded evidence inline when available
+1. write or paste a normal post
+2. use `Check with DRSK` as a stateless private inspection
+3. see the explicit EVIDENCE / HUMAN / BOTH / NONE path and bounded evidence when available
 4. understand the relationship between the original claim and the exact source passage
-5. if human context is needed, see who the request was routed to and why
-6. receive the human answer on the same post
+5. only after explicit `Ask a relevant person`, see who the request was routed to and why
+6. receive the human answer on the same post as `Resolved`
 
 Follower count is shown as context but is not an eligibility signal.
 

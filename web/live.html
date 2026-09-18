@@ -22,9 +22,9 @@
     </a>
     <div class="top-actions">
       <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
-      <button id="resetDemo" class="icon-button" type="button" title="Reset prototype" aria-label="Reset prototype">↻</button>
+      <button id="resetDemo" class="icon-button" type="button" data-reset-demo title="Reset prototype" aria-label="Reset prototype">↻</button>
       <button class="icon-button theme-button" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
-      <button id="languageToggle" class="quiet-button language-button" type="button" aria-label="Switch language">TR</button>
+      <button id="languageToggle" class="quiet-button language-button" type="button" data-language-toggle aria-label="Switch language">TR</button>
     </div>
   </header>
 
@@ -63,8 +63,9 @@
           <span class="feed-kicker">DRSK integration</span>
           <h1 data-copy="feedTitle">Feed</h1>
         </div>
-        <nav class="role-tabs" aria-label="Prototype role">
-          <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">New user</button>
+        <nav class="role-tabs" aria-label="Demo device role">
+          <span class="role-device-label" data-copy="demoDevice">Demo device</span>
+          <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">Author</button>
           <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
         </nav>
       </div>
@@ -88,8 +89,8 @@
             <div class="composer-actions">
               <button id="loadScenario" class="scenario-button" type="button" data-copy="loadScenario">Load example</button>
               <div class="post-actions">
-                <button id="routeHuman" class="quiet-button direct-human" type="button" data-copy="routeHuman">Ask a person directly</button>
-                <button id="resolveEvidence" class="primary-button" type="button" data-copy="postWithDrsk">Post with DRSK</button>
+                <button id="routeHuman" class="quiet-button direct-human" type="button" data-copy="routeHuman">Ask a relevant person</button>
+                <button id="resolveEvidence" class="primary-button" type="button" data-copy="postWithDrsk">Check with DRSK</button>
               </div>
             </div>
             <p class="composer-hint" data-copy="noFollowers">Follower count is never used as an eligibility signal.</p>
@@ -99,11 +100,33 @@
         <div id="authorMessage" class="inline-message" role="status" aria-live="polite"></div>
         <button id="restoreAuthor" class="sr-only" type="button" hidden data-copy="restore">Restore request</button>
 
+      </section>
+
+      <section id="responderView" class="responder-view" aria-labelledby="responderHeading" hidden>
+        <article class="responder-profile-card">
+          <div class="avatar responder-avatar" aria-hidden="true">R</div>
+          <div class="responder-profile-main">
+            <span class="feed-kicker" data-copy="responderSide">DRSK Requests</span>
+            <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
+            <div class="responder-controls">
+              <label for="responderSelect" data-copy="identity">Demo identity</label>
+              <select id="responderSelect"></select>
+              <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
+            </div>
+            <div id="responderMeta" class="responder-meta"></div>
+          </div>
+        </article>
+        <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
+        <div id="inbox" class="inbox" aria-live="polite"></div>
+      </section>
+
+      <section id="sharedFeed" class="shared-social-feed" aria-label="Shared demo feed">
         <article id="requestCard" class="post-card" hidden>
           <div class="post-grid">
             <div class="avatar" aria-hidden="true">AY</div>
             <div class="post-body">
               <div class="post-head"><strong>Ayşe Yılmaz</strong><span>@ayse.new</span><span>· now</span></div>
+              <span id="checkedResolution" class="resolution-chip checked-resolution" hidden></span>
               <p id="requestTextPreview" class="post-copy"></p>
 
               <section id="evidenceBlock" class="drsk-card evidence-card" hidden>
@@ -126,8 +149,12 @@
                 </div>
                 <div id="matchReasons" class="reason-list"></div>
                 <div class="match-footer">
-                  <small data-copy="capacityNote">Willingness and remaining capacity are hard constraints.</small>
-                  <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Open responder device</button>
+                  <small data-copy="capacityNote">Willingness and remaining attention budget are hard constraints.</small>
+                  <span id="attentionBudget" class="attention-budget" hidden></span>
+                  <div class="handoff-actions">
+                    <button id="openResponderDevice" class="primary-button handoff-primary" type="button" hidden data-copy="openResponder">Open responder device</button>
+                    <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Copy responder link</button>
+                  </div>
                 </div>
               </section>
 
@@ -141,24 +168,49 @@
             </div>
           </div>
         </article>
-      </section>
 
-      <section id="responderView" class="responder-view" aria-labelledby="responderHeading" hidden>
-        <article class="responder-profile-card">
-          <div class="avatar responder-avatar" aria-hidden="true">R</div>
-          <div class="responder-profile-main">
-            <span class="feed-kicker" data-copy="responderSide">Responder side</span>
-            <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
-            <div class="responder-controls">
-              <label for="responderSelect" data-copy="identity">Demo identity</label>
-              <select id="responderSelect"></select>
-              <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
+        <section class="resolution-state-feed" aria-labelledby="resolutionStateTitle">
+          <div class="resolution-state-head">
+            <div>
+              <span class="feed-kicker" data-copy="nativeTarget">Native feed concept</span>
+              <h2 id="resolutionStateTitle" data-copy="stateFeedTitle">Four resolution states</h2>
             </div>
-            <div id="responderMeta" class="responder-meta"></div>
+            <small data-copy="stateFeedNote">Static examples explain the Resolution Engine. They are not injected into real NSosyal posts.</small>
           </div>
-        </article>
-        <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
-        <div id="inbox" class="inbox" aria-live="polite"></div>
+
+          <article class="state-post">
+            <div class="state-post-copy">
+              <span class="resolution-chip evidence">EVIDENCE</span>
+              <p data-copy="stateEvidenceText">Regular physical activity provides significant physical and mental health benefits.</p>
+            </div>
+            <small data-copy="stateEvidenceMeta">Supported evidence is enough. No person is needed.</small>
+          </article>
+
+          <article class="state-post">
+            <div class="state-post-copy">
+              <span class="resolution-chip human">HUMAN</span>
+              <p data-copy="stateHumanText">My line-following robot oscillates in turns. Which PID term should I tune first?</p>
+            </div>
+            <small data-copy="stateHumanMeta">No factual claim to verify. Relevant human context is the useful path.</small>
+          </article>
+
+          <article class="state-post">
+            <div class="state-post-copy">
+              <span class="resolution-chip both">BOTH</span>
+              <p data-copy="stateBothText">Research proves coffee consumption causes lower mortality.</p>
+            </div>
+            <small data-copy="stateBothMeta">Evidence exposes an overclaim; a willing responder can interpret the unresolved part.</small>
+          </article>
+
+          <article class="state-post">
+            <div class="state-post-copy">
+              <span class="resolution-chip none">NONE</span>
+              <p data-copy="stateNoneText">Dark mode looks better than light mode.</p>
+            </div>
+            <small data-copy="stateNoneMeta">Opinion. No evidence card and no human request.</small>
+          </article>
+        </section>
+
       </section>
     </section>
 
@@ -166,6 +218,11 @@
       <div class="right-tools">
         <label class="search-shell"><span aria-hidden="true">⌕</span><input type="search" readonly data-shell-placeholder="search" placeholder="Search"></label>
         <button class="icon-button theme-button desktop-theme" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
+        <div class="desktop-demo-controls">
+          <button class="quiet-button compact-control" type="button" data-language-toggle aria-label="Switch language">TR</button>
+          <button id="prepareDemo" class="quiet-button compact-control prepare-demo" type="button" data-copy="prepareDemo">Prepare demo</button>
+          <button class="quiet-button compact-control" type="button" data-reset-demo data-copy="resetDemoLabel">Reset</button>
+        </div>
       </div>
 
       <section class="context-card trends-card">

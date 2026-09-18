@@ -82,6 +82,62 @@ def test_inspect_recommends_human_without_opening_a_request(api_server):
     assert inbox["requests"] == []
 
 
+def test_pure_human_question_has_no_sourcechain_failure_context(api_server):
+    text = "Çizgi izleyen robotum virajlarda salınım yapıyor. PID ayarına nereden başlamalıyım?"
+
+    status, inspected = post(api_server, {"action": "inspect", "text": text})
+
+    assert status == 200
+    assert inspected["resolution"]["path"] == "HUMAN"
+    assert inspected["statement_type"] == "QUESTION"
+    assert inspected["check_worthy"] is False
+    assert inspected["evidence_context"] is None
+    assert inspected["human_recommended"] is True
+    assert inspected["request"] is None
+
+
+def test_opinion_has_no_evidence_context_or_human_request(api_server):
+    status, inspected = post(
+        api_server,
+        {"action": "inspect", "text": "Dark mode looks better than light mode."},
+    )
+
+    assert status == 200
+    assert inspected["resolution"]["path"] == "NONE"
+    assert inspected["statement_type"] == "OPINION"
+    assert inspected["check_worthy"] is False
+    assert inspected["evidence_context"] is None
+    assert inspected["human_recommended"] is False
+    assert inspected["request"] is None
+
+
+def test_repeated_private_checks_do_not_consume_responder_attention_budget(api_server):
+    status, before = get(api_server)
+    assert status == 200
+    baseline = {
+        item["id"]: item["remaining_slots"]
+        for item in before["responders"]
+    }
+
+    texts = (
+        "Research proves coffee consumption causes lower mortality.",
+        "Dark mode looks better than light mode.",
+        "Çizgi izleyen robotum virajlarda salınım yapıyor. PID ayarına nereden başlamalıyım?",
+        "Regular physical activity provides significant physical and mental health benefits.",
+    )
+    for text in texts:
+        status, inspected = post(api_server, {"action": "inspect", "text": text})
+        assert status == 200
+        assert inspected["request"] is None
+
+    status, after = get(api_server)
+    assert status == 200
+    assert {
+        item["id"]: item["remaining_slots"]
+        for item in after["responders"]
+    } == baseline
+
+
 def test_inspect_reports_recommended_but_unavailable_human_capacity(api_server):
     for responder in human_api.runtime.responders:
         human_api.service.set_responder_active(responder.responder.id, False)
