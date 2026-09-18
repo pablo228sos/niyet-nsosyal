@@ -253,3 +253,12 @@ def test_curated_state_feed_inherits_dark_theme_instead_of_forcing_white_cards()
     assert "background: var(--ns-panel)" in css
     assert ".state-post p { color: var(--ns-text); }" in css
     assert ".state-post > small { color: var(--ns-muted); }" in css
+
+
+def test_load_example_has_identical_canonical_outcome_in_en_and_tr_ui():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "const canonicalExampleScenario =" in script
+    assert "en: canonicalExampleScenario" in script
+    assert "tr: canonicalExampleScenario" in script
+    assert "Research proves coffee consumption causes lower mortality." in script

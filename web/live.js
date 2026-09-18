@@ -2,9 +2,11 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const apiCandidates = ['/api/human-help', '/api/human_help'];
+const canonicalExampleScenario =
+  'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?';
 const exampleScenario = {
-  en: 'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?',
-  tr: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor. Çalışmanın aslında ne gösterdiğini biri açıklayabilir mi?'
+  en: canonicalExampleScenario,
+  tr: canonicalExampleScenario
 };
 
 let apiEndpoint = sessionStorage.getItem('drsk-human-help-endpoint') || null;
