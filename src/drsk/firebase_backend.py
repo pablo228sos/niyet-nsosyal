@@ -43,6 +43,7 @@ def firebase_credentials_from_environment(
 
 _lock = threading.Lock()
 _app: Any | None = None
+_APP_NAME = "drsk-niyet"
 
 
 def get_firebase_app() -> Any:
@@ -62,15 +63,21 @@ def get_firebase_app() -> Any:
             raise FirebaseConfigurationError("firebase_emulator_configuration_incomplete")
         emulator_enabled = firestore_emulator and auth_emulator
         try:
-            _app = firebase_admin.get_app()
+            # Use a dedicated named app so NIYET cannot accidentally reuse or
+            # overwrite another Firebase Admin app in the same Python process.
+            _app = firebase_admin.get_app(_APP_NAME)
         except ValueError:
             if emulator_enabled and emulator_project:
-                _app = firebase_admin.initialize_app(options={"projectId": emulator_project})
+                _app = firebase_admin.initialize_app(
+                    options={"projectId": emulator_project},
+                    name=_APP_NAME,
+                )
             else:
                 config = firebase_credentials_from_environment()
                 _app = firebase_admin.initialize_app(
                     credentials.Certificate(config.certificate()),
                     {"projectId": config.project_id},
+                    name=_APP_NAME,
                 )
         return _app
 
