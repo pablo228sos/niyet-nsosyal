@@ -51,6 +51,13 @@ def test_legacy_browser_trusted_mutations_are_disabled() -> None:
     assert 'self._json(410, {"error": "legacy_demo_endpoint_disabled"})' in human_api
 
 
+def test_service_account_credentials_are_ignored_by_git() -> None:
+    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    assert "*firebase-adminsdk*.json" in gitignore
+    assert "firebase-service-account*.json" in gitignore
+    assert "service-account*.json" in gitignore
+
+
 def test_firestore_assignment_queries_have_required_composite_indexes() -> None:
     repository = (ROOT / "src" / "drsk" / "niyet_persistence.py").read_text(encoding="utf-8")
     indexes = (ROOT / "firestore.indexes.json").read_text(encoding="utf-8")
