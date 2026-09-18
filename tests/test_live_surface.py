@@ -294,3 +294,11 @@ def test_live_check_renders_every_resolution_path_without_opening_a_request():
     assert "if (path)" in no_request
     assert "status: path" in no_request
     assert "assigned_responder: null" in no_request
+
+
+def test_live_explains_that_checks_repeat_without_opening_human_requests():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "Check as many posts as you want." in script
+    assert "A human request opens only when you choose Ask a relevant person." in script
+    assert "İstediğin kadar gönderiyi kontrol et." in script
