@@ -82,7 +82,7 @@ def test_live_composer_detection_handles_rich_text_editors_and_nsosyal_send_acti
 
 def test_composer_helper_stays_compact_and_clear_of_native_toolbar():
     assert "trigger.style.setProperty('right', 'auto')" in CONTENT
-    assert "trigger.style.setProperty('right', '24px')" in CONTENT
+    assert "trigger.style.setProperty('right', narrow ? 'auto' : '24px')" in CONTENT
     assert "sendRect.left - 82" in CONTENT
     assert "trigger.dataset.fallback = 'false'" in CONTENT
     assert "trigger.dataset.fallback = 'true'" in CONTENT
