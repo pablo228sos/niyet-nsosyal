@@ -100,6 +100,27 @@
         <div id="authorMessage" class="inline-message" role="status" aria-live="polite"></div>
         <button id="restoreAuthor" class="sr-only" type="button" hidden data-copy="restore">Restore request</button>
 
+      </section>
+
+      <section id="responderView" class="responder-view" aria-labelledby="responderHeading" hidden>
+        <article class="responder-profile-card">
+          <div class="avatar responder-avatar" aria-hidden="true">R</div>
+          <div class="responder-profile-main">
+            <span class="feed-kicker" data-copy="responderSide">DRSK Requests</span>
+            <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
+            <div class="responder-controls">
+              <label for="responderSelect" data-copy="identity">Demo identity</label>
+              <select id="responderSelect"></select>
+              <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
+            </div>
+            <div id="responderMeta" class="responder-meta"></div>
+          </div>
+        </article>
+        <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
+        <div id="inbox" class="inbox" aria-live="polite"></div>
+      </section>
+
+      <section id="sharedFeed" class="shared-social-feed" aria-label="Shared demo feed">
         <article id="requestCard" class="post-card" hidden>
           <div class="post-grid">
             <div class="avatar" aria-hidden="true">AY</div>
@@ -188,24 +209,7 @@
             <small data-copy="stateNoneMeta">Opinion. No evidence card and no human request.</small>
           </article>
         </section>
-      </section>
 
-      <section id="responderView" class="responder-view" aria-labelledby="responderHeading" hidden>
-        <article class="responder-profile-card">
-          <div class="avatar responder-avatar" aria-hidden="true">R</div>
-          <div class="responder-profile-main">
-            <span class="feed-kicker" data-copy="responderSide">DRSK Requests</span>
-            <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
-            <div class="responder-controls">
-              <label for="responderSelect" data-copy="identity">Demo identity</label>
-              <select id="responderSelect"></select>
-              <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
-            </div>
-            <div id="responderMeta" class="responder-meta"></div>
-          </div>
-        </article>
-        <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
-        <div id="inbox" class="inbox" aria-live="polite"></div>
       </section>
     </section>
 
