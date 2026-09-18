@@ -3,6 +3,7 @@
 
   const HOST_ID = 'drsk-concept-overlay-host';
   const AUTHOR_STORAGE_KEY = 'drsk-active-author-v1';
+  const LIVE_URL = 'https://niyet-nsosyal.vercel.app/live';
   if (document.getElementById(HOST_ID)) return;
 
   const EDITABLE_SELECTOR = [
@@ -43,6 +44,8 @@
       source: 'Open source',
       sourceFallback: 'Source',
       responder: 'Open responder device',
+      copyResponder: 'Copy responder link',
+      copiedResponder: 'Responder link copied.',
       answered: 'Human context received',
       waiting: 'Waiting for human response',
       accepted: 'Accepted. A response is being prepared.',
@@ -54,7 +57,7 @@
       askPerson: 'Ask a relevant person',
       consent: 'Nothing is sent to a person until you press this button.',
       candidate: 'Available now',
-      unavailableResponder: 'Human context is recommended, but no eligible responder has capacity right now.',
+      unavailableResponder: 'Human context is recommended, but no eligible responder is available right now.',
       activeRequest: 'This post already has an active human request.',
       restoreFailed: 'The previous request is no longer available. You can run a new check.',
       draftStage: 'Private check',
@@ -88,6 +91,8 @@
       source: 'Kaynağı aç',
       sourceFallback: 'Kaynak',
       responder: 'Cevaplayıcı cihazını aç',
+      copyResponder: 'Cevaplayıcı bağlantısını kopyala',
+      copiedResponder: 'Cevaplayıcı bağlantısı kopyalandı.',
       answered: 'İnsan bağlamı geldi',
       waiting: 'İnsan yanıtı bekleniyor',
       accepted: 'Kabul edildi. Yanıt hazırlanıyor.',
@@ -99,7 +104,7 @@
       askPerson: 'İlgili bir kişiye sor',
       consent: 'Bu düğmeye basılana kadar hiçbir kişiye istek gönderilmez.',
       candidate: 'Şu anda uygun',
-      unavailableResponder: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.',
+      unavailableResponder: 'İnsan bağlamı öneriliyor, ancak şu anda uygun bir cevaplayıcı yok.',
       activeRequest: 'Bu gönderi için zaten etkin bir insan isteği var.',
       restoreFailed: 'Önceki istek artık kullanılamıyor. Yeni bir kontrol başlatabilirsin.',
       draftStage: 'Özel kontrol',
@@ -542,14 +547,28 @@
     const reasons = Array.isArray(responder.reason) ? responder.reason : [];
     if (reasons.length) wrap.append(el('small', 'drsk-overlay-muted', reasons.join(' · ')));
 
-    const button = el('a', 'drsk-overlay-secondary', t('responder'));
-    const url = new URL('https://niyet-nsosyal.vercel.app/live');
+    const url = new URL(LIVE_URL);
     url.searchParams.set('role', 'responder');
     url.searchParams.set('responder', responder.id);
+
+    const actions = el('div', 'drsk-overlay-handoff-actions');
+    const button = el('a', 'drsk-overlay-secondary', t('responder'));
     button.href = url.href;
     button.target = '_blank';
     button.rel = 'noopener noreferrer';
-    wrap.append(button);
+
+    const copy = el('button', 'drsk-overlay-secondary drsk-overlay-copy-link', t('copyResponder'));
+    copy.type = 'button';
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url.href);
+        copy.textContent = t('copiedResponder');
+      } catch (_) {
+        copy.textContent = url.href;
+      }
+    });
+    actions.append(button, copy);
+    wrap.append(actions);
     return wrap;
   }
 

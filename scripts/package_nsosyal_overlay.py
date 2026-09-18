@@ -67,13 +67,14 @@ def build_runtime_files(backend_origin: str) -> dict[str, bytes]:
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     ).encode("utf-8")
 
-    background = runtime["background.js"].decode("utf-8")
-    if DEFAULT_BACKEND_ORIGIN not in background:
-        raise SystemExit("overlay background backend origin is missing")
-    runtime["background.js"] = background.replace(
-        DEFAULT_BACKEND_ORIGIN,
-        backend_origin,
-    ).encode("utf-8")
+    for runtime_name in ("background.js", "content-v2.js"):
+        text = runtime[runtime_name].decode("utf-8")
+        if DEFAULT_BACKEND_ORIGIN not in text:
+            raise SystemExit(f"overlay {runtime_name} backend origin is missing")
+        runtime[runtime_name] = text.replace(
+            DEFAULT_BACKEND_ORIGIN,
+            backend_origin,
+        ).encode("utf-8")
     return runtime
 
 

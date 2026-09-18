@@ -146,11 +146,14 @@ def test_preview_packaging_keeps_backend_url_and_host_permission_in_sync():
     runtime = build_runtime_files(origin)
     manifest = json.loads(runtime["manifest.json"].decode("utf-8"))
     background = runtime["background.js"].decode("utf-8")
+    content = runtime["content-v2.js"].decode("utf-8")
 
     assert manifest["host_permissions"] == [f"{origin}/*"]
     assert f"{origin}/api/human_help" in background
     assert f"{origin}/api/human-help" in background
+    assert f"{origin}/live" in content
     assert "https://niyet-nsosyal.vercel.app/api/human_help" not in background
+    assert "https://niyet-nsosyal.vercel.app/live" not in content
 
 def test_draft_inspection_is_explicitly_optional_and_private():
     assert "privateInspect: 'Private draft check only. Nothing has been posted or sent to a person.'" in CONTENT
@@ -171,3 +174,11 @@ def test_native_publish_detection_never_creates_a_human_request_by_itself():
     assert "post_url: inspection.postUrl" in escalate
     assert "action: 'resolve'" in escalate
 
+
+
+def test_extension_responder_handoff_matches_truthful_availability_copy():
+    assert "LIVE_URL = 'https://niyet-nsosyal.vercel.app/live'" in CONTENT
+    assert "No eligible responder is available right now." in CONTENT
+    assert "Copy responder link" in CONTENT
+    assert "navigator.clipboard.writeText(url.href)" in CONTENT
+    assert "drsk-overlay-handoff-actions" in CONTENT
