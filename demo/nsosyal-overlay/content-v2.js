@@ -57,11 +57,12 @@
       unavailableResponder: 'Human context is recommended, but no eligible responder has capacity right now.',
       activeRequest: 'This post already has an active human request.',
       restoreFailed: 'The previous request is no longer available. You can run a new check.',
-      draftStage: 'Draft checked',
+      draftStage: 'Private check',
       publishedStage: 'Published',
       routedStage: 'Routed',
       resolvedStage: 'Resolved',
-      publishFirst: 'Publish this text in NSosyal first. Human routing unlocks only after the published post is visible.',
+      privateInspect: 'Private draft check only. Nothing has been posted or sent to a person.',
+      publishFirst: 'If you want human context, publish this text normally first. Routing unlocks only after the published post is visible.',
       publicationWaiting: 'Waiting for the published post to appear in the feed…',
       publicationMissing: 'The published post is not visible yet. Keep the panel open, then check again.',
       checkPublication: 'Find published post',
@@ -101,11 +102,12 @@
       unavailableResponder: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.',
       activeRequest: 'Bu gönderi için zaten etkin bir insan isteği var.',
       restoreFailed: 'Önceki istek artık kullanılamıyor. Yeni bir kontrol başlatabilirsin.',
-      draftStage: 'Taslak kontrol edildi',
+      draftStage: 'Özel kontrol',
       publishedStage: 'Yayınlandı',
       routedStage: 'Yönlendirildi',
       resolvedStage: 'Çözüldü',
-      publishFirst: 'Önce bu metni NSosyal’de yayınla. İnsan yönlendirmesi yalnızca yayınlanan gönderi görünür olduğunda açılır.',
+      privateInspect: 'Bu yalnızca özel taslak kontrolüdür. Hiçbir şey yayınlanmadı veya bir kişiye gönderilmedi.',
+      publishFirst: 'İnsan bağlamı istiyorsan bu metni normal şekilde yayınla. Yönlendirme yalnızca yayınlanan gönderi görünür olduktan sonra açılır.',
       publicationWaiting: 'Yayınlanan gönderinin akışta görünmesi bekleniyor…',
       publicationMissing: 'Yayınlanan gönderi henüz görünmüyor. Paneli açık tutup tekrar kontrol et.',
       checkPublication: 'Yayınlanan gönderiyi bul',
@@ -607,6 +609,9 @@
       || (state.inspection && sameText(state.inspection.text, text) && state.inspection.published)
     );
     body.append(renderLifecycle({ evidence: Boolean(evidence), published, request }));
+    if (!published && !request) {
+      body.append(el('p', 'drsk-overlay-private-note', t('privateInspect')));
+    }
     if (evidence) body.append(renderEvidence(evidence));
     else if (result?.check_worthy === false && result?.human_recommended) {
       body.append(el('p', 'drsk-overlay-empty', t('noFactualClaim')));

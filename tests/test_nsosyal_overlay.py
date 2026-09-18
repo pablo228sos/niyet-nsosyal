@@ -152,3 +152,22 @@ def test_preview_packaging_keeps_backend_url_and_host_permission_in_sync():
     assert f"{origin}/api/human-help" in background
     assert "https://niyet-nsosyal.vercel.app/api/human_help" not in background
 
+def test_draft_inspection_is_explicitly_optional_and_private():
+    assert "privateInspect: 'Private draft check only. Nothing has been posted or sent to a person.'" in CONTENT
+    assert "If you want human context, publish this text normally first." in CONTENT
+    assert "privateInspect: 'Bu yalnızca özel taslak kontrolüdür." in CONTENT
+    assert "İnsan bağlamı istiyorsan bu metni normal şekilde yayınla." in CONTENT
+    assert "if (!published && !request)" in CONTENT
+    assert ".drsk-overlay-private-note" in PUBLISHED_CSS
+
+
+def test_native_publish_detection_never_creates_a_human_request_by_itself():
+    publish_listener = CONTENT.split("document.addEventListener('click', (event) => {", 1)[1].split("trigger.addEventListener('click'", 1)[0]
+    escalate = CONTENT.split("async function escalateToHuman(text) {", 1)[1].split("async function resolveCurrentPost()", 1)[0]
+
+    assert "watchForPublishedPost(text)" in publish_listener
+    assert "action: 'resolve'" not in publish_listener
+    assert "inspection?.published" in escalate
+    assert "post_url: inspection.postUrl" in escalate
+    assert "action: 'resolve'" in escalate
+
