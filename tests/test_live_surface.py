@@ -212,3 +212,18 @@ def test_responder_handoff_and_loading_copy_match_actual_behavior():
     assert "await navigator.clipboard.writeText(link)" in script
     assert "checking: 'Checking evidence and routing…'" in script
     assert "checking: 'Kanıt ve yönlendirme kontrol ediliyor…'" in script
+
+
+def test_live_curated_state_feed_is_small_static_and_truthful():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "Four resolution states" in html
+    assert html.count("resolution-chip") == 4
+    for state in ("EVIDENCE", "HUMAN", "BOTH", "NONE"):
+        assert f">{state}<" in html
+    assert "They are not injected into real NSosyal posts." in script
+    assert "stateEvidenceText" in script
+    assert "stateHumanText" in script
+    assert "stateBothText" in script
+    assert "stateNoneText" in script

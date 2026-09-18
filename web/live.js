@@ -25,6 +25,11 @@ const copy = {
   en: {
     navFeed: 'Feed', navExplore: 'Discover', navCommunities: 'Communities', navMessages: 'Messages', navProfile: 'Profile',
     integrationNote: 'Evidence + human resolution', prototypeLabel: 'Final prototype', feedTitle: 'Feed',
+    nativeTarget: 'Native feed concept', stateFeedTitle: 'Four resolution states', stateFeedNote: 'Static examples explain the Resolution Engine. They are not injected into real NSosyal posts.',
+    stateEvidenceText: 'Regular physical activity provides significant physical and mental health benefits.', stateEvidenceMeta: 'Supported evidence is enough. No person is needed.',
+    stateHumanText: 'My line-following robot oscillates in turns. Which PID term should I tune first?', stateHumanMeta: 'No factual claim to verify. Relevant human context is the useful path.',
+    stateBothText: 'Research proves coffee consumption causes lower mortality.', stateBothMeta: 'Evidence exposes an overclaim; a willing responder can interpret the unresolved part.',
+    stateNoneText: 'Dark mode looks better than light mode.', stateNoneMeta: 'Opinion. No evidence card and no human request.',
     demoDevice: 'Demo device', authorTab: 'Author', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'DRSK Requests',
     authorHeading: 'Ask without an audience.', responderHeading: 'Requests that match what you can help with.',
     requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
@@ -50,6 +55,11 @@ const copy = {
   tr: {
     navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
     integrationNote: 'Kanıt + insan çözümü', prototypeLabel: 'Final prototipi', feedTitle: 'Akış',
+    nativeTarget: 'Yerel akış konsepti', stateFeedTitle: 'Dört çözüm durumu', stateFeedNote: 'Bu sabit örnekler Resolution Engine mantığını açıklar. Gerçek NSosyal gönderilerine enjekte edilmez.',
+    stateEvidenceText: 'Düzenli fiziksel aktivite önemli fiziksel ve zihinsel sağlık faydaları sağlar.', stateEvidenceMeta: 'Destekleyici kanıt yeterli. İnsan yanıtı gerekmiyor.',
+    stateHumanText: 'Çizgi izleyen robotum virajlarda salınım yapıyor. Önce hangi PID terimini ayarlamalıyım?', stateHumanMeta: 'Doğrulanacak olgusal iddia yok. İlgili insan bağlamı faydalı yol.',
+    stateBothText: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor.', stateBothMeta: 'Kanıt aşırı iddiayı gösterir; istekli bir cevaplayıcı çözülmeyen kısmı yorumlayabilir.',
+    stateNoneText: 'Karanlık mod açık moddan daha iyi görünüyor.', stateNoneMeta: 'Görüş. Kanıt kartı veya insan isteği açılmaz.',
     demoDevice: 'Demo cihazı', authorTab: 'Gönderi sahibi', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'DRSK İstekleri',
     authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Gerçekten yardımcı olabileceğin istekler.',
     requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
