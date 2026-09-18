@@ -183,6 +183,62 @@ def test_bundle_explanation_does_not_mislabel_live_evidence_as_controlled():
     assert "controlled evidence" not in bundle.explanation.lower()
 
 
+def test_supported_claim_is_not_downgraded_by_secondary_partial_candidate():
+    text = "The Bosphorus connects the Black Sea with the Sea of Marmara."
+    analysis = analyze_post(text)
+    provider = ControlledEvidenceProvider(
+        (
+            document(
+                "https://example.org/bosphorus-exact",
+                "The Bosphorus connects the Black Sea with the Sea of Marmara.",
+                cluster="nasa-like",
+            ),
+            document(
+                "https://example.org/bosphorus-context",
+                "The Bosphorus is a major strait in northwest Turkey beside the Sea of Marmara.",
+                cluster="context-source",
+            ),
+        ),
+        max_documents=2,
+        max_passages_per_document=1,
+    )
+
+    bundle = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert EvidenceRelation.SUPPORTED in {item.relation for item in bundle.evidence}
+    assert EvidenceRelation.PARTIALLY_SUPPORTED in {
+        item.relation for item in bundle.evidence
+    }
+    assert bundle.status is BundleStatus.SUPPORTED
+    assert bundle.sufficient is True
+
+
+def test_multiclaim_post_remains_partial_until_every_claim_is_supported():
+    text = "The Bosphorus connects the Black Sea with the Sea of Marmara. Sales increased 20%."
+    analysis = analyze_post(text)
+    provider = ControlledEvidenceProvider(
+        (
+            document(
+                "https://example.org/bosphorus",
+                "The Bosphorus connects the Black Sea with the Sea of Marmara.",
+                cluster="source-a",
+            ),
+            document(
+                "https://example.org/sales",
+                "Sales increased.",
+                cluster="source-b",
+            ),
+        ),
+        max_documents=2,
+        max_passages_per_document=1,
+    )
+
+    bundle = build_evidence_bundle(analysis, provider, now=NOW)
+
+    assert bundle.status is BundleStatus.PARTIAL
+    assert bundle.sufficient is False
+
+
 def test_partial_evidence_is_visible_but_not_marked_sufficient():
     analysis = analyze_post("Satışlar yüzde 20 arttı.")
     provider = ControlledEvidenceProvider(

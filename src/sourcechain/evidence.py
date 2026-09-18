@@ -16,14 +16,45 @@ def _stable_id(prefix: str, *values: str) -> str:
     return f"{prefix}-{digest}"
 
 
-def _bundle_status(evidence: tuple[EvidenceItem, ...]) -> BundleStatus:
-    relations = {item.relation for item in evidence}
-    if EvidenceRelation.CONFLICTING in relations:
+def _bundle_status(
+    analysis: PostAnalysis,
+    evidence: tuple[EvidenceItem, ...],
+) -> BundleStatus:
+    """Aggregate evidence by claim, not by the weakest candidate passage.
+
+    A single factual claim can retrieve several candidate passages. Once that
+    claim has clean SUPPORT, an additional merely-partial candidate must not
+    downgrade the whole post to PARTIAL and trigger NIYET "just in case".
+    Multi-claim posts still fail closed: every extracted factual claim needs at
+    least one supported passage before the bundle is fully SUPPORTED.
+    """
+
+    if any(item.relation is EvidenceRelation.CONFLICTING for item in evidence):
         return BundleStatus.CONFLICTING
-    if EvidenceRelation.PARTIALLY_SUPPORTED in relations:
-        return BundleStatus.PARTIAL
-    if EvidenceRelation.SUPPORTED in relations:
+
+    if not analysis.claims:
+        return BundleStatus.INSUFFICIENT
+
+    claim_relations: dict[str, set[EvidenceRelation]] = {
+        claim.claim_id: set() for claim in analysis.claims
+    }
+    for item in evidence:
+        if item.claim_id in claim_relations:
+            claim_relations[item.claim_id].add(item.relation)
+
+    claim_closed = []
+    any_context = False
+    for claim in analysis.claims:
+        relations = claim_relations[claim.claim_id]
+        supported = EvidenceRelation.SUPPORTED in relations
+        partial = EvidenceRelation.PARTIALLY_SUPPORTED in relations
+        claim_closed.append(supported)
+        any_context = any_context or supported or partial
+
+    if claim_closed and all(claim_closed):
         return BundleStatus.SUPPORTED
+    if any_context:
+        return BundleStatus.PARTIAL
     return BundleStatus.INSUFFICIENT
 
 
@@ -67,7 +98,7 @@ def build_evidence_bundle(
                 metadata={"provider": hit.provider, "lexical_score": round(hit.score, 6)},
             ))
     evidence = tuple(items)
-    status = _bundle_status(evidence)
+    status = _bundle_status(analysis, evidence)
     explanation, citations = build_explanation(status, evidence)
     return EvidenceBundle(
         bundle_id=_stable_id("bundle", analysis.text, str(version), *(item.evidence_id for item in evidence)),
