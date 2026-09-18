@@ -8,6 +8,12 @@ from .text import normalize
 
 
 _OPINION = re.compile(r"\b(bence|bana göre|sanırım|fikrimce|düşünüyorum|i think|in my opinion)\b", re.I)
+_SUBJECTIVE_COMPARISON = re.compile(
+    r"(?:\b(?:looks?|feels?|tastes?|sounds?|seems?)\s+(?:much\s+)?(?:better|worse|nicer|prettier|uglier)\b"
+    r"|\b(?:is|are)\s+(?:much\s+)?(?:better|worse|nicer|prettier|uglier)\s+than\b"
+    r"|\b(?:daha|çok|en)\s+(?:iyi|kötü|güzel|çirkin|hoş)\s+(?:görünüyor|duruyor|hissettiriyor|geliyor)\b)",
+    re.I,
+)
 _EXPERIENCE = re.compile(r"\b(ben|benim|bende|yaşadım|hissettim|başım|kolum|ağrıdı|gördüm|i experienced|my)\b", re.I)
 _PREDICTION = re.compile(r"\b(muhtemelen|gelecekte|olacak|bekleniyor|tahmin|will|likely)\b", re.I)
 _FACT_SIGNAL = re.compile(
@@ -43,7 +49,7 @@ def classify_statement(text: str) -> StatementType:
     if not value:
         return StatementType.OPINION
 
-    opinion = bool(_OPINION.search(value))
+    opinion = bool(_OPINION.search(value) or _SUBJECTIVE_COMPARISON.search(value))
     experience = bool(_EXPERIENCE.search(value))
     prediction = bool(_PREDICTION.search(value))
     factual = _has_factual_signal(value)

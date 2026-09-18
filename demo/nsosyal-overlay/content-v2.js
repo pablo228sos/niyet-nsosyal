@@ -47,7 +47,9 @@
       waiting: 'Waiting for human response',
       accepted: 'Accepted. A response is being prepared.',
       evidenceEnough: 'The bounded evidence is sufficient for this path.',
-      noAction: 'No evidence or human action is needed for this content.',
+      noAction: 'No factual claim to verify. No DRSK action is needed for this content.',
+      noFactualClaim: 'No factual claim to verify.',
+      humanContextNeeded: 'Human context is needed for this question.',
       humanRecommended: 'The evidence leaves an interpretive gap. Human context is recommended.',
       askPerson: 'Ask a relevant person',
       consent: 'Nothing is sent to a person until you press this button.',
@@ -89,7 +91,9 @@
       waiting: 'İnsan yanıtı bekleniyor',
       accepted: 'Kabul edildi. Yanıt hazırlanıyor.',
       evidenceEnough: 'Sınırlandırılmış kanıt bu yol için yeterli.',
-      noAction: 'Bu içerik için kanıt veya insan adımı gerekmiyor.',
+      noAction: 'Doğrulanacak olgusal iddia yok. Bu içerik için ek DRSK adımı gerekmiyor.',
+      noFactualClaim: 'Doğrulanacak olgusal iddia yok.',
+      humanContextNeeded: 'Bu soru için insan bağlamı gerekiyor.',
       humanRecommended: 'Kanıt yorumlama boşluğu bırakıyor. İnsan bağlamı öneriliyor.',
       askPerson: 'İlgili bir kişiye sor',
       consent: 'Bu düğmeye basılana kadar hiçbir kişiye istek gönderilmez.',
@@ -545,7 +549,10 @@
     const wrap = el('section', 'drsk-overlay-card drsk-overlay-recommendation');
     const cardHead = el('div', 'drsk-overlay-card-head');
     cardHead.append(el('span', 'drsk-overlay-brand human', 'NIYET'), el('b', '', t('human')));
-    wrap.append(cardHead, el('p', 'drsk-overlay-route', t('humanRecommended')));
+    const recommendation = result?.check_worthy === false
+      ? t('humanContextNeeded')
+      : t('humanRecommended');
+    wrap.append(cardHead, el('p', 'drsk-overlay-route', recommendation));
 
     if (!result?.human_available) {
       wrap.append(el('p', 'drsk-overlay-capacity', t('unavailableResponder')));
@@ -588,6 +595,9 @@
     );
     body.append(renderLifecycle({ evidence: Boolean(evidence), published, request }));
     if (evidence) body.append(renderEvidence(evidence));
+    else if (result?.check_worthy === false && result?.human_recommended) {
+      body.append(el('p', 'drsk-overlay-empty', t('noFactualClaim')));
+    }
 
     if (!request) {
       if (result?.human_recommended) {

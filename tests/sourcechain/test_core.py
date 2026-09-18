@@ -36,6 +36,26 @@ def test_statement_gate_excludes_question_opinion_and_experience():
     assert factual.check_worthy
 
 
+def test_subjective_comparisons_are_opinion_without_hiding_mixed_facts():
+    english = analyze_post("Dark mode looks better than light mode.")
+    turkish = analyze_post("Karanlık mod açık moddan daha iyi görünüyor.")
+    factual_contrast = analyze_post("Dark mode uses 20% less battery than light mode.")
+    mixed = analyze_post(
+        "Dark mode looks better than light mode. "
+        "A 2025 study found it uses 20% less battery."
+    )
+
+    assert english.statement_type is StatementType.OPINION
+    assert not english.check_worthy
+    assert turkish.statement_type is StatementType.OPINION
+    assert not turkish.check_worthy
+    assert factual_contrast.statement_type is StatementType.FACTUAL_CLAIM
+    assert factual_contrast.check_worthy
+    assert mixed.statement_type is StatementType.MIXED
+    assert mixed.check_worthy
+    assert any("2025 study found" in claim.text for claim in mixed.claims)
+
+
 def test_statement_gate_keeps_declarative_claim_before_follow_up_question():
     text = (
         "Research proves coffee consumption causes lower mortality. "

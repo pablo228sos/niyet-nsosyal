@@ -82,6 +82,35 @@ def test_inspect_recommends_human_without_opening_a_request(api_server):
     assert inbox["requests"] == []
 
 
+def test_pure_human_question_has_no_sourcechain_failure_context(api_server):
+    text = "Çizgi izleyen robotum virajlarda salınım yapıyor. PID ayarına nereden başlamalıyım?"
+
+    status, inspected = post(api_server, {"action": "inspect", "text": text})
+
+    assert status == 200
+    assert inspected["resolution"]["path"] == "HUMAN"
+    assert inspected["statement_type"] == "QUESTION"
+    assert inspected["check_worthy"] is False
+    assert inspected["evidence_context"] is None
+    assert inspected["human_recommended"] is True
+    assert inspected["request"] is None
+
+
+def test_opinion_has_no_evidence_context_or_human_request(api_server):
+    status, inspected = post(
+        api_server,
+        {"action": "inspect", "text": "Dark mode looks better than light mode."},
+    )
+
+    assert status == 200
+    assert inspected["resolution"]["path"] == "NONE"
+    assert inspected["statement_type"] == "OPINION"
+    assert inspected["check_worthy"] is False
+    assert inspected["evidence_context"] is None
+    assert inspected["human_recommended"] is False
+    assert inspected["request"] is None
+
+
 def test_inspect_reports_recommended_but_unavailable_human_capacity(api_server):
     for responder in human_api.runtime.responders:
         human_api.service.set_responder_active(responder.responder.id, False)
