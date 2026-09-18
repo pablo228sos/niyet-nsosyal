@@ -5,7 +5,7 @@ on:
     branches:
       - feat/firebase-production-niyet
     paths:
-      - '.github/migration/capacity-lifecycle.patch'
+      - 'scripts/_apply_capacity_lifecycle_fix.py'
       - '.github/workflows/apply-capacity-lifecycle-fix.yml'
 
 permissions:
@@ -30,111 +30,8 @@ jobs:
           node-version: '24'
 
       - name: Apply production capacity lifecycle fix
-        shell: bash
         run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('src/drsk/niyet_persistence.py')
-          text = path.read_text(encoding='utf-8')
-
-          old = '''            post = self.posts.get(request["post_id"])
-            if post is not None:
-                post.update(resolution=resolution, updated_at=now)
-            self._event("ANSWERED", actor_uid=uid, request_id=request["id"], assignment_id=assignment_id)
-            return copy.deepcopy(assignment)
-'''
-          new = '''            post = self.posts.get(request["post_id"])
-            if post is not None:
-                post.update(resolution=resolution, updated_at=now)
-            profile = self.profiles.get(uid)
-            if profile is not None:
-                profile["capacity_remaining"] = min(
-                    int(profile["capacity_total"]), int(profile["capacity_remaining"]) + 1
-                )
-                profile["updated_at"] = now
-            self._event("ANSWERED", actor_uid=uid, request_id=request["id"], assignment_id=assignment_id)
-            return copy.deepcopy(assignment)
-'''
-          if text.count(old) != 1:
-              raise SystemExit('memory answer replacement anchor not unique')
-          text = text.replace(old, new, 1)
-
-          old = '''            post_ref = self.client.collection("posts").document(request["post_id"])
-            resolution = {
-'''
-          new = '''            post_ref = self.client.collection("posts").document(request["post_id"])
-            profile_ref = self.client.collection("responder_profiles").document(uid)
-            profile_snapshot = profile_ref.get(transaction=transaction)
-            if not profile_snapshot.exists:
-                raise DomainError("responder_profile_not_found", 404)
-            profile = profile_snapshot.to_dict() or {}
-            resolution = {
-'''
-          if text.count(old) != 1:
-              raise SystemExit('firestore answer read anchor not unique')
-          text = text.replace(old, new, 1)
-
-          old = '''            transaction.update(post_ref, {
-                "resolution": resolution,
-                "updated_at": firestore.SERVER_TIMESTAMP,
-            })
-            transaction.set(event_ref, {
-'''
-          new = '''            transaction.update(post_ref, {
-                "resolution": resolution,
-                "updated_at": firestore.SERVER_TIMESTAMP,
-            })
-            capacity_total = int(profile.get("capacity_total", 0))
-            capacity_remaining = int(profile.get("capacity_remaining", 0))
-            transaction.update(profile_ref, {
-                "capacity_remaining": min(capacity_total, capacity_remaining + 1),
-                "updated_at": firestore.SERVER_TIMESTAMP,
-            })
-            transaction.set(event_ref, {
-'''
-          if text.count(old) != 1:
-              raise SystemExit('firestore answer capacity anchor not unique')
-          text = text.replace(old, new, 1)
-
-          old = '''        if not clean_answer or len(clean_answer) > 4000:
-            raise DomainError("invalid_answer")
-        return self.repository.answer(actor.uid, assignment_id, clean_answer)
-'''
-          new = '''        if not clean_answer or len(clean_answer) > 4000:
-            raise DomainError("invalid_answer")
-        assignment = self.repository.answer(actor.uid, assignment_id, clean_answer)
-        self._allocate_open_requests()
-        return assignment
-'''
-          if text.count(old) != 1:
-              raise SystemExit('service answer replacement anchor not unique')
-          text = text.replace(old, new, 1)
-          path.write_text(text, encoding='utf-8')
-
-          test_path = Path('tests/test_niyet_persistence.py')
-          tests = test_path.read_text(encoding='utf-8')
-          old = '''    with pytest.raises(DomainError, match="permission_denied"):
-        service.answer(actor("intruder"), assignment_id, "Unsafe answer")
-
-    first = service.answer(actor("responder"), assignment_id, "Use a transaction.")
-    duplicate = service.answer(actor("responder"), assignment_id, "Use a transaction.")
-    assert first["status"] == duplicate["status"] == "ANSWERED"
-'''
-          new = '''    with pytest.raises(DomainError, match="permission_denied"):
-        service.answer(actor("intruder"), assignment_id, "Unsafe answer")
-
-    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 1
-    first = service.answer(actor("responder"), assignment_id, "Use a transaction.")
-    duplicate = service.answer(actor("responder"), assignment_id, "Use a transaction.")
-    assert first["status"] == duplicate["status"] == "ANSWERED"
-    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 2
-'''
-          if tests.count(old) != 1:
-              raise SystemExit('answer test replacement anchor not unique')
-          test_path.write_text(tests.replace(old, new, 1), encoding='utf-8')
-          PY
+          python scripts/_apply_capacity_lifecycle_fix.py
           git diff --check
 
       - name: Install dependencies
@@ -143,9 +40,7 @@ jobs:
           pip install -c constraints.txt -e . pytest
 
       - name: Validate production invariants
-        shell: bash
         run: |
-          set -euo pipefail
           python -m pytest -q tests/test_niyet_persistence.py tests/test_niyet_api.py tests/test_firebase_backend.py tests/test_firebase_auth.py
           node --check web/live.js
           node --check web/firebase-client.js
@@ -154,10 +49,9 @@ jobs:
           git diff --check
 
       - name: Commit verified fix and remove temporary automation
-        shell: bash
         run: |
-          set -euo pipefail
           rm -f .github/migration/capacity-lifecycle.patch
+          rm -f scripts/_apply_capacity_lifecycle_fix.py
           rm -f .github/workflows/apply-capacity-lifecycle-fix.yml
           rmdir .github/migration 2>/dev/null || true
           git add -A
