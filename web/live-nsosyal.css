@@ -645,3 +645,14 @@ html[data-theme="dark"] .resolution-chip.none {
 @media (max-width: 900px) {
   .desktop-demo-controls { display: none; }
 }
+
+
+/* Author and responder are device views over the same social feed. */
+.shared-social-feed {
+  display: grid;
+  gap: 12px;
+}
+
+.responder-view + .shared-social-feed {
+  border-top: 1px solid var(--ns-line);
+}
