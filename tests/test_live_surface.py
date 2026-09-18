@@ -190,7 +190,7 @@ def test_none_resolution_does_not_render_a_stale_evidence_card():
     assert "status: path" in no_request
     assert "evidence_context: path === 'NONE' ? null" in no_request
     assert no_request.index("$('#requestCard').hidden = true") < no_request.index(
-        "result.evidence_context || path === 'NONE'"
+        "if (path)"
     )
 
 
@@ -282,8 +282,8 @@ def test_multi_control_bindings_use_query_selector_all_helper():
 
     assert "$$('[data-language-toggle]').forEach" in script
     assert "$$('[data-reset-demo]').forEach" in script
-    assert "$('[data-language-toggle]').forEach" not in script
-    assert "$('[data-reset-demo]').forEach" not in script
+    assert "\n  $('[data-language-toggle]').forEach" not in script
+    assert "\n  $('[data-reset-demo]').forEach" not in script
 
 
 def test_live_check_renders_every_resolution_path_without_opening_a_request():
