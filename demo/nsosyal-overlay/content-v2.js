@@ -138,6 +138,30 @@
   state.language = detectLanguage();
   function t(key) { return copy[state.language]?.[key] || copy.en[key] || key; }
 
+  async function storageGet(key) {
+    try {
+      return await storageGet(key);
+    } catch (_) {
+      return chrome.storage.local.get(key);
+    }
+  }
+
+  async function storageSet(value) {
+    try {
+      await storageSet(value);
+    } catch (_) {
+      await chrome.storage.local.set(value);
+    }
+  }
+
+  async function storageRemove(key) {
+    try {
+      await storageRemove(key);
+    } catch (_) {
+      await chrome.storage.local.remove(key);
+    }
+  }
+
   async function api(payload) {
     try {
       const response = await chrome.runtime.sendMessage({ type: 'drsk-api', payload });
@@ -729,13 +753,13 @@
       status: request.status || state.author?.status || 'OPEN'
     };
     state.author = value;
-    await chrome.storage.session.set({ [AUTHOR_STORAGE_KEY]: value });
+    await storageSet({ [AUTHOR_STORAGE_KEY]: value });
     return true;
   }
 
   async function loadAuthor() {
     try {
-      const stored = await chrome.storage.session.get(AUTHOR_STORAGE_KEY);
+      const stored = await storageGet(AUTHOR_STORAGE_KEY);
       const value = stored?.[AUTHOR_STORAGE_KEY];
       if (!value?.request_id || !value?.author_token) return null;
       return value;
@@ -752,12 +776,12 @@
       author_token: token,
       text: text || state.author?.text || request.text || ''
     };
-    try { await chrome.storage.session.set({ [RESOLVED_STORAGE_KEY]: value }); } catch (_) {}
+    try { await storageSet({ [RESOLVED_STORAGE_KEY]: value }); } catch (_) {}
   }
 
   async function loadResolved() {
     try {
-      const stored = await chrome.storage.session.get(RESOLVED_STORAGE_KEY);
+      const stored = await storageGet(RESOLVED_STORAGE_KEY);
       const value = stored?.[RESOLVED_STORAGE_KEY];
       if (!value?.request_id || !value?.author_token) return null;
       return value;
@@ -776,7 +800,7 @@
     });
     if (!response?.ok || !response.data?.request) {
       if ([403, 404].includes(response?.status)) {
-        try { await chrome.storage.session.remove(RESOLVED_STORAGE_KEY); } catch (_) {}
+        try { await storageRemove(RESOLVED_STORAGE_KEY); } catch (_) {}
       }
       return false;
     }
@@ -788,7 +812,7 @@
   async function clearAuthor() {
     stopPoll();
     state.author = null;
-    try { await chrome.storage.session.remove(AUTHOR_STORAGE_KEY); } catch (_) {}
+    try { await storageRemove(AUTHOR_STORAGE_KEY); } catch (_) {}
   }
 
   async function refreshAuthor() {
