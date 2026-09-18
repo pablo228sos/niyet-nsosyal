@@ -8,3 +8,10 @@ dist/
 output/qa/
 .playwright-cli/
 .vercel/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.env
+.env.*
+!.env.example

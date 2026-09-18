@@ -22,9 +22,26 @@ initial_state = {
     "requests": {},
     "responder_state": runtime.default_responder_state(),
 }
-state_store = state_store_from_environment(initial_state)
-service = HumanHelpService(runtime, store=state_store)
-orchestrator = DrskOrchestrator(niyet_runtime=runtime)
+LEGACY_DISABLED = (
+    os.getenv("VERCEL_ENV", "").strip().lower() == "production"
+    or any(
+        os.getenv(name, "").strip()
+        for name in (
+            "FIREBASE_PROJECT_ID",
+            "FIREBASE_CLIENT_EMAIL",
+            "FIREBASE_PRIVATE_KEY",
+            "FIRESTORE_EMULATOR_HOST",
+        )
+    )
+)
+if LEGACY_DISABLED:
+    state_store = None
+    service = None
+    orchestrator = None
+else:
+    state_store = state_store_from_environment(initial_state)
+    service = HumanHelpService(runtime, store=state_store)
+    orchestrator = DrskOrchestrator(niyet_runtime=runtime)
 
 MAX_REQUEST_BYTES = 32 * 1024
 MAX_TEXT_LENGTH = 1200
@@ -192,6 +209,9 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:
+        if LEGACY_DISABLED:
+            self._json(410, {"error": "legacy_demo_endpoint_disabled"})
+            return
         try:
             state = service.responder_state()
         except RuntimeError as exc:
@@ -233,6 +253,9 @@ class handler(BaseHTTPRequestHandler):
         )
 
     def do_POST(self) -> None:
+        if LEGACY_DISABLED:
+            self._json(410, {"error": "legacy_demo_endpoint_disabled"})
+            return
         content_type = self.headers.get("Content-Type", "").split(";", 1)[0].strip()
         if content_type != "application/json":
             self._json(415, {"error": "unsupported_media_type"})

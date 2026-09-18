@@ -1,16 +1,31 @@
+import {
+  acceptAssignment,
+  answerAssignment,
+  createRequest,
+  currentUser,
+  getInbox,
+  getMe,
+  getRequest,
+  isAuthenticated,
+  pauseResponder,
+  resumeResponder,
+  skipAssignment,
+  updateResponderProfile
+} from './firebase-client.js';
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
-const apiCandidates = ['/api/human-help', '/api/human_help'];
 const exampleScenario = {
   en: 'Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?',
   tr: 'Araştırma kahve tüketiminin daha düşük ölüm riskine neden olduğunu kanıtlıyor. Çalışmanın aslında ne gösterdiğini biri açıklayabilir mi?'
 };
 
-let apiEndpoint = sessionStorage.getItem('drsk-human-help-endpoint') || null;
 let language = localStorage.getItem('drsk-live-language') || 'en';
 let responders = [];
 let selectedResponderId = null;
+let currentProfile = null;
+let currentAssignments = [];
 let currentAuthor = null;
 let authorPoll = null;
 let authorPollGeneration = 0;
@@ -29,23 +44,23 @@ const copy = {
     authorHeading: 'Ask without an audience.', responderHeading: 'Requests that match what you can help with.',
     requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
     noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a person directly', postWithDrsk: 'Post with DRSK', loadScenario: 'Load example',
-    restore: 'Restore request', routedTo: 'Routed to', copyResponder: 'Copy responder link', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
+    restore: 'Restore request', routedTo: 'Routed to', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
     publishedContext: 'Published NSosyal post',
     evidenceHeading: 'What does the source actually say?', boundedNote: 'Bounded evidence, not a truth score.', humanNeeded: 'Evidence needs human context',
-    capacityNote: 'Willingness and remaining capacity are hard constraints.', identity: 'Demo identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
+    capacityNote: 'Willingness and remaining capacity are hard constraints.', identity: 'Firebase identity', resolved: 'Resolved', routedByNiyet: 'Routed by NIYET',
     resolutionTitle: 'From attention to resolution', stagePost: 'Need', stagePostText: 'A new user asks without an audience.',
     stageEvidenceText: 'SOURCECHAIN exposes what the source supports.', stageHumanText: 'NIYET routes the unresolved part to a willing person.', stageResolvedText: 'Evidence and human context return to the same post.',
     whyItMatters: 'Why it matters', proofText: 'Reach should not decide whether a useful question gets an answer.', followersUsed: 'followers required', systemsTogether: 'evidence + human layers', sharedOutcome: 'shared outcome',
-    truthTitle: 'Prototype boundary', truthText: 'Controlled evidence corpus and explicit prototype state. No generic truth score, no hidden psychological profiling.',
-    backendDurable: 'durable shared state live', backendMemory: 'prototype state live', backendDown: 'backend unavailable', checking: 'Checking evidence and routing…', pause: 'Pause', resume: 'Resume',
+    truthTitle: 'Production boundary', truthText: 'Authenticated NIYET state is stored in Firestore. Evidence remains bounded and is never presented as a generic truth score.',
+    backendDurable: 'authenticated Firestore live', backendMemory: 'invalid non-durable state', backendDown: 'backend unavailable', checking: 'Checking evidence and routing…', pause: 'Pause', resume: 'Resume',
     capacity: 'slots remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
     accept: 'Accept', skip: 'Skip', answer: 'Answer', answerPlaceholder: 'Give the person a concise, useful answer.', send: 'Send answer',
     requestOpened: 'Request opened. NIYET is looking for a willing person.', evidenceRouted: 'Evidence checked. The unresolved part was routed with its source context.',
     noHumanNeeded: 'The bounded evidence was sufficient; no human request was opened.', noHumanAvailable: 'Human context is recommended, but no eligible responder has capacity right now.', noActionNeeded: 'This content does not need evidence or human resolution.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
     routingChanged: 'Availability changed, so NIYET reallocated this request. The latest queue is shown.', capacityChanged: 'Responder capacity changed. NIYET recalculated the pending window.', serviceBusy: 'Shared state is temporarily unavailable. Try again in a moment.',
-    copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
-    networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored.',
-    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post claim', sourceWording: 'Source passage', resetDone: 'Demo reset.', resetConfirm: 'Reset the prototype state for every connected device?'
+    restored: 'Request restored from this browser session.',
+    networkError: 'The authenticated backend is not reachable.', invalidState: 'This request can no longer be restored.',
+    evidenceSource: 'Open source', relation: 'Relation', distortion: 'Signal', claimWording: 'Post claim', sourceWording: 'Source passage'
   },
   tr: {
     navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
@@ -54,23 +69,23 @@ const copy = {
     authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Gerçekten yardımcı olabileceğin istekler.',
     requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
     noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'Doğrudan birine sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Örneği yükle',
-    restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', copyResponder: 'Cevaplayıcı bağlantısını kopyala', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
+    restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
     publishedContext: 'Yayınlanan NSosyal gönderisi',
     evidenceHeading: 'Kaynak aslında ne söylüyor?', boundedNote: 'Sınırlı kanıt, doğruluk puanı değil.', humanNeeded: 'Kanıt insan bağlamına ihtiyaç duyuyor',
-    capacityNote: 'İsteklilik ve kalan kapasite kesin kısıtlardır.', identity: 'Demo kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
+    capacityNote: 'İsteklilik ve kalan kapasite kesin kısıtlardır.', identity: 'Firebase kimliği', resolved: 'Çözüldü', routedByNiyet: 'NIYET ile yönlendirildi',
     resolutionTitle: 'Dikkatten çözüme', stagePost: 'İhtiyaç', stagePostText: 'Yeni kullanıcı kitlesi olmadan soruyor.',
     stageEvidenceText: 'SOURCECHAIN kaynağın neyi desteklediğini gösteriyor.', stageHumanText: 'NIYET çözülmeyen kısmı istekli bir kişiye yönlendiriyor.', stageResolvedText: 'Kanıt ve insan bağlamı aynı gönderiye dönüyor.',
     whyItMatters: 'Neden önemli', proofText: 'Faydalı bir sorunun yanıt alıp almamasını erişim belirlememeli.', followersUsed: 'gerekli takipçi', systemsTogether: 'kanıt + insan katmanı', sharedOutcome: 'ortak sonuç',
-    truthTitle: 'Prototip sınırı', truthText: 'Kontrollü kanıt derlemi ve açık prototip durumu. Genel doğruluk puanı veya gizli psikolojik profilleme yok.',
-    backendDurable: 'kalıcı ortak durum aktif', backendMemory: 'prototip durumu aktif', backendDown: 'backend erişilemiyor', checking: 'Kanıt ve yönlendirme kontrol ediliyor…', pause: 'Duraklat', resume: 'Devam et',
+    truthTitle: 'Production sınırı', truthText: 'Kimliği doğrulanmış NIYET durumu Firestore içinde saklanır. Kanıt sınırlıdır ve genel doğruluk puanı olarak sunulmaz.',
+    backendDurable: 'kimlik doğrulamalı Firestore aktif', backendMemory: 'geçersiz kalıcı olmayan durum', backendDown: 'backend erişilemiyor', checking: 'Kanıt ve yönlendirme kontrol ediliyor…', pause: 'Duraklat', resume: 'Devam et',
     capacity: 'slot kaldı', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
     accept: 'Kabul et', skip: 'Geç', answer: 'Yanıt', answerPlaceholder: 'Kısa ve faydalı bir yanıt yaz.', send: 'Yanıtı gönder',
     requestOpened: 'İstek açıldı. NIYET istekli birini arıyor.', evidenceRouted: 'Kanıt kontrol edildi. Çözülmeyen kısım kaynak bağlamıyla birlikte yönlendirildi.',
     noHumanNeeded: 'Sınırlandırılmış kanıt yeterliydi; insan isteği açılmadı.', noHumanAvailable: 'İnsan bağlamı öneriliyor, ancak şu anda uygun cevaplayıcı kapasitesi yok.', noActionNeeded: 'Bu içerik için kanıt veya insan çözümü gerekmiyor.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
     routingChanged: 'Uygunluk değiştiği için NIYET bu isteği yeniden yönlendirdi. Güncel kuyruk gösteriliyor.', capacityChanged: 'Cevaplayıcı kapasitesi değişti. NIYET bekleyen istekleri yeniden hesapladı.', serviceBusy: 'Ortak durum geçici olarak kullanılamıyor. Birazdan tekrar dene.',
-    copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
-    networkError: 'Prototip backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
-    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi iddiası', sourceWording: 'Kaynak pasajı', resetDone: 'Demo sıfırlandı.', resetConfirm: 'Bağlı tüm cihazlar için prototip durumunu sıfırlamak istiyor musun?'
+    restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
+    networkError: 'Kimliği doğrulanmış backend erişilemiyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
+    evidenceSource: 'Kaynağı aç', relation: 'İlişki', distortion: 'Sinyal', claimWording: 'Gönderi iddiası', sourceWording: 'Kaynak pasajı'
   }
 };
 
@@ -85,9 +100,10 @@ function errorCode(error) { return error?.code || error?.message || ''; }
 
 function friendlyError(error) {
   const code = errorCode(error);
-  if (['request_not_assigned', 'request_not_open', 'request_not_accepted'].includes(code)) return t('routingChanged');
-  if (code === 'responder_capacity_exhausted') return t('capacityChanged');
-  if (code === 'state_temporarily_unavailable' || error?.status === 503) return t('serviceBusy');
+  if (code === 'auth_required' || error?.status === 401) return 'Sign in to continue.';
+  if (['stale_assignment', 'assignment_expired', 'transaction_conflict'].includes(code)) return t('routingChanged');
+  if (['capacity_exhausted', 'responder_paused'].includes(code)) return t('capacityChanged');
+  if (code === 'firestore_unavailable' || error?.status === 503) return t('serviceBusy');
   return code || t('networkError');
 }
 
@@ -114,42 +130,62 @@ function buildPublishedContext(context) {
   return node;
 }
 
-async function rawApi(endpoint, payload = null) {
-  const options = payload ? {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  } : { method: 'GET' };
-  const response = await fetch(endpoint, options);
-  let data = {};
-  try { data = await response.json(); } catch (_) {}
-  if (!response.ok) {
-    const error = new Error(data.error || `HTTP ${response.status}`);
-    error.status = response.status;
-    error.code = data.error || null;
+async function callApi(payload = null) {
+  if (!isAuthenticated()) {
+    const error = new Error('auth_required');
+    error.code = 'auth_required';
+    error.status = 401;
     throw error;
   }
-  return data;
+  if (!payload) {
+    const result = await getMe();
+    currentProfile = result.responder_profile || null;
+    fillProfileForm(currentProfile);
+    const user = currentUser();
+    return {
+      responders: currentProfile ? [{
+        id: user.uid,
+        name: user.displayName || user.email || user.uid,
+        remaining_slots: currentProfile.capacity_remaining,
+        active: !currentProfile.paused
+      }] : [],
+      state_durable: true,
+      state_backend: 'firestore'
+    };
+  }
+  if (payload.action === 'open' || payload.action === 'resolve') {
+    return createRequest(payload.text, { mode: payload.action === 'open' ? 'create_request' : 'resolve' });
+  }
+  if (payload.action === 'status') return getRequest(payload.request_id);
+  if (payload.action === 'inbox') {
+    const result = await getInbox();
+    currentAssignments = result.assignments || [];
+    return {
+      requests: currentAssignments.map((assignment) => ({
+        ...(assignment.request || {}),
+        assignment_id: assignment.id || assignment.assignment_id,
+        status: assignment.status,
+        relevance: assignment.relevance
+      }))
+    };
+  }
+  const assignment = currentAssignments.find((item) => item.request_id === payload.request_id);
+  const assignmentId = payload.assignment_id || assignment?.id || assignment?.assignment_id;
+  if (payload.action === 'accept') return { assignment: await acceptAssignment(assignmentId) };
+  if (payload.action === 'skip') return { assignment: await skipAssignment(assignmentId) };
+  if (payload.action === 'answer') return { assignment: await answerAssignment(assignmentId, payload.answer) };
+  if (payload.action === 'pause') return { responder_profile: await pauseResponder() };
+  if (payload.action === 'resume') return { responder_profile: await resumeResponder() };
+  throw new Error('invalid_action');
 }
 
-async function callApi(payload = null) {
-  const candidates = apiEndpoint ? [apiEndpoint, ...apiCandidates.filter((item) => item !== apiEndpoint)] : apiCandidates;
-  let lastError;
-  for (const endpoint of candidates) {
-    try {
-      const result = await rawApi(endpoint, payload);
-      apiEndpoint = endpoint;
-      sessionStorage.setItem('drsk-human-help-endpoint', endpoint);
-      return result;
-    } catch (error) {
-      lastError = error;
-      // A bare 404 may mean this deployment uses the alternate API filename.
-      // A JSON 404 with a domain error (for example request_not_found) is real
-      // application state and must not be replayed against another endpoint.
-      if (error.status && (error.status !== 404 || error.code)) throw error;
-    }
-  }
-  throw lastError || new Error('backend unavailable');
+function fillProfileForm(profile) {
+  if (!profile) return;
+  $('#profileTopics').value = (profile.topics || []).join(', ');
+  $('#profileLanguages').value = (profile.languages || ['en']).join(', ');
+  $('#profileCapacity').value = String(profile.capacity_total || 1);
+  $('#profileWilling').checked = Boolean(profile.willing);
+  $('#profileActive').checked = Boolean(profile.active);
 }
 
 function applyLanguage() {
@@ -174,7 +210,7 @@ function setRole(role, updateUrl = true) {
     url.searchParams.set('role', responder ? 'responder' : 'author');
     history.replaceState(null, '', url);
   }
-  if (responder) {
+  if (responder && isAuthenticated()) {
     stopAuthorPoll();
     startInboxPoll();
   } else {
@@ -208,18 +244,8 @@ async function checkBackend() {
 }
 
 function populateResponders() {
-  const select = $('#responderSelect');
   const previousResponderId = selectedResponderId;
-  const desired = new URL(location.href).searchParams.get('responder') || selectedResponderId;
-  select.replaceChildren();
-  responders.forEach((responder) => {
-    const option = document.createElement('option');
-    option.value = responder.id;
-    option.textContent = responder.name;
-    select.appendChild(option);
-  });
-  if (desired && responders.some((item) => item.id === desired)) select.value = desired;
-  selectedResponderId = select.value || responders[0]?.id || null;
+  selectedResponderId = responders[0]?.id || null;
   if (selectedResponderId !== previousResponderId) inboxSnapshot = '';
   $('#availabilityToggle').disabled = !selectedResponderId;
   renderResponderMeta();
@@ -241,11 +267,11 @@ function renderResponderMeta() {
 }
 
 function persistAuthor(request) {
-  if (!request?.request_id || !request?.author_token) return;
+  if (!request?.request_id || !currentUser()) return;
   currentAuthor = { request };
   sessionStorage.setItem('drsk-live-author', JSON.stringify({
     request_id: request.request_id,
-    author_token: request.author_token,
+    author_uid: currentUser().uid,
     text: request.text
   }));
   $('#restoreAuthor').hidden = true;
@@ -378,7 +404,6 @@ function renderAuthorRequest(request) {
 
   const match = request.assigned_responder;
   $('#matchBlock').hidden = !match;
-  $('#copyResponderLink').hidden = !match;
   if (match) {
     $('#matchedResponder').textContent = match.name || match.id;
     renderReasons(match.reason);
@@ -440,26 +465,26 @@ async function openAuthorRequest(mode) {
     setMessage($('#authorMessage'), friendlyError(error), true);
   } finally {
     requestBusy = false;
-    $('#routeHuman').disabled = false;
-    $('#resolveEvidence').disabled = false;
+    $('#routeHuman').disabled = !isAuthenticated();
+    $('#resolveEvidence').disabled = !isAuthenticated();
   }
 }
 
 async function refreshAuthor(generation = authorPollGeneration) {
   const stored = readStoredAuthor();
-  if (!stored?.request_id || !stored?.author_token) return;
+  if (!stored?.request_id || stored.author_uid !== currentUser()?.uid) return;
   try {
-    const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
+    const result = await callApi({ action: 'status', request_id: stored.request_id });
     if (generation !== authorPollGeneration) return;
     if (!result.request) return;
-    currentAuthor = { request: { ...result.request, author_token: stored.author_token } };
+    currentAuthor = { request: result.request };
     $('#restoreAuthor').hidden = true;
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();
   } catch (error) {
     if (generation !== authorPollGeneration) return;
     const code = errorCode(error);
-    if (code === 'request_not_found' || code === 'invalid_author_token') {
+    if (code === 'request_not_found') {
       stopAuthorPoll();
       sessionStorage.removeItem('drsk-live-author');
       $('#restoreAuthor').hidden = true;
@@ -491,26 +516,6 @@ function stopAuthorPoll() {
   authorPollGeneration += 1;
   if (authorPoll) clearTimeout(authorPoll);
   authorPoll = null;
-}
-
-function responderLink() {
-  const match = currentAuthor?.request?.assigned_responder;
-  if (!match?.id) return null;
-  const url = new URL(location.href);
-  url.searchParams.set('role', 'responder');
-  url.searchParams.set('responder', match.id);
-  return url.href;
-}
-
-async function copyResponderLink() {
-  const link = responderLink();
-  if (!link) return;
-  try {
-    await navigator.clipboard.writeText(link);
-    setMessage($('#authorMessage'), t('copied'));
-  } catch (_) {
-    setMessage($('#authorMessage'), `${t('copyFailed')} ${link}`, true);
-  }
 }
 
 function buildInboxEvidence(context) {
@@ -581,7 +586,7 @@ function renderInbox(requests) {
       accept.disabled = true;
       skip.disabled = true;
       try {
-        const result = await callApi({ action: 'accept', request_id: request.request_id, responder_id: selectedResponderId });
+        const result = await callApi({ action: 'accept', request_id: request.request_id });
         setMessage($('#inboxMessage'), t('requestAccepted'));
         if (result.request) updateStages(result.request);
         await refreshBackendAndInbox();
@@ -600,7 +605,7 @@ function renderInbox(requests) {
       accept.disabled = true;
       skip.disabled = true;
       try {
-        await callApi({ action: 'skip', request_id: request.request_id, responder_id: selectedResponderId });
+        await callApi({ action: 'skip', request_id: request.request_id });
         setMessage($('#inboxMessage'), t('requestSkipped'));
         await refreshBackendAndInbox();
       } catch (error) {
@@ -619,7 +624,7 @@ function renderInbox(requests) {
       if (!answer) { answerText.focus(); return; }
       send.disabled = true;
       try {
-        const result = await callApi({ action: 'answer', request_id: request.request_id, responder_id: selectedResponderId, answer });
+        const result = await callApi({ action: 'answer', request_id: request.request_id, answer });
         setMessage($('#inboxMessage'), t('answerSent'));
         if (result.request) updateStages(result.request);
         await refreshBackendAndInbox();
@@ -640,7 +645,7 @@ function renderInbox(requests) {
 async function refreshInbox(force = false) {
   if (!selectedResponderId) return;
   try {
-    const result = await callApi({ action: 'inbox', responder_id: selectedResponderId });
+    const result = await callApi({ action: 'inbox' });
     const requests = Array.isArray(result.requests) ? result.requests : [];
     const snapshot = JSON.stringify(requests);
     if (!force && snapshot === inboxSnapshot) return;
@@ -688,7 +693,7 @@ async function toggleAvailability() {
   const button = $('#availabilityToggle');
   button.disabled = true;
   try {
-    await callApi({ action: record.active ? 'pause' : 'resume', responder_id: record.id });
+    await callApi({ action: record.active ? 'pause' : 'resume' });
     await refreshBackendAndInbox();
   } catch (error) {
     setMessage($('#inboxMessage'), friendlyError(error), true);
@@ -698,30 +703,10 @@ async function toggleAvailability() {
 function restoreAuthorButton() {
   const stored = readStoredAuthor();
   const restore = $('#restoreAuthor');
-  if (restore) restore.hidden = !stored;
-  if (stored?.text && !$('#requestText').value) $('#requestText').value = stored.text;
+  const owned = stored?.author_uid === currentUser()?.uid;
+  if (restore) restore.hidden = !owned;
+  if (owned && stored?.text && !$('#requestText').value) $('#requestText').value = stored.text;
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
-}
-
-async function resetDemo() {
-  if (!window.confirm(t('resetConfirm'))) return;
-  stopAuthorPoll();
-  stopInboxPoll();
-  try { await callApi({ action: 'reset' }); }
-  catch (error) { setMessage($('#authorMessage'), friendlyError(error), true); return; }
-  sessionStorage.removeItem('drsk-live-author');
-  inboxSnapshot = '';
-  responderSnapshot = '';
-  currentAuthor = null;
-  $('#requestCard').hidden = true;
-  $('#requestText').value = '';
-  $('#charCount').textContent = '0 / 1200';
-  $('#restoreAuthor')?.setAttribute('hidden', '');
-  setMessage($('#authorMessage'), t('resetDone'));
-  setMessage($('#inboxMessage'), '');
-  updateStages(null);
-  await checkBackend();
-  if (!$('#responderView').hidden) startInboxPoll();
 }
 
 $('#languageToggle').addEventListener('click', () => {
@@ -735,45 +720,92 @@ $('#authorTab').addEventListener('click', () => setRole('author'));
 $('#responderTab').addEventListener('click', () => setRole('responder'));
 $('#routeHuman').addEventListener('click', () => openAuthorRequest('open'));
 $('#resolveEvidence').addEventListener('click', () => openAuthorRequest('resolve'));
-$('#copyResponderLink').addEventListener('click', copyResponderLink);
 $('#loadScenario').addEventListener('click', () => {
   $('#requestText').value = exampleScenario[language];
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
   $('#requestText').focus();
 });
-$('#resetDemo').addEventListener('click', resetDemo);
 $('#requestText').addEventListener('input', (event) => { $('#charCount').textContent = `${event.target.value.length} / 1200`; });
-$('#responderSelect').addEventListener('change', () => {
-  selectedResponderId = $('#responderSelect').value;
-  inboxSnapshot = '';
-  const url = new URL(location.href);
-  url.searchParams.set('responder', selectedResponderId);
-  history.replaceState(null, '', url);
-  renderResponderMeta();
-  refreshInbox(true);
-});
 $('#availabilityToggle').addEventListener('click', toggleAvailability);
+$('#responderProfileForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  try {
+    const result = await updateResponderProfile({
+      topics: $('#profileTopics').value.split(',').map((item) => item.trim()).filter(Boolean),
+      languages: $('#profileLanguages').value.split(',').map((item) => item.trim()).filter(Boolean),
+      capacity_total: Number($('#profileCapacity').value),
+      willing: $('#profileWilling').checked,
+      active: $('#profileActive').checked
+    });
+    currentProfile = result.responder_profile;
+    fillProfileForm(currentProfile);
+    setMessage($('#inboxMessage'), 'Responder profile saved.');
+    await refreshBackendAndInbox(true);
+  } catch (error) {
+    setMessage($('#inboxMessage'), friendlyError(error), true);
+  }
+});
 
 window.addEventListener('beforeunload', () => { stopAuthorPoll(); stopInboxPoll(); });
 
-(async function init() {
-  applyLanguage();
+function applyAuthenticatedIdentity() {
+  const user = currentUser();
+  const name = user?.displayName || user?.email || user?.uid || 'Signed-in user';
+  const handle = user?.email ? `@${user.email.split('@')[0]}` : '';
+  $('#authorDisplayName').textContent = name;
+  $('#authorHandle').textContent = handle;
+  $('#requestAuthorName').textContent = name;
+  $('#requestAuthorHandle').textContent = handle;
+  $('#responderIdentity').textContent = name;
+}
+
+async function handleAuthChanged() {
+  stopAuthorPoll();
+  stopInboxPoll();
+  responders = [];
+  currentAssignments = [];
+  selectedResponderId = null;
+  responderSnapshot = '';
+  inboxSnapshot = '';
+  populateResponders();
+  const signedIn = isAuthenticated();
+  $('#routeHuman').disabled = !signedIn;
+  $('#resolveEvidence').disabled = !signedIn;
+  $('#responderProfileForm').querySelectorAll('input, button').forEach((node) => { node.disabled = !signedIn; });
+  applyAuthenticatedIdentity();
   restoreAuthorButton();
-  updateStages(null);
-  const params = new URL(location.href).searchParams;
-  setRole(params.get('role') === 'responder' ? 'responder' : 'author', false);
+  if (!signedIn) {
+    $('#connectionBadge').dataset.state = 'error';
+    $('#connectionBadge').textContent = 'authentication required';
+    setMessage($('#authorMessage'), 'Sign in to create or view a NIYET request.');
+    renderInbox([]);
+    return;
+  }
+  setMessage($('#authorMessage'), '');
   const live = await checkBackend();
   if (!live) {
     setMessage($('#authorMessage'), t('networkError'), true);
     setMessage($('#inboxMessage'), t('networkError'), true);
     return;
   }
+  const params = new URL(location.href).searchParams;
   if (params.get('role') === 'responder') startInboxPoll();
   const stored = readStoredAuthor();
-  if (stored && params.get('role') !== 'responder') {
+  if (stored?.author_uid === currentUser()?.uid && params.get('role') !== 'responder') {
     $('#requestText').value = stored.text || '';
     $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
     await refreshAuthor();
     if (currentAuthor?.request) startAuthorPoll();
   }
+}
+
+(function init() {
+  applyLanguage();
+  updateStages(null);
+  const params = new URL(location.href).searchParams;
+  setRole(params.get('role') === 'responder' ? 'responder' : 'author', false);
+  $('#routeHuman').disabled = true;
+  $('#resolveEvidence').disabled = true;
+  $('#responderProfileForm').querySelectorAll('input, button').forEach((node) => { node.disabled = true; });
+  window.addEventListener('niyet-auth-changed', () => { handleAuthChanged().catch((error) => setMessage($('#authMessage'), friendlyError(error), true)); });
 })();

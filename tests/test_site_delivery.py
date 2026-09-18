@@ -17,16 +17,17 @@ def test_sites_bundle_contains_final_surface_assets():
         "live-motion.css",
         "live-nsosyal.css",
         "live.js",
+        "firebase-client.js",
         "live-motion.js",
         "live-theme.js",
     ):
         assert f'"{asset}"' in BUILD
 
-    assert '"live.js", "live-motion.js", "live-theme.js"' in BUILD
+    assert '"live.js", "firebase-client.js", "live-motion.js", "live-theme.js"' in BUILD
 
 
 def test_sites_root_and_live_route_to_final_surface():
-    assert "url.pathname === '/'" in WORKER
+    assert "['/', '/index', '/index.html'].includes(url.pathname)" in WORKER
     assert "['/live', '/live/'].includes(url.pathname)" in WORKER
     assert "? '/live.html'" in WORKER
 
@@ -34,7 +35,9 @@ def test_sites_root_and_live_route_to_final_surface():
 def test_vercel_root_redirects_before_static_index_resolution():
     redirects = VERCEL.get("redirects", [])
     assert redirects == [
-        {"source": "/", "destination": "/live", "permanent": False}
+        {"source": "/", "destination": "/live", "permanent": False},
+        {"source": "/index", "destination": "/live", "permanent": False},
+        {"source": "/index.html", "destination": "/live", "permanent": False},
     ]
     assert "rewrites" not in VERCEL
 

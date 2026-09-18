@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // The browser uses Firebase Authentication only. All product data crosses
+    // /api/niyet, where the Admin SDK verifies the ID token and enforces
+    // ownership plus transactional business rules. No collection is a public
+    // browser SDK surface.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

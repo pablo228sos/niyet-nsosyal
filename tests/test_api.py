@@ -102,7 +102,9 @@ def test_vercel_applies_transport_and_isolation_headers():
     }
     assert headers["Strict-Transport-Security"] == "max-age=31536000"
     assert headers["Cross-Origin-Resource-Policy"] == "same-origin"
-    assert headers["Cross-Origin-Opener-Policy"] == "same-origin"
+    # Firebase Google sign-in uses a popup; keep opener isolation compatible
+    # with that authenticated flow.
+    assert headers["Cross-Origin-Opener-Policy"] == "same-origin-allow-popups"
 
 
 @pytest.mark.parametrize(

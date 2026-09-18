@@ -25,7 +25,13 @@ def test_live_surface_exposes_every_javascript_contract():
     required = {
         "connectionBadge",
         "languageToggle",
-        "resetDemo",
+        "accountStatus",
+        "authSignedOut",
+        "authSignedIn",
+        "signInEmail",
+        "signUpEmail",
+        "signInGoogle",
+        "signOutUser",
         "authorTab",
         "responderTab",
         "authorView",
@@ -43,13 +49,12 @@ def test_live_surface_exposes_every_javascript_contract():
         "matchBlock",
         "matchedResponder",
         "matchReasons",
-        "copyResponderLink",
         "evidenceBlock",
         "evidenceStatus",
         "evidenceItems",
         "answerBlock",
         "humanAnswer",
-        "responderSelect",
+        "responderProfileForm",
         "availabilityToggle",
         "responderMeta",
         "inboxMessage",
@@ -109,11 +114,12 @@ def test_final_integrated_surface_is_the_default_entrypoint():
 
     # Vercel serves static index.html before rewrites, so the final surface must
     # use a redirect that runs before filesystem resolution.
-    assert {
-        "source": "/",
-        "destination": "/live",
-        "permanent": False,
-    } in config.get("redirects", [])
+    for source in ("/", "/index", "/index.html"):
+        assert {
+            "source": source,
+            "destination": "/live",
+            "permanent": False,
+        } in config.get("redirects", [])
     assert "rewrites" not in config
 
     assert 'if route in {"", "/live"}:' in local_server
@@ -122,19 +128,20 @@ def test_final_integrated_surface_is_the_default_entrypoint():
 
 def test_live_surface_recovers_from_shared_state_changes():
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    firebase_client = (ROOT / "web" / "firebase-client.js").read_text(encoding="utf-8")
 
-    # Domain 404s must not be replayed against the alternate endpoint. A bare
-    # deployment-level 404 may still select the alternate filename.
-    assert "error.code = data.error || null" in script
-    assert "error.status !== 404 || error.code" in script
+    # Domain errors from the authenticated API retain both code and status;
+    # there is no alternate demo endpoint to replay a mutation against.
+    assert "error.code = payload?.error?.code || null" in firebase_client
+    assert "error.status = response.status" in firebase_client
+    assert "/api/human-help" not in script
 
     # Capacity-aware reallocation is expected while requests are still pending.
     # A responder acting on stale UI should get a fresh queue, not a raw code.
     assert "isStaleRoutingError" in script
     assert "recoverInboxConflict" in script
-    assert "request_not_assigned" in script
-    assert "responder_capacity_exhausted" in script
-    assert "state_temporarily_unavailable" in script
+    assert "stale_assignment" in script
+    assert "capacity_exhausted" in script
     assert "await refreshBackendAndInbox()" in script
 
 
@@ -142,8 +149,8 @@ def test_live_surface_does_not_overclaim_state_durability():
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 
     assert "data.state_durable ? 'backendDurable' : 'backendMemory'" in script
-    assert "durable shared state live" in script
-    assert "prototype state live" in script
+    assert "authenticated Firestore live" in script
+    assert "invalid non-durable state" in script
     assert "server-process demo state" not in script
 
 
@@ -191,11 +198,11 @@ def test_none_resolution_does_not_render_a_stale_evidence_card():
     )
 
 
-def test_responder_handoff_and_loading_copy_match_actual_behavior():
+def test_authenticated_responder_loading_copy_matches_actual_behavior():
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 
-    assert "copyResponder: 'Copy responder link'" in script
-    assert "copyResponder: 'Cevaplayıcı bağlantısını kopyala'" in script
-    assert "await navigator.clipboard.writeText(link)" in script
+    assert "responderSelect" not in script
+    assert "copyResponderLink" not in script
+    assert "currentUser()" in script
     assert "checking: 'Checking evidence and routing…'" in script
     assert "checking: 'Kanıt ve yönlendirme kontrol ediliyor…'" in script
