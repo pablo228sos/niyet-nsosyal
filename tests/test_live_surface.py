@@ -302,3 +302,16 @@ def test_live_explains_that_checks_repeat_without_opening_human_requests():
     assert "Check as many posts as you want." in script
     assert "A human request opens only when you choose Ask a relevant person." in script
     assert "İstediğin kadar gönderiyi kontrol et." in script
+
+
+def test_author_and_responder_are_device_views_over_one_shared_feed():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert 'id="sharedFeed"' in html
+    assert html.index('id="sharedFeed"') > html.index('id="responderView"')
+    assert html.index('id="requestCard"') > html.index('id="sharedFeed"')
+    assert html.index('resolution-state-feed') > html.index('id="sharedFeed"')
+    assert "$('#sharedFeed').hidden" not in script
+    assert "$('#authorView').hidden = responder" in script
+    assert "$('#responderView').hidden = !responder" in script
