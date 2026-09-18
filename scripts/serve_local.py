@@ -12,8 +12,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from api.experiment import handler as ExperimentHandler  # noqa: E402
+from api.human_help import handler as HumanHelpHandler  # noqa: E402
 from api.index import handler as ApiHandler  # noqa: E402
-from api.niyet import handler as NiyetHandler  # noqa: E402
 
 
 class LocalHandler(SimpleHTTPRequestHandler):
@@ -23,14 +23,8 @@ class LocalHandler(SimpleHTTPRequestHandler):
     browser connected to this process sees the same HumanHelpService state.
     """
 
-    _json = NiyetHandler._json
-    _actor = NiyetHandler._actor
-    _error = NiyetHandler._error
-
-    def _dispatch(self, action, payload):
-        from api.human_help import handler as HumanHelpHandler
-
-        return HumanHelpHandler._dispatch(self, action, payload)
+    _json = ApiHandler._json
+    _dispatch = HumanHelpHandler._dispatch
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(WEB), **kwargs)
@@ -43,12 +37,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
         if route == "/api/experiment":
             ExperimentHandler.do_GET(self)
             return
-        if route == "/api/niyet":
-            NiyetHandler.do_GET(self)
-            return
         if route == "/api/human-help":
-            from api.human_help import handler as HumanHelpHandler
-
             HumanHelpHandler.do_GET(self)
             return
         if route == "/lab":
@@ -62,12 +51,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
         if route == "/api":
             ApiHandler.do_POST(self)
             return
-        if route == "/api/niyet":
-            NiyetHandler.do_POST(self)
-            return
         if route == "/api/human-help":
-            from api.human_help import handler as HumanHelpHandler
-
             HumanHelpHandler.do_POST(self)
             return
         self.send_error(404)

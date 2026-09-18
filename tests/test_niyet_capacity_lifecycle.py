@@ -29,7 +29,7 @@ def configure_responder(service: NiyetService, uid: str, *, capacity: int = 1) -
     )
 
 
-def test_answer_releases_capacity_and_allocates_waiting_request() -> None:
+def test_answer_does_not_replenish_consumed_attention_budget() -> None:
     repository = MemoryNiyetRepository()
     service = NiyetService(repository)
     service.sync_user(actor("author-a"))
@@ -55,18 +55,9 @@ def test_answer_releases_capacity_and_allocates_waiting_request() -> None:
     assert second["current_assignment_id"] is None
 
     service.answer(actor("responder"), first_assignment_id, "Use a transaction.")
+    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 0
+    assert repository.get_request(second["id"])["current_assignment_id"] is None
 
-    profile = service.get_responder_profile(actor("responder"))
-    assert profile["capacity_remaining"] == 1
-
-    refreshed_second = repository.get_request(second["id"])
-    assert refreshed_second is not None
-    assert refreshed_second["current_assignment_id"] is not None
-    replacement = repository.get_assignment(refreshed_second["current_assignment_id"])
-    assert replacement is not None
-    assert replacement["responder_uid"] == "responder"
-    assert replacement["status"] == "PENDING"
-
-    # Retrying the same answer is idempotent: it must not release the slot twice.
+    # Retrying the same answer remains idempotent and cannot change budget.
     service.answer(actor("responder"), first_assignment_id, "Use a transaction.")
-    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 1
+    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 0

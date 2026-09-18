@@ -239,21 +239,8 @@ def _default_state_namespace() -> str:
 def state_store_from_environment(initial_state: State) -> StateStore:
     """Select durable state when configured, otherwise explicit local fallback."""
 
-    if any(
-        os.getenv(name, "").strip()
-        for name in (
-            "FIREBASE_PROJECT_ID",
-            "FIREBASE_CLIENT_EMAIL",
-            "FIREBASE_PRIVATE_KEY",
-            "FIRESTORE_EMULATOR_HOST",
-        )
-    ):
-        raise RuntimeError("structured_firestore_repository_required")
-
     url, token = _redis_credentials_from_environment()
     if not url:
-        if os.getenv("VERCEL_ENV", "").strip().lower() == "production":
-            raise RuntimeError("legacy_demo_state_disabled_in_production")
         return MemoryStateStore(initial_state)
 
     default_namespace = _default_state_namespace()

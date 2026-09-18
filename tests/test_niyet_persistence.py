@@ -174,7 +174,8 @@ def test_answer_is_owned_atomic_persistent_and_idempotent(
     first = service.answer(actor("responder"), assignment_id, "Use a transaction.")
     duplicate = service.answer(actor("responder"), assignment_id, "Use a transaction.")
     assert first["status"] == duplicate["status"] == "ANSWERED"
-    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 2
+    # Answer does not replenish the attention/daily budget consumed by Accept.
+    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 1
     saved = service.get_author_request(actor("author"), request["id"])
     assert saved["status"] == "ANSWERED"
     assert saved["answer"] == "Use a transaction."

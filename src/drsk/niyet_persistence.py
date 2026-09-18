@@ -330,12 +330,8 @@ class MemoryNiyetRepository:
             post = self.posts.get(request["post_id"])
             if post is not None:
                 post.update(resolution=resolution, updated_at=now)
-            profile = self.profiles.get(uid)
-            if profile is not None:
-                profile["capacity_remaining"] = min(
-                    int(profile["capacity_total"]), int(profile["capacity_remaining"]) + 1
-                )
-                profile["updated_at"] = now
+            # Preserve the existing NIYET attention-budget contract:
+            # Accept consumes capacity; completing the answer does not restore it.
             self._event("ANSWERED", actor_uid=uid, request_id=request["id"], assignment_id=assignment_id)
             return copy.deepcopy(assignment)
 
@@ -733,11 +729,8 @@ class FirestoreNiyetRepository:
             if request.get("current_assignment_id") != assignment_id or request.get("status") != "ACCEPTED":
                 raise DomainError("stale_assignment", 409)
             post_ref = self.client.collection("posts").document(request["post_id"])
-            profile_ref = self.client.collection("responder_profiles").document(uid)
-            profile_snapshot = profile_ref.get(transaction=transaction)
-            if not profile_snapshot.exists:
-                raise DomainError("responder_profile_not_found", 404)
-            profile = profile_snapshot.to_dict() or {}
+            # Capacity is an attention/daily budget consumed on Accept,
+            # not a concurrent-work slot released on Answer.
             resolution = {
                 "type": "HUMAN_ANSWER",
                 "answer": answer,
@@ -757,12 +750,6 @@ class FirestoreNiyetRepository:
             })
             transaction.update(post_ref, {
                 "resolution": resolution,
-                "updated_at": firestore.SERVER_TIMESTAMP,
-            })
-            capacity_total = int(profile.get("capacity_total", 0))
-            capacity_remaining = int(profile.get("capacity_remaining", 0))
-            transaction.update(profile_ref, {
-                "capacity_remaining": min(capacity_total, capacity_remaining + 1),
                 "updated_at": firestore.SERVER_TIMESTAMP,
             })
             transaction.set(event_ref, {

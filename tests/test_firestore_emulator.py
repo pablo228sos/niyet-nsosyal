@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import urllib.error
+import urllib.request
 
 import pytest
 
@@ -54,7 +56,7 @@ def test_firestore_crud_assignment_and_idempotent_accept(firestore_client) -> No
     saved = service.get_author_request(actor("author"), request["id"])
     assert saved["status"] == "ANSWERED"
     assert saved["answer"] == "Persisted answer"
-    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 2
+    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 1
 
 
 def test_firestore_pause_releases_and_reallocates_pending_assignment(firestore_client) -> None:
@@ -73,3 +75,18 @@ def test_firestore_pause_releases_and_reallocates_pending_assignment(firestore_c
     replacement = service.repository.get_assignment(refreshed["current_assignment_id"])
     assert service.repository.get_assignment(old["id"])["status"] == "CANCELLED"
     assert replacement["responder_uid"] != old["responder_uid"]
+
+
+def test_firestore_rules_deny_direct_client_rest_access(firestore_client) -> None:
+    # Server/Admin persistence can write, while an unauthenticated browser-style
+    # REST read must still be denied by firestore.rules.
+    firestore_client.collection("users").document("browser-probe").set({"uid": "browser-probe"})
+    host = os.environ["FIRESTORE_EMULATOR_HOST"]
+    url = (
+        f"http://{host}/v1/projects/drsk-web-test/databases/(default)/"
+        "documents/users/browser-probe"
+    )
+    request = urllib.request.Request(url, headers={"Accept": "application/json"})
+    with pytest.raises(urllib.error.HTTPError) as caught:
+        urllib.request.urlopen(request, timeout=5)
+    assert caught.value.code == 403

@@ -16,12 +16,13 @@
   <a class="skip-link" href="#main">Skip to feed</a>
 
   <header class="topbar mobile-topbar">
-    <a class="brand" href="/live" aria-label="DRSK NSosyal integration">
+    <a class="brand" href="/live" aria-label="DRSK NSosyal concept integration">
       <span class="brand-n" aria-hidden="true">N</span>
       <span class="drsk-lockup"><b>DRSK</b><small>concept integration</small></span>
     </a>
     <div class="top-actions">
       <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
+      <button id="resetDemo" class="icon-button" type="button" title="Reset prototype" aria-label="Reset prototype">↻</button>
       <button class="icon-button theme-button" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
       <button id="languageToggle" class="quiet-button language-button" type="button" aria-label="Switch language">TR</button>
     </div>
@@ -62,39 +63,18 @@
           <span class="feed-kicker">DRSK integration</span>
           <h1 data-copy="feedTitle">Feed</h1>
         </div>
-        <nav class="role-tabs" aria-label="NIYET role">
+        <nav class="role-tabs" aria-label="Prototype role">
           <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">New user</button>
           <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
         </nav>
       </div>
-
-      <section class="auth-card" aria-labelledby="accountStatus">
-        <div class="auth-card-head">
-          <strong id="accountStatus">Sign in to use NIYET</strong>
-          <div id="authSignedIn" hidden>
-            <span id="currentUser"></span>
-            <button id="signOutUser" class="quiet-button" type="button">Sign out</button>
-          </div>
-        </div>
-        <div id="authSignedOut" class="auth-fields">
-          <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
-          <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="6" required></label>
-          <label>Display name<input id="authDisplayName" type="text" autocomplete="name" maxlength="80"></label>
-          <div class="auth-actions">
-            <button id="signInEmail" class="primary-button" type="button">Sign in</button>
-            <button id="signUpEmail" class="quiet-button" type="button">Create account</button>
-            <button id="signInGoogle" class="quiet-button" type="button">Google</button>
-          </div>
-        </div>
-        <p id="authMessage" class="inline-message" role="status" aria-live="polite"></p>
-      </section>
 
       <section id="authorView" class="author-view" aria-labelledby="authorHeading">
         <article class="composer-card" id="composer">
           <div class="avatar" aria-hidden="true">AY</div>
           <div class="composer-main">
             <div class="identity-line">
-              <div><strong id="authorDisplayName">Signed-in user</strong><span id="authorHandle"></span></div>
+              <div><strong>Ayşe Yılmaz</strong><span>@ayse.new</span></div>
               <span class="zero-followers" data-copy="zeroFollowers">0 followers</span>
             </div>
             <h2 id="authorHeading" class="sr-only" data-copy="authorHeading">Ask without an audience.</h2>
@@ -123,7 +103,7 @@
           <div class="post-grid">
             <div class="avatar" aria-hidden="true">AY</div>
             <div class="post-body">
-              <div class="post-head"><strong id="requestAuthorName">Signed-in user</strong><span id="requestAuthorHandle"></span><span>· now</span></div>
+              <div class="post-head"><strong>Ayşe Yılmaz</strong><span>@ayse.new</span><span>· now</span></div>
               <p id="requestTextPreview" class="post-copy"></p>
 
               <section id="evidenceBlock" class="drsk-card evidence-card" hidden>
@@ -147,6 +127,7 @@
                 <div id="matchReasons" class="reason-list"></div>
                 <div class="match-footer">
                   <small data-copy="capacityNote">Willingness and remaining capacity are hard constraints.</small>
+                  <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Open responder device</button>
                 </div>
               </section>
 
@@ -169,18 +150,11 @@
             <span class="feed-kicker" data-copy="responderSide">Responder side</span>
             <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
             <div class="responder-controls">
-              <span id="responderIdentity">Signed-in account</span>
+              <label for="responderSelect" data-copy="identity">Demo identity</label>
+              <select id="responderSelect"></select>
               <button id="availabilityToggle" class="quiet-button" type="button" disabled>Pause</button>
             </div>
             <div id="responderMeta" class="responder-meta"></div>
-            <form id="responderProfileForm" class="profile-form">
-              <label>Topics<input id="profileTopics" type="text" placeholder="python, robotics, design" required></label>
-              <label>Languages<input id="profileLanguages" type="text" value="en" required></label>
-              <label>Capacity<input id="profileCapacity" type="number" min="1" max="100" value="2" required></label>
-              <label class="check-field"><input id="profileWilling" type="checkbox"> Willing to respond</label>
-              <label class="check-field"><input id="profileActive" type="checkbox" checked> Active</label>
-              <button class="primary-button" type="submit">Save responder profile</button>
-            </form>
           </div>
         </article>
         <div id="inboxMessage" class="inline-message" role="status" aria-live="polite"></div>
@@ -213,8 +187,8 @@
       </section>
 
       <section class="context-card limit-card">
-        <b data-copy="truthTitle">Production boundary</b>
-        <p data-copy="truthText">Authenticated NIYET state is stored in Firestore. Evidence remains bounded and is never presented as a generic truth score.</p>
+        <b data-copy="truthTitle">Prototype boundary</b>
+        <p data-copy="truthText">Controlled evidence corpus and explicit prototype state. No generic truth score, no hidden psychological profiling.</p>
       </section>
     </aside>
   </main>
@@ -239,7 +213,7 @@
     </article>
   </template>
 
-  <script type="module" src="/live.js"></script>
+  <script src="/live.js" defer></script>
   <script src="/live-motion.js" defer></script>
   <script src="/live-theme.js" defer></script>
 </body>

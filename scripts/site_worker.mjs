@@ -1,12 +1,12 @@
 const API_ORIGIN = 'https://niyet-nsosyal.vercel.app';
 const HEADERS = {
-  'Content-Security-Policy': "default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'no-referrer',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
 };
 
-const API_PATHS = new Set(['/api', '/api/experiment', '/api/human-help', '/api/niyet']);
+const API_PATHS = new Set(['/api', '/api/experiment', '/api/human-help']);
 
 export default {
   async fetch(request) {
@@ -51,14 +51,9 @@ export default {
       }
 
       try {
-        const upstreamHeaders = { 'Content-Type': 'application/json', Accept: 'application/json' };
-        const authorization = request.headers.get('authorization');
-        if (url.pathname === '/api/niyet' && authorization) {
-          upstreamHeaders.Authorization = authorization;
-        }
         const upstream = await fetch(API_ORIGIN + url.pathname + url.search, {
           method: request.method,
-          headers: upstreamHeaders,
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body,
           redirect: 'manual',
           signal: AbortSignal.timeout(20000),
@@ -97,7 +92,7 @@ export default {
     }
 
     const path =
-      ['/', '/index', '/index.html'].includes(url.pathname) || ['/live', '/live/'].includes(url.pathname)
+      url.pathname === '/' || ['/live', '/live/'].includes(url.pathname)
         ? '/live.html'
         : ['/lab', '/lab/'].includes(url.pathname)
           ? '/lab.html'

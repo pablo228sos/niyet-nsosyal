@@ -329,10 +329,32 @@ class handler(BaseHTTPRequestHandler):
             return
 
         if action:
-            if action in {"accept", "pause", "resume"}:
-                self._json(401, {"error": "firebase_auth_required"})
+            raw_responder_id = payload.get("responder_id", "")
+            responder_id = raw_responder_id.strip() if isinstance(raw_responder_id, str) else ""
+            if action not in {"accept", "pause", "resume"}:
+                self._json(400, {"error": "invalid_action"})
                 return
-            self._json(400, {"error": "invalid_action"})
+            if not responder_id:
+                self._json(400, {"error": "responder_id_required"})
+                return
+            try:
+                state = runtime.update_responder_state(
+                    responder_state,
+                    responder_id,
+                    action=action,
+                )
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+                return
+            self._json(
+                200,
+                {
+                    "status": "ok",
+                    "action": action,
+                    "responder_id": responder_id,
+                    "responder_state": state,
+                },
+            )
             return
 
         if "requests" in payload and not isinstance(payload["requests"], list):

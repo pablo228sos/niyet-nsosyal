@@ -20,7 +20,6 @@ FILES = [
     "live-motion.css",
     "live-nsosyal.css",
     "live.js",
-    "firebase-client.js",
     "live-motion.js",
     "live-theme.js",
     "index.html",
@@ -44,7 +43,7 @@ MIME = {
     ".svg": "image/svg+xml",
 }
 
-for name in ["app.js", "main.js", "lab.js", "theme.js", "live.js", "firebase-client.js", "live-motion.js", "live-theme.js"]:
+for name in ["app.js", "main.js", "lab.js", "theme.js", "live.js", "live-motion.js", "live-theme.js"]:
     subprocess.run(["node", "--check", str(WEB / name)], check=True)
 
 assets = {
