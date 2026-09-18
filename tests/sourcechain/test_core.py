@@ -53,7 +53,9 @@ def test_subjective_comparisons_are_opinion_without_hiding_mixed_facts():
     assert factual_contrast.check_worthy
     assert mixed.statement_type is StatementType.MIXED
     assert mixed.check_worthy
-    assert any("2025 study found" in claim.text for claim in mixed.claims)
+    assert [claim.text for claim in mixed.claims] == [
+        "A 2025 study found it uses 20% less battery."
+    ]
 
 
 def test_statement_gate_keeps_declarative_claim_before_follow_up_question():

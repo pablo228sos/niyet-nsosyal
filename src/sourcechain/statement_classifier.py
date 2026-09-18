@@ -75,5 +75,14 @@ def classify_statement(text: str) -> StatementType:
 def analyze_post(text: str, *, max_claims: int = 5) -> PostAnalysis:
     statement_type = classify_statement(text)
     check_worthy = statement_type in {StatementType.FACTUAL_CLAIM, StatementType.MIXED}
-    claims = extract_claims(text, max_claims=max_claims) if check_worthy else ()
+    if not check_worthy:
+        claims = ()
+    else:
+        extracted = extract_claims(text, max_claims=max_claims)
+        claims = tuple(
+            claim
+            for claim in extracted
+            if classify_statement(claim.text)
+            in {StatementType.FACTUAL_CLAIM, StatementType.MIXED}
+        )
     return PostAnalysis(text=text, statement_type=statement_type, check_worthy=check_worthy, claims=claims)
