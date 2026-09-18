@@ -46,6 +46,12 @@ Eight synthetic responder profiles used by the prototype and matching benchmark.
 
 They are synthetic product fixtures. They are not real NSosyal accounts.
 
+### `responder_profiles_final_v2.json`
+
+Final synthetic responder fixtures used by the judge-facing human-help flow. Profiles include explicit topic areas, interaction willingness, active state, daily attention budget and current remaining slots.
+
+`Prepare demo` / backend reset restores each responder to the configured budget. These are synthetic prototype identities, not real NSosyal users.
+
 ### `matching_benchmark_v1_draft.json`
 
 Original 32-query Turkish matching benchmark draft. It is retained for provenance and is not overwritten.

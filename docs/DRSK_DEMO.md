@@ -1,122 +1,153 @@
-# DRSK Demo
+# DRSK demo and regression scenarios
 
-These scenarios exercise the current bounded prototype without relying on live web search. They are product/engineering smoke tests, not jury-specific scripts.
+The final judge surface supports repeated private checks and a separate explicit human-routing action. The goal is not to force every input into a strong answer. `NONE`, `INSUFFICIENT` and an unmatched human request are valid safe outcomes.
 
-## A — NONE: opinion stays outside factual verification
+## Clean judge start
 
-Post:
+Open the final `/live` surface and press **Prepare demo** once.
 
-```text
-I think this movie is terrible.
-```
+This restores the canonical coffee text, clears stale author state and restores the demo responder budgets. Normal checks after that do not require another reset.
 
-Expected:
+## 1 — BOTH: canonical coffee causality shift
 
-- statement type is subjective/non-checkable
-- no evidence is invented
-- resolution is `NONE`
-- SOURCECHAIN does not create a human escalation automatically
-
-## B — EVIDENCE: exact supported official statement
-
-Post:
-
-```text
-Regular physical activity provides significant physical and mental health benefits.
-```
-
-Controlled source: World Health Organization, `Physical activity`.
-
-Expected:
-
-- the stored WHO passage is retrieved with its original URL/provenance
-- relation is supported
-- the bounded path can resolve through `EVIDENCE`
-- no truth score appears
-
-## C — BOTH: association is not causation
-
-Post:
-
-```text
+~~~text
 Research proves coffee consumption causes lower mortality. Can someone explain what the study actually shows?
-```
+~~~
 
-Controlled source: PubMed / *Circulation*, `Association of Coffee Consumption With Total and Cause-Specific Mortality in 3 Large Prospective Cohorts`.
+Expected after **Check with DRSK**:
 
-Expected:
+- no human request is created;
+- SOURCECHAIN keeps the exact coffee cohort source passage visible;
+- post wording says `proves / causes`;
+- source wording says `associated with`;
+- relation is `CONFLICTING`;
+- typed signal includes `CAUSALITY_SHIFT`;
+- resolution path is `BOTH`;
+- responder attention remains unchanged.
 
-- the exact stored passage says coffee consumption was **associated with** lower mortality risk
-- `CAUSALITY_SHIFT` is exposed rather than silently accepting `causes/proves`
-- the evidence remains visible
-- no human request is created by the evidence check alone
-- in the real NSosyal adapter, the author publishes with the native NSosyal control and DRSK detects the visible published post
-- the author explicitly presses **Ask a relevant person**
-- the unresolved interpretation is then routed through NIYET
-- resolution is `BOTH`
+Only after **Ask a relevant person**:
 
-## D — BOTH: numeric distortion
+- NIYET creates the request;
+- final demo routing selects `Research Reviewer`;
+- the author card shows routing reason and remaining attention budget.
 
-Post:
+## 2 — HUMAN: practical PID question
 
-```text
-A report says industrial activities raised atmospheric carbon dioxide by 90% since 1750.
-```
-
-Controlled source: NASA Science, `Causes`.
-
-Expected:
-
-- the stored NASA passage reports **nearly 50% since 1750**
-- the changed number is exposed as `NUMERIC_DISTORTION`
-- the source passage and provenance remain visible
-- the resolution policy can keep evidence while requesting human interpretation (`BOTH`)
-
-## E — HUMAN: honest insufficiency
-
-Post:
-
-```text
-ESP32 ultrasonic sensors always detect obstacles at 50 meters. Can someone help me check this?
-```
+~~~text
+What will happen to a control system if you increase the Derivative coefficient (Kd) too much, while keeping the Proportional (Kp) and Integral (Ki) coefficients the same?
+~~~
 
 Expected:
 
-- no unrelated controlled passage is presented as proof
-- evidence status remains `INSUFFICIENT`
-- when human help is requested, structured claim/status context enters NIYET
-- the request is routed only to an eligible willing responder with remaining capacity, or remains unmatched honestly
-- resolution path is `HUMAN`
+- path is `HUMAN`;
+- the UI does not manufacture a SOURCECHAIN `INSUFFICIENT` evidence card for a pure contextual question;
+- Check opens no request and spends no capacity;
+- explicit human routing remains separate.
 
-## F — Shared-capacity window
+## 3 — NONE: opinion stays ordinary
 
-Open two or more human-help requests that compete for the same low-capacity responder.
+~~~text
+Dark mode looks better than light mode.
+~~~
 
 Expected:
 
-- all open/unmatched requests are allocated together as one bounded window
-- a one-slot responder cannot be assigned to two accepted requests
-- Accept consumes capacity once and pins the accepted request
-- Skip triggers reallocation of the still-open request when an alternative exists
-- Pause removes the responder from new allocation; Resume restores eligibility only if capacity remains
-- a stale Accept/Skip from an older UI snapshot is rejected as a conflict and the UI refreshes the current queue
+- statement is subjective/non-checkable;
+- no evidence card is rendered;
+- no human request is opened;
+- path is `NONE`.
 
-For a real cross-device/serverless demo, configure the durable Upstash state backend. Without it, the local memory fallback is intentionally reported as process-local.
+## 4 — EVIDENCE: supported official statement
 
-## Verification commands
+~~~text
+Regular physical activity provides significant physical and mental health benefits.
+~~~
 
-```bash
+Verified fallback source: World Health Organization, `Physical activity`.
+
+Expected on a clean controlled run:
+
+- exact provenance is preserved;
+- a supported passage can resolve through `EVIDENCE`;
+- no person is needed.
+
+Live web acquisition may produce additional candidates. The relation must remain bounded by the actual retrieved passages rather than being forced to match this expected demonstration path.
+
+## 5 — arbitrary factual claim
+
+Ask the judge for an unprepared factual statement and press **Check with DRSK**.
+
+Legitimate outcomes include `SUPPORTED`, `PARTIALLY_SUPPORTED`, `CONFLICTING` and `INSUFFICIENT`.
+
+The success criterion is coherent evidence/provenance and safe failure, not a visually convenient label. Repeated arbitrary checks must not consume responder capacity.
+
+## 6 — full same-page human round trip
+
+Starting from the coffee result:
+
+1. **Ask a relevant person**.
+2. Confirm routing to `Research Reviewer`.
+3. Switch `Demo device` to **Responder**.
+4. The responder selector follows the assigned `Research Reviewer`.
+5. The coffee request is visible immediately.
+6. Press **Accept**.
+7. Enter an answer.
+8. Send the answer.
+9. Switch back to **Author**.
+10. The same request refreshes to `Resolved`.
+11. The exact human answer is visible.
+
+The final stabilization pass verified this path locally and on Vercel Preview.
+
+## 7 — separate responder device
+
+Use **Open responder device** or **Copy responder link** after routing and open the link in a genuinely separate browser context/session.
+
+Expected:
+
+- explicit responder URL selects the same assigned responder;
+- request and evidence context match the Author view;
+- Accept / Answer works;
+- the Author request reaches `Resolved`.
+
+## 8 — real NSosyal concept adapter
+
+Manual presentation-hardware flow:
+
+1. open real NSosyal while logged in;
+2. type a draft;
+3. press DRSK for a private inspect;
+4. verify no human request exists;
+5. publish with NSosyal's native control;
+6. wait for the exact text to be detected as a visible published post;
+7. press **Ask a relevant person** only after publication;
+8. open the responder device;
+9. Accept and answer;
+10. verify the returned answer can be restored in the extension.
+
+On narrow/mobile widths:
+
+- no unsafe standalone floating DRSK fallback while the composer is closed;
+- composer DRSK must not cover NSosyal publish/navigation controls;
+- the result uses the narrow-screen sheet/full-width treatment.
+
+The final automated Codex environment did not repeat this authenticated real-site visual pass. `/live` remains the judge-safe fallback.
+
+## Verification
+
+~~~bash
 python -m pip install -c constraints.txt -e . pytest
-node --check web/app.js
-node --check web/lab.js
 node --check web/live.js
-python -m compileall -q src api scripts experiments
+node --check demo/nsosyal-overlay/background.js
+node --check demo/nsosyal-overlay/content-v2.js
+python scripts/build_site.py
+python scripts/package_nsosyal_overlay.py
 pytest -q
 python experiments/evaluate_matching_draft.py
 python experiments/evaluate_sourcechain_v0.py
 python scripts/validate_annotations.py data/intent_seed_v1.csv
 python scripts/validate_annotations.py data/response_gate_seed_v1.csv
 python scripts/validate_sourcebench.py data/sourcebench_tr
-```
+~~~
 
-The smoke-test goal is not to force every post into an answer. Correct refusal, `INSUFFICIENT`, `NONE` and an unmatched human request are valid outcomes when the evidence or responder constraints do not support a stronger result.
+Final stabilization result: **57 targeted tests passed** and **283 full-suite tests passed**.
