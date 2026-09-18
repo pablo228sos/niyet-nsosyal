@@ -154,4 +154,4 @@ The interface must not imply:
 - durable multi-instance state when the configured backend is process-local
 
 The public product surface describes the capability. Detailed jury choreography, defense notes
-and presentation strategy stay in the private BEYMAX repository.
+and presentation strategy stay outside the public product UI.

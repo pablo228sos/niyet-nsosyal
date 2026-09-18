@@ -1,6 +1,6 @@
 # DRSK final judge build
 
-Status: final judge-facing release candidate, 2026-09-18.
+Status: final judge-facing build merged to `main`, 2026-09-18.
 
 ## Product contract
 
@@ -15,11 +15,11 @@ DRSK is a resolution layer for social content.
 
 ## Final branch state
 
-- final stabilization branch: `fix/judge-ux-stabilization`
+- stabilization PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31) merged to `main`
+- merge commit: `55e5757c245966ae1280816ea31d10396ae666fc`
 - Codex stabilization head before repository polish: `a6457a3f9e669997d788d1b82137b10cb4541b24`
-- PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31)
-- final tested Preview: <https://niyet-nsosyal-git-fix-judge-ux-stabilization-teknofest-2026.vercel.app/live>
-- Production: <https://niyet-nsosyal.vercel.app>
+- Production: <https://niyet-nsosyal.vercel.app/live>
+- Vercel production deployment from the merge commit: READY
 
 Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KEY` is the primary live evidence credential. Brave remains an optional provider when configured.
 
@@ -50,7 +50,7 @@ Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KE
 - extension package: PASS
 - repeated-check capacity invariant: PASS
 - GitHub Actions: PASS
-- Vercel Preview: READY
+- Vercel Production: READY
 
 Five final `/live` screenshots are committed under [`docs/screenshots/`](screenshots/).
 

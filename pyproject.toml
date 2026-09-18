@@ -17,4 +17,4 @@ pythonpath = ["src", "."]
 
 [project.urls]
 Repository = "https://github.com/pablo228sos/niyet-nsosyal"
-Demo = "https://niyet-nsosyal-git-fix-judge-ux-stabilization-teknofest-2026.vercel.app/live"
+Demo = "https://niyet-nsosyal.vercel.app/live"

@@ -73,7 +73,7 @@ We avoid a generic `trust score` because it compresses a claim/evidence relation
 
 ## Product versus presentation
 
-The public product surface does not contain pitch-only metrics, jury messaging or internal evaluation material. Those belong in the final presentation and the private BEYMAX defense repository.
+The public product surface does not contain pitch-only metrics, jury messaging or internal evaluation material. Those belong in the final presentation and defense material, not inside the product UI.
 
 The live product keeps only a small prototype-boundary note because that prevents overclaiming during hands-on use.
 

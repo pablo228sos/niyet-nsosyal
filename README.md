@@ -4,7 +4,7 @@
 
 DRSK is a resolution layer for social platforms. It does not force every post through the same AI pipeline. It decides what the post actually needs next: evidence, a person, both, or nothing.
 
-**[Open the final live demo](https://niyet-nsosyal-git-fix-judge-ux-stabilization-teknofest-2026.vercel.app/live)** · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
+**[Open the final live demo](https://niyet-nsosyal.vercel.app/live)** · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
 
 ![DRSK exposes the exact coffee claim-to-source mismatch and causality shift](docs/screenshots/01_live_coffee_conflict.png)
 
@@ -158,7 +158,7 @@ The final stabilization pass completed with:
 - extension packaging passed;
 - repeated private checks preserved responder capacity;
 - GitHub Actions passed;
-- the final Vercel Preview was Ready.
+- the final Vercel Preview and merged Production deployment were Ready.
 
 These software checks are separate from the project's model/development measurements.
 
