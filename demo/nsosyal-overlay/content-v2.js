@@ -591,6 +591,13 @@
 
     if (!result?.human_available) {
       wrap.append(el('p', 'drsk-overlay-capacity', t('unavailableResponder')));
+      if (published) {
+        const button = el('button', 'drsk-overlay-primary', t('askPerson'));
+        button.type = 'button';
+        button.disabled = true;
+        button.setAttribute('aria-disabled', 'true');
+        wrap.append(button);
+      }
       return wrap;
     }
 

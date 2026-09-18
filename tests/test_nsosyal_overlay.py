@@ -204,3 +204,20 @@ def test_final_demo_profiles_start_with_their_full_attention_budget():
     profiles = json.loads((ROOT / "data" / "responder_profiles_final_v2.json").read_text(encoding="utf-8"))
     assert profiles
     assert all(item["remaining_slots"] == item["daily_budget"] for item in profiles)
+
+
+def test_background_exposes_session_storage_to_the_nsosyal_content_script():
+    assert "chrome.storage.session.setAccessLevel" in BACKGROUND
+    assert "TRUSTED_AND_UNTRUSTED_CONTEXTS" in BACKGROUND
+    assert "configureSessionStorageAccess()" in BACKGROUND
+    assert "chrome.runtime.onInstalled.addListener(configureSessionStorageAccess)" in BACKGROUND
+    assert "chrome.runtime.onStartup.addListener(configureSessionStorageAccess)" in BACKGROUND
+
+
+def test_published_unavailable_human_path_keeps_the_action_visible_but_disabled():
+    recommendation = CONTENT.split("function renderHumanRecommendation", 1)[1].split("function renderResult", 1)[0]
+
+    assert "if (!result?.human_available)" in recommendation
+    assert "if (published)" in recommendation
+    assert "button.disabled = true" in recommendation
+    assert "aria-disabled" in recommendation
