@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
-from .firebase_backend import verify_firebase_token
+from .firebase_backend import FirebaseConfigurationError, verify_firebase_token
 
 
 @dataclass(frozen=True)
@@ -48,6 +48,11 @@ def authenticate_authorization_header(
         raise AuthError("auth_token_malformed")
     try:
         claims = verifier(token.strip())
+    except FirebaseConfigurationError:
+        # Deployment/configuration failures are service failures, not bad user
+        # credentials. Preserve the distinction so the API returns 503 and
+        # production cannot masquerade a broken backend as an auth rejection.
+        raise
     except Exception as exc:
         raise AuthError("auth_token_invalid") from exc
     uid = claims.get("uid") or claims.get("sub")
