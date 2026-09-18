@@ -48,12 +48,13 @@ def test_firestore_crud_assignment_and_idempotent_accept(firestore_client) -> No
     assert assignment_id
     service.accept(actor("responder"), assignment_id)
     service.accept(actor("responder"), assignment_id)
+    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 1
     service.answer(actor("responder"), assignment_id, "Persisted answer")
     service.answer(actor("responder"), assignment_id, "Persisted answer")
     saved = service.get_author_request(actor("author"), request["id"])
     assert saved["status"] == "ANSWERED"
     assert saved["answer"] == "Persisted answer"
-    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 1
+    assert service.get_responder_profile(actor("responder"))["capacity_remaining"] == 2
 
 
 def test_firestore_pause_releases_and_reallocates_pending_assignment(firestore_client) -> None:
