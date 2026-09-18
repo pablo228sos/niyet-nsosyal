@@ -392,6 +392,7 @@
 
     if (!composer) {
       trigger.dataset.fallback = 'true';
+      trigger.dataset.entrypoint = 'floating';
       trigger.style.removeProperty('--drsk-trigger-x');
       trigger.style.removeProperty('--drsk-trigger-y');
       trigger.style.setProperty('right', '24px');
@@ -399,6 +400,7 @@
     }
 
     trigger.dataset.fallback = 'false';
+    trigger.dataset.entrypoint = 'composer';
     trigger.style.setProperty('right', 'auto');
     const send = findSendButtonNear(composer);
     const rect = composer.getBoundingClientRect();

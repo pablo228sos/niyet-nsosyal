@@ -86,9 +86,20 @@ def test_composer_helper_stays_compact_and_clear_of_native_toolbar():
     assert "sendRect.left - 82" in CONTENT
     assert "trigger.dataset.fallback = 'false'" in CONTENT
     assert "trigger.dataset.fallback = 'true'" in CONTENT
+    assert "trigger.dataset.entrypoint = 'composer'" in CONTENT
+    assert "trigger.dataset.entrypoint = 'floating'" in CONTENT
     assert 'min-width:58px' in CSS
     assert 'height:32px' in CSS
     assert '.drsk-overlay-trigger[data-fallback="false"]{margin-top:-42px}' in CSS
+
+
+def test_mobile_entrypoint_keeps_composer_action_inline_and_fallback_compact():
+    compact_css = CSS.replace(" ", "")
+
+    assert '@media(max-width:760px)' in compact_css
+    assert '.drsk-overlay-trigger[data-entrypoint="composer"]{margin-top:0!important;height:32px;min-width:58px}' in compact_css
+    assert '.drsk-overlay-trigger[data-entrypoint="floating"]{top:auto!important;right:12px!important;bottom:calc(76px+env(safe-area-inset-bottom))!important;left:auto!important;height:34px;min-width:58px' in compact_css
+    assert '.drsk-overlay-panel{top:auto;left:0;right:0;bottom:0;width:100vw;max-height:min(78dvh,680px);border-radius:18px18px00;border-bottom:0}' in compact_css
 
 
 def test_overlay_is_explicitly_a_concept_integration():
