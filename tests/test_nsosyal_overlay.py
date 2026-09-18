@@ -178,7 +178,7 @@ def test_native_publish_detection_never_creates_a_human_request_by_itself():
 
 def test_extension_responder_handoff_matches_truthful_availability_copy():
     assert "LIVE_URL = 'https://niyet-nsosyal.vercel.app/live'" in CONTENT
-    assert "No eligible responder is available right now." in CONTENT
+    assert "no eligible responder is available right now." in CONTENT
     assert "Copy responder link" in CONTENT
     assert "navigator.clipboard.writeText(url.href)" in CONTENT
     assert "drsk-overlay-handoff-actions" in CONTENT
