@@ -35,7 +35,7 @@ const copy = {
     demoDevice: 'Demo device', authorTab: 'Author', responderTab: 'Responder', authorSide: 'Author side', responderSide: 'DRSK Requests',
     authorHeading: 'Ask without an audience.', responderHeading: 'Requests that match what you can help with.',
     requestLabel: 'What do you need help with?', requestPlaceholder: 'Share a question, claim or idea...', zeroFollowers: '0 followers',
-    noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a relevant person', postWithDrsk: 'Post with DRSK', loadScenario: 'Load example',
+    noFollowers: 'Follower count is never used as an eligibility signal.', routeHuman: 'Ask a relevant person', postWithDrsk: 'Check with DRSK', loadScenario: 'Load example',
     restore: 'Restore request', routedTo: 'Routed to', openResponder: 'Open responder device', copyResponder: 'Copy responder link', evidenceContext: 'Evidence context', humanAnswer: 'Human answer',
     publishedContext: 'Published NSosyal post',
     evidenceHeading: 'What does the source actually say?', boundedNote: 'Bounded evidence, not a truth score.', humanNeeded: 'Evidence needs human context',
@@ -48,7 +48,7 @@ const copy = {
     capacity: 'Attention budget remaining', active: 'routing on', paused: 'routing paused', emptyInbox: 'No routed requests for this responder right now.',
     accept: 'Accept', skip: 'Skip', answer: 'Answer', answerPlaceholder: 'Give the person a concise, useful answer.', send: 'Send answer',
     requestOpened: 'Request opened. NIYET is looking for a willing person.', evidenceRouted: 'Evidence checked. The unresolved part was routed with its source context.',
-    noHumanNeeded: 'The bounded evidence was sufficient; no human request was opened.', noHumanAvailable: 'Human context is recommended, but no eligible responder is available right now.', noActionNeeded: 'This content does not need evidence or human resolution.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
+    noHumanNeeded: 'The bounded evidence was sufficient; no human request was opened.', humanOptional: 'Evidence checked. Human context is available only if you choose Ask a relevant person.', noHumanAvailable: 'Human context is recommended, but no eligible responder is available right now.', noActionNeeded: 'This content does not need evidence or human resolution.', answerSent: 'Answer sent back to the original post.', requestAccepted: 'Request accepted.', requestSkipped: 'Request skipped. NIYET reallocated it when another eligible responder existed.',
     routingChanged: 'Availability changed, so NIYET reallocated this request. The latest queue is shown.', capacityChanged: 'Responder capacity changed. NIYET recalculated the pending window.', serviceBusy: 'Shared state is temporarily unavailable. Try again in a moment.',
     copied: 'Responder link copied.', copyFailed: 'Copy failed. Open responder mode manually.', restored: 'Request restored from this browser session.',
     networkError: 'The prototype backend is not reachable.', invalidState: 'This request can no longer be restored. Start a new request or reset the demo.',
@@ -65,7 +65,7 @@ const copy = {
     demoDevice: 'Demo cihazı', authorTab: 'Gönderi sahibi', responderTab: 'Cevaplayıcı', authorSide: 'Gönderi sahibi', responderSide: 'DRSK İstekleri',
     authorHeading: 'Takipçin olmasa da sor.', responderHeading: 'Gerçekten yardımcı olabileceğin istekler.',
     requestLabel: 'Neye ihtiyacın var?', requestPlaceholder: 'Bir soru, iddia veya fikir paylaş...', zeroFollowers: '0 takipçi',
-    noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'İlgili bir kişiye sor', postWithDrsk: 'DRSK ile paylaş', loadScenario: 'Örneği yükle',
+    noFollowers: 'Takipçi sayısı hiçbir zaman uygunluk sinyali olarak kullanılmaz.', routeHuman: 'İlgili bir kişiye sor', postWithDrsk: 'DRSK ile kontrol et', loadScenario: 'Örneği yükle',
     restore: 'İsteği geri yükle', routedTo: 'Yönlendirilen kişi', openResponder: 'Cevaplayıcı cihazını aç', copyResponder: 'Cevaplayıcı bağlantısını kopyala', evidenceContext: 'Kanıt bağlamı', humanAnswer: 'İnsan yanıtı',
     publishedContext: 'Yayınlanan NSosyal gönderisi',
     evidenceHeading: 'Kaynak aslında ne söylüyor?', boundedNote: 'Sınırlı kanıt, doğruluk puanı değil.', humanNeeded: 'Kanıt insan bağlamına ihtiyaç duyuyor',
@@ -78,7 +78,7 @@ const copy = {
     capacity: 'Kalan dikkat bütçesi', active: 'yönlendirme açık', paused: 'yönlendirme kapalı', emptyInbox: 'Bu cevaplayıcı için şu anda yönlendirilmiş istek yok.',
     accept: 'Kabul et', skip: 'Geç', answer: 'Yanıt', answerPlaceholder: 'Kısa ve faydalı bir yanıt yaz.', send: 'Yanıtı gönder',
     requestOpened: 'İstek açıldı. NIYET istekli birini arıyor.', evidenceRouted: 'Kanıt kontrol edildi. Çözülmeyen kısım kaynak bağlamıyla birlikte yönlendirildi.',
-    noHumanNeeded: 'Sınırlandırılmış kanıt yeterliydi; insan isteği açılmadı.', noHumanAvailable: 'İnsan bağlamı öneriliyor, ancak şu anda uygun bir cevaplayıcı yok.', noActionNeeded: 'Bu içerik için kanıt veya insan çözümü gerekmiyor.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
+    noHumanNeeded: 'Sınırlandırılmış kanıt yeterliydi; insan isteği açılmadı.', humanOptional: 'Kanıt kontrol edildi. İnsan bağlamı yalnızca İlgili bir kişiye sor seçeneğini seçersen açılır.', noHumanAvailable: 'İnsan bağlamı öneriliyor, ancak şu anda uygun bir cevaplayıcı yok.', noActionNeeded: 'Bu içerik için kanıt veya insan çözümü gerekmiyor.', answerSent: 'Yanıt asıl gönderiye geri ulaştı.', requestAccepted: 'İstek kabul edildi.', requestSkipped: 'İstek geçildi. Uygun başka cevaplayıcı varsa NIYET yeniden yönlendirdi.',
     routingChanged: 'Uygunluk değiştiği için NIYET bu isteği yeniden yönlendirdi. Güncel kuyruk gösteriliyor.', capacityChanged: 'Cevaplayıcı kapasitesi değişti. NIYET bekleyen istekleri yeniden hesapladı.', serviceBusy: 'Ortak durum geçici olarak kullanılamıyor. Birazdan tekrar dene.',
     copied: 'Cevaplayıcı bağlantısı kopyalandı.', copyFailed: 'Kopyalama başarısız. Cevaplayıcı modunu elle aç.', restored: 'İstek bu tarayıcı oturumundan geri yüklendi.',
     networkError: 'Prototip backendine ulaşılamıyor.', invalidState: 'Bu istek artık geri yüklenemiyor.',
@@ -445,7 +445,9 @@ async function openAuthorRequest(mode) {
         renderAuthorRequest(synthetic);
       }
       const message = result.human_recommended
-        ? t('noHumanAvailable')
+        ? result.human_available
+          ? t('humanOptional')
+          : t('noHumanAvailable')
         : path === 'NONE'
           ? t('noActionNeeded')
           : t('noHumanNeeded');
@@ -784,8 +786,8 @@ $('[data-language-toggle]').forEach((button) => {
 });
 $('#authorTab').addEventListener('click', () => setRole('author'));
 $('#responderTab').addEventListener('click', () => setRole('responder'));
-$('#routeHuman').addEventListener('click', () => openAuthorRequest('open'));
-$('#resolveEvidence').addEventListener('click', () => openAuthorRequest('resolve'));
+$('#routeHuman').addEventListener('click', () => openAuthorRequest('resolve'));
+$('#resolveEvidence').addEventListener('click', () => openAuthorRequest('inspect'));
 $('#openResponderDevice').addEventListener('click', openResponderDevice);
 $('#copyResponderLink').addEventListener('click', copyResponderLink);
 $('#loadScenario').addEventListener('click', () => {

@@ -77,6 +77,7 @@ def test_live_surface_keeps_resolution_story_and_honest_boundaries():
     # The evidence button must select resolve mode, and the request function must
     # forward that mode as the API action. Keep this contract independent of
     # whether the action is written as a literal or passed through a variable.
+    assert "openAuthorRequest('inspect')" in script
     assert "openAuthorRequest('resolve')" in script
     assert "callApi({ action: mode, text: value })" in script
 
@@ -262,3 +263,15 @@ def test_load_example_has_identical_canonical_outcome_in_en_and_tr_ui():
     assert "en: canonicalExampleScenario" in script
     assert "tr: canonicalExampleScenario" in script
     assert "Research proves coffee consumption causes lower mortality." in script
+
+
+def test_live_check_is_stateless_and_human_routing_requires_a_separate_action():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "Check with DRSK" in html
+    assert "postWithDrsk: 'Check with DRSK'" in script
+    assert "postWithDrsk: 'DRSK ile kontrol et'" in script
+    assert "$('#resolveEvidence').addEventListener('click', () => openAuthorRequest('inspect'))" in script
+    assert "$('#routeHuman').addEventListener('click', () => openAuthorRequest('resolve'))" in script
+    assert "humanOptional: 'Evidence checked. Human context is available only if you choose Ask a relevant person.'" in script
