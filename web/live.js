@@ -24,7 +24,7 @@ let requestBusy = false;
 const copy = {
   en: {
     navFeed: 'Feed', navExplore: 'Discover', navCommunities: 'Communities', navMessages: 'Messages', navProfile: 'Profile',
-    integrationNote: 'Evidence + human resolution', prototypeLabel: 'Final prototype', feedTitle: 'Feed',
+    integrationNote: 'Evidence + human resolution', prototypeLabel: 'Final prototype', feedTitle: 'Feed', prepareDemo: 'Prepare demo', resetDemoLabel: 'Reset',
     nativeTarget: 'Native feed concept', stateFeedTitle: 'Four resolution states', stateFeedNote: 'Static examples explain the Resolution Engine. They are not injected into real NSosyal posts.',
     stateEvidenceText: 'Regular physical activity provides significant physical and mental health benefits.', stateEvidenceMeta: 'Supported evidence is enough. No person is needed.',
     stateHumanText: 'My line-following robot oscillates in turns. Which PID term should I tune first?', stateHumanMeta: 'No factual claim to verify. Relevant human context is the useful path.',
@@ -54,7 +54,7 @@ const copy = {
   },
   tr: {
     navFeed: 'Akış', navExplore: 'Keşfet', navCommunities: 'Topluluklar', navMessages: 'Mesajlar', navProfile: 'Profil',
-    integrationNote: 'Kanıt + insan çözümü', prototypeLabel: 'Final prototipi', feedTitle: 'Akış',
+    integrationNote: 'Kanıt + insan çözümü', prototypeLabel: 'Final prototipi', feedTitle: 'Akış', prepareDemo: 'Demoyu hazırla', resetDemoLabel: 'Sıfırla',
     nativeTarget: 'Yerel akış konsepti', stateFeedTitle: 'Dört çözüm durumu', stateFeedNote: 'Bu sabit örnekler Resolution Engine mantığını açıklar. Gerçek NSosyal gönderilerine enjekte edilmez.',
     stateEvidenceText: 'Düzenli fiziksel aktivite önemli fiziksel ve zihinsel sağlık faydaları sağlar.', stateEvidenceMeta: 'Destekleyici kanıt yeterli. İnsan yanıtı gerekmiyor.',
     stateHumanText: 'Çizgi izleyen robotum virajlarda salınım yapıyor. Önce hangi PID terimini ayarlamalıyım?', stateHumanMeta: 'Doğrulanacak olgusal iddia yok. İlgili insan bağlamı faydalı yol.',
@@ -166,7 +166,9 @@ function applyLanguage() {
   document.documentElement.lang = language;
   $$('[data-copy]').forEach((node) => { node.textContent = t(node.dataset.copy); });
   $$('[data-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.placeholder); });
-  $('#languageToggle').textContent = language === 'en' ? 'TR' : 'EN';
+  $('[data-language-toggle]').forEach((button) => {
+    button.textContent = language === 'en' ? 'TR' : 'EN';
+  });
   if (responders.length) renderResponderMeta();
   if (currentAuthor?.request) renderAuthorRequest(currentAuthor.request);
 }
@@ -725,12 +727,7 @@ function restoreAuthorButton() {
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
 }
 
-async function resetDemo() {
-  if (!window.confirm(t('resetConfirm'))) return;
-  stopAuthorPoll();
-  stopInboxPoll();
-  try { await callApi({ action: 'reset' }); }
-  catch (error) { setMessage($('#authorMessage'), friendlyError(error), true); return; }
+function clearLocalDemoState() {
   sessionStorage.removeItem('drsk-live-author');
   inboxSnapshot = '';
   responderSnapshot = '';
@@ -739,19 +736,49 @@ async function resetDemo() {
   $('#requestText').value = '';
   $('#charCount').textContent = '0 / 1200';
   $('#restoreAuthor')?.setAttribute('hidden', '');
-  setMessage($('#authorMessage'), t('resetDone'));
   setMessage($('#inboxMessage'), '');
   updateStages(null);
+}
+
+async function resetDemo() {
+  if (!window.confirm(t('resetConfirm'))) return;
+  stopAuthorPoll();
+  stopInboxPoll();
+  try { await callApi({ action: 'reset' }); }
+  catch (error) { setMessage($('#authorMessage'), friendlyError(error), true); return; }
+  clearLocalDemoState();
+  setMessage($('#authorMessage'), t('resetDone'));
   await checkBackend();
   if (!$('#responderView').hidden) startInboxPoll();
 }
 
-$('#languageToggle').addEventListener('click', () => {
-  language = language === 'en' ? 'tr' : 'en';
-  localStorage.setItem('drsk-live-language', language);
-  applyLanguage();
-  inboxSnapshot = '';
-  if (!$('#responderView').hidden) refreshInbox(true);
+async function prepareDemo() {
+  if (requestBusy) return;
+  stopAuthorPoll();
+  stopInboxPoll();
+  setMessage($('#authorMessage'), t('checking'));
+  try {
+    await callApi({ action: 'reset' });
+    clearLocalDemoState();
+    setRole('author');
+    await checkBackend();
+    $('#requestText').value = exampleScenario[language];
+    $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
+    setMessage($('#authorMessage'), '');
+    $('#requestText').focus();
+  } catch (error) {
+    setMessage($('#authorMessage'), friendlyError(error), true);
+  }
+}
+
+$('[data-language-toggle]').forEach((button) => {
+  button.addEventListener('click', () => {
+    language = language === 'en' ? 'tr' : 'en';
+    localStorage.setItem('drsk-live-language', language);
+    applyLanguage();
+    inboxSnapshot = '';
+    if (!$('#responderView').hidden) refreshInbox(true);
+  });
 });
 $('#authorTab').addEventListener('click', () => setRole('author'));
 $('#responderTab').addEventListener('click', () => setRole('responder'));
@@ -764,7 +791,8 @@ $('#loadScenario').addEventListener('click', () => {
   $('#charCount').textContent = `${$('#requestText').value.length} / 1200`;
   $('#requestText').focus();
 });
-$('#resetDemo').addEventListener('click', resetDemo);
+$('[data-reset-demo]').forEach((button) => button.addEventListener('click', resetDemo));
+$('#prepareDemo').addEventListener('click', prepareDemo);
 $('#requestText').addEventListener('input', (event) => { $('#charCount').textContent = `${event.target.value.length} / 1200`; });
 $('#responderSelect').addEventListener('change', () => {
   selectedResponderId = $('#responderSelect').value;

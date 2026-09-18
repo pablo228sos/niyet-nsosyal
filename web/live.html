@@ -22,9 +22,9 @@
     </a>
     <div class="top-actions">
       <span id="connectionBadge" class="status-pill" data-state="checking">checking backend</span>
-      <button id="resetDemo" class="icon-button" type="button" title="Reset prototype" aria-label="Reset prototype">↻</button>
+      <button id="resetDemo" class="icon-button" type="button" data-reset-demo title="Reset prototype" aria-label="Reset prototype">↻</button>
       <button class="icon-button theme-button" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
-      <button id="languageToggle" class="quiet-button language-button" type="button" aria-label="Switch language">TR</button>
+      <button id="languageToggle" class="quiet-button language-button" type="button" data-language-toggle aria-label="Switch language">TR</button>
     </div>
   </header>
 
@@ -213,6 +213,11 @@
       <div class="right-tools">
         <label class="search-shell"><span aria-hidden="true">⌕</span><input type="search" readonly data-shell-placeholder="search" placeholder="Search"></label>
         <button class="icon-button theme-button desktop-theme" type="button" data-theme-toggle aria-label="Toggle theme">◐</button>
+        <div class="desktop-demo-controls">
+          <button class="quiet-button compact-control" type="button" data-language-toggle aria-label="Switch language">TR</button>
+          <button id="prepareDemo" class="quiet-button compact-control prepare-demo" type="button" data-copy="prepareDemo">Prepare demo</button>
+          <button class="quiet-button compact-control" type="button" data-reset-demo data-copy="resetDemoLabel">Reset</button>
+        </div>
       </div>
 
       <section class="context-card trends-card">

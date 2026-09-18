@@ -227,3 +227,29 @@ def test_live_curated_state_feed_is_small_static_and_truthful():
     assert "stateHumanText" in script
     assert "stateBothText" in script
     assert "stateNoneText" in script
+
+
+def test_desktop_demo_controls_are_visible_and_prepare_is_one_action():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    css = (ROOT / "web" / "live-nsosyal.css").read_text(encoding="utf-8")
+
+    assert 'id="prepareDemo"' in html
+    assert "data-language-toggle" in html
+    assert "data-reset-demo" in html
+    assert "async function prepareDemo()" in script
+    prepare = script.split("async function prepareDemo()", 1)[1].split("$$('[data-language-toggle]')", 1)[0]
+    assert "action: 'reset'" in prepare
+    assert "clearLocalDemoState()" in prepare
+    assert "setRole('author')" in prepare
+    assert "exampleScenario[language]" in prepare
+    assert ".desktop-demo-controls" in css
+
+
+def test_curated_state_feed_inherits_dark_theme_instead_of_forcing_white_cards():
+    css = (ROOT / "web" / "live-nsosyal.css").read_text(encoding="utf-8")
+
+    assert ".state-post {" in css
+    assert "background: var(--ns-panel)" in css
+    assert ".state-post p { color: var(--ns-text); }" in css
+    assert ".state-post > small { color: var(--ns-muted); }" in css

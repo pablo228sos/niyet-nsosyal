@@ -592,3 +592,56 @@ html[data-theme="dark"] .role-tab.active {
   .theme-button { display: grid; }
   .role-tab { padding-inline: 8px; }
 }
+
+
+/* Judge-facing demo controls stay visible on desktop without changing the mobile header. */
+.desktop-demo-controls {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 7px;
+}
+
+.compact-control {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: .68rem;
+}
+
+.prepare-demo {
+  border-color: color-mix(in srgb, var(--ns-blue) 38%, var(--ns-line));
+  color: var(--ns-blue);
+}
+
+/* Curated resolution examples inherit the active host theme. */
+.resolution-state-head h2,
+.state-post p { color: var(--ns-text); }
+
+.resolution-state-head > small,
+.state-post > small { color: var(--ns-muted); }
+
+.state-post {
+  border-color: var(--ns-line);
+  background: var(--ns-panel);
+}
+
+html[data-theme="dark"] .resolution-chip.evidence {
+  background: rgba(72,166,255,.16);
+  color: #8bc2ff;
+}
+html[data-theme="dark"] .resolution-chip.human {
+  background: rgba(143,125,247,.16);
+  color: #b8aaff;
+}
+html[data-theme="dark"] .resolution-chip.both {
+  background: rgba(17,201,222,.14);
+  color: #71dce9;
+}
+html[data-theme="dark"] .resolution-chip.none {
+  background: rgba(143,152,169,.16);
+  color: #b7bfcc;
+}
+
+@media (max-width: 900px) {
+  .desktop-demo-controls { display: none; }
+}
