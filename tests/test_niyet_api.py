@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import logging
+from io import BytesIO
+
 import pytest
 
-from api.niyet import _parse_json, _social_context, dispatch_get, dispatch_post
+import api.niyet as niyet_api
+from api.niyet import _parse_json, _safe_operation, _social_context, dispatch_get, dispatch_post, handler
 from drsk.firebase_auth import AuthenticatedUser
 from drsk.niyet_persistence import DomainError, MemoryNiyetRepository, NiyetService
 
@@ -89,3 +93,65 @@ def test_read_paths_do_not_rewrite_user_identity_on_poll() -> None:
     service.sync_user = unexpected_sync  # type: ignore[method-assign]
     result = dispatch_get("me", actor("reader"), service, {})
     assert result["user"]["uid"] == "reader"
+
+
+def test_unexpected_handler_exception_is_logged_and_remains_generic(caplog: pytest.LogCaptureFixture) -> None:
+    response: dict = {}
+    api_handler = object.__new__(handler)
+    api_handler._json = lambda status, payload: response.update(status=status, payload=payload)  # type: ignore[method-assign]
+
+    with caplog.at_level(logging.ERROR, logger="api.niyet"):
+        try:
+            raise RuntimeError("Firestore transaction failed")
+        except RuntimeError as exc:
+            api_handler._error(exc, operation="create_request")
+
+    assert response == {"status": 500, "payload": {"error": {"code": "internal_error"}}}
+    assert "action=create_request" in caplog.text
+    assert "exception_class=RuntimeError" in caplog.text
+    assert "exception_message=Firestore transaction failed" in caplog.text
+    assert "Traceback (most recent call last)" in caplog.text
+
+
+def test_unexpected_exception_log_redacts_secrets_and_never_logs_request_body(
+    caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    response: dict = {}
+    api_handler = object.__new__(handler)
+    api_handler._json = lambda status, payload: response.update(status=status, payload=payload)  # type: ignore[method-assign]
+    request_body = b'{"action":"create_request","text":"PRIVATE REQUEST BODY"}'
+    api_handler.headers = {
+        "Authorization": "Bearer request-header-secret",
+        "Content-Length": str(len(request_body)),
+        "Content-Type": "application/json",
+    }
+    api_handler.rfile = BytesIO(request_body)
+    api_handler._actor = lambda: actor("verified")  # type: ignore[method-assign]
+    exception_message = (
+        "Firestore failed Authorization: Bearer header-secret "
+        "password=password-secret id_token=token-secret email=user@example.test"
+    )
+
+    def fail_dispatch(*_: object) -> dict:
+        raise RuntimeError(exception_message)
+
+    monkeypatch.setattr(niyet_api, "dispatch_post", fail_dispatch)
+    monkeypatch.setattr(niyet_api, "get_service", lambda: object())
+    with caplog.at_level(logging.ERROR, logger="api.niyet"):
+        api_handler.do_POST()
+
+    assert response["status"] == 500
+    assert "request-header-secret" not in caplog.text
+    assert "header-secret" not in caplog.text
+    assert "password-secret" not in caplog.text
+    assert "token-secret" not in caplog.text
+    assert "user@example.test" not in caplog.text
+    assert request_body.decode() not in caplog.text
+    assert "PRIVATE REQUEST BODY" not in caplog.text
+    assert "[REDACTED]" in caplog.text
+
+
+def test_log_operation_is_allowlisted() -> None:
+    assert _safe_operation("create_request") == "create_request"
+    assert _safe_operation("create_request\nAuthorization: Bearer injected-secret") == "unknown"

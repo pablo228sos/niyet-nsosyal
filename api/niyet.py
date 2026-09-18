@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
+import re
 import sys
+import traceback
 from datetime import date, datetime
 from http.server import BaseHTTPRequestHandler
 from typing import Any
@@ -26,9 +29,88 @@ from drsk.niyet_persistence import (  # noqa: E402
 )
 
 MAX_REQUEST_BYTES = 32 * 1024
+MAX_LOG_MESSAGE_CHARS = 2_000
+MAX_LOG_TRACEBACK_CHARS = 16_000
+logger = logging.getLogger(__name__)
 _service: NiyetService | None = None
 _sourcechain: Any | None = None
 _resolution_engine: Any | None = None
+
+_LOGGABLE_ACTIONS = frozenset({
+    "accept",
+    "answer",
+    "config",
+    "create_request",
+    "inbox",
+    "me",
+    "open",
+    "pause",
+    "profile",
+    "request",
+    "resolve",
+    "resume",
+    "skip",
+    "sync_user",
+    "update_profile",
+})
+_LOG_REDACTIONS = (
+    (
+        re.compile(
+            r"-----BEGIN [^-\r\n]*PRIVATE KEY-----.*?-----END [^-\r\n]*PRIVATE KEY-----",
+            re.IGNORECASE | re.DOTALL,
+        ),
+        "[REDACTED_PRIVATE_KEY]",
+    ),
+    (re.compile(r"\bBearer\s+[^\s,;]+", re.IGNORECASE), "Bearer [REDACTED]"),
+    (
+        re.compile(
+            r'''(["']?(?:authorization|id_token|access_token|refresh_token|token|password|'''
+            r'''private_key|client_secret|api_key|text|answer|email)["']?\s*[:=]\s*)'''
+            r'''(?:"[^"]*"|'[^']*'|[^\s,;]+)''',
+            re.IGNORECASE,
+        ),
+        r"\1[REDACTED]",
+    ),
+    (
+        re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b"),
+        "[REDACTED_JWT]",
+    ),
+    (
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        "[REDACTED_EMAIL]",
+    ),
+)
+
+
+def _safe_operation(value: Any) -> str:
+    operation = value.strip().lower() if isinstance(value, str) else ""
+    return operation if operation in _LOGGABLE_ACTIONS else "unknown"
+
+
+def _sanitize_log_text(value: str, limit: int) -> str:
+    sanitized = value
+    for pattern, replacement in _LOG_REDACTIONS:
+        sanitized = pattern.sub(replacement, sanitized)
+    if len(sanitized) > limit:
+        return f"{sanitized[:limit]}...[truncated]"
+    return sanitized
+
+
+def _log_unexpected_exception(exc: Exception, operation: str) -> None:
+    # logger.exception would append the raw exception message to its traceback.
+    # Format and redact the traceback first so credentials cannot reach runtime logs.
+    message = _sanitize_log_text(str(exc), MAX_LOG_MESSAGE_CHARS)
+    traceback_text = _sanitize_log_text(
+        "".join(traceback.format_exception(type(exc), exc, exc.__traceback__)),
+        MAX_LOG_TRACEBACK_CHARS,
+    )
+    logger.error(
+        "Unhandled NIYET API exception action=%s exception_class=%s exception_message=%s\n%s",
+        _safe_operation(operation),
+        type(exc).__name__,
+        message,
+        traceback_text,
+    )
 
 
 def get_service() -> NiyetService:
@@ -240,13 +322,14 @@ class handler(BaseHTTPRequestHandler):
     def _actor(self) -> AuthenticatedUser:
         return authenticate_authorization_header(self.headers.get("Authorization"))
 
-    def _error(self, exc: Exception) -> None:
+    def _error(self, exc: Exception, *, operation: str) -> None:
         if isinstance(exc, (AuthError, DomainError)):
             self._json(exc.status, {"error": {"code": exc.code}})
             return
         if isinstance(exc, FirebaseConfigurationError):
             self._json(503, {"error": {"code": str(exc)}})
             return
+        _log_unexpected_exception(exc, operation)
         self._json(500, {"error": {"code": "internal_error"}})
 
     def do_GET(self) -> None:
@@ -259,9 +342,10 @@ class handler(BaseHTTPRequestHandler):
                 return
             self._json(200, dispatch_get(action, self._actor(), get_service(), query))
         except Exception as exc:
-            self._error(exc)
+            self._error(exc, operation=_safe_operation(action))
 
     def do_POST(self) -> None:
+        operation = "unknown"
         try:
             content_type = self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
             if content_type != "application/json":
@@ -279,7 +363,8 @@ class handler(BaseHTTPRequestHandler):
                 raise DomainError("invalid_json") from exc
             if not isinstance(payload, dict):
                 raise DomainError("json_object_required")
+            operation = _safe_operation(payload.get("action"))
             result = dispatch_post(payload, self._actor(), get_service())
             self._json(200, result)
         except Exception as exc:
-            self._error(exc)
+            self._error(exc, operation=operation)
