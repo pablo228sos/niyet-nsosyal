@@ -180,8 +180,7 @@ replace_once(
 )
 
 start = text.index("    def _allocate(\n")
-end = text.index("    def list_inbox(\n", start)
-old_allocate = text[start:end]
+end = text.index("    def list_inbox(", start)
 new_allocate = '''    def _allocate(
         self,
         request: dict[str, Any],
@@ -294,16 +293,6 @@ new_allocate = '''    def _allocate(
 text = text[:start] + new_allocate + text[end:]
 
 old_skip = '''        request = self.repository.get_request(assignment["request_id"])
-        if request:
-            replacement = self._allocate(
-                request,
-                reallocated_from_assignment_id=assignment_id,
-            )
-            if replacement:
-                assignment["reallocated_assignment_id"] = replacement["id"]
-        return assignment
-'''
-new_skip = '''        request = self.repository.get_request(assignment["request_id"])
         if request:
             replacement = self._allocate(
                 request,
