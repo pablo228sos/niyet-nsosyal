@@ -15,12 +15,12 @@ The standalone `/live` prototype remains the fallback and the inspectable techni
 ## Architecture
 
 - A static content script runs only on `nsosyal.com` / `www.nsosyal.com`.
-- Composer detection is heuristic and confidence-gated. If no safe composer match exists, the DRSK action becomes a floating fallback rather than attaching to an arbitrary control.
+- Composer detection is heuristic and confidence-gated. Desktop may use a compact floating fallback when no composer is available. On narrow screens the fallback is intentionally hidden; DRSK appears only when the native composer is safely detected, avoiding collisions with NSosyal navigation/publish controls.
 - Published-post detection requires the exact inspected text to appear in a visible, non-editable NSosyal feed element. A native publish-button click starts the bounded detection window; a manual check remains available if rendering is delayed.
 - The injected DRSK UI lives inside a closed **Shadow DOM**, so NSosyal styles do not leak into the overlay and overlay styles do not leak into NSosyal.
 - The content script never performs cross-origin fetches. It sends a small, structured message to the Manifest V3 service worker.
-- The service worker accepts only `inspect`, `resolve`, and `status`, validates the payload, and calls only `https://niyet-nsosyal.vercel.app/api/human_help` over HTTPS.
-- The active DRSK request token is kept in extension session storage so an answer can return after a NSosyal reload. It is never written into the NSosyal page or permanent browser storage.
+- The service worker accepts only `inspect`, `resolve`, and `status`, validates the payload, and calls the configured DRSK HTTPS backend. Preview packaging rewrites the backend origin, Manifest host permission and responder link together so one request cannot split across environments.
+- Active and latest-resolved DRSK state is kept in extension storage so answers can return after a NSosyal reload. Current Chromium session storage is explicitly exposed to the content script by the service worker, with a guarded local-storage fallback when session access is unavailable. Tokens are never written into the NSosyal page.
 - Dynamic backend values are rendered with DOM APIs / `textContent`, never as backend-supplied HTML.
 
 See `SECURITY.md` for the explicit trust boundary.
@@ -35,7 +35,7 @@ See `SECURITY.md` for the explicit trust boundary.
 6. Review the evidence, then publish with NSosyal's native action.
 7. After DRSK detects the visible published post, explicitly choose **Ask a relevant person**.
 
-The extension asks only for the NSosyal page access needed by its content script, access to the fixed DRSK backend host, and session storage for the active request lifecycle. It does not request broad web access or NSosyal API credentials.
+The extension asks only for the NSosyal page access needed by its content script, access to the configured DRSK backend host, and extension storage for the request lifecycle. It does not request broad web access or NSosyal API credentials.
 
 ## Demo contract
 

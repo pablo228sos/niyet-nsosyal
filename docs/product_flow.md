@@ -10,7 +10,7 @@ A subjective post can remain outside both systems. A factual statement can enter
 
 ## 2. SOURCECHAIN exposes bounded evidence
 
-For check-worthy statements, SOURCECHAIN extracts bounded claims and searches only the configured controlled evidence corpus.
+For check-worthy statements, SOURCECHAIN extracts bounded claims and uses the configured evidence chain. Strong verified-corpus matches can resolve on the deterministic fast path; otherwise server-side live retrieval may acquire candidate passages before SOURCECHAIN applies its own quality, relation and distortion checks.
 
 The product keeps visible:
 
@@ -22,9 +22,13 @@ The product keeps visible:
 
 It does not convert these fields into an absolute truth score.
 
-If no relevant stored passage exists, the result stays `INSUFFICIENT` rather than inventing a source.
+If no relevant passage clears the evidence gates, the result stays `INSUFFICIENT` rather than inventing a source.
 
-## 3. Resolution Engine chooses the path
+## 3. Repeated checks stay stateless
+
+On `/live`, **Check with DRSK** uses the inspect contract. It can be repeated across arbitrary posts without opening a human request or consuming responder attention. **Ask a relevant person** is the separate explicit action that can create a NIYET request when the current resolution path supports human context.
+
+## 4. Resolution Engine chooses the path
 
 The explicit resolution paths are:
 
@@ -36,17 +40,17 @@ The explicit resolution paths are:
 
 This keeps uncertainty visible instead of forcing every post through one model response.
 
-## 4. A draft stays private until it becomes a post
+## 5. A draft stays private until it becomes a post
 
 A `HUMAN` or `BOTH` decision is a recommendation, not permission to contact a person. In the NSosyal adapter, SOURCECHAIN can inspect composer text and explain why interpretation may still be useful, but the human-routing action remains locked while that text is a draft.
 
 The user publishes through NSosyal's own control. The adapter then waits until the exact inspected text is visible as a non-editable post on the host page. This keeps publication under NSosyal and the account holder's control.
 
-## 5. The user confirms human escalation
+## 6. The user confirms human escalation
 
 Once the published post is visible, the author may explicitly choose **Ask a relevant person**. Only this second action creates a NIYET request. The request keeps a bounded social-context marker so the responder can see that it belongs to a published NSosyal post.
 
-## 6. Structured context enters NIYET
+## 7. Structured context enters NIYET
 
 When the path needs a person, DRSK sends NIYET structured context rather than only the raw post:
 
@@ -60,7 +64,7 @@ NIYET then retrieves responders and applies hard eligibility constraints.
 
 A responder must be active, willing for the interaction type, have remaining capacity and clear the current relevance floor. Follower count is not used as an eligibility signal.
 
-## 7. Open requests compete in one bounded allocation window
+## 8. Open requests compete in one bounded allocation window
 
 NIYET does not permanently lock the locally best responder independently for each request.
 
@@ -68,7 +72,7 @@ Every still-open/unmatched request is allocated together under the same responde
 
 A request can remain unmatched when no eligible candidate clears the quality rules.
 
-## 8. Responder receives an actionable request card
+## 9. Responder receives an actionable request card
 
 The responder side shows the request, attached evidence context when present, remaining capacity and controls to:
 
@@ -91,7 +95,7 @@ Pause removes the responder from new allocation. Resume re-enables routing only 
 
 If the UI is stale because another action already changed the shared window, the backend rejects the action as a conflict and the client refreshes the current queue.
 
-## 9. Answer returns to the same request
+## 10. Answer returns to the same request
 
 After acceptance, the matched responder can submit a concise answer. The author path polls the same request state and displays the answer next to the evidence context.
 
@@ -106,7 +110,7 @@ need
 
 The active author token is kept in extension session storage and the authoritative request remains in shared server state. Reloading the NSosyal page therefore resumes the same request instead of detaching the returning answer.
 
-## 10. State persistence boundary
+## 11. State persistence boundary
 
 The integrated human-help flow is implemented behind a `StateStore` abstraction.
 
