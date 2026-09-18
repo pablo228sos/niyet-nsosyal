@@ -177,6 +177,7 @@ function applyLanguage() {
 
 function setRole(role, updateUrl = true) {
   const responder = role === 'responder';
+  const followedAssignedResponder = responder && updateUrl && selectAssignedResponderForDemo();
   $('#authorView').hidden = responder;
   $('#responderView').hidden = !responder;
   $('#authorTab').classList.toggle('active', !responder);
@@ -186,6 +187,7 @@ function setRole(role, updateUrl = true) {
   if (updateUrl) {
     const url = new URL(location.href);
     url.searchParams.set('role', responder ? 'responder' : 'author');
+    if (followedAssignedResponder) url.searchParams.set('responder', selectedResponderId);
     history.replaceState(null, '', url);
   }
   if (responder) {
@@ -193,7 +195,8 @@ function setRole(role, updateUrl = true) {
     startInboxPoll();
   } else {
     stopInboxPoll();
-    if (currentAuthor?.request) startAuthorPoll();
+    const stored = readStoredAuthor();
+    if (stored?.request_id && stored?.author_token) startAuthorPoll();
   }
 }
 
@@ -239,6 +242,21 @@ function populateResponders() {
   renderResponderMeta();
 }
 
+function assignedResponderId() {
+  return currentAuthor?.request?.assigned_responder?.id || null;
+}
+
+function selectAssignedResponderForDemo() {
+  const assigned = assignedResponderId();
+  const select = $('#responderSelect');
+  if (!assigned || !select || ![...select.options].some((option) => option.value === assigned)) return false;
+  select.value = assigned;
+  selectedResponderId = assigned;
+  inboxSnapshot = '';
+  renderResponderMeta();
+  return true;
+}
+
 function responderRecord() { return responders.find((item) => item.id === selectedResponderId) || null; }
 
 function renderResponderMeta() {
@@ -260,7 +278,8 @@ function persistAuthor(request) {
   sessionStorage.setItem('drsk-live-author', JSON.stringify({
     request_id: request.request_id,
     author_token: request.author_token,
-    text: request.text
+    text: request.text,
+    resolution_path: request.resolution_path || request.evidence_context?.resolution?.path || null
   }));
   $('#restoreAuthor').hidden = true;
 }
@@ -297,6 +316,15 @@ function renderReasons(values) {
     chip.textContent = String(value).replaceAll('_', ' ');
     target.appendChild(chip);
   });
+}
+
+function renderCheckedResolution(value) {
+  const chip = $('#checkedResolution');
+  const path = ['EVIDENCE', 'HUMAN', 'BOTH', 'NONE'].includes(value) ? value : null;
+  chip.hidden = !path;
+  chip.textContent = path || '';
+  chip.className = 'resolution-chip checked-resolution';
+  if (path) chip.classList.add(path.toLowerCase());
 }
 
 function appendDistortionComparison(row, item, distortions) {
@@ -383,6 +411,7 @@ function renderEvidence(context, target = $('#evidenceItems')) {
 function renderAuthorRequest(request) {
   currentAuthor = { request };
   $('#requestCard').hidden = false;
+  renderCheckedResolution(request.resolution_path || request.evidence_context?.resolution?.path || null);
   $('#requestStatus').textContent = request.status || 'OPEN';
   $('#requestStatus').dataset.status = request.status || 'OPEN';
   $('#requestTextPreview').textContent = request.text || '';
@@ -438,6 +467,7 @@ async function openAuthorRequest(mode) {
         const synthetic = {
           text: value,
           status: path,
+          resolution_path: path,
           evidence_context: path === 'NONE' ? null : result.evidence_context,
           assigned_responder: null,
           answer: null
@@ -454,8 +484,9 @@ async function openAuthorRequest(mode) {
       setMessage($('#authorMessage'), message);
       return;
     }
-    persistAuthor(result.request);
-    renderAuthorRequest(result.request);
+    const request = { ...result.request, resolution_path: result.resolution?.path || null };
+    persistAuthor(request);
+    renderAuthorRequest(request);
     setMessage($('#authorMessage'), t(mode === 'resolve' ? 'evidenceRouted' : 'requestOpened'));
     startAuthorPoll();
   } catch (error) {
@@ -474,7 +505,11 @@ async function refreshAuthor(generation = authorPollGeneration) {
     const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
     if (generation !== authorPollGeneration) return;
     if (!result.request) return;
-    currentAuthor = { request: { ...result.request, author_token: stored.author_token } };
+    currentAuthor = { request: {
+      ...result.request,
+      author_token: stored.author_token,
+      resolution_path: stored.resolution_path || result.request.evidence_context?.resolution?.path || null
+    } };
     $('#restoreAuthor').hidden = true;
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();
@@ -737,6 +772,7 @@ function clearLocalDemoState() {
   responderSnapshot = '';
   currentAuthor = null;
   $('#requestCard').hidden = true;
+  renderCheckedResolution(null);
   $('#requestText').value = '';
   $('#charCount').textContent = '0 / 1200';
   $('#restoreAuthor')?.setAttribute('hidden', '');

@@ -512,6 +512,15 @@ textarea:focus-visible {
   line-height: 1.58;
 }
 
+.checked-resolution {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.checked-resolution[hidden] {
+  display: none;
+}
+
 /* DRSK surfaces */
 .drsk-card {
   position: relative;

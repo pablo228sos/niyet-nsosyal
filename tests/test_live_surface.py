@@ -40,6 +40,7 @@ def test_live_surface_exposes_every_javascript_contract():
         "requestCard",
         "requestStatus",
         "requestTextPreview",
+        "checkedResolution",
         "matchBlock",
         "matchedResponder",
         "matchReasons",
@@ -220,7 +221,10 @@ def test_live_curated_state_feed_is_small_static_and_truthful():
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 
     assert "Four resolution states" in html
-    assert html.count("resolution-chip") == 4
+    state_feed = html.split('<section class="resolution-state-feed"', 1)[1].split(
+        "</section>", 1
+    )[0]
+    assert state_feed.count("resolution-chip") == 4
     for state in ("EVIDENCE", "HUMAN", "BOTH", "NONE"):
         assert f">{state}<" in html
     assert "They are not injected into real NSosyal posts." in script
@@ -315,3 +319,44 @@ def test_author_and_responder_are_device_views_over_one_shared_feed():
     assert "$('#sharedFeed').hidden" not in script
     assert "$('#authorView').hidden = responder" in script
     assert "$('#responderView').hidden = !responder" in script
+
+
+def test_same_page_responder_switch_follows_the_current_assignment():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    set_role = script.split("function setRole(", 1)[1].split("async function checkBackend", 1)[0]
+
+    assert "function assignedResponderId()" in script
+    assert "currentAuthor?.request?.assigned_responder?.id" in script
+    assert "function selectAssignedResponderForDemo()" in script
+    assert "[...select.options].some((option) => option.value === assigned)" in script
+    assert "responder && updateUrl && selectAssignedResponderForDemo()" in set_role
+    assert "url.searchParams.set('responder', selectedResponderId)" in set_role
+
+
+def test_explicit_responder_url_is_preserved_during_initial_load():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert "new URL(location.href).searchParams.get('responder') || selectedResponderId" in script
+    assert "setRole(params.get('role') === 'responder' ? 'responder' : 'author', false)" in script
+
+
+def test_returning_to_author_refreshes_from_stored_request_credentials():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    set_role = script.split("function setRole(", 1)[1].split("async function checkBackend", 1)[0]
+    author_branch = set_role.split("} else {", 1)[1]
+
+    assert "const stored = readStoredAuthor();" in author_branch
+    assert "stored?.request_id && stored?.author_token" in author_branch
+    assert "startAuthorPoll();" in author_branch
+    assert author_branch.index("readStoredAuthor()") < author_branch.index("startAuthorPoll()")
+
+
+def test_checked_post_renders_the_resolution_engine_path():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+
+    assert 'id="checkedResolution"' in html
+    assert "function renderCheckedResolution(value)" in script
+    assert "['EVIDENCE', 'HUMAN', 'BOTH', 'NONE'].includes(value)" in script
+    assert "resolution_path: path" in script
+    assert "resolution_path: result.resolution?.path || null" in script
