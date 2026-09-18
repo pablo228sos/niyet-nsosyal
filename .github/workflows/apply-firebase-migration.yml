@@ -43,6 +43,18 @@ jobs:
           git apply /tmp/firebase-migration.patch
           git apply --check /tmp/refinements.patch
           git apply /tmp/refinements.patch
+          python - <<'PY'
+          from pathlib import Path
+          # The exported patch created an extra blank EOF line in three new files.
+          # Normalize only those known files before the staged whitespace gate.
+          for name in (
+              'firebase.json',
+              'src/drsk/firebase_auth.py',
+              'tests/test_firebase_auth.py',
+          ):
+              path = Path(name)
+              path.write_text(path.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
+          PY
           git diff --check
 
       - name: Secret safety gate
