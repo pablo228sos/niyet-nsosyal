@@ -93,12 +93,16 @@ def test_composer_helper_stays_compact_and_clear_of_native_toolbar():
     assert '.drsk-overlay-trigger[data-fallback="false"]{margin-top:-42px}' in CSS
 
 
-def test_mobile_entrypoint_keeps_composer_action_inline_and_fallback_compact():
+def test_mobile_entrypoint_never_competes_with_nsosyal_floating_or_publish_controls():
     compact_css = CSS.replace(" ", "")
 
     assert '@media(max-width:760px)' in compact_css
-    assert '.drsk-overlay-trigger[data-entrypoint="composer"]{margin-top:0!important;height:32px;min-width:58px}' in compact_css
-    assert '.drsk-overlay-trigger[data-entrypoint="floating"]{top:auto!important;right:12px!important;bottom:calc(76px+env(safe-area-inset-bottom))!important;left:auto!important;height:34px;min-width:58px' in compact_css
+    assert '.drsk-overlay-trigger[data-entrypoint="composer"]{margin-top:0!important;height:30px;min-width:54px;padding:09px}' in compact_css
+    assert '.drsk-overlay-trigger[data-entrypoint="floating"]{display:none!important}' in compact_css
+    assert "const narrow = innerWidth <= 760" in CONTENT
+    assert "rect.right - 142" in CONTENT
+    assert "rect.top - 38" in CONTENT
+    assert "trigger.style.setProperty('right', narrow ? 'auto' : '24px')" in CONTENT
     assert '.drsk-overlay-panel{top:auto;left:0;right:0;bottom:0;width:100vw;max-height:min(78dvh,680px);border-radius:18px18px00;border-bottom:0}' in compact_css
 
 

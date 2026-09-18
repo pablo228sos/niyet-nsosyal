@@ -393,21 +393,34 @@
     applyTheme();
     const composer = findComposer();
     state.composer = composer;
+    const narrow = innerWidth <= 760;
 
     if (!composer) {
       trigger.dataset.fallback = 'true';
       trigger.dataset.entrypoint = 'floating';
       trigger.style.removeProperty('--drsk-trigger-x');
       trigger.style.removeProperty('--drsk-trigger-y');
-      trigger.style.setProperty('right', '24px');
+      trigger.style.setProperty('right', narrow ? 'auto' : '24px');
       return;
     }
 
     trigger.dataset.fallback = 'false';
     trigger.dataset.entrypoint = 'composer';
     trigger.style.setProperty('right', 'auto');
-    const send = findSendButtonNear(composer);
+
     const rect = composer.getBoundingClientRect();
+    if (narrow) {
+      // NSosyal uses a modal composer on narrow screens.  Do not compete with
+      // its audience/send toolbar: keep the DRSK entrypoint in the header
+      // gutter immediately above the editable field.
+      const x = Math.max(12, Math.min(innerWidth - 70, rect.right - 142));
+      const y = Math.max(12, Math.min(innerHeight - 48, rect.top - 38));
+      trigger.style.setProperty('--drsk-trigger-x', `${Math.round(x)}px`);
+      trigger.style.setProperty('--drsk-trigger-y', `${Math.round(y)}px`);
+      return;
+    }
+
+    const send = findSendButtonNear(composer);
     const sendRect = send?.getBoundingClientRect();
     const x = sendRect
       ? Math.max(16, Math.min(innerWidth - 96, sendRect.left - 82))
