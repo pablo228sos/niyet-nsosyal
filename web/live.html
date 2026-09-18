@@ -63,8 +63,9 @@
           <span class="feed-kicker">DRSK integration</span>
           <h1 data-copy="feedTitle">Feed</h1>
         </div>
-        <nav class="role-tabs" aria-label="Prototype role">
-          <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">New user</button>
+        <nav class="role-tabs" aria-label="Demo device role">
+          <span class="role-device-label" data-copy="demoDevice">Demo device</span>
+          <button id="authorTab" class="role-tab active" type="button" data-role="author" aria-pressed="true" data-copy="authorTab">Author</button>
           <button id="responderTab" class="role-tab" type="button" data-role="responder" aria-pressed="false" data-copy="responderTab">Responder</button>
         </nav>
       </div>
@@ -88,7 +89,7 @@
             <div class="composer-actions">
               <button id="loadScenario" class="scenario-button" type="button" data-copy="loadScenario">Load example</button>
               <div class="post-actions">
-                <button id="routeHuman" class="quiet-button direct-human" type="button" data-copy="routeHuman">Ask a person directly</button>
+                <button id="routeHuman" class="quiet-button direct-human" type="button" data-copy="routeHuman">Ask a relevant person</button>
                 <button id="resolveEvidence" class="primary-button" type="button" data-copy="postWithDrsk">Post with DRSK</button>
               </div>
             </div>
@@ -126,8 +127,12 @@
                 </div>
                 <div id="matchReasons" class="reason-list"></div>
                 <div class="match-footer">
-                  <small data-copy="capacityNote">Willingness and remaining capacity are hard constraints.</small>
-                  <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Open responder device</button>
+                  <small data-copy="capacityNote">Willingness and remaining attention budget are hard constraints.</small>
+                  <span id="attentionBudget" class="attention-budget" hidden></span>
+                  <div class="handoff-actions">
+                    <button id="openResponderDevice" class="primary-button handoff-primary" type="button" hidden data-copy="openResponder">Open responder device</button>
+                    <button id="copyResponderLink" class="quiet-button" type="button" hidden data-copy="copyResponder">Copy responder link</button>
+                  </div>
                 </div>
               </section>
 
@@ -147,7 +152,7 @@
         <article class="responder-profile-card">
           <div class="avatar responder-avatar" aria-hidden="true">R</div>
           <div class="responder-profile-main">
-            <span class="feed-kicker" data-copy="responderSide">Responder side</span>
+            <span class="feed-kicker" data-copy="responderSide">DRSK Requests</span>
             <h2 id="responderHeading" data-copy="responderHeading">Requests that match what you can help with.</h2>
             <div class="responder-controls">
               <label for="responderSelect" data-copy="identity">Demo identity</label>

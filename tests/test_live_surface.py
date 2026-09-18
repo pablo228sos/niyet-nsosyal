@@ -43,7 +43,9 @@ def test_live_surface_exposes_every_javascript_contract():
         "matchBlock",
         "matchedResponder",
         "matchReasons",
+        "openResponderDevice",
         "copyResponderLink",
+        "attentionBudget",
         "evidenceBlock",
         "evidenceStatus",
         "evidenceItems",
@@ -192,10 +194,21 @@ def test_none_resolution_does_not_render_a_stale_evidence_card():
 
 
 def test_responder_handoff_and_loading_copy_match_actual_behavior():
+    html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
 
+    assert "demoDevice: 'Demo device'" in script
+    assert "authorTab: 'Author'" in script
+    assert "responderSide: 'DRSK Requests'" in script
+    assert "routeHuman: 'Ask a relevant person'" in script
+    assert "routeHuman: 'İlgili bir kişiye sor'" in script
+    assert "openResponder: 'Open responder device'" in script
     assert "copyResponder: 'Copy responder link'" in script
-    assert "copyResponder: 'Cevaplayıcı bağlantısını kopyala'" in script
+    assert "Attention budget remaining" in script
+    assert "no eligible responder is available right now" in script
+    assert 'id="openResponderDevice"' in html
+    assert 'id="copyResponderLink"' in html
+    assert "window.open(link, '_blank', 'noopener,noreferrer')" in script
     assert "await navigator.clipboard.writeText(link)" in script
     assert "checking: 'Checking evidence and routing…'" in script
     assert "checking: 'Kanıt ve yönlendirme kontrol ediliyor…'" in script

@@ -1282,3 +1282,48 @@ textarea:focus-visible {
   0%, 100% { opacity: 0.45; transform: scale(0.9); }
   50% { opacity: 1; transform: scale(1); }
 }
+
+
+.role-device-label {
+  align-self: center;
+  margin-right: 4px;
+  color: var(--muted, #7a8495);
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.handoff-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.handoff-primary {
+  min-width: 170px;
+}
+
+.attention-budget {
+  display: inline-flex;
+  width: max-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(47, 108, 255, 0.08);
+  color: #285fd0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .role-device-label {
+    width: 100%;
+    margin: 0 0 3px;
+    text-align: center;
+  }
+
+  .handoff-actions,
+  .handoff-actions > button {
+    width: 100%;
+  }
+}
