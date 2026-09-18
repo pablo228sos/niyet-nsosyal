@@ -187,5 +187,4 @@ def test_extension_responder_handoff_matches_truthful_availability_copy():
 def test_extension_responder_handoff_actions_stay_mobile_safe():
     compact_css = CSS.replace(" ", "")
     assert ".drsk-overlay-handoff-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}" in compact_css
-    assert "@media(max-width:760px){.drsk-overlay-handoff-actions,.drsk-overlay-handoff-actions.drsk-overlay-secondary{width:100%}}" not in compact_css
-    assert ".drsk-overlay-handoff-actions,.drsk-overlay-handoff-actions .drsk-overlay-secondary{width:100%}".replace(" ", "") in compact_css
+    assert "@media(max-width:760px){.drsk-overlay-handoff-actions,.drsk-overlay-handoff-actions.drsk-overlay-secondary{width:100%}}" in compact_css
