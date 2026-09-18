@@ -221,3 +221,17 @@ def test_published_unavailable_human_path_keeps_the_action_visible_but_disabled(
     assert "if (published)" in recommendation
     assert "button.disabled = true" in recommendation
     assert "aria-disabled" in recommendation
+
+
+def test_content_storage_falls_back_without_unhandled_session_errors():
+    assert "async function storageGet(key)" in CONTENT
+    assert "async function storageSet(value)" in CONTENT
+    assert "async function storageRemove(key)" in CONTENT
+    assert "chrome.storage.session.get(key)" in CONTENT
+    assert "chrome.storage.local.get(key)" in CONTENT
+    assert "chrome.storage.session.set(value)" in CONTENT
+    assert "chrome.storage.local.set(value)" in CONTENT
+    assert "chrome.storage.session.remove(key)" in CONTENT
+    assert "chrome.storage.local.remove(key)" in CONTENT
+    assert "await storageSet({ [AUTHOR_STORAGE_KEY]: value })" in CONTENT
+    assert "await storageGet(AUTHOR_STORAGE_KEY)" in CONTENT
