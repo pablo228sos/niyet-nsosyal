@@ -28,6 +28,15 @@ jobs:
           cat .github/migration/migration.part* > /tmp/firebase-migration.patch.gz
           gzip -t /tmp/firebase-migration.patch.gz
           gzip -dc /tmp/firebase-migration.patch.gz > /tmp/firebase-migration.patch
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('/tmp/firebase-migration.patch')
+          # The patch was exported by Windows PowerShell after Git's UTF-8 bytes
+          # were decoded through the OEM CP866 code page. Reverse that transport
+          # encoding exactly before applying it to the UTF-8 repository files.
+          mojibake = path.read_text(encoding='utf-8')
+          path.write_text(mojibake.encode('cp866').decode('utf-8'), encoding='utf-8')
+          PY
           gzip -t .github/migration/refinements.patch.gz
           gzip -dc .github/migration/refinements.patch.gz > /tmp/refinements.patch
           git apply --check /tmp/firebase-migration.patch
@@ -74,7 +83,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install Python dependencies
         run: |
