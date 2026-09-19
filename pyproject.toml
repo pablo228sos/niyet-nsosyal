@@ -7,7 +7,12 @@ name = "niyet"
 version = "0.1.0"
 description = "DRSK hybrid social-intelligence prototype: bounded evidence plus capacity-aware human resolution"
 requires-python = ">=3.11"
-dependencies = ["numpy>=1.26,<3", "scipy>=1.11,<2", "scikit-learn>=1.5,<2"]
+dependencies = [
+  "firebase-admin>=6.6,<8",
+  "numpy>=1.26,<3",
+  "scipy>=1.11,<2",
+  "scikit-learn>=1.5,<2",
+]
 
 [project.optional-dependencies]
 embeddings = ["sentence-transformers>=3.0,<6"]
