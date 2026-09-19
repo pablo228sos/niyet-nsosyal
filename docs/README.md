@@ -26,13 +26,9 @@ Final judge screenshots live in [screenshots/](screenshots/):
 - `02_live_routed_research_reviewer.png` — explicit NIYET routing;
 - `03_live_responder_accept.png` — responder inbox with shared evidence context;
 - `04_live_resolved.png` — answer returned to the original post;
-- `05_live_four_states.png` — EVIDENCE / HUMAN / BOTH / NONE in the shared feed;
-- `06_nsosyal_private_check.webp` — private SOURCECHAIN inspect on the authenticated real NSosyal composer;
-- `07_nsosyal_published_optin.webp` — exact published post detected before explicit human opt-in;
-- `08_nsosyal_routed_reviewer.webp` — NIYET route to Research Reviewer on the real-host flow;
-- `09_nsosyal_answer_received.webp` — responder answer returned to the real NSosyal overlay.
+- `05_live_four_states.png` — EVIDENCE / HUMAN / BOTH / NONE in the shared feed.
 
-Screenshots `01–05` are captures of the working `/live` prototype. Screenshots `06–09` are captures from the authenticated real-NSosyal hardware acceptance pass. None are design mockups.
+Screenshots `01–05` are captures of the working `/live` prototype, not design mockups. The authenticated real-NSosyal hardware pass is documented separately in [Real NSosyal acceptance](REAL_NSOSYAL_ACCEPTANCE.md).
 
 ## Reproducibility
 
