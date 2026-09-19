@@ -894,16 +894,20 @@
     }
 
     if (state.author) {
-      const sameText = normalize(state.author.text) === normalize(text);
-      if (state.author.status !== 'ANSWERED' || sameText) {
+      if (state.author.status === 'ANSWERED') {
+        // A resolved request is historical context, not a lock on future checks.
+        // Keep the latest answer in RESOLVED_STORAGE_KEY, but let an explicit
+        // DRSK click on non-empty composer text start a fresh private inspect.
+        await clearAuthor();
+      } else {
         const restored = await refreshAuthor();
         if (state.author && state.author.status !== 'ANSWERED') {
           body.prepend(el('p', 'drsk-overlay-active', t('activeRequest')));
           if (restored && !state.pollTimer) state.pollTimer = setTimeout(pollAuthor, 2200);
+          return;
         }
-        return;
+        if (state.author?.status === 'ANSWERED') await clearAuthor();
       }
-      await clearAuthor();
     }
 
     state.busy = true;

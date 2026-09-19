@@ -198,6 +198,18 @@ def test_extension_keeps_latest_answer_available_after_the_composer_is_cleared()
     assert "if (await showLatestResolved()) return;" in CONTENT
 
 
+
+def test_answered_request_does_not_hijack_a_fresh_private_check():
+    resolve = CONTENT.split("async function resolveCurrentPost()", 1)[1].split(
+        "document.addEventListener('focusin'", 1
+    )[0]
+
+    assert "if (state.author.status === 'ANSWERED')" in resolve
+    assert "await clearAuthor();" in resolve
+    assert "|| sameText" not in resolve
+    assert resolve.index("await clearAuthor();") < resolve.index("action: 'inspect'")
+
+
 def test_final_demo_profiles_start_with_their_full_attention_budget():
     import json
 
