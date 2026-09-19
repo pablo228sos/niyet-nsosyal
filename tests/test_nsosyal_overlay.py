@@ -184,6 +184,17 @@ def test_extension_responder_handoff_matches_truthful_availability_copy():
     assert "drsk-overlay-handoff-actions" in CONTENT
 
 
+
+def test_extension_does_not_present_routing_time_capacity_as_current_after_accept():
+    render_request = CONTENT.split("function renderRequest(request)", 1)[1].split(
+        "function renderAnswer(request)", 1
+    )[0]
+
+    assert "request.status === 'OPEN'" in render_request
+    assert "attention slots available" in render_request
+    assert "reasons.filter" in render_request
+
+
 def test_extension_responder_handoff_actions_stay_mobile_safe():
     compact_css = CSS.replace(" ", "")
     assert ".drsk-overlay-handoff-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}" in compact_css
@@ -196,6 +207,18 @@ def test_extension_keeps_latest_answer_available_after_the_composer_is_cleared()
     assert "async function showLatestResolved()" in CONTENT
     assert "if (latest.status === 'ANSWERED') await storeResolved(latest, author.text)" in CONTENT
     assert "if (await showLatestResolved()) return;" in CONTENT
+
+
+
+def test_answered_request_does_not_hijack_a_fresh_private_check():
+    resolve = CONTENT.split("async function resolveCurrentPost()", 1)[1].split(
+        "document.addEventListener('focusin'", 1
+    )[0]
+
+    assert "if (state.author.status === 'ANSWERED')" in resolve
+    assert "await clearAuthor();" in resolve
+    assert "|| sameText" not in resolve
+    assert resolve.index("await clearAuthor();") < resolve.index("action: 'inspect'")
 
 
 def test_final_demo_profiles_start_with_their_full_attention_budget():

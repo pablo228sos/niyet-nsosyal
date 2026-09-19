@@ -570,7 +570,10 @@
 
     wrap.append(el('p', 'drsk-overlay-route', `${t('routedTo')} ${responder.name || responder.id}`));
     const reasons = Array.isArray(responder.reason) ? responder.reason : [];
-    if (reasons.length) wrap.append(el('small', 'drsk-overlay-muted', reasons.join(' · ')));
+    const visibleReasons = request.status === 'OPEN'
+      ? reasons
+      : reasons.filter((reason) => !/^\d+\/\d+ attention slots available$/i.test(String(reason || '')));
+    if (visibleReasons.length) wrap.append(el('small', 'drsk-overlay-muted', visibleReasons.join(' · ')));
 
     const url = new URL(LIVE_URL);
     url.searchParams.set('role', 'responder');
@@ -894,16 +897,20 @@
     }
 
     if (state.author) {
-      const sameText = normalize(state.author.text) === normalize(text);
-      if (state.author.status !== 'ANSWERED' || sameText) {
+      if (state.author.status === 'ANSWERED') {
+        // A resolved request is historical context, not a lock on future checks.
+        // Keep the latest answer in RESOLVED_STORAGE_KEY, but let an explicit
+        // DRSK click on non-empty composer text start a fresh private inspect.
+        await clearAuthor();
+      } else {
         const restored = await refreshAuthor();
         if (state.author && state.author.status !== 'ANSWERED') {
           body.prepend(el('p', 'drsk-overlay-active', t('activeRequest')));
           if (restored && !state.pollTimer) state.pollTimer = setTimeout(pollAuthor, 2200);
+          return;
         }
-        return;
+        if (state.author?.status === 'ANSWERED') await clearAuthor();
       }
-      await clearAuthor();
     }
 
     state.busy = true;
