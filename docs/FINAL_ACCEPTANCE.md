@@ -6,10 +6,12 @@ This page records the final pre-jury verification state of the current public bu
 
 ## Release state
 
-- current main: `20276ccc9ad44c07c39c00d8c5c8f7bd4a8b47f5`
+- runtime-tested code snapshot: `20276ccc9ad44c07c39c00d8c5c8f7bd4a8b47f5`
+- later main changes through PR #35 are documentation/product-thesis only and do not change the verified runtime contracts
 - Production: <https://niyet-nsosyal.vercel.app/live>
-- GitHub Actions run **#601**: PASS
-- Vercel Production for the same main commit: **READY**
+- runtime acceptance GitHub Actions run **#601**: PASS
+- latest `main` CI: PASS
+- current Production deployment: **READY**
 - extension package: Manifest V3, version **0.5.0**, Production backend origin
 
 ## Directly observed `/live` acceptance
@@ -69,8 +71,9 @@ The post-fix behavior is covered by regression tests in the final main suite.
 - SOURCECHAIN development evaluation: PASS
 - annotation validation: PASS
 - SOURCEBENCH-TR validation: PASS
-- GitHub Actions #601: PASS
-- Vercel Production on current main: READY
+- runtime acceptance GitHub Actions #601: PASS
+- latest `main` CI: PASS
+- current Production deployment: READY
 
 The tracked summary is kept in [`../results/test_summary.json`](../results/test_summary.json).
 

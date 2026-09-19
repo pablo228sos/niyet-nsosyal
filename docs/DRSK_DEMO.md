@@ -150,4 +150,4 @@ python scripts/validate_annotations.py data/response_gate_seed_v1.csv
 python scripts/validate_sourcebench.py data/sourcebench_tr
 ~~~
 
-Final acceptance result: **75 targeted tests passed** and **286 full-suite tests passed**. Main CI run #601 passed and the corresponding Production deployment reached READY.
+Final acceptance result: **75 targeted tests passed** and **286 full-suite tests passed**. Runtime acceptance CI run #601 passed; later documentation-only main changes did not alter the verified runtime contracts, and current Production remains READY.

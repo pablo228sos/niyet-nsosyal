@@ -26,8 +26,6 @@ The strongest SOURCECHAIN use case is not asking an AI whether a random sentence
 
 That creates two product moments: an **author** can privately check whether wording overstates the evidence before publishing, and a **reader** can request evidence context for a factual post. A native platform integration can expose DRSK beside the social object as an optional action; the current real-host overlay proves the integration boundary while `/live` shows the post-level product concept.
 
-DRSK treats both as resolution problems.
-
 - **SOURCECHAIN** asks what the available evidence actually supports.
 - **NIYET** asks whether human context is useful and, if so, which relevant, willing and available responder should receive the request.
 - The **Resolution Engine** chooses the user-facing path.
@@ -168,8 +166,8 @@ The final stabilization pass completed with:
 - extension packaging passed;
 - repeated private checks preserved responder capacity;
 - GitHub Actions passed;
-- GitHub Actions run **#601** passed on the final pre-jury main build;
-- the merged Production deployment was **READY**.
+- the runtime-acceptance CI passed on the final code snapshot used for browser validation;
+- current `main` CI is green and Production is **READY**.
 
 These software checks are separate from the project's model/development measurements. An authenticated NSosyal hardware pass reached the human answer on the real host; the persistence edge case discovered during that pass was fixed in PR #34 and added to the final regression suite. See [`docs/FINAL_ACCEPTANCE.md`](docs/FINAL_ACCEPTANCE.md).
 

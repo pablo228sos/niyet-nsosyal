@@ -18,10 +18,12 @@ DRSK is a resolution layer for social content.
 - stabilization PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31) merged the final product/UX build;
 - acceptance PR [#32](https://github.com/pablo228sos/niyet-nsosyal/pull/32) fixed stale responder-capacity display;
 - authenticated hardware testing then exposed a resolved-request restore edge case; PR [#34](https://github.com/pablo228sos/niyet-nsosyal/pull/34) fixed fresh-check behavior after resolution and removed stale routing-time capacity copy;
-- current main: `20276ccc9ad44c07c39c00d8c5c8f7bd4a8b47f5`;
+- runtime-tested code snapshot: `20276ccc9ad44c07c39c00d8c5c8f7bd4a8b47f5`;
+- PR #35 changed documentation/product framing only;
 - Production: <https://niyet-nsosyal.vercel.app/live>;
-- GitHub Actions run #601: PASS;
-- Vercel Production from current main: READY.
+- runtime acceptance GitHub Actions run #601: PASS;
+- latest `main` CI: PASS;
+- current Production deployment: READY.
 
 Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KEY` is the primary live evidence credential. Brave remains an optional provider when configured.
 
@@ -51,8 +53,9 @@ Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KE
 - site build: **25 assets**
 - extension package: PASS
 - repeated-check capacity invariant: PASS
-- GitHub Actions run #601: PASS
-- Vercel Production on `20276ccc`: READY
+- runtime acceptance GitHub Actions run #601: PASS
+- latest `main` CI: PASS
+- current Production deployment: READY
 
 Five final `/live` screenshots are committed under [`docs/screenshots/`](screenshots/).
 
