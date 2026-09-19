@@ -10,7 +10,7 @@ The final demo should prove the DRSK interaction model, not our ability to repro
 
 `NSosyal draft → SOURCECHAIN evidence → native publish → published post → NIYET by consent → human answer`
 
-The standalone `/live` prototype remains the fallback and the inspectable technical surface.
+The standalone `/live` prototype remains the deterministic fallback and the inspectable technical surface. An authenticated hardware pass completed the real-host path through responder answer return before the final freeze.
 
 ## Architecture
 

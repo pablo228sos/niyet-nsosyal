@@ -131,7 +131,7 @@ On narrow/mobile widths:
 - composer DRSK must not cover NSosyal publish/navigation controls;
 - the result uses the narrow-screen sheet/full-width treatment.
 
-The final automated acceptance environment reached the NSosyal login boundary and therefore did not claim an authenticated host-DOM visual pass. `/live` remains the fully observed judge-safe fallback.
+An authenticated presentation-hardware pass subsequently reached the human answer on the real NSosyal host. That pass exposed one resolved-state persistence edge case, fixed in PR #34 and covered by the final regression suite. `/live` remains the deterministic full fallback if the external host becomes unstable.
 
 ## Verification
 
@@ -150,4 +150,4 @@ python scripts/validate_annotations.py data/response_gate_seed_v1.csv
 python scripts/validate_sourcebench.py data/sourcebench_tr
 ~~~
 
-Final acceptance result: **73 targeted tests passed** and **284 full-suite tests passed**. Main CI run #591 passed and the corresponding Production deployment reached READY.
+Final acceptance result: **75 targeted tests passed** and **286 full-suite tests passed**. Main CI run #601 passed and the corresponding Production deployment reached READY.
