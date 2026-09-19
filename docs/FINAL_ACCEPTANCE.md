@@ -59,6 +59,8 @@ That pass also exposed one persistence edge case: after a resolved request, relo
 
 The post-fix behavior is covered by regression tests in the final main suite.
 
+The authenticated real-host sequence is preserved visually in **[Real NSosyal acceptance](REAL_NSOSYAL_ACCEPTANCE.md)**.
+
 ## Software verification
 
 - targeted final contracts: **75 passed**

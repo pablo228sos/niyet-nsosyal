@@ -12,6 +12,14 @@ The final demo should prove the DRSK interaction model, not our ability to repro
 
 The standalone `/live` prototype remains the deterministic fallback and the inspectable technical surface. An authenticated hardware pass completed the real-host path through responder answer return before the final freeze.
 
+## Authenticated hardware proof
+
+The final real-host pass was captured step by step: private inspect, native publication detection, explicit NIYET opt-in, responder routing and the returned human answer.
+
+![Published NSosyal post detected before explicit human routing](../../docs/screenshots/07_nsosyal_published_optin.webp)
+
+See **[Real NSosyal acceptance](../../docs/REAL_NSOSYAL_ACCEPTANCE.md)** for all four captures and the exact boundary of what this prototype proves.
+
 ## Architecture
 
 - A static content script runs only on `nsosyal.com` / `www.nsosyal.com`.
