@@ -184,6 +184,17 @@ def test_extension_responder_handoff_matches_truthful_availability_copy():
     assert "drsk-overlay-handoff-actions" in CONTENT
 
 
+
+def test_extension_does_not_present_routing_time_capacity_as_current_after_accept():
+    render_request = CONTENT.split("function renderRequest(request)", 1)[1].split(
+        "function renderAnswer(request)", 1
+    )[0]
+
+    assert "request.status === 'OPEN'" in render_request
+    assert "attention slots available" in render_request
+    assert "reasons.filter" in render_request
+
+
 def test_extension_responder_handoff_actions_stay_mobile_safe():
     compact_css = CSS.replace(" ", "")
     assert ".drsk-overlay-handoff-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}" in compact_css

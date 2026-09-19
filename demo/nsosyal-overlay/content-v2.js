@@ -570,7 +570,10 @@
 
     wrap.append(el('p', 'drsk-overlay-route', `${t('routedTo')} ${responder.name || responder.id}`));
     const reasons = Array.isArray(responder.reason) ? responder.reason : [];
-    if (reasons.length) wrap.append(el('small', 'drsk-overlay-muted', reasons.join(' · ')));
+    const visibleReasons = request.status === 'OPEN'
+      ? reasons
+      : reasons.filter((reason) => !/^\d+\/\d+ attention slots available$/i.test(String(reason || '')));
+    if (visibleReasons.length) wrap.append(el('small', 'drsk-overlay-muted', visibleReasons.join(' · ')));
 
     const url = new URL(LIVE_URL);
     url.searchParams.set('role', 'responder');
