@@ -1,7 +1,7 @@
 {
   "dataset_version": "repository-test-suite",
-  "generated_at": "2026-09-19T14:12:54Z",
-  "git_commit": "cc9c9915187abda66ee98f9018a1b955091efe46",
+  "generated_at": "2026-09-19T16:20:22Z",
+  "git_commit": "20276ccc9ad44c07c39c00d8c5c8f7bd4a8b47f5",
   "metrics": {
     "command": [
       "python",
@@ -11,14 +11,13 @@
     ],
     "exit_code": 0,
     "failed": 0,
-    "passed": 284,
-    "summary": "284 passed in 34.15s on the final acceptance head; main CI run #591 passed the merged tree"
+    "passed": 286,
+    "summary": "286 passed in 32.87s on final pre-jury main; GitHub Actions run #601 passed"
   },
   "parameters": {
     "mode": "quiet",
     "runner": "pytest",
-    "final_acceptance_head": "9c0a081042001834e4a7fb24edc9d98cb6b3d603",
-    "github_actions_run": 35447996901,
-    "targeted_summary": "73 passed in 8.89s"
+    "github_actions_run": 35454584161,
+    "targeted_summary": "75 targeted overlay/live/human-help contracts passed"
   }
 }

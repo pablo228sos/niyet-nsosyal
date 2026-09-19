@@ -16,11 +16,12 @@ DRSK is a resolution layer for social content.
 ## Final branch state
 
 - stabilization PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31) merged the final product/UX build;
-- acceptance PR [#32](https://github.com/pablo228sos/niyet-nsosyal/pull/32) fixed the final stale responder-capacity display and was merged after targeted, full-suite and Preview verification;
-- current acceptance merge commit: `cc9c9915187abda66ee98f9018a1b955091efe46`;
+- acceptance PR [#32](https://github.com/pablo228sos/niyet-nsosyal/pull/32) fixed stale responder-capacity display;
+- authenticated hardware testing then exposed a resolved-request restore edge case; PR [#34](https://github.com/pablo228sos/niyet-nsosyal/pull/34) fixed fresh-check behavior after resolution and removed stale routing-time capacity copy;
+- current main: `20276ccc9ad44c07c39c00d8c5c8f7bd4a8b47f5`;
 - Production: <https://niyet-nsosyal.vercel.app/live>;
-- GitHub Actions run #591: PASS;
-- Vercel Production from the acceptance merge: READY.
+- GitHub Actions run #601: PASS;
+- Vercel Production from current main: READY.
 
 Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KEY` is the primary live evidence credential. Brave remains an optional provider when configured.
 
@@ -44,14 +45,14 @@ Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KE
 
 ## Final verification
 
-- targeted: **73 passed**
-- full suite: **284 passed**
+- targeted: **75 passed**
+- full suite: **286 passed**
 - live + extension JavaScript syntax: PASS
 - site build: **25 assets**
 - extension package: PASS
 - repeated-check capacity invariant: PASS
-- GitHub Actions run #591: PASS
-- Vercel Production on `cc9c991`: READY
+- GitHub Actions run #601: PASS
+- Vercel Production on `20276ccc`: READY
 
 Five final `/live` screenshots are committed under [`docs/screenshots/`](screenshots/).
 
@@ -88,7 +89,7 @@ private draft inspect
 -> resolved author state
 ~~~
 
-The final automated acceptance environment could not enter an authenticated NSosyal session because the host redirected to login. Package, API, consent, storage and responsive contracts are covered by tests, but the final authenticated host-DOM visual pass remains a presentation-hardware gate. The `/live` flow is the fully observed judge-safe fallback.
+After automated acceptance, an authenticated presentation-hardware pass reached private check, native publish, explicit routing, responder Accept/Answer and answer return on the real NSosyal host. The edge case discovered by that pass was fixed in PR #34 and added to regression coverage. `/live` remains the deterministic judge-safe fallback.
 
 ## Deliberate boundaries
 

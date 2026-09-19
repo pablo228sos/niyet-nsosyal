@@ -6,7 +6,7 @@
 
 DRSK is a resolution layer for social platforms. It does not force every post through the same AI pipeline. It decides what the post actually needs next: evidence, a person, both, or nothing.
 
-**[Open the live demo](https://niyet-nsosyal.vercel.app/live)** · [Final acceptance](docs/FINAL_ACCEPTANCE.md) · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
+**[Open the live demo](https://niyet-nsosyal.vercel.app/live)** · [Product thesis](docs/PRODUCT_THESIS.md) · [Final acceptance](docs/FINAL_ACCEPTANCE.md) · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
 
 ![DRSK exposes the exact coffee claim-to-source mismatch and causality shift](docs/screenshots/01_live_coffee_conflict.png)
 
@@ -17,6 +17,14 @@ Social platforms already distribute content and attention extremely well. Two ha
 A real citation can still be used to tell the wrong story. A paper may say coffee consumption was **associated with** lower mortality while a post claims research **proves coffee causes** lower mortality.
 
 At the same time, a useful question from a new or low-reach user may never reach the person who can actually help. The knowledge can already exist inside the community and still fail to meet the need.
+
+DRSK treats both as resolution problems.
+
+### The SOURCECHAIN wedge: a source is not evidence
+
+The strongest SOURCECHAIN use case is not asking an AI whether a random sentence is true. It is **claim-to-source integrity**. A post can cite a real paper and still tell a stronger story than the paper supports. Search can find the paper; SOURCECHAIN keeps the exact social claim, evidence passage, provenance and relationship together so the mismatch is inspectable rather than hidden behind another verdict.
+
+That creates two product moments: an **author** can privately check whether wording overstates the evidence before publishing, and a **reader** can request evidence context for a factual post. A native platform integration can expose DRSK beside the social object as an optional action; the current real-host overlay proves the integration boundary while `/live` shows the post-level product concept.
 
 DRSK treats both as resolution problems.
 
@@ -153,17 +161,17 @@ The same-page Author/Responder switch and a separate responder-device link are b
 
 The final stabilization pass completed with:
 
-- **73 targeted tests passed** across the final live/overlay/human-help contracts;
-- **284 full-suite tests passed**;
+- **75 targeted tests passed** across the final live/overlay/human-help contracts;
+- **286 full-suite tests passed**;
 - JavaScript syntax checks passed for the live surface and extension;
 - site build passed with **25 assets**;
 - extension packaging passed;
 - repeated private checks preserved responder capacity;
 - GitHub Actions passed;
-- GitHub Actions run **#591** passed on the final acceptance merge;
+- GitHub Actions run **#601** passed on the final pre-jury main build;
 - the merged Production deployment was **READY**.
 
-These software checks are separate from the project's model/development measurements. The current acceptance snapshot, including the remaining authenticated-host limitation for the NSosyal overlay, is documented in [`docs/FINAL_ACCEPTANCE.md`](docs/FINAL_ACCEPTANCE.md).
+These software checks are separate from the project's model/development measurements. An authenticated NSosyal hardware pass reached the human answer on the real host; the persistence edge case discovered during that pass was fixed in PR #34 and added to the final regression suite. See [`docs/FINAL_ACCEPTANCE.md`](docs/FINAL_ACCEPTANCE.md).
 
 ### NIYET matching
 
@@ -198,9 +206,9 @@ These are controlled-development measurements, not population estimates or claim
 
 The judge-safe interactive surface. It supports arbitrary repeated checks, Author/Responder device views, the four resolution states, responder capacity and the complete Resolved lifecycle.
 
-### NSosyal concept overlay
+### Real NSosyal concept overlay
 
-A Manifest V3 browser extension demonstrates how DRSK can sit over the real NSosyal composer without pretending to be an official NSosyal client.
+A Manifest V3 browser extension demonstrates how DRSK can sit over the real NSosyal interface without pretending to be an official NSosyal client. The authenticated hardware flow reached private evidence check → native publish → explicit NIYET routing → responder answer → returned resolved state.
 
 The overlay reads composer text only after the user presses DRSK, never presses NSosyal publish/edit/delete controls, detects the exact published text before human routing, keeps routing opt-in, never forwards NSosyal cookies and preserves request state through guarded extension storage.
 
