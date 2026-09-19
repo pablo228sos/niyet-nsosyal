@@ -14,11 +14,9 @@ The standalone `/live` prototype remains the deterministic fallback and the insp
 
 ## Authenticated hardware proof
 
-The final real-host pass was captured step by step: private inspect, native publication detection, explicit NIYET opt-in, responder routing and the returned human answer.
+The final real-host pass covered private inspect, native publication detection, explicit NIYET opt-in, responder routing and the returned human answer.
 
-![Published NSosyal post detected before explicit human routing](../../docs/screenshots/07_nsosyal_published_optin.webp)
-
-See **[Real NSosyal acceptance](../../docs/REAL_NSOSYAL_ACCEPTANCE.md)** for all four captures and the exact boundary of what this prototype proves.
+See **[Real NSosyal acceptance](../../docs/REAL_NSOSYAL_ACCEPTANCE.md)** for the acceptance record and the exact boundary of what this prototype proves.
 
 ## Architecture
 
