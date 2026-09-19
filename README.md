@@ -210,7 +210,12 @@ A Manifest V3 browser extension demonstrates how DRSK can sit over the real NSos
 
 The overlay reads composer text only after the user presses DRSK, never presses NSosyal publish/edit/delete controls, detects the exact published text before human routing, keeps routing opt-in, never forwards NSosyal cookies and preserves request state through guarded extension storage.
 
-The authenticated real-host lifecycle and its exact proof boundary are documented in **[Real NSosyal acceptance](docs/REAL_NSOSYAL_ACCEPTANCE.md)**.
+| Private SOURCECHAIN inspect | Returned human context |
+| --- | --- |
+| ![Private SOURCECHAIN check on the real NSosyal composer](docs/screenshots/06_nsosyal_private_check.webp) | ![Human answer returned to the real NSosyal DRSK overlay](docs/screenshots/09_nsosyal_answer_received.webp) |
+| Evidence is visible before publication or any human request. | The responder answer returns to the same social need without becoming a truth label. |
+
+The complete four-stage authenticated host capture is documented in **[Real NSosyal acceptance](docs/REAL_NSOSYAL_ACCEPTANCE.md)**.
 
 The adapter is a **concept integration**, not an official platform integration.
 

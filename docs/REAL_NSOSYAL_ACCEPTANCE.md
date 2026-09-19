@@ -27,6 +27,7 @@ The author writes normally inside the real NSosyal composer and presses the smal
 
 At this point nothing has been published by DRSK and no human request has been created.
 
+![Private SOURCECHAIN check on the real NSosyal composer](screenshots/06_nsosyal_private_check.webp)
 
 ## 2. Native publication, then explicit opt-in
 
@@ -34,6 +35,7 @@ Publication remains under NSosyal's native control. The adapter waits until the 
 
 Only after that boundary is observed does the human action become available.
 
+![Exact published NSosyal post detected before explicit human opt-in](screenshots/07_nsosyal_published_optin.webp)
 
 The important product contract is visible here: **Check is not Ask**. Evidence inspection does not silently spend another person's attention.
 
@@ -43,6 +45,7 @@ After the user explicitly asks for human context, NIYET routes under the same re
 
 In the canonical coffee case, the request is assigned to the **Research Reviewer** fixture.
 
+![NIYET route to Research Reviewer on the real-host flow](screenshots/08_nsosyal_routed_reviewer.webp)
 
 The prototype responder identities are synthetic fixtures. The routing, capacity and request lifecycle are real prototype behavior.
 
@@ -50,6 +53,7 @@ The prototype responder identities are synthetic fixtures. The routing, capacity
 
 The assigned responder can open the responder device, Accept, and Answer. The author-side overlay restores that request and shows the returned answer after the real NSosyal page lifecycle.
 
+![Human answer returned to the real NSosyal DRSK overlay](screenshots/09_nsosyal_answer_received.webp)
 
 `ANSWERED` / `Resolved` means the selected resolution path completed. It does **not** mean a human response was converted into verified evidence.
 
