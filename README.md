@@ -6,7 +6,7 @@
 
 DRSK is a resolution layer for social platforms. It does not force every post through the same AI pipeline. It decides what the post actually needs next: evidence, a person, both, or nothing.
 
-**[Open the live demo](https://niyet-nsosyal.vercel.app/live)** · [Product thesis](docs/PRODUCT_THESIS.md) · [Final acceptance](docs/FINAL_ACCEPTANCE.md) · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
+**[Open the live demo](https://niyet-nsosyal.vercel.app/live)** · [Product thesis](docs/PRODUCT_THESIS.md) · [Final acceptance](docs/FINAL_ACCEPTANCE.md) · [Real NSosyal proof](docs/REAL_NSOSYAL_ACCEPTANCE.md) · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
 
 ![DRSK exposes the exact coffee claim-to-source mismatch and causality shift](docs/screenshots/01_live_coffee_conflict.png)
 
@@ -209,6 +209,15 @@ The judge-safe interactive surface. It supports arbitrary repeated checks, Autho
 A Manifest V3 browser extension demonstrates how DRSK can sit over the real NSosyal interface without pretending to be an official NSosyal client. The authenticated hardware flow reached private evidence check → native publish → explicit NIYET routing → responder answer → returned resolved state.
 
 The overlay reads composer text only after the user presses DRSK, never presses NSosyal publish/edit/delete controls, detects the exact published text before human routing, keeps routing opt-in, never forwards NSosyal cookies and preserves request state through guarded extension storage.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/06_nsosyal_private_check.webp" alt="Private SOURCECHAIN check on the real NSosyal composer"><br><sub><b>Private inspect.</b> Evidence is visible before publication or any human request.</sub></td>
+<td width="50%"><img src="docs/screenshots/09_nsosyal_answer_received.webp" alt="Human answer returned to the real NSosyal DRSK overlay"><br><sub><b>Returned resolution.</b> Human context comes back to the same social need.</sub></td>
+</tr>
+</table>
+
+The complete four-step authenticated host capture is documented in **[Real NSosyal acceptance](docs/REAL_NSOSYAL_ACCEPTANCE.md)**.
 
 The adapter is a **concept integration**, not an official platform integration.
 
