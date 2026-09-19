@@ -1,10 +1,12 @@
 # DRSK — Hybrid Social Intelligence Layer
 
+[![tests](https://github.com/pablo228sos/niyet-nsosyal/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/pablo228sos/niyet-nsosyal/actions/workflows/tests.yml)
+
 > **Evidence first. Human context by choice.**
 
 DRSK is a resolution layer for social platforms. It does not force every post through the same AI pipeline. It decides what the post actually needs next: evidence, a person, both, or nothing.
 
-**[Open the final live demo](https://niyet-nsosyal.vercel.app/live)** · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
+**[Open the live demo](https://niyet-nsosyal.vercel.app/live)** · [Final acceptance](docs/FINAL_ACCEPTANCE.md) · [Architecture](docs/DRSK_ARCHITECTURE.md) · [Demo guide](docs/DRSK_DEMO.md) · [Engineering journey](docs/ENGINEERING_JOURNEY.md) · [NSosyal concept overlay](demo/nsosyal-overlay/README.md)
 
 ![DRSK exposes the exact coffee claim-to-source mismatch and causality shift](docs/screenshots/01_live_coffee_conflict.png)
 
@@ -151,16 +153,17 @@ The same-page Author/Responder switch and a separate responder-device link are b
 
 The final stabilization pass completed with:
 
-- **57 targeted tests passed** for the judge-facing flow;
-- **283 full-suite tests passed**;
+- **73 targeted tests passed** across the final live/overlay/human-help contracts;
+- **284 full-suite tests passed**;
 - JavaScript syntax checks passed for the live surface and extension;
 - site build passed with **25 assets**;
 - extension packaging passed;
 - repeated private checks preserved responder capacity;
 - GitHub Actions passed;
-- the final Vercel Preview and merged Production deployment were Ready.
+- GitHub Actions run **#591** passed on the final acceptance merge;
+- the merged Production deployment was **READY**.
 
-These software checks are separate from the project's model/development measurements.
+These software checks are separate from the project's model/development measurements. The current acceptance snapshot, including the remaining authenticated-host limitation for the NSosyal overlay, is documented in [`docs/FINAL_ACCEPTANCE.md`](docs/FINAL_ACCEPTANCE.md).
 
 ### NIYET matching
 

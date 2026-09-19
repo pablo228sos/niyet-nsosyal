@@ -1,21 +1,24 @@
 {
   "dataset_version": "repository-test-suite",
-  "generated_at": "2026-08-24T14:55:32.530355+00:00",
-  "git_commit": "35e7d60df2a22ebf061d3639f66f0ad505eb3368",
+  "generated_at": "2026-09-19T14:12:54Z",
+  "git_commit": "cc9c9915187abda66ee98f9018a1b955091efe46",
   "metrics": {
     "command": [
-      "C:\\Users\\lawdir\\Documents\\Codex\\niyet-nsosyal\\.venv\\Scripts\\python.exe",
+      "python",
       "-m",
       "pytest",
       "-q"
     ],
     "exit_code": 0,
     "failed": 0,
-    "passed": 121,
-    "summary": "121 passed in 23.05s"
+    "passed": 284,
+    "summary": "284 passed in 34.15s on the final acceptance head; main CI run #591 passed the merged tree"
   },
   "parameters": {
     "mode": "quiet",
-    "runner": "pytest"
+    "runner": "pytest",
+    "final_acceptance_head": "9c0a081042001834e4a7fb24edc9d98cb6b3d603",
+    "github_actions_run": 35447996901,
+    "targeted_summary": "73 passed in 8.89s"
   }
 }

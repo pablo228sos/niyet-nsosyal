@@ -97,7 +97,7 @@ Starting from the coffee result:
 10. The same request refreshes to `Resolved`.
 11. The exact human answer is visible.
 
-The final stabilization pass verified this path locally and on Vercel Preview.
+The final acceptance pass verified this path in separate browser contexts and rechecked the responder budget after status transitions.
 
 ## 7 — separate responder device
 
@@ -131,7 +131,7 @@ On narrow/mobile widths:
 - composer DRSK must not cover NSosyal publish/navigation controls;
 - the result uses the narrow-screen sheet/full-width treatment.
 
-The final automated Codex environment did not repeat this authenticated real-site visual pass. `/live` remains the judge-safe fallback.
+The final automated acceptance environment reached the NSosyal login boundary and therefore did not claim an authenticated host-DOM visual pass. `/live` remains the fully observed judge-safe fallback.
 
 ## Verification
 
@@ -150,4 +150,4 @@ python scripts/validate_annotations.py data/response_gate_seed_v1.csv
 python scripts/validate_sourcebench.py data/sourcebench_tr
 ~~~
 
-Final stabilization result: **57 targeted tests passed** and **283 full-suite tests passed**.
+Final acceptance result: **73 targeted tests passed** and **284 full-suite tests passed**. Main CI run #591 passed and the corresponding Production deployment reached READY.
