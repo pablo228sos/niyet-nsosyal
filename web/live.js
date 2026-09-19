@@ -505,11 +505,13 @@ async function refreshAuthor(generation = authorPollGeneration) {
     const result = await callApi({ action: 'status', request_id: stored.request_id, author_token: stored.author_token });
     if (generation !== authorPollGeneration) return;
     if (!result.request) return;
+    const previousStatus = currentAuthor?.request?.status;
     currentAuthor = { request: {
       ...result.request,
       author_token: stored.author_token,
       resolution_path: stored.resolution_path || result.request.evidence_context?.resolution?.path || null
     } };
+    if (result.request.status !== previousStatus) await checkBackend();
     $('#restoreAuthor').hidden = true;
     renderAuthorRequest(currentAuthor.request);
     if (result.request.status === 'ANSWERED') stopAuthorPoll();

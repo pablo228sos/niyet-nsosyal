@@ -351,6 +351,19 @@ def test_returning_to_author_refreshes_from_stored_request_credentials():
     assert author_branch.index("readStoredAuthor()") < author_branch.index("startAuthorPoll()")
 
 
+def test_author_poll_refreshes_responder_budget_when_request_status_changes():
+    script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
+    refresh_author = script.split("async function refreshAuthor(", 1)[1].split(
+        "function startAuthorPoll()", 1
+    )[0]
+
+    assert "const previousStatus = currentAuthor?.request?.status;" in refresh_author
+    assert "if (result.request.status !== previousStatus) await checkBackend();" in refresh_author
+    assert refresh_author.index("await checkBackend()") < refresh_author.index(
+        "renderAuthorRequest(currentAuthor.request)"
+    )
+
+
 def test_checked_post_renders_the_resolution_engine_path():
     html = (ROOT / "web" / "live.html").read_text(encoding="utf-8")
     script = (ROOT / "web" / "live.js").read_text(encoding="utf-8")
