@@ -149,16 +149,24 @@ Prepare demo
 
 The separate responder-device link was verified in an independent browser session.
 
+## Capacity telemetry had to follow request state
+
+The last acceptance pass found one subtle mismatch after the core round trip was already working: accepting a request correctly reduced Research Reviewer capacity from 2 to 1 in the backend, but the Author card could continue displaying the pre-accept value until reload.
+
+PR [#32](https://github.com/pablo228sos/niyet-nsosyal/pull/32) kept the state model unchanged and fixed only the view synchronization. When the polled request status changes, the Author surface refreshes responder state before rendering the new request state. Duplicate Accept still returns a guarded conflict and does not consume capacity twice.
+
+The regression raised the final acceptance set to 73 targeted tests and 284 full-suite tests. Main CI and the merged Production deployment both passed.
+
 ## Final verification
 
-- 57 targeted tests passed;
-- 283 full-suite tests passed;
+- 73 targeted tests passed;
+- 284 full-suite tests passed;
 - JavaScript syntax checks passed;
 - site build passed;
 - extension package build passed;
 - repeated-check capacity invariant passed;
 - GitHub Actions passed;
-- final Vercel Preview Ready.
+- final Vercel Preview and merged Production deployment Ready.
 
 The remaining presentation-hardware check is the authenticated real NSosyal desktop/mobile extension pass. The core `/live` flow is the judge-safe fallback.
 

@@ -1,6 +1,6 @@
 # DRSK final judge build
 
-Status: final judge-facing build merged to `main`, 2026-09-18.
+Status: final judge-facing build merged to `main`, 2026-09-19.
 
 ## Product contract
 
@@ -15,11 +15,12 @@ DRSK is a resolution layer for social content.
 
 ## Final branch state
 
-- stabilization PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31) merged to `main`
-- merge commit: `55e5757c245966ae1280816ea31d10396ae666fc`
-- Codex stabilization head before repository polish: `a6457a3f9e669997d788d1b82137b10cb4541b24`
-- Production: <https://niyet-nsosyal.vercel.app/live>
-- Vercel production deployment from the merge commit: READY
+- stabilization PR [#31](https://github.com/pablo228sos/niyet-nsosyal/pull/31) merged the final product/UX build;
+- acceptance PR [#32](https://github.com/pablo228sos/niyet-nsosyal/pull/32) fixed the final stale responder-capacity display and was merged after targeted, full-suite and Preview verification;
+- current acceptance merge commit: `cc9c9915187abda66ee98f9018a1b955091efe46`;
+- Production: <https://niyet-nsosyal.vercel.app/live>;
+- GitHub Actions run #591: PASS;
+- Vercel Production from the acceptance merge: READY.
 
 Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KEY` is the primary live evidence credential. Brave remains an optional provider when configured.
 
@@ -43,14 +44,14 @@ Upstash Redis REST provides durable shared state when configured. `TAVILY_API_KE
 
 ## Final verification
 
-- targeted: **57 passed**
-- full suite: **283 passed**
+- targeted: **73 passed**
+- full suite: **284 passed**
 - live + extension JavaScript syntax: PASS
 - site build: **25 assets**
 - extension package: PASS
 - repeated-check capacity invariant: PASS
-- GitHub Actions: PASS
-- Vercel Production: READY
+- GitHub Actions run #591: PASS
+- Vercel Production on `cc9c991`: READY
 
 Five final `/live` screenshots are committed under [`docs/screenshots/`](screenshots/).
 
@@ -87,7 +88,7 @@ private draft inspect
 -> resolved author state
 ~~~
 
-The final Codex browser environment did not repeat the authenticated real-NSosyal desktop/mobile visual pass. Recheck it on presentation hardware. The `/live` flow is the judge-safe fallback.
+The final automated acceptance environment could not enter an authenticated NSosyal session because the host redirected to login. Package, API, consent, storage and responsive contracts are covered by tests, but the final authenticated host-DOM visual pass remains a presentation-hardware gate. The `/live` flow is the fully observed judge-safe fallback.
 
 ## Deliberate boundaries
 
