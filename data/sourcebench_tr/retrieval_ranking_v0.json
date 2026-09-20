@@ -1,0 +1,29 @@
+{
+  "version": "sourcebench-tr-retrieval-v0",
+  "status": "development-frozen",
+  "purpose": "Offline claim-to-passage ranking stress set; separate from NIYET responder matching.",
+  "queries": [
+    {"id":"ret-001","claim":"Araştırma kahve içmenin ölüm riskini kesin olarak azalttığını kanıtladı.","relevant":"p1"},
+    {"id":"ret-002","claim":"Çalışmada yüz yirmi gönüllü yer aldı.","relevant":"p2"},
+    {"id":"ret-003","claim":"Deney, yöntemin enerji kullanımını düşürdüğünü gösteriyor.","relevant":"p3"},
+    {"id":"ret-004","claim":"Katılım oranı yüzde kırk olarak bildirildi.","relevant":"p4"},
+    {"id":"ret-005","claim":"Yeni tedavi bütün hastalarda kesin iyileşme sağlıyor.","relevant":"p5"},
+    {"id":"ret-006","claim":"Fiziksel hareket kalp hastalığı riskinin azalmasıyla bağlantılıdır.","relevant":"p6"},
+    {"id":"ret-007","claim":"Atmosferdeki karbondioksit miktarı insan faaliyetleri nedeniyle yükseliyor.","relevant":"p7"},
+    {"id":"ret-008","claim":"Model Türkçe anlamsal aramada sözcük eşleşmesi olmadan benzer belgeleri bulabiliyor.","relevant":"p8"}
+  ],
+  "passages": [
+    {"id":"p1","text":"Gözlemsel çalışmada kahve tüketimi daha düşük ölüm oranlarıyla ilişkili bulundu; çalışma nedensellik göstermemektedir."},
+    {"id":"p2","text":"Araştırma toplam 120 katılımcıyla yürütüldü ve katılımcılar iki gruba ayrıldı."},
+    {"id":"p3","text":"Belge yeni yöntemin kurulum adımlarını açıklıyor; enerji tüketimine ilişkin ölçüm veya sonuç sunmuyor."},
+    {"id":"p4","text":"Çalışmada katılım oranı yüzde 12 olarak ölçüldü."},
+    {"id":"p5","text":"Müdahale bazı katılımcılarda iyileşmeyle ilişkili olabilir; tüm hastalar için kesin bir etki bildirilmedi."},
+    {"id":"p6","text":"Düzenli fiziksel aktivite daha düşük kardiyovasküler hastalık riski ile ilişkilidir."},
+    {"id":"p7","text":"İnsan faaliyetlerinden kaynaklanan sera gazı emisyonları atmosferik CO2 yoğunluğundaki artışın başlıca nedenidir."},
+    {"id":"p8","text":"Türkçe metin gömme modeli, aynı kavramı farklı kelimelerle anlatan sorgu ve belgeleri vektör uzayında yakınlaştırmak için eğitildi."},
+    {"id":"n1","text":"Kahve çekirdeklerinin kavurma derecesi içeceğin tat ve aroma profilini değiştirir."},
+    {"id":"n2","text":"Enerji sistemi kurulumu için kablolar bağlanır ve cihaz yeniden başlatılır."},
+    {"id":"n3","text":"Katılımcılara etkinlik sonunda memnuniyet anketi gönderildi."},
+    {"id":"n4","text":"Dil modellerinde kelime dağarcığı boyutu bellek kullanımını etkileyebilir."}
+  ]
+}
