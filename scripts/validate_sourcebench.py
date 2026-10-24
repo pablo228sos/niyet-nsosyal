@@ -11,11 +11,14 @@ LABELS = {
     "distortion.jsonl": {"NONE", "CERTAINTY_SHIFT", "CAUSALITY_SHIFT", "NUMERIC_DISTORTION", "SCOPE_SHIFT", "ATTRIBUTION_SHIFT", "TEMPORAL_SHIFT"},
 }
 
+DISTORTION_LABELS = LABELS["distortion.jsonl"]
+
 
 def validate_sourcebench(root: str | Path) -> list[str]:
     root = Path(root)
     problems: list[str] = []
     seen: set[str] = set()
+
     for filename, labels in LABELS.items():
         path = root / filename
         if not path.exists():
@@ -41,6 +44,37 @@ def validate_sourcebench(root: str | Path) -> list[str]:
                 problems.append(f"{filename}:{line_number}: unknown label {label}")
             if not any(str(item.get(field, "")).strip() for field in ("text", "claim", "child_text")):
                 problems.append(f"{filename}:{line_number}: missing text")
+
+    # Optional multi-hop Claim Evolution benchmark validation
+    evolution_path = root / "claim_evolution.jsonl"
+    if evolution_path.exists():
+        for line_number, line in enumerate(evolution_path.read_text(encoding="utf-8").splitlines(), 1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                problems.append(f"claim_evolution.jsonl:{line_number}: invalid JSON")
+                continue
+            item_id = str(item.get("id", "")).strip()
+            if not item_id:
+                problems.append(f"claim_evolution.jsonl:{line_number}: missing id")
+            elif item_id in seen:
+                problems.append(f"claim_evolution.jsonl:{line_number}: duplicate id {item_id}")
+            else:
+                seen.add(item_id)
+
+            statements = item.get("statements", [])
+            if not isinstance(statements, list) or len(statements) < 2:
+                problems.append(f"claim_evolution.jsonl:{line_number}: statements must contain at least 2 items")
+            elif any(not str(s).strip() for s in statements):
+                problems.append(f"claim_evolution.jsonl:{line_number}: statements contains empty string")
+
+            for hop_labels in item.get("expected_hops", []):
+                for label in hop_labels:
+                    if label not in DISTORTION_LABELS:
+                        problems.append(f"claim_evolution.jsonl:{line_number}: unknown label {label}")
+
     return problems
 
 
