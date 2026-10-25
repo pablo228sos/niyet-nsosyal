@@ -1,0 +1,335 @@
+{
+  "dataset_version": "SOURCEBENCH-TR-v1",
+  "split_evaluated": "test",
+  "dataset_sha256": "c999d28e90ebf3da7da9e07bcdcf70a0c9399f1e96ee70c7d77ccca7688d062c",
+  "total_examples": 22,
+  "tasks": {
+    "statement_type": {
+      "total": 7,
+      "correct": 3,
+      "accuracy": 0.4286,
+      "macro_f1": 0.4167,
+      "per_class": {
+        "FACTUAL_CLAIM": {
+          "support": 1,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333
+        },
+        "OPINION": {
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "PERSONAL_EXPERIENCE": {
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "PREDICTION": {
+          "support": 2,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667
+        },
+        "QUESTION": {
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "MIXED": {
+          "support": 2,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667
+        }
+      }
+    },
+    "alignment": {
+      "total": 8,
+      "correct": 4,
+      "accuracy": 0.5,
+      "macro_f1": 0.2875,
+      "per_class": {
+        "SUPPORTED": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "PARTIALLY_SUPPORTED": {
+          "support": 2,
+          "precision": 0.3333,
+          "recall": 0.5,
+          "f1": 0.4
+        },
+        "CONFLICTING": {
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "INSUFFICIENT": {
+          "support": 3,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75
+        }
+      }
+    },
+    "distortion": {
+      "total": 7,
+      "correct": 1,
+      "accuracy": 0.1429,
+      "macro_f1": 0.0357,
+      "per_class": {
+        "NONE": {
+          "support": 1,
+          "precision": 0.1429,
+          "recall": 1.0,
+          "f1": 0.25
+        },
+        "CERTAINTY_SHIFT": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "CAUSALITY_SHIFT": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "NUMERIC_DISTORTION": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "SCOPE_SHIFT": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "ATTRIBUTION_SHIFT": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "TEMPORAL_SHIFT": {
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "st-01",
+      "task": "statement_type",
+      "gold": "FACTUAL_CLAIM",
+      "predicted": "FACTUAL_CLAIM",
+      "correct": true,
+      "source_group": "sg-econ-1"
+    },
+    {
+      "id": "st-15",
+      "task": "statement_type",
+      "gold": "PERSONAL_EXPERIENCE",
+      "predicted": "FACTUAL_CLAIM",
+      "correct": false,
+      "source_group": "sg-health-exp-2"
+    },
+    {
+      "id": "st-17",
+      "task": "statement_type",
+      "gold": "PERSONAL_EXPERIENCE",
+      "predicted": "FACTUAL_CLAIM",
+      "correct": false,
+      "source_group": "sg-sport-exp-1"
+    },
+    {
+      "id": "st-20",
+      "task": "statement_type",
+      "gold": "PREDICTION",
+      "predicted": "PREDICTION",
+      "correct": true,
+      "source_group": "sg-weather-pred-1"
+    },
+    {
+      "id": "st-22",
+      "task": "statement_type",
+      "gold": "PREDICTION",
+      "predicted": "FACTUAL_CLAIM",
+      "correct": false,
+      "source_group": "sg-auto-pred-1"
+    },
+    {
+      "id": "st-31",
+      "task": "statement_type",
+      "gold": "MIXED",
+      "predicted": "MIXED",
+      "correct": true,
+      "source_group": "sg-mixed-1"
+    },
+    {
+      "id": "st-36",
+      "task": "statement_type",
+      "gold": "MIXED",
+      "predicted": "FACTUAL_CLAIM",
+      "correct": false,
+      "source_group": "sg-mixed-6"
+    },
+    {
+      "id": "al-09",
+      "task": "alignment",
+      "gold": "SUPPORTED",
+      "predicted": "PARTIALLY_SUPPORTED",
+      "correct": false,
+      "source_group": "al-sg-9"
+    },
+    {
+      "id": "al-13",
+      "task": "alignment",
+      "gold": "PARTIALLY_SUPPORTED",
+      "predicted": "PARTIALLY_SUPPORTED",
+      "correct": true,
+      "source_group": "al-sg-13"
+    },
+    {
+      "id": "al-18",
+      "task": "alignment",
+      "gold": "PARTIALLY_SUPPORTED",
+      "predicted": "INSUFFICIENT",
+      "correct": false,
+      "source_group": "al-sg-18"
+    },
+    {
+      "id": "al-22",
+      "task": "alignment",
+      "gold": "CONFLICTING",
+      "predicted": "INSUFFICIENT",
+      "correct": false,
+      "source_group": "al-sg-22"
+    },
+    {
+      "id": "al-27",
+      "task": "alignment",
+      "gold": "CONFLICTING",
+      "predicted": "PARTIALLY_SUPPORTED",
+      "correct": false,
+      "source_group": "al-sg-27"
+    },
+    {
+      "id": "al-31",
+      "task": "alignment",
+      "gold": "INSUFFICIENT",
+      "predicted": "INSUFFICIENT",
+      "correct": true,
+      "source_group": "al-sg-31"
+    },
+    {
+      "id": "al-36",
+      "task": "alignment",
+      "gold": "INSUFFICIENT",
+      "predicted": "INSUFFICIENT",
+      "correct": true,
+      "source_group": "al-sg-36"
+    },
+    {
+      "id": "al-40",
+      "task": "alignment",
+      "gold": "INSUFFICIENT",
+      "predicted": "INSUFFICIENT",
+      "correct": true,
+      "source_group": "al-sg-40"
+    },
+    {
+      "id": "dt-04",
+      "task": "distortion",
+      "gold": "NONE",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": true,
+      "source_group": "dt-sg-4"
+    },
+    {
+      "id": "dt-09",
+      "task": "distortion",
+      "gold": "CAUSALITY_SHIFT",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": false,
+      "source_group": "dt-sg-9"
+    },
+    {
+      "id": "dt-13",
+      "task": "distortion",
+      "gold": "CERTAINTY_SHIFT",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": false,
+      "source_group": "dt-sg-13"
+    },
+    {
+      "id": "dt-18",
+      "task": "distortion",
+      "gold": "NUMERIC_DISTORTION",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": false,
+      "source_group": "dt-sg-18"
+    },
+    {
+      "id": "dt-22",
+      "task": "distortion",
+      "gold": "SCOPE_SHIFT",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": false,
+      "source_group": "dt-sg-22"
+    },
+    {
+      "id": "dt-27",
+      "task": "distortion",
+      "gold": "ATTRIBUTION_SHIFT",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": false,
+      "source_group": "dt-sg-27"
+    },
+    {
+      "id": "dt-31",
+      "task": "distortion",
+      "gold": "TEMPORAL_SHIFT",
+      "predicted": "NONE",
+      "predicted_set": [
+        "NONE"
+      ],
+      "correct": false,
+      "source_group": "dt-sg-31"
+    }
+  ],
+  "generated_at": "2026-10-25T14:22:26.669594+00:00",
+  "git_commit": "d8c19e4daebafc4af6b45cb5bb8c78e6ad87db8a"
+}

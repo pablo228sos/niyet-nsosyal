@@ -114,6 +114,25 @@ Small documentation example of the matching-review format. Use the exporter abov
 
 Small machine-readable fixture used to test benchmark code and allocation metrics. It is not large enough to support a competition claim.
 
+### `sourcebench_tr_v1/`
+
+Frozen SOURCEBENCH-TR v1 benchmark directory containing:
+- `statement_types.jsonl`: 36 annotated Turkish statements across 6 categories.
+- `alignment.jsonl`: 40 claim-passage pairs across 4 alignment relations.
+- `distortion.jsonl`: 35 parent-child claim propagation pairs across 7 distortion types.
+- `splits.json`: Group-aware disjoint train/dev/test partitions (60% / 20% / 20%).
+- `adjudication_log.json`: Dual-annotator agreement record (Cohen's kappa = 0.942) and adjudication rationale.
+
+Validate with:
+```bash
+python scripts/validate_sourcebench.py data/sourcebench_tr_v1
+```
+
+Evaluate with:
+```bash
+python experiments/evaluate_sourcebench_v1.py --split test
+```
+
 ### `usability_results_template.csv`
 
 Blank result sheet for the six-task protocol in `docs/usability_test_protocol.md`.
