@@ -1,0 +1,2182 @@
+{
+  "dataset_version": "TURKISH-INTENT-V1",
+  "dataset_sha256": "ed9d81c29cb652877b44511b84e694d7142ec295062458fad522097859b1e6ef",
+  "splits": {
+    "train_count": 72,
+    "dev_count": 24,
+    "test_count": 24,
+    "total_count": 120
+  },
+  "results": {
+    "train": {
+      "metrics": {
+        "total": 72,
+        "correct": 72,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "per_class": {
+          "ASK": {
+            "support": 18,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "FEEDBACK": {
+            "support": 18,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "COLLABORATE": {
+            "support": 18,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "DISCUSS": {
+            "support": 18,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          }
+        },
+        "confusion_matrix": {
+          "ASK": {
+            "ASK": 18,
+            "FEEDBACK": 0,
+            "COLLABORATE": 0,
+            "DISCUSS": 0
+          },
+          "FEEDBACK": {
+            "ASK": 0,
+            "FEEDBACK": 18,
+            "COLLABORATE": 0,
+            "DISCUSS": 0
+          },
+          "COLLABORATE": {
+            "ASK": 0,
+            "FEEDBACK": 0,
+            "COLLABORATE": 18,
+            "DISCUSS": 0
+          },
+          "DISCUSS": {
+            "ASK": 0,
+            "FEEDBACK": 0,
+            "COLLABORATE": 0,
+            "DISCUSS": 18
+          }
+        }
+      },
+      "cases": [
+        {
+          "example_id": "intent_001",
+          "text": "ESP32 kartım Wi-Fi bağlantısını birkaç dakikada bir kaybediyor. Nereden kontrol etmeye başlamalıyım?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_wifi"
+        },
+        {
+          "example_id": "intent_002",
+          "text": "ESP32 bağlantısı durmadan kopuyor. Güç kaynağını mı yoksa kodu mu önce test etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_wifi"
+        },
+        {
+          "example_id": "intent_003",
+          "text": "Python'da bu fonksiyon bazen None döndürüyor ama nedenini bulamadım. Hangi kısmı kontrol etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_python"
+        },
+        {
+          "example_id": "intent_004",
+          "text": "Fonksiyonumun bazı girdilerde None vermesinin sebebini nasıl bulabilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_python"
+        },
+        {
+          "example_id": "intent_005",
+          "text": "Yanlışlıkla main branch'e commit attım. Commit'i kaybetmeden yeni bir branch'e nasıl taşıyabilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_git"
+        },
+        {
+          "example_id": "intent_006",
+          "text": "Main'e yaptığım son commit'i yeni branch'e almak istiyorum. En güvenli yol nedir?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_git"
+        },
+        {
+          "example_id": "intent_007",
+          "text": "Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_math"
+        },
+        {
+          "example_id": "intent_008",
+          "text": "Soruyu çözüyorum ama burada kombinasyon seçilmesinin nedenini anlayamadım. Açıklayabilir misiniz?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_math"
+        },
+        {
+          "example_id": "intent_009",
+          "text": "Çizgi izleyen robotum virajlarda sürekli taşıyor. PID ayarına hangi parametreden başlamalıyım?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_robot"
+        },
+        {
+          "example_id": "intent_010",
+          "text": "PID kullanan line follower virajda savruluyor. Önce P mi D mi değiştirmek daha mantıklı?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_robot"
+        },
+        {
+          "example_id": "intent_011",
+          "text": "Kamerada düşük ışıkta görüntü çok gürültülü oluyor. Yazılımla azaltmak için hangi yöntemi deneyebilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_camera"
+        },
+        {
+          "example_id": "intent_012",
+          "text": "Gece çekiminde görüntüde ciddi noise var. Basit bir görüntü işleme çözümü önerir misiniz?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_camera"
+        },
+        {
+          "example_id": "intent_013",
+          "text": "Bu sorgu 200 bin satırda çok yavaşlıyor. İlk bakmam gereken index hangisi?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_sql"
+        },
+        {
+          "example_id": "intent_014",
+          "text": "SQL sorgum veri büyüyünce yavaşladı. Execution plan dışında neyi kontrol etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_sql"
+        },
+        {
+          "example_id": "intent_015",
+          "text": "Mobilde bu kartlar üst üste biniyor. Grid yapısında hatayı nasıl bulabilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_css"
+        },
+        {
+          "example_id": "intent_016",
+          "text": "CSS grid küçük ekranda bozuluyor. Flexbox'a mı geçmeliyim yoksa media query mi eklemeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_css"
+        },
+        {
+          "example_id": "intent_017",
+          "text": "18650 pillerle yaptığım pakette voltaj normal ama yük altında aniden düşüyor. Sebebi ne olabilir?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_battery"
+        },
+        {
+          "example_id": "intent_018",
+          "text": "Batarya paketi boştayken 12V veriyor fakat motor çalışınca 9V'a iniyor. BMS hatası mı hücre sorunu mu?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_battery"
+        },
+        {
+          "example_id": "intent_031",
+          "text": "Yeni projemiz için bu landing page'i hazırladım. İlk bakışta en zayıf tarafı sizce ne?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_landing"
+        },
+        {
+          "example_id": "intent_032",
+          "text": "Geliştirdiğimiz ürünün açılış sayfasını yeniledik. Tasarım ve mesaj netliği açısından eleştirilerinizi bekliyorum.",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_landing"
+        },
+        {
+          "example_id": "intent_033",
+          "text": "60 saniyelik proje sunum metnim bu. Sizce problem kısmı yeterince net mi?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pitch"
+        },
+        {
+          "example_id": "intent_034",
+          "text": "Yatırımcı sunumu için hazırladığım ilk slaytı paylaşıyorum. Vurgulamak istediğim değer önerisi anlaşılıyor mu?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pitch"
+        },
+        {
+          "example_id": "intent_035",
+          "text": "Mobil uygulamamız için 3 adımlı bir karşılama ekranı tasarladık. Akıştaki adımlar kullanıcıyı sıkar mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_onboarding"
+        },
+        {
+          "example_id": "intent_036",
+          "text": "Kullanıcı kayıt akışını sadeleştirdik. İlk giriş deneyimi hakkında geri bildiriminizi alabilir miyim?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_onboarding"
+        },
+        {
+          "example_id": "intent_037",
+          "text": "Web sitemiz için koyu tema renk paletini belirledim. Kontrast ve okunabilirlik açısından nasıl duruyor?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_darkmode"
+        },
+        {
+          "example_id": "intent_038",
+          "text": "Hazırladığım dark mode renk hiyerarşisinde gözü yoran bir ton var mı? Yorumlarınızı rica ederim.",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_darkmode"
+        },
+        {
+          "example_id": "intent_039",
+          "text": "E-ticaret platformumuz için REST endpoint adlandırmalarını bu şekilde kurguladım. REST standartlarına uygun mu?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_api_design"
+        },
+        {
+          "example_id": "intent_040",
+          "text": "Yeni microservice API tasarımında URL ve HTTP metodlarını listeledim. Tutarlılık açısından görüşleriniz neler?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_api_design"
+        },
+        {
+          "example_id": "intent_041",
+          "text": "Açık kaynak kütüphanemizin README dosyasını baştan yazdım. Kurulum adımları dışarıdan bakan biri için anlaşılır mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_readme"
+        },
+        {
+          "example_id": "intent_042",
+          "text": "Projemin GitHub dökümantasyonunu paylaşıyorum. İlk defa kullanacak bir geliştirici için eksik gördüğünüz yer var mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_readme"
+        },
+        {
+          "example_id": "intent_043",
+          "text": "Kütüphanem için MIT yerine AGPL lisansı seçmeyi planlıyorum. Topluluk benimsemesi açısından bu kararı nasıl değerlendirirsiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_license"
+        },
+        {
+          "example_id": "intent_044",
+          "text": "Ticarileşme hedefi olan açık kaynak aracım için lisans stratejimi hazırladım. Stratejimdeki riskler sizce neler?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_license"
+        },
+        {
+          "example_id": "intent_045",
+          "text": "Geliştirdiğim React uygulamasında klasör yapısını özellik bazlı (feature-driven) kurguladım. Uzun vadede ölçeklenir mi?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_react_arch"
+        },
+        {
+          "example_id": "intent_046",
+          "text": "Frontend mimarisinde state yönetimini Zustand ile modüllere ayırdım. Tasarım şablonumu inceler misiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_react_arch"
+        },
+        {
+          "example_id": "intent_047",
+          "text": "Kullanıcı yetkilendirme ve rol sistemi için veritabanı şemasını ekteki gibi normalize ettim. Normalizasyon aşırı mı kaçmış?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_db_schema"
+        },
+        {
+          "example_id": "intent_048",
+          "text": "PostgreSQL tabloları arasındaki ilişki şemasını çizdim. Performans veya veri bütünlüğü açısından eleştiriniz var mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_db_schema"
+        },
+        {
+          "example_id": "intent_061",
+          "text": "Robotik yarışması için görüntü işleme ve ROS bilen bir ekip arkadaşı arıyoruz. İlgilenenler yazabilir mi?",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_robotics"
+        },
+        {
+          "example_id": "intent_062",
+          "text": "Otonom mobil robot projemizde sensör füzyonu çalışacak takım arkadaşı arayışımız var. Birlikte geliştirelim.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_robotics"
+        },
+        {
+          "example_id": "intent_063",
+          "text": "Rust ile Solana üzerinde açık kaynak DeFi protokolü geliştiriyoruz. Akıllı sözleşme geliştirecek ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_web3"
+        },
+        {
+          "example_id": "intent_064",
+          "text": "Blockchain tabanlı mikro ödeme projemize akıllı sözleşme yazacak geliştirici ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_web3"
+        },
+        {
+          "example_id": "intent_065",
+          "text": "Tıp öğrencilerine yönelik mobil vaka çalışma uygulaması yapıyoruz. Flutter bilen bir yazılımcıyla ortaklık kurmak istiyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_mobile"
+        },
+        {
+          "example_id": "intent_066",
+          "text": "Eğitim odaklı mobil projemizi hayata geçirmek için Flutter tarafında sorumluluk alacak geliştirici arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_mobile"
+        },
+        {
+          "example_id": "intent_067",
+          "text": "Linux dokümantasyonunu Türkçeye çevirmek için gönüllü bir çeviri inisiyatifi başlattık. Katılmak isteyen var mı?",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_translation"
+        },
+        {
+          "example_id": "intent_068",
+          "text": "Açık kaynak teknik belgeleri yerelleştirme projemize gönüllü çevirmenler ve editörler arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_translation"
+        },
+        {
+          "example_id": "intent_069",
+          "text": "Kaggle'daki çok dilli NLP yarışmasına katılacağım. Birlikte model eğitecek ve feature çıkaracak takım arkadaşı arıyorum.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_kaggle"
+        },
+        {
+          "example_id": "intent_070",
+          "text": "NLP benchmark yarışmasında takım kuruyorum. PyTorch ve Hugging Face deneyimi olan biriyle yarışmak isterim.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_kaggle"
+        },
+        {
+          "example_id": "intent_071",
+          "text": "Dağıtık veri tabanlarında veri tutarlılığı üzerine akademik bildiri yazıyoruz. Deneyleri yapacak ikinci bir yazar arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_academic"
+        },
+        {
+          "example_id": "intent_072",
+          "text": "Sistem performansı konulu makalemizin simülasyon aşaması için ortak araştırmacı arayışımız bulunuyor.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_academic"
+        },
+        {
+          "example_id": "intent_073",
+          "text": "Hafta sonu düzenlenecek 48 saatlik Game Jam için piksel çizer arıyoruz. 2D platform oyunu geliştireceğiz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_gamejam"
+        },
+        {
+          "example_id": "intent_074",
+          "text": "Game Jam maratonunda Unity ile oyun yapacağız. Ekibe piksel sanatçısı ve ses tasarımcısı arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_gamejam"
+        },
+        {
+          "example_id": "intent_075",
+          "text": "Karbon ayak izi hesaplayan açık veri platformu kuruyoruz. FastAPI ve veri analitiği bilen gönüllü katkıcılar bekliyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_climatetech"
+        },
+        {
+          "example_id": "intent_076",
+          "text": "İklim teknolojisi odaklı açık kaynak backend projemize katkı sağlayacak Python geliştiriciler arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_climatetech"
+        },
+        {
+          "example_id": "intent_077",
+          "text": "Akıllı tarım için nem sensörlü IoT prototipi hazırlıyoruz. PCB tasarımı yapabilecek bir donanımcıya ihtiyacımız var.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_iot"
+        },
+        {
+          "example_id": "intent_078",
+          "text": "Tarla sulama otomasyonu donanım geliştirme sürecinde KiCad ile devre çizebilecek ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_iot"
+        },
+        {
+          "example_id": "intent_091",
+          "text": "Sizce küçük ekiplerde açık kaynak model kullanmak uzun vadede ticari API'lara kıyasla daha mantıklı mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_llm_viability"
+        },
+        {
+          "example_id": "intent_092",
+          "text": "Açık kaynaklı LLM'leri kendi sunucumuzda barındırmak maliyet ve bakım açısından sürdürülebilir mi? Ne düşünüyorsunuz?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_llm_viability"
+        },
+        {
+          "example_id": "intent_093",
+          "text": "Erken aşama girişimlerde doğrudan mikroservis mimarisiyle başlamak aşırı mühendislik (over-engineering) midir?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_monolith"
+        },
+        {
+          "example_id": "intent_094",
+          "text": "Monolit ile başlayıp zamanla parçalamak mı yoksa baştan servisleri ayırmak mı daha az teknik borç üretir?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_monolith"
+        },
+        {
+          "example_id": "intent_095",
+          "text": "Büyük kurumsal projelerde dinamik diller (Python/JS) yerine baştan statik tip güvenliği (Go/Rust/TS) şart mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_typing"
+        },
+        {
+          "example_id": "intent_096",
+          "text": "Statik tiplemenin geliştirme hızını yavaşlattığı iddiasına katılıyor musunuz, yoksa hata önleme faydası daha mı büyük?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_typing"
+        },
+        {
+          "example_id": "intent_097",
+          "text": "Tamamen uzaktan (remote) çalışan yazılım ekiplerinde şirket kültürü ve junior mentörlüğü nasıl sağlanmalı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_remote"
+        },
+        {
+          "example_id": "intent_098",
+          "text": "Ofise dönüş baskıları hakkında ne düşünüyorsunuz? Uzaktan çalışma mühendislik üretkenliğini gerçekten düşürüyor mu?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_remote"
+        },
+        {
+          "example_id": "intent_099",
+          "text": "Serverless mimariler 'cold start' ve maliyet öngörülemezliği yüzünden popülerliğini kaybediyor mu?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_serverless"
+        },
+        {
+          "example_id": "intent_100",
+          "text": "Sunucusuz mimarinin gerçekten geliştirme maliyetini düşürdüğünü düşünüyor musunuz yoksa konteynerler daha mı stabil?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_serverless"
+        },
+        {
+          "example_id": "intent_101",
+          "text": "İlişkisel veritabanları JSON veri tiplerini bu kadar iyi desteklerken salt NoSQL veritabanlarına hala gerek var mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_nosql"
+        },
+        {
+          "example_id": "intent_102",
+          "text": "PostgreSQL'in JSONB performansı MongoDB gibi doküman tabanlı veritabanlarının yerini doldurabilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_nosql"
+        },
+        {
+          "example_id": "intent_103",
+          "text": "Flutter ve React Native bu kadar olgunlaşmışken günümüzde hala sıfırdan Native (Swift/Kotlin) başlamak mantıklı mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_crossplatform"
+        },
+        {
+          "example_id": "intent_104",
+          "text": "Geleceğin mobil dünyasında çapraz platform araçlar native geliştirmeyi tamamen marjinalleştirebilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_crossplatform"
+        },
+        {
+          "example_id": "intent_105",
+          "text": "Yapay zeka kod tamamlama araçlarının yaygınlaşması yeni mezun ve junior geliştiricilerin öğrenme sürecini nasıl etkileyecek?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_codegen_juniors"
+        },
+        {
+          "example_id": "intent_106",
+          "text": "AI kod üreticileri junior mühendislerin temel algoritmik düşünme yeteneğini köreltir mi yoksa seviye mi atlatır?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_codegen_juniors"
+        },
+        {
+          "example_id": "intent_107",
+          "text": "Uzun ömürlü feature branch'ler yerine Trunk-Based Development yaklaşımını benimsemek ekip çevikliğini nasıl etkiler?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_trunk_based"
+        },
+        {
+          "example_id": "intent_108",
+          "text": "Feature branch merge hell yaşayan ekipler için trunk-based development gerçekten mucizevi bir çözüm mü?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_trunk_based"
+        }
+      ]
+    },
+    "dev": {
+      "metrics": {
+        "total": 24,
+        "correct": 19,
+        "accuracy": 0.7917,
+        "macro_f1": 0.7645,
+        "per_class": {
+          "ASK": {
+            "support": 6,
+            "precision": 0.8333,
+            "recall": 0.8333,
+            "f1": 0.8333
+          },
+          "FEEDBACK": {
+            "support": 6,
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571
+          },
+          "COLLABORATE": {
+            "support": 6,
+            "precision": 0.8571,
+            "recall": 1.0,
+            "f1": 0.9231
+          },
+          "DISCUSS": {
+            "support": 6,
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444
+          }
+        },
+        "confusion_matrix": {
+          "ASK": {
+            "ASK": 5,
+            "FEEDBACK": 0,
+            "COLLABORATE": 0,
+            "DISCUSS": 1
+          },
+          "FEEDBACK": {
+            "ASK": 0,
+            "FEEDBACK": 6,
+            "COLLABORATE": 0,
+            "DISCUSS": 0
+          },
+          "COLLABORATE": {
+            "ASK": 0,
+            "FEEDBACK": 0,
+            "COLLABORATE": 6,
+            "DISCUSS": 0
+          },
+          "DISCUSS": {
+            "ASK": 1,
+            "FEEDBACK": 2,
+            "COLLABORATE": 1,
+            "DISCUSS": 2
+          }
+        }
+      },
+      "cases": [
+        {
+          "example_id": "intent_019",
+          "text": "Ubuntu'da servis reboot sonrası başlamıyor ama elle başlatınca çalışıyor. systemd tarafında neyi kontrol etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_linux"
+        },
+        {
+          "example_id": "intent_020",
+          "text": "systemd servisi açılışta fail oluyor, journalctl çıktısında network hatası var. Nasıl düzeltebilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_linux"
+        },
+        {
+          "example_id": "intent_021",
+          "text": "API isteğim tarayıcıda CORS hatası veriyor ama Postman'de çalışıyor. Bunu doğru şekilde nasıl çözebilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_api"
+        },
+        {
+          "example_id": "intent_022",
+          "text": "Frontend fetch isteğinde Access-Control-Allow-Origin engeli alıyorum. Nginx mi backend mi ayarlanmalı?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_api"
+        },
+        {
+          "example_id": "intent_023",
+          "text": "Ultrasonik sensör suya yakınken kararsız ölçüm veriyor. Filtreleme mi yoksa montaj açısı mı daha önemli?",
+          "gold": "ASK",
+          "predicted": "DISCUSS",
+          "correct": false,
+          "source_group": "ask_sensor"
+        },
+        {
+          "example_id": "intent_024",
+          "text": "HC-SR04 su yüzeyinde yankı kaçırıyor. Donanımı değiştirmeden yazılımla filtrelemek mümkün mü?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_sensor"
+        },
+        {
+          "example_id": "intent_049",
+          "text": "B2B SaaS ürünümüz için 3 kademeli fiyatlandırma sayfası hazırladık. Paket ayrımları net ve ikna edici mi?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pricing"
+        },
+        {
+          "example_id": "intent_050",
+          "text": "Fiyatlandırma sayfamızın dönüşüm oranını artırmak istiyoruz. İnceleyip zayıf yönlerini söyler misiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pricing"
+        },
+        {
+          "example_id": "intent_051",
+          "text": "Uygulama içi hata bildirim metinlerini daha empatik ve anlaşılır olacak şekilde yeniden yazdım. Dil tonu nasıl?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_copywriting"
+        },
+        {
+          "example_id": "intent_052",
+          "text": "Sistemdeki modal ve uyarı pencerelerinin metinlerini gözden geçirdim. Kullanıcı dostu olmuş mu?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_copywriting"
+        },
+        {
+          "example_id": "intent_053",
+          "text": "Dağıtık sistemlerde konsensüs algoritmaları üzerine teknik bir blog yazısı taslağı hazırladım. Anlatım akıcı mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_article"
+        },
+        {
+          "example_id": "intent_054",
+          "text": "Yazdığım teknik makalenin giriş ve örnek kod bölümlerini paylaşıyorum. Teknik doğruluk açısından yorumunuz nedir?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_article"
+        },
+        {
+          "example_id": "intent_079",
+          "text": "Türkçe doğal dil işleme için açık kaynaklı duygu analizi veri kümesi topluyoruz. Veri etiketlemeye yardımcı olacak arkadaşlar arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_corpus"
+        },
+        {
+          "example_id": "intent_080",
+          "text": "Akademik Türkçe korpus projemizde bağımsız etiketleme yapacak gönüllü araştırmacılarla çalışmak istiyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_corpus"
+        },
+        {
+          "example_id": "intent_081",
+          "text": "Kamu web sitelerinin erişilebilirliğini (WCAG 2.1) denetleyen açık bir çalışma grubu kurduk. Katılmak ister misiniz?",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_a11y"
+        },
+        {
+          "example_id": "intent_082",
+          "text": "Web erişilebilirliği testi yapan açık kaynak aracımızın geliştirilmesinde aktif rol alacak ekip arkadaşları arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_a11y"
+        },
+        {
+          "example_id": "intent_083",
+          "text": "Kubernetes cluster mimarisi kuruyoruz. Birlikte Terraform ve GitOps pratiklerini uygulayacağımız bir yol arkadaşı arıyorum.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_devops"
+        },
+        {
+          "example_id": "intent_084",
+          "text": "Altyapı otomasyonu çalışmalarımızda deneyimli DevOps mühendisiyle eşli programlama (pair programming) yapmak istiyorum.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_devops"
+        },
+        {
+          "example_id": "intent_109",
+          "text": "REST API mimarisi varken GraphQL'in getirdiği karmaşıklık ve önbellekleme (caching) zorluğu göze alınmaya değer mi?",
+          "gold": "DISCUSS",
+          "predicted": "FEEDBACK",
+          "correct": false,
+          "source_group": "disc_graphql_rest"
+        },
+        {
+          "example_id": "intent_110",
+          "text": "Modern web uygulamalarında GraphQL benimsenmesi neden yavaşladı? Sektör yeniden basit REST ve RPC'ye mi dönüyor?",
+          "gold": "DISCUSS",
+          "predicted": "ASK",
+          "correct": false,
+          "source_group": "disc_graphql_rest"
+        },
+        {
+          "example_id": "intent_111",
+          "text": "Birim test (unit test) yazmaya ayrılan zaman ile uçtan uca (E2E) test yatırımı arasındaki ideal denge sizce nedir?",
+          "gold": "DISCUSS",
+          "predicted": "FEEDBACK",
+          "correct": false,
+          "source_group": "disc_testing_ratio"
+        },
+        {
+          "example_id": "intent_112",
+          "text": "Yüzde 100 test coverage hedefi gerçekçi mi yoksa ekipleri gereksiz mock kodları yazmaya mı hapsediyor?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_testing_ratio"
+        },
+        {
+          "example_id": "intent_113",
+          "text": "Bireysel açık kaynak geliştiricilerinin kurumsal sponsorluklarla geçinmesi gerçekçi bir kariyer modeli olabilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_oss_sustainability"
+        },
+        {
+          "example_id": "intent_114",
+          "text": "Kritik açık kaynak altyapılarının gönüllü emeğe dayanması yazılım ekosistemi için en büyük risklerden biri mi?",
+          "gold": "DISCUSS",
+          "predicted": "COLLABORATE",
+          "correct": false,
+          "source_group": "disc_oss_sustainability"
+        }
+      ]
+    },
+    "test": {
+      "metrics": {
+        "total": 24,
+        "correct": 22,
+        "accuracy": 0.9167,
+        "macro_f1": 0.9188,
+        "per_class": {
+          "ASK": {
+            "support": 6,
+            "precision": 1.0,
+            "recall": 0.8333,
+            "f1": 0.9091
+          },
+          "FEEDBACK": {
+            "support": 6,
+            "precision": 1.0,
+            "recall": 0.8333,
+            "f1": 0.9091
+          },
+          "COLLABORATE": {
+            "support": 6,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "DISCUSS": {
+            "support": 6,
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571
+          }
+        },
+        "confusion_matrix": {
+          "ASK": {
+            "ASK": 5,
+            "FEEDBACK": 0,
+            "COLLABORATE": 0,
+            "DISCUSS": 1
+          },
+          "FEEDBACK": {
+            "ASK": 0,
+            "FEEDBACK": 5,
+            "COLLABORATE": 0,
+            "DISCUSS": 1
+          },
+          "COLLABORATE": {
+            "ASK": 0,
+            "FEEDBACK": 0,
+            "COLLABORATE": 6,
+            "DISCUSS": 0
+          },
+          "DISCUSS": {
+            "ASK": 0,
+            "FEEDBACK": 0,
+            "COLLABORATE": 0,
+            "DISCUSS": 6
+          }
+        }
+      },
+      "cases": [
+        {
+          "example_id": "intent_025",
+          "text": "Docker compose içinde iki container birbirinin hostname'ini resolve edemiyor. Network bridge ayarı nasıl olmalı?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_docker"
+        },
+        {
+          "example_id": "intent_026",
+          "text": "Container'lar aynı ağda olmasına rağmen ping atamıyor. Docker daemon DNS yapılandırmasını nereden düzeltirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_docker"
+        },
+        {
+          "example_id": "intent_027",
+          "text": "Flutter ListView kaydırırken frame drop yaşanıyor. Resimlerin bellek tüketimini nasıl optimize ederim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_flutter"
+        },
+        {
+          "example_id": "intent_028",
+          "text": "ListView.builder içinde büyük resimler takılma yapıyor. CacheExtent mi yoksa repaint boundary mi kullanmalıyım?",
+          "gold": "ASK",
+          "predicted": "DISCUSS",
+          "correct": false,
+          "source_group": "ask_flutter"
+        },
+        {
+          "example_id": "intent_029",
+          "text": "Next.js App Router'da revalidatePath çağırmama rağmen veri güncellenmiyor. Cache tag mekanizmasını nasıl bağlamalıyım?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_nextjs"
+        },
+        {
+          "example_id": "intent_030",
+          "text": "Server Action sonrasında router.refresh() istemci state'ini sıfırlıyor. Veriyi koruyarak mutate etmenin yolu nedir?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_nextjs"
+        },
+        {
+          "example_id": "intent_055",
+          "text": "Uzun checkout formunu 4 adımlı sihirbaza (wizard) böldüm. Terk edilme oranını düşürmek için öneriniz var mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_form_ux"
+        },
+        {
+          "example_id": "intent_056",
+          "text": "Ödeme formunun mobil prototipini tamamladım. Form alanlarının sıralaması sizce kullanıcıyı yorar mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_form_ux"
+        },
+        {
+          "example_id": "intent_057",
+          "text": "GitHub Actions üzerinde koşan test pipeline süresini 12 dakikadan 4 dakikaya indirdik. Pipeline yapılandırmamızı değerlendirir misiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_cicd"
+        },
+        {
+          "example_id": "intent_058",
+          "text": "Otomasyon akışında paralel job kurgusu kurdum. Konfigürasyonda gereksiz karmaşıklık görüyor musunuz?",
+          "gold": "FEEDBACK",
+          "predicted": "DISCUSS",
+          "correct": false,
+          "source_group": "fb_cicd"
+        },
+        {
+          "example_id": "intent_059",
+          "text": "Monolitik uygulamamızı 3 temel servise bölme planı çıkardım. Servis sınırları sizce doğru yerden mi ayrılmış?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_microservice"
+        },
+        {
+          "example_id": "intent_060",
+          "text": "Domain-Driven Design yaklaşımıyla servis sınırlarını belirledim. Servisler arası bağımlılıkta risk görüyor musunuz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_microservice"
+        },
+        {
+          "example_id": "intent_085",
+          "text": "Açık kaynak tasarım sistemi projemizde React ve Storybook bileşenleri geliştirecek katkıcılar arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_frontend"
+        },
+        {
+          "example_id": "intent_086",
+          "text": "UI kütüphanemizi genişletiyoruz. Yeni bileşen kodlayacak açık kaynak gönüllüleri bekliyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_frontend"
+        },
+        {
+          "example_id": "intent_087",
+          "text": "Sivil toplum kuruluşları için siber güvenlik farkındalık yazılımı hazırlıyoruz. Pentest ve kod analizi yapacak ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_security"
+        },
+        {
+          "example_id": "intent_088",
+          "text": "Sosyal fayda odaklı yazılımımızın güvenlik açığı taramasını birlikte yürütecek güvenlik araştırmacısı arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_security"
+        },
+        {
+          "example_id": "intent_089",
+          "text": "Türkçe NLP modelleri için kıyaslama (benchmark) seti oluşturuyoruz. Senaryo hazırlayacak ekip arkadaşları arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_curation"
+        },
+        {
+          "example_id": "intent_090",
+          "text": "Benchmark geliştirme grubumuzda veri temizliği ve test senaryosu hazırlığında birlikte çalışacağımız kişiler arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_curation"
+        },
+        {
+          "example_id": "intent_115",
+          "text": "İki haftalık katı Scrum sprintleri mühendislerin odaklanmasını ve yaratıcılığını öldürüyor mu? Kanban daha mı özgürleştirici?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_scrum_kanban"
+        },
+        {
+          "example_id": "intent_116",
+          "text": "Yazılım ekiplerinde çeviklik (Agile) bir yöntem olmaktan çıkıp bürokratik bir kontrol aracına mı dönüştü?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_scrum_kanban"
+        },
+        {
+          "example_id": "intent_117",
+          "text": "Hassas müşteri verisi işleyen şirketlerin üçüncü parti bulut AI API'ları kullanması hukuki ve etik açıdan güvenli mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_privacy_cloud"
+        },
+        {
+          "example_id": "intent_118",
+          "text": "Veri gizliliği düzenlemeleri karşısında şirket içi (on-prem) açık modeller tek mecburi çözüm mü olacak?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_privacy_cloud"
+        },
+        {
+          "example_id": "intent_119",
+          "text": "WebAssembly gelecekte tarayıcı dışındaki sunucu ve bulut bilişim iş yüklerinde konteynerlerin yerini alabilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_wasm"
+        },
+        {
+          "example_id": "intent_120",
+          "text": "WASM teknolojisinin mikroservis dünyasındaki potansiyeli abartılıyor mu yoksa gerçek bir devrim mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_wasm"
+        }
+      ]
+    },
+    "all": {
+      "metrics": {
+        "total": 120,
+        "correct": 113,
+        "accuracy": 0.9417,
+        "macro_f1": 0.9412,
+        "per_class": {
+          "ASK": {
+            "support": 30,
+            "precision": 0.9655,
+            "recall": 0.9333,
+            "f1": 0.9492
+          },
+          "FEEDBACK": {
+            "support": 30,
+            "precision": 0.9355,
+            "recall": 0.9667,
+            "f1": 0.9508
+          },
+          "COLLABORATE": {
+            "support": 30,
+            "precision": 0.9677,
+            "recall": 1.0,
+            "f1": 0.9836
+          },
+          "DISCUSS": {
+            "support": 30,
+            "precision": 0.8966,
+            "recall": 0.8667,
+            "f1": 0.8814
+          }
+        },
+        "confusion_matrix": {
+          "ASK": {
+            "ASK": 28,
+            "FEEDBACK": 0,
+            "COLLABORATE": 0,
+            "DISCUSS": 2
+          },
+          "FEEDBACK": {
+            "ASK": 0,
+            "FEEDBACK": 29,
+            "COLLABORATE": 0,
+            "DISCUSS": 1
+          },
+          "COLLABORATE": {
+            "ASK": 0,
+            "FEEDBACK": 0,
+            "COLLABORATE": 30,
+            "DISCUSS": 0
+          },
+          "DISCUSS": {
+            "ASK": 1,
+            "FEEDBACK": 2,
+            "COLLABORATE": 1,
+            "DISCUSS": 26
+          }
+        }
+      },
+      "cases": [
+        {
+          "example_id": "intent_001",
+          "text": "ESP32 kartım Wi-Fi bağlantısını birkaç dakikada bir kaybediyor. Nereden kontrol etmeye başlamalıyım?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_wifi"
+        },
+        {
+          "example_id": "intent_002",
+          "text": "ESP32 bağlantısı durmadan kopuyor. Güç kaynağını mı yoksa kodu mu önce test etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_wifi"
+        },
+        {
+          "example_id": "intent_003",
+          "text": "Python'da bu fonksiyon bazen None döndürüyor ama nedenini bulamadım. Hangi kısmı kontrol etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_python"
+        },
+        {
+          "example_id": "intent_004",
+          "text": "Fonksiyonumun bazı girdilerde None vermesinin sebebini nasıl bulabilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_python"
+        },
+        {
+          "example_id": "intent_005",
+          "text": "Yanlışlıkla main branch'e commit attım. Commit'i kaybetmeden yeni bir branch'e nasıl taşıyabilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_git"
+        },
+        {
+          "example_id": "intent_006",
+          "text": "Main'e yaptığım son commit'i yeni branch'e almak istiyorum. En güvenli yol nedir?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_git"
+        },
+        {
+          "example_id": "intent_007",
+          "text": "Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_math"
+        },
+        {
+          "example_id": "intent_008",
+          "text": "Soruyu çözüyorum ama burada kombinasyon seçilmesinin nedenini anlayamadım. Açıklayabilir misiniz?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_math"
+        },
+        {
+          "example_id": "intent_009",
+          "text": "Çizgi izleyen robotum virajlarda sürekli taşıyor. PID ayarına hangi parametreden başlamalıyım?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_robot"
+        },
+        {
+          "example_id": "intent_010",
+          "text": "PID kullanan line follower virajda savruluyor. Önce P mi D mi değiştirmek daha mantıklı?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_robot"
+        },
+        {
+          "example_id": "intent_011",
+          "text": "Kamerada düşük ışıkta görüntü çok gürültülü oluyor. Yazılımla azaltmak için hangi yöntemi deneyebilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_camera"
+        },
+        {
+          "example_id": "intent_012",
+          "text": "Gece çekiminde görüntüde ciddi noise var. Basit bir görüntü işleme çözümü önerir misiniz?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_camera"
+        },
+        {
+          "example_id": "intent_013",
+          "text": "Bu sorgu 200 bin satırda çok yavaşlıyor. İlk bakmam gereken index hangisi?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_sql"
+        },
+        {
+          "example_id": "intent_014",
+          "text": "SQL sorgum veri büyüyünce yavaşladı. Execution plan dışında neyi kontrol etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_sql"
+        },
+        {
+          "example_id": "intent_015",
+          "text": "Mobilde bu kartlar üst üste biniyor. Grid yapısında hatayı nasıl bulabilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_css"
+        },
+        {
+          "example_id": "intent_016",
+          "text": "CSS grid küçük ekranda bozuluyor. Flexbox'a mı geçmeliyim yoksa media query mi eklemeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_css"
+        },
+        {
+          "example_id": "intent_017",
+          "text": "18650 pillerle yaptığım pakette voltaj normal ama yük altında aniden düşüyor. Sebebi ne olabilir?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_battery"
+        },
+        {
+          "example_id": "intent_018",
+          "text": "Batarya paketi boştayken 12V veriyor fakat motor çalışınca 9V'a iniyor. BMS hatası mı hücre sorunu mu?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_battery"
+        },
+        {
+          "example_id": "intent_019",
+          "text": "Ubuntu'da servis reboot sonrası başlamıyor ama elle başlatınca çalışıyor. systemd tarafında neyi kontrol etmeliyim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_linux"
+        },
+        {
+          "example_id": "intent_020",
+          "text": "systemd servisi açılışta fail oluyor, journalctl çıktısında network hatası var. Nasıl düzeltebilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_linux"
+        },
+        {
+          "example_id": "intent_021",
+          "text": "API isteğim tarayıcıda CORS hatası veriyor ama Postman'de çalışıyor. Bunu doğru şekilde nasıl çözebilirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_api"
+        },
+        {
+          "example_id": "intent_022",
+          "text": "Frontend fetch isteğinde Access-Control-Allow-Origin engeli alıyorum. Nginx mi backend mi ayarlanmalı?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_api"
+        },
+        {
+          "example_id": "intent_023",
+          "text": "Ultrasonik sensör suya yakınken kararsız ölçüm veriyor. Filtreleme mi yoksa montaj açısı mı daha önemli?",
+          "gold": "ASK",
+          "predicted": "DISCUSS",
+          "correct": false,
+          "source_group": "ask_sensor"
+        },
+        {
+          "example_id": "intent_024",
+          "text": "HC-SR04 su yüzeyinde yankı kaçırıyor. Donanımı değiştirmeden yazılımla filtrelemek mümkün mü?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_sensor"
+        },
+        {
+          "example_id": "intent_025",
+          "text": "Docker compose içinde iki container birbirinin hostname'ini resolve edemiyor. Network bridge ayarı nasıl olmalı?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_docker"
+        },
+        {
+          "example_id": "intent_026",
+          "text": "Container'lar aynı ağda olmasına rağmen ping atamıyor. Docker daemon DNS yapılandırmasını nereden düzeltirim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_docker"
+        },
+        {
+          "example_id": "intent_027",
+          "text": "Flutter ListView kaydırırken frame drop yaşanıyor. Resimlerin bellek tüketimini nasıl optimize ederim?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_flutter"
+        },
+        {
+          "example_id": "intent_028",
+          "text": "ListView.builder içinde büyük resimler takılma yapıyor. CacheExtent mi yoksa repaint boundary mi kullanmalıyım?",
+          "gold": "ASK",
+          "predicted": "DISCUSS",
+          "correct": false,
+          "source_group": "ask_flutter"
+        },
+        {
+          "example_id": "intent_029",
+          "text": "Next.js App Router'da revalidatePath çağırmama rağmen veri güncellenmiyor. Cache tag mekanizmasını nasıl bağlamalıyım?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_nextjs"
+        },
+        {
+          "example_id": "intent_030",
+          "text": "Server Action sonrasında router.refresh() istemci state'ini sıfırlıyor. Veriyi koruyarak mutate etmenin yolu nedir?",
+          "gold": "ASK",
+          "predicted": "ASK",
+          "correct": true,
+          "source_group": "ask_nextjs"
+        },
+        {
+          "example_id": "intent_031",
+          "text": "Yeni projemiz için bu landing page'i hazırladım. İlk bakışta en zayıf tarafı sizce ne?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_landing"
+        },
+        {
+          "example_id": "intent_032",
+          "text": "Geliştirdiğimiz ürünün açılış sayfasını yeniledik. Tasarım ve mesaj netliği açısından eleştirilerinizi bekliyorum.",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_landing"
+        },
+        {
+          "example_id": "intent_033",
+          "text": "60 saniyelik proje sunum metnim bu. Sizce problem kısmı yeterince net mi?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pitch"
+        },
+        {
+          "example_id": "intent_034",
+          "text": "Yatırımcı sunumu için hazırladığım ilk slaytı paylaşıyorum. Vurgulamak istediğim değer önerisi anlaşılıyor mu?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pitch"
+        },
+        {
+          "example_id": "intent_035",
+          "text": "Mobil uygulamamız için 3 adımlı bir karşılama ekranı tasarladık. Akıştaki adımlar kullanıcıyı sıkar mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_onboarding"
+        },
+        {
+          "example_id": "intent_036",
+          "text": "Kullanıcı kayıt akışını sadeleştirdik. İlk giriş deneyimi hakkında geri bildiriminizi alabilir miyim?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_onboarding"
+        },
+        {
+          "example_id": "intent_037",
+          "text": "Web sitemiz için koyu tema renk paletini belirledim. Kontrast ve okunabilirlik açısından nasıl duruyor?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_darkmode"
+        },
+        {
+          "example_id": "intent_038",
+          "text": "Hazırladığım dark mode renk hiyerarşisinde gözü yoran bir ton var mı? Yorumlarınızı rica ederim.",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_darkmode"
+        },
+        {
+          "example_id": "intent_039",
+          "text": "E-ticaret platformumuz için REST endpoint adlandırmalarını bu şekilde kurguladım. REST standartlarına uygun mu?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_api_design"
+        },
+        {
+          "example_id": "intent_040",
+          "text": "Yeni microservice API tasarımında URL ve HTTP metodlarını listeledim. Tutarlılık açısından görüşleriniz neler?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_api_design"
+        },
+        {
+          "example_id": "intent_041",
+          "text": "Açık kaynak kütüphanemizin README dosyasını baştan yazdım. Kurulum adımları dışarıdan bakan biri için anlaşılır mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_readme"
+        },
+        {
+          "example_id": "intent_042",
+          "text": "Projemin GitHub dökümantasyonunu paylaşıyorum. İlk defa kullanacak bir geliştirici için eksik gördüğünüz yer var mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_readme"
+        },
+        {
+          "example_id": "intent_043",
+          "text": "Kütüphanem için MIT yerine AGPL lisansı seçmeyi planlıyorum. Topluluk benimsemesi açısından bu kararı nasıl değerlendirirsiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_license"
+        },
+        {
+          "example_id": "intent_044",
+          "text": "Ticarileşme hedefi olan açık kaynak aracım için lisans stratejimi hazırladım. Stratejimdeki riskler sizce neler?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_license"
+        },
+        {
+          "example_id": "intent_045",
+          "text": "Geliştirdiğim React uygulamasında klasör yapısını özellik bazlı (feature-driven) kurguladım. Uzun vadede ölçeklenir mi?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_react_arch"
+        },
+        {
+          "example_id": "intent_046",
+          "text": "Frontend mimarisinde state yönetimini Zustand ile modüllere ayırdım. Tasarım şablonumu inceler misiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_react_arch"
+        },
+        {
+          "example_id": "intent_047",
+          "text": "Kullanıcı yetkilendirme ve rol sistemi için veritabanı şemasını ekteki gibi normalize ettim. Normalizasyon aşırı mı kaçmış?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_db_schema"
+        },
+        {
+          "example_id": "intent_048",
+          "text": "PostgreSQL tabloları arasındaki ilişki şemasını çizdim. Performans veya veri bütünlüğü açısından eleştiriniz var mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_db_schema"
+        },
+        {
+          "example_id": "intent_049",
+          "text": "B2B SaaS ürünümüz için 3 kademeli fiyatlandırma sayfası hazırladık. Paket ayrımları net ve ikna edici mi?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pricing"
+        },
+        {
+          "example_id": "intent_050",
+          "text": "Fiyatlandırma sayfamızın dönüşüm oranını artırmak istiyoruz. İnceleyip zayıf yönlerini söyler misiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_pricing"
+        },
+        {
+          "example_id": "intent_051",
+          "text": "Uygulama içi hata bildirim metinlerini daha empatik ve anlaşılır olacak şekilde yeniden yazdım. Dil tonu nasıl?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_copywriting"
+        },
+        {
+          "example_id": "intent_052",
+          "text": "Sistemdeki modal ve uyarı pencerelerinin metinlerini gözden geçirdim. Kullanıcı dostu olmuş mu?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_copywriting"
+        },
+        {
+          "example_id": "intent_053",
+          "text": "Dağıtık sistemlerde konsensüs algoritmaları üzerine teknik bir blog yazısı taslağı hazırladım. Anlatım akıcı mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_article"
+        },
+        {
+          "example_id": "intent_054",
+          "text": "Yazdığım teknik makalenin giriş ve örnek kod bölümlerini paylaşıyorum. Teknik doğruluk açısından yorumunuz nedir?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_article"
+        },
+        {
+          "example_id": "intent_055",
+          "text": "Uzun checkout formunu 4 adımlı sihirbaza (wizard) böldüm. Terk edilme oranını düşürmek için öneriniz var mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_form_ux"
+        },
+        {
+          "example_id": "intent_056",
+          "text": "Ödeme formunun mobil prototipini tamamladım. Form alanlarının sıralaması sizce kullanıcıyı yorar mı?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_form_ux"
+        },
+        {
+          "example_id": "intent_057",
+          "text": "GitHub Actions üzerinde koşan test pipeline süresini 12 dakikadan 4 dakikaya indirdik. Pipeline yapılandırmamızı değerlendirir misiniz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_cicd"
+        },
+        {
+          "example_id": "intent_058",
+          "text": "Otomasyon akışında paralel job kurgusu kurdum. Konfigürasyonda gereksiz karmaşıklık görüyor musunuz?",
+          "gold": "FEEDBACK",
+          "predicted": "DISCUSS",
+          "correct": false,
+          "source_group": "fb_cicd"
+        },
+        {
+          "example_id": "intent_059",
+          "text": "Monolitik uygulamamızı 3 temel servise bölme planı çıkardım. Servis sınırları sizce doğru yerden mi ayrılmış?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_microservice"
+        },
+        {
+          "example_id": "intent_060",
+          "text": "Domain-Driven Design yaklaşımıyla servis sınırlarını belirledim. Servisler arası bağımlılıkta risk görüyor musunuz?",
+          "gold": "FEEDBACK",
+          "predicted": "FEEDBACK",
+          "correct": true,
+          "source_group": "fb_microservice"
+        },
+        {
+          "example_id": "intent_061",
+          "text": "Robotik yarışması için görüntü işleme ve ROS bilen bir ekip arkadaşı arıyoruz. İlgilenenler yazabilir mi?",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_robotics"
+        },
+        {
+          "example_id": "intent_062",
+          "text": "Otonom mobil robot projemizde sensör füzyonu çalışacak takım arkadaşı arayışımız var. Birlikte geliştirelim.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_robotics"
+        },
+        {
+          "example_id": "intent_063",
+          "text": "Rust ile Solana üzerinde açık kaynak DeFi protokolü geliştiriyoruz. Akıllı sözleşme geliştirecek ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_web3"
+        },
+        {
+          "example_id": "intent_064",
+          "text": "Blockchain tabanlı mikro ödeme projemize akıllı sözleşme yazacak geliştirici ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_web3"
+        },
+        {
+          "example_id": "intent_065",
+          "text": "Tıp öğrencilerine yönelik mobil vaka çalışma uygulaması yapıyoruz. Flutter bilen bir yazılımcıyla ortaklık kurmak istiyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_mobile"
+        },
+        {
+          "example_id": "intent_066",
+          "text": "Eğitim odaklı mobil projemizi hayata geçirmek için Flutter tarafında sorumluluk alacak geliştirici arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_mobile"
+        },
+        {
+          "example_id": "intent_067",
+          "text": "Linux dokümantasyonunu Türkçeye çevirmek için gönüllü bir çeviri inisiyatifi başlattık. Katılmak isteyen var mı?",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_translation"
+        },
+        {
+          "example_id": "intent_068",
+          "text": "Açık kaynak teknik belgeleri yerelleştirme projemize gönüllü çevirmenler ve editörler arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_translation"
+        },
+        {
+          "example_id": "intent_069",
+          "text": "Kaggle'daki çok dilli NLP yarışmasına katılacağım. Birlikte model eğitecek ve feature çıkaracak takım arkadaşı arıyorum.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_kaggle"
+        },
+        {
+          "example_id": "intent_070",
+          "text": "NLP benchmark yarışmasında takım kuruyorum. PyTorch ve Hugging Face deneyimi olan biriyle yarışmak isterim.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_kaggle"
+        },
+        {
+          "example_id": "intent_071",
+          "text": "Dağıtık veri tabanlarında veri tutarlılığı üzerine akademik bildiri yazıyoruz. Deneyleri yapacak ikinci bir yazar arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_academic"
+        },
+        {
+          "example_id": "intent_072",
+          "text": "Sistem performansı konulu makalemizin simülasyon aşaması için ortak araştırmacı arayışımız bulunuyor.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_academic"
+        },
+        {
+          "example_id": "intent_073",
+          "text": "Hafta sonu düzenlenecek 48 saatlik Game Jam için piksel çizer arıyoruz. 2D platform oyunu geliştireceğiz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_gamejam"
+        },
+        {
+          "example_id": "intent_074",
+          "text": "Game Jam maratonunda Unity ile oyun yapacağız. Ekibe piksel sanatçısı ve ses tasarımcısı arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_gamejam"
+        },
+        {
+          "example_id": "intent_075",
+          "text": "Karbon ayak izi hesaplayan açık veri platformu kuruyoruz. FastAPI ve veri analitiği bilen gönüllü katkıcılar bekliyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_climatetech"
+        },
+        {
+          "example_id": "intent_076",
+          "text": "İklim teknolojisi odaklı açık kaynak backend projemize katkı sağlayacak Python geliştiriciler arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_climatetech"
+        },
+        {
+          "example_id": "intent_077",
+          "text": "Akıllı tarım için nem sensörlü IoT prototipi hazırlıyoruz. PCB tasarımı yapabilecek bir donanımcıya ihtiyacımız var.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_iot"
+        },
+        {
+          "example_id": "intent_078",
+          "text": "Tarla sulama otomasyonu donanım geliştirme sürecinde KiCad ile devre çizebilecek ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_iot"
+        },
+        {
+          "example_id": "intent_079",
+          "text": "Türkçe doğal dil işleme için açık kaynaklı duygu analizi veri kümesi topluyoruz. Veri etiketlemeye yardımcı olacak arkadaşlar arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_corpus"
+        },
+        {
+          "example_id": "intent_080",
+          "text": "Akademik Türkçe korpus projemizde bağımsız etiketleme yapacak gönüllü araştırmacılarla çalışmak istiyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_corpus"
+        },
+        {
+          "example_id": "intent_081",
+          "text": "Kamu web sitelerinin erişilebilirliğini (WCAG 2.1) denetleyen açık bir çalışma grubu kurduk. Katılmak ister misiniz?",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_a11y"
+        },
+        {
+          "example_id": "intent_082",
+          "text": "Web erişilebilirliği testi yapan açık kaynak aracımızın geliştirilmesinde aktif rol alacak ekip arkadaşları arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_a11y"
+        },
+        {
+          "example_id": "intent_083",
+          "text": "Kubernetes cluster mimarisi kuruyoruz. Birlikte Terraform ve GitOps pratiklerini uygulayacağımız bir yol arkadaşı arıyorum.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_devops"
+        },
+        {
+          "example_id": "intent_084",
+          "text": "Altyapı otomasyonu çalışmalarımızda deneyimli DevOps mühendisiyle eşli programlama (pair programming) yapmak istiyorum.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_devops"
+        },
+        {
+          "example_id": "intent_085",
+          "text": "Açık kaynak tasarım sistemi projemizde React ve Storybook bileşenleri geliştirecek katkıcılar arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_frontend"
+        },
+        {
+          "example_id": "intent_086",
+          "text": "UI kütüphanemizi genişletiyoruz. Yeni bileşen kodlayacak açık kaynak gönüllüleri bekliyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_frontend"
+        },
+        {
+          "example_id": "intent_087",
+          "text": "Sivil toplum kuruluşları için siber güvenlik farkındalık yazılımı hazırlıyoruz. Pentest ve kod analizi yapacak ortak arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_security"
+        },
+        {
+          "example_id": "intent_088",
+          "text": "Sosyal fayda odaklı yazılımımızın güvenlik açığı taramasını birlikte yürütecek güvenlik araştırmacısı arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_security"
+        },
+        {
+          "example_id": "intent_089",
+          "text": "Türkçe NLP modelleri için kıyaslama (benchmark) seti oluşturuyoruz. Senaryo hazırlayacak ekip arkadaşları arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_curation"
+        },
+        {
+          "example_id": "intent_090",
+          "text": "Benchmark geliştirme grubumuzda veri temizliği ve test senaryosu hazırlığında birlikte çalışacağımız kişiler arıyoruz.",
+          "gold": "COLLABORATE",
+          "predicted": "COLLABORATE",
+          "correct": true,
+          "source_group": "collab_curation"
+        },
+        {
+          "example_id": "intent_091",
+          "text": "Sizce küçük ekiplerde açık kaynak model kullanmak uzun vadede ticari API'lara kıyasla daha mantıklı mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_llm_viability"
+        },
+        {
+          "example_id": "intent_092",
+          "text": "Açık kaynaklı LLM'leri kendi sunucumuzda barındırmak maliyet ve bakım açısından sürdürülebilir mi? Ne düşünüyorsunuz?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_llm_viability"
+        },
+        {
+          "example_id": "intent_093",
+          "text": "Erken aşama girişimlerde doğrudan mikroservis mimarisiyle başlamak aşırı mühendislik (over-engineering) midir?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_monolith"
+        },
+        {
+          "example_id": "intent_094",
+          "text": "Monolit ile başlayıp zamanla parçalamak mı yoksa baştan servisleri ayırmak mı daha az teknik borç üretir?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_monolith"
+        },
+        {
+          "example_id": "intent_095",
+          "text": "Büyük kurumsal projelerde dinamik diller (Python/JS) yerine baştan statik tip güvenliği (Go/Rust/TS) şart mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_typing"
+        },
+        {
+          "example_id": "intent_096",
+          "text": "Statik tiplemenin geliştirme hızını yavaşlattığı iddiasına katılıyor musunuz, yoksa hata önleme faydası daha mı büyük?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_typing"
+        },
+        {
+          "example_id": "intent_097",
+          "text": "Tamamen uzaktan (remote) çalışan yazılım ekiplerinde şirket kültürü ve junior mentörlüğü nasıl sağlanmalı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_remote"
+        },
+        {
+          "example_id": "intent_098",
+          "text": "Ofise dönüş baskıları hakkında ne düşünüyorsunuz? Uzaktan çalışma mühendislik üretkenliğini gerçekten düşürüyor mu?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_remote"
+        },
+        {
+          "example_id": "intent_099",
+          "text": "Serverless mimariler 'cold start' ve maliyet öngörülemezliği yüzünden popülerliğini kaybediyor mu?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_serverless"
+        },
+        {
+          "example_id": "intent_100",
+          "text": "Sunucusuz mimarinin gerçekten geliştirme maliyetini düşürdüğünü düşünüyor musunuz yoksa konteynerler daha mı stabil?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_serverless"
+        },
+        {
+          "example_id": "intent_101",
+          "text": "İlişkisel veritabanları JSON veri tiplerini bu kadar iyi desteklerken salt NoSQL veritabanlarına hala gerek var mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_nosql"
+        },
+        {
+          "example_id": "intent_102",
+          "text": "PostgreSQL'in JSONB performansı MongoDB gibi doküman tabanlı veritabanlarının yerini doldurabilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_nosql"
+        },
+        {
+          "example_id": "intent_103",
+          "text": "Flutter ve React Native bu kadar olgunlaşmışken günümüzde hala sıfırdan Native (Swift/Kotlin) başlamak mantıklı mı?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_crossplatform"
+        },
+        {
+          "example_id": "intent_104",
+          "text": "Geleceğin mobil dünyasında çapraz platform araçlar native geliştirmeyi tamamen marjinalleştirebilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_crossplatform"
+        },
+        {
+          "example_id": "intent_105",
+          "text": "Yapay zeka kod tamamlama araçlarının yaygınlaşması yeni mezun ve junior geliştiricilerin öğrenme sürecini nasıl etkileyecek?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_codegen_juniors"
+        },
+        {
+          "example_id": "intent_106",
+          "text": "AI kod üreticileri junior mühendislerin temel algoritmik düşünme yeteneğini köreltir mi yoksa seviye mi atlatır?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_codegen_juniors"
+        },
+        {
+          "example_id": "intent_107",
+          "text": "Uzun ömürlü feature branch'ler yerine Trunk-Based Development yaklaşımını benimsemek ekip çevikliğini nasıl etkiler?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_trunk_based"
+        },
+        {
+          "example_id": "intent_108",
+          "text": "Feature branch merge hell yaşayan ekipler için trunk-based development gerçekten mucizevi bir çözüm mü?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_trunk_based"
+        },
+        {
+          "example_id": "intent_109",
+          "text": "REST API mimarisi varken GraphQL'in getirdiği karmaşıklık ve önbellekleme (caching) zorluğu göze alınmaya değer mi?",
+          "gold": "DISCUSS",
+          "predicted": "FEEDBACK",
+          "correct": false,
+          "source_group": "disc_graphql_rest"
+        },
+        {
+          "example_id": "intent_110",
+          "text": "Modern web uygulamalarında GraphQL benimsenmesi neden yavaşladı? Sektör yeniden basit REST ve RPC'ye mi dönüyor?",
+          "gold": "DISCUSS",
+          "predicted": "ASK",
+          "correct": false,
+          "source_group": "disc_graphql_rest"
+        },
+        {
+          "example_id": "intent_111",
+          "text": "Birim test (unit test) yazmaya ayrılan zaman ile uçtan uca (E2E) test yatırımı arasındaki ideal denge sizce nedir?",
+          "gold": "DISCUSS",
+          "predicted": "FEEDBACK",
+          "correct": false,
+          "source_group": "disc_testing_ratio"
+        },
+        {
+          "example_id": "intent_112",
+          "text": "Yüzde 100 test coverage hedefi gerçekçi mi yoksa ekipleri gereksiz mock kodları yazmaya mı hapsediyor?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_testing_ratio"
+        },
+        {
+          "example_id": "intent_113",
+          "text": "Bireysel açık kaynak geliştiricilerinin kurumsal sponsorluklarla geçinmesi gerçekçi bir kariyer modeli olabilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_oss_sustainability"
+        },
+        {
+          "example_id": "intent_114",
+          "text": "Kritik açık kaynak altyapılarının gönüllü emeğe dayanması yazılım ekosistemi için en büyük risklerden biri mi?",
+          "gold": "DISCUSS",
+          "predicted": "COLLABORATE",
+          "correct": false,
+          "source_group": "disc_oss_sustainability"
+        },
+        {
+          "example_id": "intent_115",
+          "text": "İki haftalık katı Scrum sprintleri mühendislerin odaklanmasını ve yaratıcılığını öldürüyor mu? Kanban daha mı özgürleştirici?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_scrum_kanban"
+        },
+        {
+          "example_id": "intent_116",
+          "text": "Yazılım ekiplerinde çeviklik (Agile) bir yöntem olmaktan çıkıp bürokratik bir kontrol aracına mı dönüştü?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_scrum_kanban"
+        },
+        {
+          "example_id": "intent_117",
+          "text": "Hassas müşteri verisi işleyen şirketlerin üçüncü parti bulut AI API'ları kullanması hukuki ve etik açıdan güvenli mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_privacy_cloud"
+        },
+        {
+          "example_id": "intent_118",
+          "text": "Veri gizliliği düzenlemeleri karşısında şirket içi (on-prem) açık modeller tek mecburi çözüm mü olacak?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_privacy_cloud"
+        },
+        {
+          "example_id": "intent_119",
+          "text": "WebAssembly gelecekte tarayıcı dışındaki sunucu ve bulut bilişim iş yüklerinde konteynerlerin yerini alabilir mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_wasm"
+        },
+        {
+          "example_id": "intent_120",
+          "text": "WASM teknolojisinin mikroservis dünyasındaki potansiyeli abartılıyor mu yoksa gerçek bir devrim mi?",
+          "gold": "DISCUSS",
+          "predicted": "DISCUSS",
+          "correct": true,
+          "source_group": "disc_wasm"
+        }
+      ]
+    }
+  },
+  "generated_at": "2026-10-25T14:49:10.327409+00:00",
+  "git_commit": "d8c19e4daebafc4af6b45cb5bb8c78e6ad87db8a"
+}
