@@ -17,6 +17,7 @@ This directory is the evidence trail behind the public README.
 11. [Allocation formulation](allocation_formulation.md) — capacity-aware assignment formulation.
 12. [UI design rationale](ui_design_rationale.md) — why DRSK is presented as a social capability rather than an AI dashboard.
 13. [Runtime provider setup](runtime_provider_setup.md) — Tavily/Brave evidence providers and Upstash shared state.
+14. [Technical report evidence audit](TECHNICAL_REPORT_EVIDENCE_AUDIT.md) — 14-criterion auditable matrix mapping all empirical claims to committed repository evidence.
 
 ## Product proof
 

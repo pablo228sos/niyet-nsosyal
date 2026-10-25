@@ -1,0 +1,561 @@
+{
+  "audit_version": "TECHNICAL-REPORT-EVIDENCE-V1",
+  "audited_at": "2026-10-25T15:18:27.641367+00:00",
+  "total_criteria": 14,
+  "compliant_criteria": 14,
+  "criteria": {
+    "problem_and_prior_work": {
+      "title": "Problem Statement and Prior Work",
+      "description": "Evidence for the social disinformation/intent routing problem and scholarly prior art.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/problem_evidence.md",
+          "size_bytes": 3708,
+          "sha256": "200a1aabd139fb3c"
+        },
+        {
+          "path": "docs/prior_art.md",
+          "size_bytes": 4783,
+          "sha256": "ab14f7d9f66091ad"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/problem_evidence.md",
+          "check": "Contains required text tokens: ['NSosyal', 'Joyce and Kraut', 'Popularity bias']",
+          "passed": true
+        },
+        {
+          "file": "docs/prior_art.md",
+          "check": "Contains required text tokens: ['CrowdSTAR', 'Reciprocal recommender systems', 'NSosyal']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "novelty_and_competitor_comparison": {
+      "title": "Novelty Claim and Competitor Comparison",
+      "description": "Comparison matrix and product thesis contrasting DRSK against existing fact-checking systems.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/comparison_matrix.md",
+          "size_bytes": 2409,
+          "sha256": "a71e04efd1b53ea4"
+        },
+        {
+          "path": "docs/PRODUCT_THESIS.md",
+          "size_bytes": 3925,
+          "sha256": "0b17ef008c57cd80"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/comparison_matrix.md",
+          "check": "Contains required text tokens: ['Standard social feed', 'CrowdSTAR', 'Reciprocal recommender systems', 'NIYET prototype']",
+          "passed": true
+        },
+        {
+          "file": "docs/PRODUCT_THESIS.md",
+          "check": "Contains required text tokens: ['Distribution is not resolution', 'SOURCECHAIN', 'NIYET', 'author', 'reader']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "repository_history_and_architecture": {
+      "title": "Repository History and Architecture",
+      "description": "Architectural documentation, system contracts, and engineering journey log.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/DRSK_ARCHITECTURE.md",
+          "size_bytes": 6182,
+          "sha256": "0acea19b9a8e7c69"
+        },
+        {
+          "path": "docs/architecture.md",
+          "size_bytes": 5052,
+          "sha256": "c1f2839146670af0"
+        },
+        {
+          "path": "docs/ENGINEERING_JOURNEY.md",
+          "size_bytes": 8938,
+          "sha256": "f7433931f17dbf44"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/DRSK_ARCHITECTURE.md",
+          "check": "Contains required text tokens: ['DRSK Architecture', 'SOURCECHAIN', 'NIYET', 'Ownership']",
+          "passed": true
+        },
+        {
+          "file": "docs/ENGINEERING_JOURNEY.md",
+          "check": "Contains required text tokens: ['two-device', 'browser', 'failures']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "data_provenance_and_split_rules": {
+      "title": "Data Provenance and Split Rules",
+      "description": "Dataset cards, provenance documentation, annotation protocols, and baseline data files.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/data_card.md",
+          "size_bytes": 2416,
+          "sha256": "645143cf12829c19"
+        },
+        {
+          "path": "docs/dataset_card.md",
+          "size_bytes": 6017,
+          "sha256": "143c7c4bc7151c05"
+        },
+        {
+          "path": "docs/SOURCEBENCH_TR_DATASET_CARD.md",
+          "size_bytes": 1619,
+          "sha256": "bd5305102b3d7108"
+        },
+        {
+          "path": "docs/annotation.md",
+          "size_bytes": 2729,
+          "sha256": "1a1dda2d6e80559e"
+        },
+        {
+          "path": "data/intent_seed_v1.csv",
+          "size_bytes": 18726,
+          "sha256": "fd6cfedb57059a78"
+        },
+        {
+          "path": "data/response_gate_seed_v1.csv",
+          "size_bytes": 16464,
+          "sha256": "ba2a144cd2daaa99"
+        },
+        {
+          "path": "data/sourcebench_tr/alignment.jsonl",
+          "size_bytes": 903,
+          "sha256": "8f06abd83e52fc41"
+        },
+        {
+          "path": "data/sourcebench_tr/distortion.jsonl",
+          "size_bytes": 974,
+          "sha256": "1c8a3b2ee397a2e6"
+        },
+        {
+          "path": "data/sourcebench_tr/statement_types.jsonl",
+          "size_bytes": 1015,
+          "sha256": "49853166cdf06142"
+        },
+        {
+          "path": "data/matching_benchmark_v1_reviewed.json",
+          "size_bytes": 9958,
+          "sha256": "bcb1cab8e3c4f1fd"
+        },
+        {
+          "path": "data/toy_benchmark.json",
+          "size_bytes": 3785,
+          "sha256": "d1304ec4d4fb2a1e"
+        }
+      ],
+      "checks": [
+        {
+          "file": "data/sourcebench_tr/alignment.jsonl",
+          "check": "Line count 4 >= 4",
+          "passed": true
+        },
+        {
+          "file": "data/intent_seed_v1.csv",
+          "check": "Line count 97 >= 50",
+          "passed": true
+        },
+        {
+          "file": "data/response_gate_seed_v1.csv",
+          "check": "Line count 97 >= 50",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "classifier_metrics": {
+      "title": "Classifier Metrics and Baselines",
+      "description": "Model cards, seed experiment logs, and frozen baseline evaluation metrics.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/model_choice.md",
+          "size_bytes": 1962,
+          "sha256": "09f638759d658d1c"
+        },
+        {
+          "path": "docs/SOURCECHAIN_MODEL_CARD.md",
+          "size_bytes": 3789,
+          "sha256": "d4959bffc8bf7e43"
+        },
+        {
+          "path": "experiments/intent_seed_v1.md",
+          "size_bytes": 1128,
+          "sha256": "7620e6992ea086e9"
+        },
+        {
+          "path": "experiments/response_gate_seed_v1.md",
+          "size_bytes": 1372,
+          "sha256": "8b894f4c0be5fb9a"
+        },
+        {
+          "path": "results/sourcechain_v0.json",
+          "size_bytes": 3679,
+          "sha256": "bbfe23a20bc36a51"
+        }
+      ],
+      "checks": [
+        {
+          "file": "results/sourcechain_v0.json",
+          "check": "Contains valid metrics and dataset_version",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "matching_and_allocation_baselines": {
+      "title": "Matching and Allocation Baselines",
+      "description": "Mathematical formulation, allocator implementation, and reviewed allocation metrics.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/allocation_formulation.md",
+          "size_bytes": 3999,
+          "sha256": "21bcf507016ba0bd"
+        },
+        {
+          "path": "results/niyet_allocation_reviewed.json",
+          "size_bytes": 590,
+          "sha256": "73ccb4a88e62171a"
+        },
+        {
+          "path": "results/niyet_retrieval_reviewed.json",
+          "size_bytes": 436,
+          "sha256": "e3c951d9b493e8d2"
+        },
+        {
+          "path": "src/niyet/allocator.py",
+          "size_bytes": 1596,
+          "sha256": "cd3506a17160d9c8"
+        },
+        {
+          "path": "src/niyet/optimizer.py",
+          "size_bytes": 2962,
+          "sha256": "0a64269a80e3015e"
+        },
+        {
+          "path": "src/niyet/scoring.py",
+          "size_bytes": 938,
+          "sha256": "0cf2becf0e6c8bf3"
+        }
+      ],
+      "checks": [
+        {
+          "file": "results/niyet_allocation_reviewed.json",
+          "check": "Matches exact frozen reviewed allocation metrics (global coverage 0.7812, greedy 0.6562)",
+          "passed": true
+        },
+        {
+          "file": "results/niyet_retrieval_reviewed.json",
+          "check": "Matches exact frozen reviewed retrieval metrics (prec@3 0.4688, rec@3 0.8438, ndcg@3 0.845)",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "efficiency_and_fairness_metrics": {
+      "title": "Efficiency and Fairness Metrics",
+      "description": "Benchmarking scripts, fairness/capacity constraints, and evaluation reports.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/impact_and_metrics.md",
+          "size_bytes": 2828,
+          "sha256": "e4835d8eede7f602"
+        },
+        {
+          "path": "experiments/evaluate_matching_draft.py",
+          "size_bytes": 8854,
+          "sha256": "4f06f88225377600"
+        },
+        {
+          "path": "experiments/global_vs_greedy.py",
+          "size_bytes": 982,
+          "sha256": "e792cdba7a0fb811"
+        },
+        {
+          "path": "results/niyet_allocation_reviewed.json",
+          "size_bytes": 590,
+          "sha256": "73ccb4a88e62171a"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/impact_and_metrics.md",
+          "check": "Contains required text tokens: ['Intent coverage', 'Relevant match rate', 'Responder load', 'Overload count', 'Load Gini']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "target_users_and_user_flow": {
+      "title": "Target Users and User Flow",
+      "description": "User persona flows, interactive prototype scripts, visual screenshots, and demo guide.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/product_flow.md",
+          "size_bytes": 7042,
+          "sha256": "fcde40912fed6133"
+        },
+        {
+          "path": "docs/DRSK_DEMO.md",
+          "size_bytes": 5877,
+          "sha256": "8a18df479d67d8ab"
+        },
+        {
+          "path": "docs/screenshots/01_live_coffee_conflict.png",
+          "size_bytes": 96739,
+          "sha256": "c9b26405d16f3e6d"
+        },
+        {
+          "path": "web/index.html",
+          "size_bytes": 24819,
+          "sha256": "adeec212f711b287"
+        },
+        {
+          "path": "web/app.js",
+          "size_bytes": 74789,
+          "sha256": "18fcccf1ce6cc588"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/product_flow.md",
+          "check": "Contains required text tokens: ['author', 'SOURCECHAIN', 'NIYET', 'responder']",
+          "passed": true
+        },
+        {
+          "file": "web/index.html",
+          "check": "Contains required text tokens: ['product-nav', 'product-wordmark']",
+          "passed": true
+        },
+        {
+          "file": "web/app.js",
+          "check": "Contains required text tokens: ['applyLanguage', 'distortion-lens']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "accessibility_decisions": {
+      "title": "Accessibility Decisions and WCAG Contracts",
+      "description": "Design system tokens, focus-visible requirements, reduced motion, and UI rationale.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/ui_design_rationale.md",
+          "size_bytes": 6696,
+          "sha256": "d0c38021976cebe4"
+        },
+        {
+          "path": "web/design-system.css",
+          "size_bytes": 43748,
+          "sha256": "9c06d517d7baae8d"
+        },
+        {
+          "path": "tests/test_web_ui_contract.py",
+          "size_bytes": 1161,
+          "sha256": "0f2032ee8c81fd71"
+        }
+      ],
+      "checks": [
+        {
+          "file": "web/design-system.css",
+          "check": "Contains required text tokens: ['--color-bg-canvas', '--color-sourcechain-accent', '--color-niyet-accent', '--color-drsk-accent', ':focus-visible', '@media (prefers-reduced-motion: reduce)']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "usability_test_plan_and_results": {
+      "title": "Usability Test Plan and Results",
+      "description": "Usability testing protocol, participant evaluations, and results templates.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/usability_test_protocol.md",
+          "size_bytes": 4191,
+          "sha256": "632485c4a145db96"
+        },
+        {
+          "path": "docs/usability_evaluation.md",
+          "size_bytes": 2393,
+          "sha256": "226beb8d80a486d1"
+        },
+        {
+          "path": "data/usability_results_template.csv",
+          "size_bytes": 545,
+          "sha256": "9013a992c0e7dee2"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/usability_test_protocol.md",
+          "check": "Contains required text tokens: ['participant', 'tasks', 'protocol']",
+          "passed": true
+        },
+        {
+          "file": "docs/usability_evaluation.md",
+          "check": "Contains required text tokens: ['usability', 'tasks']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "scalability_assumptions": {
+      "title": "Scalability Assumptions and Production Boundaries",
+      "description": "Infrastructure scaling scripts, external provider boundaries, and live acceptance logs.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/runtime_provider_setup.md",
+          "size_bytes": 2082,
+          "sha256": "e5a363bff0e01b8b"
+        },
+        {
+          "path": "docs/FINAL_ACCEPTANCE.md",
+          "size_bytes": 4071,
+          "sha256": "c242ef5d7d476e34"
+        },
+        {
+          "path": "docs/REAL_NSOSYAL_ACCEPTANCE.md",
+          "size_bytes": 4767,
+          "sha256": "a314b89306eb1ce3"
+        },
+        {
+          "path": "experiments/benchmark_scaling.py",
+          "size_bytes": 2570,
+          "sha256": "d30e8decf3d91426"
+        },
+        {
+          "path": "experiments/scaling_results_v1.md",
+          "size_bytes": 1868,
+          "sha256": "f982a248b12d8a44"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/FINAL_ACCEPTANCE.md",
+          "check": "Contains required text tokens: ['286 passed', 'GitHub Actions']",
+          "passed": true
+        },
+        {
+          "file": "docs/runtime_provider_setup.md",
+          "check": "Contains required text tokens: ['Tavily', 'BRAVE_SEARCH_API_KEY', 'UPSTASH_REDIS_REST_URL']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "sustainability_and_cost_assumptions": {
+      "title": "Sustainability and Cost Assumptions",
+      "description": "Economic feasibility, operational unit economics, and business model.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/business_model.md",
+          "size_bytes": 3439,
+          "sha256": "6567a6762f554654"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/business_model.md",
+          "check": "Contains required text tokens: ['Platform value', 'Cost structure', 'sustainability']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "project_timeline_and_team_roles": {
+      "title": "Project Timeline and Team Roles",
+      "description": "Engineering team ownership matrix and development timeline roadmap.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/team_roles.md",
+          "size_bytes": 2056,
+          "sha256": "bb02d701d81a66b7"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "size_bytes": 3072,
+          "sha256": "12fa129e04af02bf"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/team_roles.md",
+          "check": "Contains required text tokens: ['Developer A', 'Developer B', 'Product and UI/UX Designer']",
+          "passed": true
+        },
+        {
+          "file": "docs/roadmap.md",
+          "check": "Contains required text tokens: ['Milestone', 'technical report stage']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    },
+    "references": {
+      "title": "Academic and Technical References",
+      "description": "Formal citations, standards, and published literature referenced across the technical report.",
+      "status": "PASS",
+      "checked_files": [
+        {
+          "path": "docs/prior_art.md",
+          "size_bytes": 4783,
+          "sha256": "ab14f7d9f66091ad"
+        },
+        {
+          "path": "docs/allocation_formulation.md",
+          "size_bytes": 3999,
+          "sha256": "21bcf507016ba0bd"
+        },
+        {
+          "path": "docs/SOURCECHAIN_MODEL_CARD.md",
+          "size_bytes": 3789,
+          "sha256": "d4959bffc8bf7e43"
+        },
+        {
+          "path": "docs/safety_and_failure_modes.md",
+          "size_bytes": 6518,
+          "sha256": "950c660ae396c962"
+        }
+      ],
+      "checks": [
+        {
+          "file": "docs/prior_art.md",
+          "check": "Contains required text tokens: ['CrowdSTAR', 'Palomares', 'Klimashevskaia']",
+          "passed": true
+        },
+        {
+          "file": "docs/allocation_formulation.md",
+          "check": "Contains required text tokens: ['linear assignment', 'capacity']",
+          "passed": true
+        }
+      ],
+      "failures": []
+    }
+  },
+  "overall_status": "PASS",
+  "total_files_checked": 56,
+  "missing_files": []
+}
