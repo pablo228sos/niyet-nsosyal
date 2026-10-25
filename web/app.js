@@ -205,7 +205,10 @@ async function checkPipeline() {
     if (!response.ok) throw new Error('api unavailable');
     const payload = await response.json();
     pipelineLive = payload.status === 'ok';
-    if (!responderState && payload.default_responder_state) {
+    if (payload.responder_state) {
+      responderState = payload.responder_state;
+      saveSession();
+    } else if (!responderState && payload.default_responder_state) {
       responderState = payload.default_responder_state;
       saveSession();
     }

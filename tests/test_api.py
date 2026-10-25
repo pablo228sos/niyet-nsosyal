@@ -427,3 +427,69 @@ def test_legacy_niyet_request_still_works_without_action(api_server):
     assert status == 200
     assert payload["status"] == "ok"
     assert payload["intent"] == "ASK"
+
+def test_api_get_exposes_centralized_capacity_model(api_server):
+    connection = http.client.HTTPConnection(*api_server, timeout=3)
+    connection.request("GET", "/api")
+    response = connection.getresponse()
+    assert response.status == 200
+    payload = json.loads(response.read())
+    connection.close()
+
+    assert payload["status"] == "ok"
+    assert payload["state_model"] in {
+        "centralized transactional capacity",
+        "process-local centralized capacity",
+    }
+    assert "state_backend" in payload
+    assert "responder_state" in payload
+    assert len(payload["responder_state"]) == len(api.runtime.responder_by_id)
+
+
+def test_api_post_actions_mutate_centralized_state_when_omitted(api_server):
+    responder_id = next(iter(api.runtime.responder_by_id))
+    # Reset store to clean default
+    api.state_store.reset({
+        "requests": {},
+        "responder_state": api.runtime.default_responder_state(),
+    })
+
+    initial_slots = api.state_store.read()["responder_state"][responder_id]["remaining_slots"]
+
+    # Call accept without providing responder_state in payload
+    status, payload = post(
+        api_server,
+        {"action": "accept", "responder_id": responder_id},
+    )
+    assert status == 200
+    assert payload["action"] == "accept"
+    assert payload["responder_state"][responder_id]["remaining_slots"] == initial_slots - 1
+
+    # Verify store was mutated in place
+    persisted = api.state_store.read()["responder_state"][responder_id]["remaining_slots"]
+    assert persisted == initial_slots - 1
+
+    # Call pause without responder_state
+    status, payload = post(
+        api_server,
+        {"action": "pause", "responder_id": responder_id},
+    )
+    assert status == 200
+    assert payload["responder_state"][responder_id]["active"] is False
+    assert api.state_store.read()["responder_state"][responder_id]["active"] is False
+
+
+def test_api_post_routing_uses_centralized_state_when_omitted(api_server):
+    # Reset store to clean default
+    api.state_store.reset({
+        "requests": {},
+        "responder_state": api.runtime.default_responder_state(),
+    })
+
+    status, payload = post(
+        api_server,
+        {"text": "PID ayarı için nereden başlamalıyım?", "intent_override": "ask"},
+    )
+    assert status == 200
+    assert "responder_state" in payload
+    assert payload["responder_state"] == api.state_store.read()["responder_state"]

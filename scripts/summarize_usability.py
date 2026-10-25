@@ -34,14 +34,25 @@ def main() -> None:
 
     print(f"participants: {len(rows)}")
 
+    discovered_tasks = sorted(
+        {
+            int(col.split("_")[1])
+            for col in rows[0].keys()
+            if col.startswith("task_") and col.endswith("_success_without_hint")
+        }
+    )
+    tasks = discovered_tasks if discovered_tasks else list(TASKS)
+
     all_success = []
     all_times = []
     all_hints = []
-    for task in TASKS:
+    for task in tasks:
         success_col = f"task_{task}_success_without_hint"
         time_col = f"task_{task}_seconds"
-        successes = [as_bool(row[success_col]) for row in rows]
-        times = [as_float(row[time_col]) for row in rows if row[time_col].strip()]
+        successes = [as_bool(row[success_col]) for row in rows if success_col in row]
+        times = [as_float(row[time_col]) for row in rows if row.get(time_col, "").strip()]
+        if not successes:
+            continue
         all_success.extend(successes)
         all_times.extend(times)
         success_rate = sum(successes) / len(successes)
@@ -62,8 +73,10 @@ def main() -> None:
     if all_hints:
         print(f"median_hints_per_participant: {median(all_hints):.2f}")
 
-    for column in RATING_COLUMNS:
-        values = [as_float(row[column]) for row in rows if row[column].strip()]
+    discovered_ratings = [col for col in rows[0].keys() if col.endswith("_1_5")]
+    rating_cols = discovered_ratings if discovered_ratings else list(RATING_COLUMNS)
+    for column in rating_cols:
+        values = [as_float(row[column]) for row in rows if row.get(column, "").strip()]
         if values:
             print(f"{column}: mean={mean(values):.3f}, median={median(values):.3f}")
 

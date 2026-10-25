@@ -144,3 +144,26 @@ For each change record:
 `Observed problem -> design change -> reason`
 
 The final report should include actual completion rates and the main fixes made because of observed behavior. Positive comments alone are not a usability result.
+
+## DRSK Protocol Extension (Evidence Disclosure, Conflict & Follower Independence)
+
+### Task 7: Empirical claim check & evidence disclosure
+Instruction: "Check the empirical claim regarding coffee consumption and inspect the evidence source passages."
+Success condition:
+- participant clicks Check with DRSK / Inspect
+- locates the source attribution, DOI / provider name, and grounded passage
+- understands that evidence is grounded in verified corpus passages rather than an ungrounded LLM hallucination
+
+### Task 8: Conflict comprehension & follower parity check
+Instruction: "Inspect a conflicting claim where opposing studies exist. Verify whether follower count affects the outcome or human routing."
+Success condition:
+- participant identifies the CONFLICTING bundle status
+- understands that conflicting evidence avoids collapsing into an arbitrary truth score
+- uses Ask a relevant person / route to escalate to human deliberation
+- verifies that accounts with 0 followers receive identical routing, deliberation, and priority to high-follower accounts
+
+### Additional DRSK Metrics & Ratings (1 to 5 scale)
+4. "I understood the evidence sources and grounded passage disclosure." (`evidence_disclosure_clarity_1_5`)
+5. "I understood why conflicting evidence requires human escalation rather than a single truth score." (`conflict_comprehension_1_5`)
+6. "I understood why a human was recommended to resolve the conflict." (`escalation_clarity_1_5`)
+7. "I understood that follower count is never used to determine eligibility or expertise." (`follower_neutrality_clarity_1_5`)
