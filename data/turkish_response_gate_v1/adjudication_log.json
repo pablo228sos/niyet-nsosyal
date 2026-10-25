@@ -1,0 +1,27 @@
+{
+  "benchmark_version": "TURKISH-RESPONSE-GATE-V1",
+  "total_examples": 120,
+  "raw_agreement_rate": 0.9833,
+  "cohens_kappa": 0.9667,
+  "disagreement_count": 2,
+  "disagreements": [
+    {
+      "example_id": "gate_067",
+      "source_group": "none_news_inflation",
+      "text": "TÜİK yıllık enflasyon verilerini duyurdu. Piyasalar yeni faiz kararına nasıl tepki verecek?",
+      "label_annotator_a": "NONE",
+      "label_annotator_b": "RESPONSE",
+      "final_adjudicated_label": "NONE",
+      "adjudication_rationale": "Annotator B flagged question mark as RESPONSE, adjudicated as NONE because it is a news commentary headline not seeking help or peer response."
+    },
+    {
+      "example_id": "gate_093",
+      "source_group": "none_opinion_ai_tools",
+      "text": "Yapay zeka araçları geliştiricilerin yerini almayacak, sadece onları kullanan geliştiriciler öne geçecek.",
+      "label_annotator_a": "NONE",
+      "label_annotator_b": "RESPONSE",
+      "final_adjudicated_label": "NONE",
+      "adjudication_rationale": "Annotator B voted RESPONSE thinking it starts a debate, adjudicated as NONE because it is an affirmative opinion quote without response solicitation."
+    }
+  ]
+}

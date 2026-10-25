@@ -1,0 +1,2536 @@
+{
+  "dataset_version": "TURKISH-RESPONSE-GATE-V1",
+  "dataset_sha256": "8c67068d329bd721fa7b925ca9a2c9e7784736cc9a9c735e22c7907130c70e29",
+  "splits": {
+    "train_count": 72,
+    "dev_count": 24,
+    "test_count": 24,
+    "total_count": 120
+  },
+  "optimal_threshold": {
+    "calibrated_threshold": 0.5,
+    "selection_criterion": "Maximizing Macro F1 on Dev split while preventing false positive routing on normal posts"
+  },
+  "threshold_sweep_dev": [
+    {
+      "threshold": 0.2,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.5,
+      "response_recall": 1.0,
+      "none_precision": 0.0,
+      "none_recall": 0.0
+    },
+    {
+      "threshold": 0.25,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.5,
+      "response_recall": 1.0,
+      "none_precision": 0.0,
+      "none_recall": 0.0
+    },
+    {
+      "threshold": 0.3,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.5,
+      "response_recall": 1.0,
+      "none_precision": 0.0,
+      "none_recall": 0.0
+    },
+    {
+      "threshold": 0.35,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.5,
+      "response_recall": 1.0,
+      "none_precision": 0.0,
+      "none_recall": 0.0
+    },
+    {
+      "threshold": 0.4,
+      "accuracy": 0.5417,
+      "macro_f1": 0.4198,
+      "response_precision": 0.5217,
+      "response_recall": 1.0,
+      "none_precision": 1.0,
+      "none_recall": 0.0833
+    },
+    {
+      "threshold": 0.45,
+      "accuracy": 0.7083,
+      "macro_f1": 0.7037,
+      "response_precision": 0.6667,
+      "response_recall": 0.8333,
+      "none_precision": 0.7778,
+      "none_recall": 0.5833
+    },
+    {
+      "threshold": 0.5,
+      "accuracy": 0.7917,
+      "macro_f1": 0.7884,
+      "response_precision": 0.8889,
+      "response_recall": 0.6667,
+      "none_precision": 0.7333,
+      "none_recall": 0.9167
+    },
+    {
+      "threshold": 0.55,
+      "accuracy": 0.5833,
+      "macro_f1": 0.4958,
+      "response_precision": 1.0,
+      "response_recall": 0.1667,
+      "none_precision": 0.5455,
+      "none_recall": 1.0
+    },
+    {
+      "threshold": 0.6,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.0,
+      "response_recall": 0.0,
+      "none_precision": 0.5,
+      "none_recall": 1.0
+    },
+    {
+      "threshold": 0.65,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.0,
+      "response_recall": 0.0,
+      "none_precision": 0.5,
+      "none_recall": 1.0
+    },
+    {
+      "threshold": 0.7,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.0,
+      "response_recall": 0.0,
+      "none_precision": 0.5,
+      "none_recall": 1.0
+    },
+    {
+      "threshold": 0.75,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.0,
+      "response_recall": 0.0,
+      "none_precision": 0.5,
+      "none_recall": 1.0
+    },
+    {
+      "threshold": 0.8,
+      "accuracy": 0.5,
+      "macro_f1": 0.3333,
+      "response_precision": 0.0,
+      "response_recall": 0.0,
+      "none_precision": 0.5,
+      "none_recall": 1.0
+    }
+  ],
+  "results": {
+    "train": {
+      "metrics": {
+        "total": 72,
+        "correct": 72,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "per_class": {
+          "RESPONSE": {
+            "support": 36,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "NONE": {
+            "support": 36,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          }
+        },
+        "confusion_matrix": {
+          "RESPONSE": {
+            "RESPONSE": 36,
+            "NONE": 0
+          },
+          "NONE": {
+            "RESPONSE": 0,
+            "NONE": 36
+          }
+        }
+      },
+      "slices": {
+        "contains_question_mark": {
+          "total": 49,
+          "correct": 49,
+          "accuracy": 1.0
+        },
+        "no_question_mark": {
+          "total": 23,
+          "correct": 23,
+          "accuracy": 1.0
+        },
+        "rhetorical_question": {
+          "total": 6,
+          "correct": 6,
+          "accuracy": 1.0
+        },
+        "news_headline": {
+          "total": 8,
+          "correct": 8,
+          "accuracy": 1.0
+        },
+        "promotional_or_announcement": {
+          "total": 6,
+          "correct": 6,
+          "accuracy": 1.0
+        },
+        "personal_status": {
+          "total": 8,
+          "correct": 8,
+          "accuracy": 1.0
+        },
+        "general_opinion": {
+          "total": 8,
+          "correct": 8,
+          "accuracy": 1.0
+        }
+      },
+      "cases": [
+        {
+          "example_id": "gate_001",
+          "text": "ESP32 kartım Wi-Fi bağlantısını birkaç dakikada bir kaybediyor. Nereden kontrol etmeye başlamalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6888834690733973,
+          "source_group": "resp_wifi"
+        },
+        {
+          "example_id": "gate_002",
+          "text": "ESP32 bağlantısı durmadan kopuyor. Güç kaynağını mı yoksa kodu mu önce test etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7068552413826262,
+          "source_group": "resp_wifi"
+        },
+        {
+          "example_id": "gate_003",
+          "text": "Python'da bu fonksiyon bazen None döndürüyor ama nedenini bulamadım. Hangi kısmı kontrol etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7401367935854192,
+          "source_group": "resp_python"
+        },
+        {
+          "example_id": "gate_004",
+          "text": "Fonksiyonumun bazı girdilerde None vermesinin sebebini nasıl bulabilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7022044454018914,
+          "source_group": "resp_python"
+        },
+        {
+          "example_id": "gate_005",
+          "text": "Yanlışlıkla main branch'e commit attım. Commit'i kaybetmeden yeni bir branch'e nasıl taşıyabilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7014228231390585,
+          "source_group": "resp_git"
+        },
+        {
+          "example_id": "gate_006",
+          "text": "Main'e yaptığım son commit'i yeni branch'e almak istiyorum. En güvenli yol nedir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6766824743887836,
+          "source_group": "resp_git"
+        },
+        {
+          "example_id": "gate_007",
+          "text": "Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6928773978434661,
+          "source_group": "resp_math"
+        },
+        {
+          "example_id": "gate_008",
+          "text": "Soruyu çözüyorum ama burada kombinasyon seçilmesinin nedenini anlayamadım. Açıklayabilir misiniz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7033261135949697,
+          "source_group": "resp_math"
+        },
+        {
+          "example_id": "gate_009",
+          "text": "Çizgi izleyen robotum virajlarda sürekli taşıyor. PID ayarına hangi parametreden başlamalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6777150662290864,
+          "source_group": "resp_robot"
+        },
+        {
+          "example_id": "gate_010",
+          "text": "PID kullanan line follower virajda savruluyor. Önce P mi D mi değiştirmek daha mantıklı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6603032472164806,
+          "source_group": "resp_robot"
+        },
+        {
+          "example_id": "gate_011",
+          "text": "Kamerada düşük ışıkta görüntü çok gürültülü oluyor. Yazılımla azaltmak için hangi yöntemi deneyebilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6886525661907155,
+          "source_group": "resp_camera"
+        },
+        {
+          "example_id": "gate_012",
+          "text": "Gece çekiminde görüntüde ciddi noise var. Basit bir görüntü işleme çözümü önerir misiniz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6562662804758128,
+          "source_group": "resp_camera"
+        },
+        {
+          "example_id": "gate_013",
+          "text": "Bu sorgu 200 bin satırda çok yavaşlıyor. İlk bakmam gereken index hangisi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.668059937201315,
+          "source_group": "resp_sql"
+        },
+        {
+          "example_id": "gate_014",
+          "text": "SQL sorgum veri büyüyünce yavaşladı. Execution plan dışında neyi kontrol etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6973723183644723,
+          "source_group": "resp_sql"
+        },
+        {
+          "example_id": "gate_015",
+          "text": "Mobilde bu kartlar üst üste biniyor. Grid yapısında hatayı nasıl bulabilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7139363948824599,
+          "source_group": "resp_css"
+        },
+        {
+          "example_id": "gate_016",
+          "text": "CSS grid küçük ekranda bozuluyor. Flexbox'a mı geçmeliyim yoksa media query mi eklemeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6909553379495309,
+          "source_group": "resp_css"
+        },
+        {
+          "example_id": "gate_017",
+          "text": "18650 pillerle yaptığım pakette voltaj normal ama yük altında aniden düşüyor. Sebebi ne olabilir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6791555190090175,
+          "source_group": "resp_battery"
+        },
+        {
+          "example_id": "gate_018",
+          "text": "Batarya paketi boştayken 12V veriyor fakat motor çalışınca 9V'a iniyor. BMS hatası mı hücre sorunu mu?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6785340939445533,
+          "source_group": "resp_battery"
+        },
+        {
+          "example_id": "gate_019",
+          "text": "Ubuntu'da servis reboot sonrası başlamıyor ama elle başlatınca çalışıyor. systemd tarafında neyi kontrol etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7256149602770154,
+          "source_group": "resp_linux"
+        },
+        {
+          "example_id": "gate_020",
+          "text": "systemd servisi açılışta fail oluyor, journalctl çıktısında network hatası var. Nasıl düzeltebilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.709497964304015,
+          "source_group": "resp_linux"
+        },
+        {
+          "example_id": "gate_021",
+          "text": "API isteğim tarayıcıda CORS hatası veriyor ama Postman'de çalışıyor. Bunu doğru şekilde nasıl çözebilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7130289372703652,
+          "source_group": "resp_api"
+        },
+        {
+          "example_id": "gate_022",
+          "text": "Frontend fetch isteğinde Access-Control-Allow-Origin engeli alıyorum. Nginx mi backend mi ayarlanmalı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6713159725247916,
+          "source_group": "resp_api"
+        },
+        {
+          "example_id": "gate_023",
+          "text": "Ultrasonik sensör suya yakınken kararsız ölçüm veriyor. Filtreleme mi yoksa montaj açısı mı daha önemli?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6791348645868486,
+          "source_group": "resp_sensor"
+        },
+        {
+          "example_id": "gate_024",
+          "text": "HC-SR04 su yüzeyinde yankı kaçırıyor. Donanımı değiştirmeden yazılımla filtrelemek mümkün mü?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6309504003180003,
+          "source_group": "resp_sensor"
+        },
+        {
+          "example_id": "gate_025",
+          "text": "Docker compose içinde iki container birbirinin hostname'ini resolve edemiyor. Network bridge ayarı nasıl olmalı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.699686880387839,
+          "source_group": "resp_docker"
+        },
+        {
+          "example_id": "gate_026",
+          "text": "Container'lar aynı ağda olmasına rağmen ping atamıyor. Docker daemon DNS yapılandırmasını nereden düzeltirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6852249054836551,
+          "source_group": "resp_docker"
+        },
+        {
+          "example_id": "gate_027",
+          "text": "Flutter ListView kaydırırken frame drop yaşanıyor. Resimlerin bellek tüketimini nasıl optimize ederim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6773168957832792,
+          "source_group": "resp_flutter"
+        },
+        {
+          "example_id": "gate_028",
+          "text": "ListView.builder içinde büyük resimler takılma yapıyor. CacheExtent mi yoksa repaint boundary mi kullanmalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6865812300389429,
+          "source_group": "resp_flutter"
+        },
+        {
+          "example_id": "gate_029",
+          "text": "Next.js App Router'da revalidatePath çağırmama rağmen veri güncellenmiyor. Cache tag mekanizmasını nasıl bağlamalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6844425888017336,
+          "source_group": "resp_nextjs"
+        },
+        {
+          "example_id": "gate_030",
+          "text": "Server Action sonrasında router.refresh() istemci state'ini sıfırlıyor. Veriyi koruyarak mutate etmenin yolu nedir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6886573283865268,
+          "source_group": "resp_nextjs"
+        },
+        {
+          "example_id": "gate_031",
+          "text": "Yeni projemiz için bu landing page'i hazırladım. İlk bakışta en zayıf tarafı sizce ne?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6571824619987082,
+          "source_group": "resp_landing"
+        },
+        {
+          "example_id": "gate_032",
+          "text": "Geliştirdiğimiz ürünün açılış sayfasını yeniledik. Tasarım ve mesaj netliği açısından eleştirilerinizi bekliyorum.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6247243028969459,
+          "source_group": "resp_landing"
+        },
+        {
+          "example_id": "gate_033",
+          "text": "60 saniyelik proje sunum metnim bu. Sizce problem kısmı yeterince net mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6535410544231178,
+          "source_group": "resp_pitch"
+        },
+        {
+          "example_id": "gate_034",
+          "text": "Yatırımcı sunumu için hazırladığım ilk slaytı paylaşıyorum. Vurgulamak istediğim değer önerisi anlaşılıyor mu?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6775691797722504,
+          "source_group": "resp_pitch"
+        },
+        {
+          "example_id": "gate_035",
+          "text": "Mobil uygulamamız için 3 adımlı bir karşılama ekranı tasarladık. Akıştaki adımlar kullanıcıyı sıkar mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.653797494555588,
+          "source_group": "resp_onboarding"
+        },
+        {
+          "example_id": "gate_036",
+          "text": "Kullanıcı kayıt akışını sadeleştirdik. İlk giriş deneyimi hakkında geri bildiriminizi alabilir miyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6541924679600932,
+          "source_group": "resp_onboarding"
+        },
+        {
+          "example_id": "gate_061",
+          "text": "Bu sıcakta dışarı çıkılır mı hiç? Evde kalıp dinlenmek en güzeli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3076238598111422,
+          "source_group": "none_rhetorical_weather"
+        },
+        {
+          "example_id": "gate_062",
+          "text": "Temmuz sıcağında öğle vakti yürüyüşe çıkılır mı? Klimalı odadan çıkmamak lazım.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31547637696508724,
+          "source_group": "none_rhetorical_weather"
+        },
+        {
+          "example_id": "gate_063",
+          "text": "Zaman ne kadar da çabuk geçiyor değil mi? Daha dün yılbaşıydı sanki.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3143044676191233,
+          "source_group": "none_rhetorical_time"
+        },
+        {
+          "example_id": "gate_064",
+          "text": "Yıllar su gibi akıp gidiyor, insan geriye bakınca şaşırıyor değil mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3166631750932892,
+          "source_group": "none_rhetorical_time"
+        },
+        {
+          "example_id": "gate_065",
+          "text": "Eski teknolojilere baktıkça nereden nereye geldik dememek elde mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3200379107643468,
+          "source_group": "none_rhetorical_tech"
+        },
+        {
+          "example_id": "gate_066",
+          "text": "İlk bilgisayarların disketlerini hatırladıkça teknolojinin hızına hayran olmamak mümkün mü?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3313517478604959,
+          "source_group": "none_rhetorical_tech"
+        },
+        {
+          "example_id": "gate_067",
+          "text": "TÜİK yıllık enflasyon verilerini duyurdu. Piyasalar yeni faiz kararına nasıl tepki verecek?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32306748632132093,
+          "source_group": "none_news_inflation"
+        },
+        {
+          "example_id": "gate_068",
+          "text": "Merkez Bankası faiz politikasını sabit tuttu; döviz kurlarında dalgalanma sürecek mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31228212593319477,
+          "source_group": "none_news_inflation"
+        },
+        {
+          "example_id": "gate_069",
+          "text": "Apple yeni yapay zeka özelliklerini tanıttı. Sektördeki rekabet dengesi değişecek mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.2959150775535861,
+          "source_group": "none_news_tech_ai"
+        },
+        {
+          "example_id": "gate_070",
+          "text": "Açık kaynak AI modelleri kurumsal pazarda hakimiyeti ele geçirebilecek mi? Yeni pazar analizi yayında.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.2932600753580641,
+          "source_group": "none_news_tech_ai"
+        },
+        {
+          "example_id": "gate_071",
+          "text": "Milli takım son dakikada attığı golle galip geldi. Gruptan lider çıkabilecek miyiz?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32139288598034005,
+          "source_group": "none_news_sports"
+        },
+        {
+          "example_id": "gate_072",
+          "text": "Şampiyonlar Ligi kuraları çekildi; temsilcimiz zorlu gruptan puan çıkarabilir mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31396476407517415,
+          "source_group": "none_news_sports"
+        },
+        {
+          "example_id": "gate_073",
+          "text": "James Webb teleskobu en uzak galaksiyi görüntüledi. Evrenin başlangıcı hakkındaki teoriler yenilenecek mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3228439011205506,
+          "source_group": "none_news_space"
+        },
+        {
+          "example_id": "gate_074",
+          "text": "Mars keşif aracı yeni su izleri buldu; kızıl gezegende yaşam izleri doğrulanacak mı?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32562477731117223,
+          "source_group": "none_news_space"
+        },
+        {
+          "example_id": "gate_075",
+          "text": "Yeni mobil sürümümüz App Store ve Play Store'da yayında! Hemen güncelleyin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3165977428523192,
+          "source_group": "none_promo_release"
+        },
+        {
+          "example_id": "gate_076",
+          "text": "v2.4 güncellemesi tüm kullanıcılara açıldı. Performans iyileştirmelerini deneyimleyin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3383673640059383,
+          "source_group": "none_promo_release"
+        },
+        {
+          "example_id": "gate_077",
+          "text": "Yarın akşam saat 20:00'de canlı yayında olacağız. Kaçırmamak için bildirimleri açın.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32412155383713426,
+          "source_group": "none_promo_webinar"
+        },
+        {
+          "example_id": "gate_078",
+          "text": "Ücretsiz veri bilimi atölyemiz bu perşembe başlıyor. Profildeki linkten kayıt olabilirsiniz.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3657603232717795,
+          "source_group": "none_promo_webinar"
+        },
+        {
+          "example_id": "gate_079",
+          "text": "Yılın en büyük indirimi başladı. Tüm kurslarda yüzde 50 avantaj fırsatı sizi bekliyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.34150742576862403,
+          "source_group": "none_promo_sale"
+        },
+        {
+          "example_id": "gate_080",
+          "text": "Geliştirici araçlarında bahar kampanyası yayında. Detaylar sitemizde.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.30347878407441503,
+          "source_group": "none_promo_sale"
+        },
+        {
+          "example_id": "gate_081",
+          "text": "Bugün sabah 10K maraton antrenmanını tamamladım. Harika bir enerjiyle güne başladım.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3039630843913907,
+          "source_group": "none_status_running"
+        },
+        {
+          "example_id": "gate_082",
+          "text": "Haftalık koşu hedefimi tamamlayıp kişisel rekorumu kırdım. Spor insanı canlandırıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32724893166888147,
+          "source_group": "none_status_running"
+        },
+        {
+          "example_id": "gate_083",
+          "text": "Clean Code kitabını nihayet bitirdim. Her yazılımcının kütüphanesinde bulunmalı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3228146872020445,
+          "source_group": "none_status_reading"
+        },
+        {
+          "example_id": "gate_084",
+          "text": "Tasarım kalıpları üzerine harika bir kitap okudum; bakış açımı tamamen tazeledi.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3109678574989949,
+          "source_group": "none_status_reading"
+        },
+        {
+          "example_id": "gate_085",
+          "text": "Sabah kahvesi eşliğinde yeni projenin kodlarını yazmaya başladım. Herkese verimli haftalar.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3044685356183885,
+          "source_group": "none_status_coffee"
+        },
+        {
+          "example_id": "gate_086",
+          "text": "Yağmurlu havada kahve ve kod keyfi bir başka oluyor. Gününüz güzel geçsin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3242969049399486,
+          "source_group": "none_status_coffee"
+        },
+        {
+          "example_id": "gate_087",
+          "text": "4 yıllık bilgisayar mühendisliği eğitimimi dereceyle tamamlayıp mezun oldum. Emeği geçen herkese teşekkürler.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.28118694219494855,
+          "source_group": "none_status_graduation"
+        },
+        {
+          "example_id": "gate_088",
+          "text": "Yüksek lisans tez savunmamı başarıyla verdim. Yeni bir akademik sayfa başlıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3203567682195333,
+          "source_group": "none_status_graduation"
+        },
+        {
+          "example_id": "gate_089",
+          "text": "En iyi kod hiç yazılmamış koddur derler, sadelik her zaman karmaşıklıktan üstündür.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3019218825699428,
+          "source_group": "none_quote_philosophy"
+        },
+        {
+          "example_id": "gate_090",
+          "text": "Yazılımda mükemmellik eklenecek bir şey kalmadığında değil, çıkarılacak bir şey kalmadığında elde edilir.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3006438036312574,
+          "source_group": "none_quote_philosophy"
+        },
+        {
+          "example_id": "gate_091",
+          "text": "İyi bir dokümantasyon, saatlerce sürecek toplantıların önüne geçer. Yazılı iletişim kültürü çok kıymetli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31177863998310884,
+          "source_group": "none_opinion_doc"
+        },
+        {
+          "example_id": "gate_092",
+          "text": "Bir yazılım ekibinde psikolojik güvenlik yoksa, en yetenekli mühendisler bile potansiyelini gösteremez.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3268274629462767,
+          "source_group": "none_opinion_doc"
+        },
+        {
+          "example_id": "gate_093",
+          "text": "Yapay zeka araçları geliştiricilerin yerini almayacak, sadece onları kullanan geliştiriciler öne geçecek.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3068910609471767,
+          "source_group": "none_opinion_ai_tools"
+        },
+        {
+          "example_id": "gate_094",
+          "text": "Büyük dil modelleri birer sihirli değnek değil; temel bilgisayar bilimleri bilgisi her zamankinden daha değerli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.289238476793739,
+          "source_group": "none_opinion_ai_tools"
+        },
+        {
+          "example_id": "gate_095",
+          "text": "Cuma akşamı canlıya (production) kod çıkmak cesaret değil deliliktir. Pazartesiyi bekleyin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.2977415501279689,
+          "source_group": "none_humor_prod"
+        },
+        {
+          "example_id": "gate_096",
+          "text": "Kodum ilk seferde hatasız çalışınca sevinmek yerine nerede hata yaptım diye şüpheleniyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.36815293551156236,
+          "source_group": "none_humor_prod"
+        }
+      ]
+    },
+    "dev": {
+      "metrics": {
+        "total": 24,
+        "correct": 19,
+        "accuracy": 0.7917,
+        "macro_f1": 0.7884,
+        "per_class": {
+          "RESPONSE": {
+            "support": 12,
+            "precision": 0.8889,
+            "recall": 0.6667,
+            "f1": 0.7619
+          },
+          "NONE": {
+            "support": 12,
+            "precision": 0.7333,
+            "recall": 0.9167,
+            "f1": 0.8148
+          }
+        },
+        "confusion_matrix": {
+          "RESPONSE": {
+            "RESPONSE": 8,
+            "NONE": 4
+          },
+          "NONE": {
+            "RESPONSE": 1,
+            "NONE": 11
+          }
+        }
+      },
+      "slices": {
+        "contains_question_mark": {
+          "total": 9,
+          "correct": 7,
+          "accuracy": 0.7778
+        },
+        "no_question_mark": {
+          "total": 15,
+          "correct": 12,
+          "accuracy": 0.8
+        }
+      },
+      "cases": [
+        {
+          "example_id": "gate_037",
+          "text": "Web sitemiz için koyu tema renk paletini belirledim. Kontrast ve okunabilirlik açısından nasıl duruyor?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5968362453092605,
+          "source_group": "resp_darkmode"
+        },
+        {
+          "example_id": "gate_038",
+          "text": "Hazırladığım dark mode renk hiyerarşisinde gözü yoran bir ton var mı? Yorumlarınızı rica ederim.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5231210934291614,
+          "source_group": "resp_darkmode"
+        },
+        {
+          "example_id": "gate_039",
+          "text": "E-ticaret platformumuz için REST endpoint adlandırmalarını bu şekilde kurguladım. REST standartlarına uygun mu?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5666103170988185,
+          "source_group": "resp_api_design"
+        },
+        {
+          "example_id": "gate_040",
+          "text": "Yeni microservice API tasarımında URL ve HTTP metodlarını listeledim. Tutarlılık açısından görüşleriniz neler?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.48816932495932724,
+          "source_group": "resp_api_design"
+        },
+        {
+          "example_id": "gate_041",
+          "text": "Açık kaynak kütüphanemizin README dosyasını baştan yazdım. Kurulum adımları dışarıdan bakan biri için anlaşılır mı?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4831536828025222,
+          "source_group": "resp_readme"
+        },
+        {
+          "example_id": "gate_042",
+          "text": "Projemin GitHub dökümantasyonunu paylaşıyorum. İlk defa kullanacak bir geliştirici için eksik gördüğünüz yer var mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.534335322071368,
+          "source_group": "resp_readme"
+        },
+        {
+          "example_id": "gate_043",
+          "text": "B2B SaaS ürünümüz için 3 kademeli fiyatlandırma sayfası hazırladık. Paket ayrımları net ve ikna edici mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5427514667925557,
+          "source_group": "resp_pricing"
+        },
+        {
+          "example_id": "gate_044",
+          "text": "Fiyatlandırma sayfamızın dönüşüm oranını artırmak istiyoruz. İnceleyip zayıf yönlerini söyler misiniz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5463657831981085,
+          "source_group": "resp_pricing"
+        },
+        {
+          "example_id": "gate_045",
+          "text": "Robotik yarışması için görüntü işleme ve ROS bilen bir ekip arkadaşı arıyoruz. İlgilenenler yazabilir mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5428308399945151,
+          "source_group": "resp_robotics_team"
+        },
+        {
+          "example_id": "gate_046",
+          "text": "Otonom mobil robot projemizde sensör füzyonu çalışacak takım arkadaşı arayışımız var. Birlikte geliştirelim.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5076442876200795,
+          "source_group": "resp_robotics_team"
+        },
+        {
+          "example_id": "gate_047",
+          "text": "Rust ile Solana üzerinde açık kaynak DeFi protokolü geliştiriyoruz. Akıllı sözleşme geliştirecek ortak arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4295541900021885,
+          "source_group": "resp_web3_team"
+        },
+        {
+          "example_id": "gate_048",
+          "text": "Blockchain tabanlı mikro ödeme projemize akıllı sözleşme yazacak geliştirici ortak arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.44473561830685737,
+          "source_group": "resp_web3_team"
+        },
+        {
+          "example_id": "gate_097",
+          "text": "3D yazıcımla bastığım mekanik klavye kasasının montajını bitirdim, sesi harika oldu.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.44722899339059924,
+          "source_group": "none_hardware_case"
+        },
+        {
+          "example_id": "gate_098",
+          "text": "Kendi tasarladığım ahşap masaüstü kulaklık standı tamamlandı. Atölye işleri çok dinlendirici.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.46727229595296726,
+          "source_group": "none_hardware_case"
+        },
+        {
+          "example_id": "gate_099",
+          "text": "Hafta sonu doğa yürüyüşünde çektiğim gün doğumu manzarası. Doğanın huzuru paha biçilemez.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.46497434814413036,
+          "source_group": "none_nature_trip"
+        },
+        {
+          "example_id": "gate_100",
+          "text": "Şehrin kalabalığından uzaklaşıp ormanda kamp kurduk. Doğa insanı kendine getiriyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.45338702695479904,
+          "source_group": "none_nature_trip"
+        },
+        {
+          "example_id": "gate_101",
+          "text": "İstanbul'un tarihi sokaklarında kaybolmak her defasında ayrı bir ilham veriyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.48097898932316885,
+          "source_group": "none_travel_city"
+        },
+        {
+          "example_id": "gate_102",
+          "text": "Eski tren istasyonunun mimarisi gerçekten büyüleyici; tarihin izleri hala canlı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.41313514266270723,
+          "source_group": "none_travel_city"
+        },
+        {
+          "example_id": "gate_103",
+          "text": "Evde ekşi mayalı ekmek denemem bu sefer mükemmel kabardı. Kokusu tüm evi sardı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.42113932584300584,
+          "source_group": "none_cooking_recipe"
+        },
+        {
+          "example_id": "gate_104",
+          "text": "İtalyan usulü taze makarna yapımını denedim; pratik yaptıkça kıvamı oturuyor.",
+          "gold": "NONE",
+          "predicted": "RESPONSE",
+          "correct": false,
+          "probability": 0.5019133018816341,
+          "source_group": "none_cooking_recipe"
+        },
+        {
+          "example_id": "gate_105",
+          "text": "90'lar synth-wave müzikleri eşliğinde kod yazmak odaklanmayı iki katına çıkarıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4329148324410191,
+          "source_group": "none_music_listen"
+        },
+        {
+          "example_id": "gate_106",
+          "text": "Yeni keşfettiğim caz albümü gün boyu arka planda çaldı; sakin ve derin bir atmosfer yaratıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.43455600748695183,
+          "source_group": "none_music_listen"
+        },
+        {
+          "example_id": "gate_107",
+          "text": "Dün akşam gerçekleşen yerel yazılım buluşmasında çok keyifli sohbetler ettik. Organizasyona teşekkürler.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4326649274847484,
+          "source_group": "none_event_recap"
+        },
+        {
+          "example_id": "gate_108",
+          "text": "Teknoloji zirvesindeki paneller ufkumu açtı; yeni bağlantılar kurmak harika bir deneyimdi.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3545594391413031,
+          "source_group": "none_event_recap"
+        }
+      ]
+    },
+    "test": {
+      "metrics": {
+        "total": 24,
+        "correct": 20,
+        "accuracy": 0.8333,
+        "macro_f1": 0.8286,
+        "per_class": {
+          "RESPONSE": {
+            "support": 12,
+            "precision": 1.0,
+            "recall": 0.6667,
+            "f1": 0.8
+          },
+          "NONE": {
+            "support": 12,
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571
+          }
+        },
+        "confusion_matrix": {
+          "RESPONSE": {
+            "RESPONSE": 8,
+            "NONE": 4
+          },
+          "NONE": {
+            "RESPONSE": 0,
+            "NONE": 12
+          }
+        }
+      },
+      "slices": {
+        "contains_question_mark": {
+          "total": 7,
+          "correct": 5,
+          "accuracy": 0.7143
+        },
+        "no_question_mark": {
+          "total": 17,
+          "correct": 15,
+          "accuracy": 0.8824
+        },
+        "personal_status": {
+          "total": 2,
+          "correct": 2,
+          "accuracy": 1.0
+        }
+      },
+      "cases": [
+        {
+          "example_id": "gate_049",
+          "text": "Tıp öğrencilerine yönelik mobil vaka çalışma uygulaması yapıyoruz. Flutter bilen bir yazılımcıyla ortaklık kurmak istiyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.502056946152029,
+          "source_group": "resp_mobile_team"
+        },
+        {
+          "example_id": "gate_050",
+          "text": "Eğitim odaklı mobil projemizi hayata geçirmek için Flutter tarafında sorumluluk alacak geliştirici arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5220922874698254,
+          "source_group": "resp_mobile_team"
+        },
+        {
+          "example_id": "gate_051",
+          "text": "Linux dokümantasyonunu Türkçeye çevirmek için gönüllü bir çeviri inisiyatifi başlattık. Katılmak isteyen var mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.530719558936909,
+          "source_group": "resp_translation_team"
+        },
+        {
+          "example_id": "gate_052",
+          "text": "Açık kaynak teknik belgeleri yerelleştirme projemize gönüllü çevirmenler ve editörler arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4503968317730961,
+          "source_group": "resp_translation_team"
+        },
+        {
+          "example_id": "gate_053",
+          "text": "Kaggle'daki çok dilli NLP yarışmasına katılacağım. Birlikte model eğitecek ve feature çıkaracak takım arkadaşı arıyorum.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.42332972051572293,
+          "source_group": "resp_kaggle_team"
+        },
+        {
+          "example_id": "gate_054",
+          "text": "NLP benchmark yarışmasında takım kuruyorum. PyTorch ve Hugging Face deneyimi olan biriyle yarışmak isterim.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5126976973124444,
+          "source_group": "resp_kaggle_team"
+        },
+        {
+          "example_id": "gate_055",
+          "text": "Sizce küçük ekiplerde açık kaynak model kullanmak uzun vadede ticari API'lara kıyasla daha mantıklı mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5176785177476008,
+          "source_group": "resp_disc_llm"
+        },
+        {
+          "example_id": "gate_056",
+          "text": "Açık kaynaklı LLM'leri kendi sunucumuzda barındırmak maliyet ve bakım açısından sürdürülebilir mi? Ne düşünüyorsunuz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5076139292108934,
+          "source_group": "resp_disc_llm"
+        },
+        {
+          "example_id": "gate_057",
+          "text": "Erken aşama girişimlerde doğrudan mikroservis mimarisiyle başlamak aşırı mühendislik (over-engineering) midir?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4721673701216198,
+          "source_group": "resp_disc_monolith"
+        },
+        {
+          "example_id": "gate_058",
+          "text": "Monolit ile başlayıp zamanla parçalamak mı yoksa baştan servisleri ayırmak mı daha az teknik borç üretir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5074172127672705,
+          "source_group": "resp_disc_monolith"
+        },
+        {
+          "example_id": "gate_059",
+          "text": "Büyük kurumsal projelerde dinamik diller (Python/JS) yerine baştan statik tip güvenliği (Go/Rust/TS) şart mı?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4474518797457654,
+          "source_group": "resp_disc_typing"
+        },
+        {
+          "example_id": "gate_060",
+          "text": "Statik tiplemenin geliştirme hızını yavaşlattığı iddiasına katılıyor musunuz, yoksa hata önleme faydası daha mı büyük?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5400290460779797,
+          "source_group": "resp_disc_typing"
+        },
+        {
+          "example_id": "gate_109",
+          "text": "Yarın başlayacak yapay zeka konferansında dinleyici olarak yerimi aldım. Merakla bekliyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.412484401972371,
+          "source_group": "none_conf_attend"
+        },
+        {
+          "example_id": "gate_110",
+          "text": "Yıllık açık kaynak sempozyumuna katıldım; harika sunumlar ve ilham verici konuşmacılar vardı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.39692868979853874,
+          "source_group": "none_conf_attend"
+        },
+        {
+          "example_id": "gate_111",
+          "text": "Bilim kurgu seven herkese Vakıf serisini ısrarla tavsiye ederim. Başyapıt niteliğinde.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.458207835624792,
+          "source_group": "none_book_rec"
+        },
+        {
+          "example_id": "gate_112",
+          "text": "Kişisel verimlilik üzerine yazılmış bu kitabı herkesin okuması gerektiğini düşünüyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.44189618314915563,
+          "source_group": "none_book_rec"
+        },
+        {
+          "example_id": "gate_113",
+          "text": "Kedim klavyemin üzerine yatıp kod yazmama izin vermiyor, mesainin en tatlı engeli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.43404206134449874,
+          "source_group": "none_pet_status"
+        },
+        {
+          "example_id": "gate_114",
+          "text": "Köpeğimle parkta sabah yürüyüşü yaptık; güne başlamanın en neşeli yolu.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.42519634094242786,
+          "source_group": "none_pet_status"
+        },
+        {
+          "example_id": "gate_115",
+          "text": "Ofisin penceresinden gün batımı manzarası böyle görünüyor. Yoğun günün ardından güzel bir mola.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4549971752184061,
+          "source_group": "none_office_view"
+        },
+        {
+          "example_id": "gate_116",
+          "text": "Çalışma masamın yeni düzenini kurdum; minimalist ve ferah bir alan oldu.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4296009054680851,
+          "source_group": "none_office_view"
+        },
+        {
+          "example_id": "gate_117",
+          "text": "Ekip olarak projenin ilk fazını planlanan tarihten önce bitirdik. Tüm ekibi kutluyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4900458324764508,
+          "source_group": "none_celebration"
+        },
+        {
+          "example_id": "gate_118",
+          "text": "Şirketimizin 3. kuruluş yılını kutladık; küçük bir ekipten bu noktaya gelmek gurur verici.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4857998356208968,
+          "source_group": "none_celebration"
+        },
+        {
+          "example_id": "gate_119",
+          "text": "Bugün 5 yıldır çalıştığım firmadaki son iş günümdü. Tüm çalışma arkadaşlarıma teşekkür ederim.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.45397856752540733,
+          "source_group": "none_farewell"
+        },
+        {
+          "example_id": "gate_120",
+          "text": "Uzun yıllar birlikte çalıştığım harika ekibime veda ettim; yeni maceralara doğru yola çıkma vakti.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3962228777935351,
+          "source_group": "none_farewell"
+        }
+      ]
+    },
+    "all": {
+      "metrics": {
+        "total": 120,
+        "correct": 111,
+        "accuracy": 0.925,
+        "macro_f1": 0.9247,
+        "per_class": {
+          "RESPONSE": {
+            "support": 60,
+            "precision": 0.9811,
+            "recall": 0.8667,
+            "f1": 0.9204
+          },
+          "NONE": {
+            "support": 60,
+            "precision": 0.8806,
+            "recall": 0.9833,
+            "f1": 0.9291
+          }
+        },
+        "confusion_matrix": {
+          "RESPONSE": {
+            "RESPONSE": 52,
+            "NONE": 8
+          },
+          "NONE": {
+            "RESPONSE": 1,
+            "NONE": 59
+          }
+        }
+      },
+      "slices": {
+        "contains_question_mark": {
+          "total": 65,
+          "correct": 61,
+          "accuracy": 0.9385
+        },
+        "no_question_mark": {
+          "total": 55,
+          "correct": 50,
+          "accuracy": 0.9091
+        },
+        "rhetorical_question": {
+          "total": 6,
+          "correct": 6,
+          "accuracy": 1.0
+        },
+        "news_headline": {
+          "total": 8,
+          "correct": 8,
+          "accuracy": 1.0
+        },
+        "promotional_or_announcement": {
+          "total": 6,
+          "correct": 6,
+          "accuracy": 1.0
+        },
+        "personal_status": {
+          "total": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        },
+        "general_opinion": {
+          "total": 8,
+          "correct": 8,
+          "accuracy": 1.0
+        }
+      },
+      "cases": [
+        {
+          "example_id": "gate_001",
+          "text": "ESP32 kartım Wi-Fi bağlantısını birkaç dakikada bir kaybediyor. Nereden kontrol etmeye başlamalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6888834690733973,
+          "source_group": "resp_wifi"
+        },
+        {
+          "example_id": "gate_002",
+          "text": "ESP32 bağlantısı durmadan kopuyor. Güç kaynağını mı yoksa kodu mu önce test etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7068552413826262,
+          "source_group": "resp_wifi"
+        },
+        {
+          "example_id": "gate_003",
+          "text": "Python'da bu fonksiyon bazen None döndürüyor ama nedenini bulamadım. Hangi kısmı kontrol etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7401367935854192,
+          "source_group": "resp_python"
+        },
+        {
+          "example_id": "gate_004",
+          "text": "Fonksiyonumun bazı girdilerde None vermesinin sebebini nasıl bulabilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7022044454018914,
+          "source_group": "resp_python"
+        },
+        {
+          "example_id": "gate_005",
+          "text": "Yanlışlıkla main branch'e commit attım. Commit'i kaybetmeden yeni bir branch'e nasıl taşıyabilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7014228231390585,
+          "source_group": "resp_git"
+        },
+        {
+          "example_id": "gate_006",
+          "text": "Main'e yaptığım son commit'i yeni branch'e almak istiyorum. En güvenli yol nedir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6766824743887836,
+          "source_group": "resp_git"
+        },
+        {
+          "example_id": "gate_007",
+          "text": "Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6928773978434661,
+          "source_group": "resp_math"
+        },
+        {
+          "example_id": "gate_008",
+          "text": "Soruyu çözüyorum ama burada kombinasyon seçilmesinin nedenini anlayamadım. Açıklayabilir misiniz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7033261135949697,
+          "source_group": "resp_math"
+        },
+        {
+          "example_id": "gate_009",
+          "text": "Çizgi izleyen robotum virajlarda sürekli taşıyor. PID ayarına hangi parametreden başlamalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6777150662290864,
+          "source_group": "resp_robot"
+        },
+        {
+          "example_id": "gate_010",
+          "text": "PID kullanan line follower virajda savruluyor. Önce P mi D mi değiştirmek daha mantıklı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6603032472164806,
+          "source_group": "resp_robot"
+        },
+        {
+          "example_id": "gate_011",
+          "text": "Kamerada düşük ışıkta görüntü çok gürültülü oluyor. Yazılımla azaltmak için hangi yöntemi deneyebilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6886525661907155,
+          "source_group": "resp_camera"
+        },
+        {
+          "example_id": "gate_012",
+          "text": "Gece çekiminde görüntüde ciddi noise var. Basit bir görüntü işleme çözümü önerir misiniz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6562662804758128,
+          "source_group": "resp_camera"
+        },
+        {
+          "example_id": "gate_013",
+          "text": "Bu sorgu 200 bin satırda çok yavaşlıyor. İlk bakmam gereken index hangisi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.668059937201315,
+          "source_group": "resp_sql"
+        },
+        {
+          "example_id": "gate_014",
+          "text": "SQL sorgum veri büyüyünce yavaşladı. Execution plan dışında neyi kontrol etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6973723183644723,
+          "source_group": "resp_sql"
+        },
+        {
+          "example_id": "gate_015",
+          "text": "Mobilde bu kartlar üst üste biniyor. Grid yapısında hatayı nasıl bulabilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7139363948824599,
+          "source_group": "resp_css"
+        },
+        {
+          "example_id": "gate_016",
+          "text": "CSS grid küçük ekranda bozuluyor. Flexbox'a mı geçmeliyim yoksa media query mi eklemeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6909553379495309,
+          "source_group": "resp_css"
+        },
+        {
+          "example_id": "gate_017",
+          "text": "18650 pillerle yaptığım pakette voltaj normal ama yük altında aniden düşüyor. Sebebi ne olabilir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6791555190090175,
+          "source_group": "resp_battery"
+        },
+        {
+          "example_id": "gate_018",
+          "text": "Batarya paketi boştayken 12V veriyor fakat motor çalışınca 9V'a iniyor. BMS hatası mı hücre sorunu mu?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6785340939445533,
+          "source_group": "resp_battery"
+        },
+        {
+          "example_id": "gate_019",
+          "text": "Ubuntu'da servis reboot sonrası başlamıyor ama elle başlatınca çalışıyor. systemd tarafında neyi kontrol etmeliyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7256149602770154,
+          "source_group": "resp_linux"
+        },
+        {
+          "example_id": "gate_020",
+          "text": "systemd servisi açılışta fail oluyor, journalctl çıktısında network hatası var. Nasıl düzeltebilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.709497964304015,
+          "source_group": "resp_linux"
+        },
+        {
+          "example_id": "gate_021",
+          "text": "API isteğim tarayıcıda CORS hatası veriyor ama Postman'de çalışıyor. Bunu doğru şekilde nasıl çözebilirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.7130289372703652,
+          "source_group": "resp_api"
+        },
+        {
+          "example_id": "gate_022",
+          "text": "Frontend fetch isteğinde Access-Control-Allow-Origin engeli alıyorum. Nginx mi backend mi ayarlanmalı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6713159725247916,
+          "source_group": "resp_api"
+        },
+        {
+          "example_id": "gate_023",
+          "text": "Ultrasonik sensör suya yakınken kararsız ölçüm veriyor. Filtreleme mi yoksa montaj açısı mı daha önemli?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6791348645868486,
+          "source_group": "resp_sensor"
+        },
+        {
+          "example_id": "gate_024",
+          "text": "HC-SR04 su yüzeyinde yankı kaçırıyor. Donanımı değiştirmeden yazılımla filtrelemek mümkün mü?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6309504003180003,
+          "source_group": "resp_sensor"
+        },
+        {
+          "example_id": "gate_025",
+          "text": "Docker compose içinde iki container birbirinin hostname'ini resolve edemiyor. Network bridge ayarı nasıl olmalı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.699686880387839,
+          "source_group": "resp_docker"
+        },
+        {
+          "example_id": "gate_026",
+          "text": "Container'lar aynı ağda olmasına rağmen ping atamıyor. Docker daemon DNS yapılandırmasını nereden düzeltirim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6852249054836551,
+          "source_group": "resp_docker"
+        },
+        {
+          "example_id": "gate_027",
+          "text": "Flutter ListView kaydırırken frame drop yaşanıyor. Resimlerin bellek tüketimini nasıl optimize ederim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6773168957832792,
+          "source_group": "resp_flutter"
+        },
+        {
+          "example_id": "gate_028",
+          "text": "ListView.builder içinde büyük resimler takılma yapıyor. CacheExtent mi yoksa repaint boundary mi kullanmalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6865812300389429,
+          "source_group": "resp_flutter"
+        },
+        {
+          "example_id": "gate_029",
+          "text": "Next.js App Router'da revalidatePath çağırmama rağmen veri güncellenmiyor. Cache tag mekanizmasını nasıl bağlamalıyım?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6844425888017336,
+          "source_group": "resp_nextjs"
+        },
+        {
+          "example_id": "gate_030",
+          "text": "Server Action sonrasında router.refresh() istemci state'ini sıfırlıyor. Veriyi koruyarak mutate etmenin yolu nedir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6886573283865268,
+          "source_group": "resp_nextjs"
+        },
+        {
+          "example_id": "gate_031",
+          "text": "Yeni projemiz için bu landing page'i hazırladım. İlk bakışta en zayıf tarafı sizce ne?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6571824619987082,
+          "source_group": "resp_landing"
+        },
+        {
+          "example_id": "gate_032",
+          "text": "Geliştirdiğimiz ürünün açılış sayfasını yeniledik. Tasarım ve mesaj netliği açısından eleştirilerinizi bekliyorum.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6247243028969459,
+          "source_group": "resp_landing"
+        },
+        {
+          "example_id": "gate_033",
+          "text": "60 saniyelik proje sunum metnim bu. Sizce problem kısmı yeterince net mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6535410544231178,
+          "source_group": "resp_pitch"
+        },
+        {
+          "example_id": "gate_034",
+          "text": "Yatırımcı sunumu için hazırladığım ilk slaytı paylaşıyorum. Vurgulamak istediğim değer önerisi anlaşılıyor mu?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6775691797722504,
+          "source_group": "resp_pitch"
+        },
+        {
+          "example_id": "gate_035",
+          "text": "Mobil uygulamamız için 3 adımlı bir karşılama ekranı tasarladık. Akıştaki adımlar kullanıcıyı sıkar mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.653797494555588,
+          "source_group": "resp_onboarding"
+        },
+        {
+          "example_id": "gate_036",
+          "text": "Kullanıcı kayıt akışını sadeleştirdik. İlk giriş deneyimi hakkında geri bildiriminizi alabilir miyim?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.6541924679600932,
+          "source_group": "resp_onboarding"
+        },
+        {
+          "example_id": "gate_037",
+          "text": "Web sitemiz için koyu tema renk paletini belirledim. Kontrast ve okunabilirlik açısından nasıl duruyor?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5968362453092605,
+          "source_group": "resp_darkmode"
+        },
+        {
+          "example_id": "gate_038",
+          "text": "Hazırladığım dark mode renk hiyerarşisinde gözü yoran bir ton var mı? Yorumlarınızı rica ederim.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5231210934291614,
+          "source_group": "resp_darkmode"
+        },
+        {
+          "example_id": "gate_039",
+          "text": "E-ticaret platformumuz için REST endpoint adlandırmalarını bu şekilde kurguladım. REST standartlarına uygun mu?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5666103170988185,
+          "source_group": "resp_api_design"
+        },
+        {
+          "example_id": "gate_040",
+          "text": "Yeni microservice API tasarımında URL ve HTTP metodlarını listeledim. Tutarlılık açısından görüşleriniz neler?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.48816932495932724,
+          "source_group": "resp_api_design"
+        },
+        {
+          "example_id": "gate_041",
+          "text": "Açık kaynak kütüphanemizin README dosyasını baştan yazdım. Kurulum adımları dışarıdan bakan biri için anlaşılır mı?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4831536828025222,
+          "source_group": "resp_readme"
+        },
+        {
+          "example_id": "gate_042",
+          "text": "Projemin GitHub dökümantasyonunu paylaşıyorum. İlk defa kullanacak bir geliştirici için eksik gördüğünüz yer var mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.534335322071368,
+          "source_group": "resp_readme"
+        },
+        {
+          "example_id": "gate_043",
+          "text": "B2B SaaS ürünümüz için 3 kademeli fiyatlandırma sayfası hazırladık. Paket ayrımları net ve ikna edici mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5427514667925557,
+          "source_group": "resp_pricing"
+        },
+        {
+          "example_id": "gate_044",
+          "text": "Fiyatlandırma sayfamızın dönüşüm oranını artırmak istiyoruz. İnceleyip zayıf yönlerini söyler misiniz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5463657831981085,
+          "source_group": "resp_pricing"
+        },
+        {
+          "example_id": "gate_045",
+          "text": "Robotik yarışması için görüntü işleme ve ROS bilen bir ekip arkadaşı arıyoruz. İlgilenenler yazabilir mi?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5428308399945151,
+          "source_group": "resp_robotics_team"
+        },
+        {
+          "example_id": "gate_046",
+          "text": "Otonom mobil robot projemizde sensör füzyonu çalışacak takım arkadaşı arayışımız var. Birlikte geliştirelim.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5076442876200795,
+          "source_group": "resp_robotics_team"
+        },
+        {
+          "example_id": "gate_047",
+          "text": "Rust ile Solana üzerinde açık kaynak DeFi protokolü geliştiriyoruz. Akıllı sözleşme geliştirecek ortak arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4295541900021885,
+          "source_group": "resp_web3_team"
+        },
+        {
+          "example_id": "gate_048",
+          "text": "Blockchain tabanlı mikro ödeme projemize akıllı sözleşme yazacak geliştirici ortak arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.44473561830685737,
+          "source_group": "resp_web3_team"
+        },
+        {
+          "example_id": "gate_049",
+          "text": "Tıp öğrencilerine yönelik mobil vaka çalışma uygulaması yapıyoruz. Flutter bilen bir yazılımcıyla ortaklık kurmak istiyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.502056946152029,
+          "source_group": "resp_mobile_team"
+        },
+        {
+          "example_id": "gate_050",
+          "text": "Eğitim odaklı mobil projemizi hayata geçirmek için Flutter tarafında sorumluluk alacak geliştirici arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5220922874698254,
+          "source_group": "resp_mobile_team"
+        },
+        {
+          "example_id": "gate_051",
+          "text": "Linux dokümantasyonunu Türkçeye çevirmek için gönüllü bir çeviri inisiyatifi başlattık. Katılmak isteyen var mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.530719558936909,
+          "source_group": "resp_translation_team"
+        },
+        {
+          "example_id": "gate_052",
+          "text": "Açık kaynak teknik belgeleri yerelleştirme projemize gönüllü çevirmenler ve editörler arıyoruz.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4503968317730961,
+          "source_group": "resp_translation_team"
+        },
+        {
+          "example_id": "gate_053",
+          "text": "Kaggle'daki çok dilli NLP yarışmasına katılacağım. Birlikte model eğitecek ve feature çıkaracak takım arkadaşı arıyorum.",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.42332972051572293,
+          "source_group": "resp_kaggle_team"
+        },
+        {
+          "example_id": "gate_054",
+          "text": "NLP benchmark yarışmasında takım kuruyorum. PyTorch ve Hugging Face deneyimi olan biriyle yarışmak isterim.",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5126976973124444,
+          "source_group": "resp_kaggle_team"
+        },
+        {
+          "example_id": "gate_055",
+          "text": "Sizce küçük ekiplerde açık kaynak model kullanmak uzun vadede ticari API'lara kıyasla daha mantıklı mı?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5176785177476008,
+          "source_group": "resp_disc_llm"
+        },
+        {
+          "example_id": "gate_056",
+          "text": "Açık kaynaklı LLM'leri kendi sunucumuzda barındırmak maliyet ve bakım açısından sürdürülebilir mi? Ne düşünüyorsunuz?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5076139292108934,
+          "source_group": "resp_disc_llm"
+        },
+        {
+          "example_id": "gate_057",
+          "text": "Erken aşama girişimlerde doğrudan mikroservis mimarisiyle başlamak aşırı mühendislik (over-engineering) midir?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4721673701216198,
+          "source_group": "resp_disc_monolith"
+        },
+        {
+          "example_id": "gate_058",
+          "text": "Monolit ile başlayıp zamanla parçalamak mı yoksa baştan servisleri ayırmak mı daha az teknik borç üretir?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5074172127672705,
+          "source_group": "resp_disc_monolith"
+        },
+        {
+          "example_id": "gate_059",
+          "text": "Büyük kurumsal projelerde dinamik diller (Python/JS) yerine baştan statik tip güvenliği (Go/Rust/TS) şart mı?",
+          "gold": "RESPONSE",
+          "predicted": "NONE",
+          "correct": false,
+          "probability": 0.4474518797457654,
+          "source_group": "resp_disc_typing"
+        },
+        {
+          "example_id": "gate_060",
+          "text": "Statik tiplemenin geliştirme hızını yavaşlattığı iddiasına katılıyor musunuz, yoksa hata önleme faydası daha mı büyük?",
+          "gold": "RESPONSE",
+          "predicted": "RESPONSE",
+          "correct": true,
+          "probability": 0.5400290460779797,
+          "source_group": "resp_disc_typing"
+        },
+        {
+          "example_id": "gate_061",
+          "text": "Bu sıcakta dışarı çıkılır mı hiç? Evde kalıp dinlenmek en güzeli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3076238598111422,
+          "source_group": "none_rhetorical_weather"
+        },
+        {
+          "example_id": "gate_062",
+          "text": "Temmuz sıcağında öğle vakti yürüyüşe çıkılır mı? Klimalı odadan çıkmamak lazım.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31547637696508724,
+          "source_group": "none_rhetorical_weather"
+        },
+        {
+          "example_id": "gate_063",
+          "text": "Zaman ne kadar da çabuk geçiyor değil mi? Daha dün yılbaşıydı sanki.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3143044676191233,
+          "source_group": "none_rhetorical_time"
+        },
+        {
+          "example_id": "gate_064",
+          "text": "Yıllar su gibi akıp gidiyor, insan geriye bakınca şaşırıyor değil mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3166631750932892,
+          "source_group": "none_rhetorical_time"
+        },
+        {
+          "example_id": "gate_065",
+          "text": "Eski teknolojilere baktıkça nereden nereye geldik dememek elde mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3200379107643468,
+          "source_group": "none_rhetorical_tech"
+        },
+        {
+          "example_id": "gate_066",
+          "text": "İlk bilgisayarların disketlerini hatırladıkça teknolojinin hızına hayran olmamak mümkün mü?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3313517478604959,
+          "source_group": "none_rhetorical_tech"
+        },
+        {
+          "example_id": "gate_067",
+          "text": "TÜİK yıllık enflasyon verilerini duyurdu. Piyasalar yeni faiz kararına nasıl tepki verecek?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32306748632132093,
+          "source_group": "none_news_inflation"
+        },
+        {
+          "example_id": "gate_068",
+          "text": "Merkez Bankası faiz politikasını sabit tuttu; döviz kurlarında dalgalanma sürecek mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31228212593319477,
+          "source_group": "none_news_inflation"
+        },
+        {
+          "example_id": "gate_069",
+          "text": "Apple yeni yapay zeka özelliklerini tanıttı. Sektördeki rekabet dengesi değişecek mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.2959150775535861,
+          "source_group": "none_news_tech_ai"
+        },
+        {
+          "example_id": "gate_070",
+          "text": "Açık kaynak AI modelleri kurumsal pazarda hakimiyeti ele geçirebilecek mi? Yeni pazar analizi yayında.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.2932600753580641,
+          "source_group": "none_news_tech_ai"
+        },
+        {
+          "example_id": "gate_071",
+          "text": "Milli takım son dakikada attığı golle galip geldi. Gruptan lider çıkabilecek miyiz?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32139288598034005,
+          "source_group": "none_news_sports"
+        },
+        {
+          "example_id": "gate_072",
+          "text": "Şampiyonlar Ligi kuraları çekildi; temsilcimiz zorlu gruptan puan çıkarabilir mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31396476407517415,
+          "source_group": "none_news_sports"
+        },
+        {
+          "example_id": "gate_073",
+          "text": "James Webb teleskobu en uzak galaksiyi görüntüledi. Evrenin başlangıcı hakkındaki teoriler yenilenecek mi?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3228439011205506,
+          "source_group": "none_news_space"
+        },
+        {
+          "example_id": "gate_074",
+          "text": "Mars keşif aracı yeni su izleri buldu; kızıl gezegende yaşam izleri doğrulanacak mı?",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32562477731117223,
+          "source_group": "none_news_space"
+        },
+        {
+          "example_id": "gate_075",
+          "text": "Yeni mobil sürümümüz App Store ve Play Store'da yayında! Hemen güncelleyin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3165977428523192,
+          "source_group": "none_promo_release"
+        },
+        {
+          "example_id": "gate_076",
+          "text": "v2.4 güncellemesi tüm kullanıcılara açıldı. Performans iyileştirmelerini deneyimleyin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3383673640059383,
+          "source_group": "none_promo_release"
+        },
+        {
+          "example_id": "gate_077",
+          "text": "Yarın akşam saat 20:00'de canlı yayında olacağız. Kaçırmamak için bildirimleri açın.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32412155383713426,
+          "source_group": "none_promo_webinar"
+        },
+        {
+          "example_id": "gate_078",
+          "text": "Ücretsiz veri bilimi atölyemiz bu perşembe başlıyor. Profildeki linkten kayıt olabilirsiniz.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3657603232717795,
+          "source_group": "none_promo_webinar"
+        },
+        {
+          "example_id": "gate_079",
+          "text": "Yılın en büyük indirimi başladı. Tüm kurslarda yüzde 50 avantaj fırsatı sizi bekliyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.34150742576862403,
+          "source_group": "none_promo_sale"
+        },
+        {
+          "example_id": "gate_080",
+          "text": "Geliştirici araçlarında bahar kampanyası yayında. Detaylar sitemizde.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.30347878407441503,
+          "source_group": "none_promo_sale"
+        },
+        {
+          "example_id": "gate_081",
+          "text": "Bugün sabah 10K maraton antrenmanını tamamladım. Harika bir enerjiyle güne başladım.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3039630843913907,
+          "source_group": "none_status_running"
+        },
+        {
+          "example_id": "gate_082",
+          "text": "Haftalık koşu hedefimi tamamlayıp kişisel rekorumu kırdım. Spor insanı canlandırıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.32724893166888147,
+          "source_group": "none_status_running"
+        },
+        {
+          "example_id": "gate_083",
+          "text": "Clean Code kitabını nihayet bitirdim. Her yazılımcının kütüphanesinde bulunmalı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3228146872020445,
+          "source_group": "none_status_reading"
+        },
+        {
+          "example_id": "gate_084",
+          "text": "Tasarım kalıpları üzerine harika bir kitap okudum; bakış açımı tamamen tazeledi.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3109678574989949,
+          "source_group": "none_status_reading"
+        },
+        {
+          "example_id": "gate_085",
+          "text": "Sabah kahvesi eşliğinde yeni projenin kodlarını yazmaya başladım. Herkese verimli haftalar.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3044685356183885,
+          "source_group": "none_status_coffee"
+        },
+        {
+          "example_id": "gate_086",
+          "text": "Yağmurlu havada kahve ve kod keyfi bir başka oluyor. Gününüz güzel geçsin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3242969049399486,
+          "source_group": "none_status_coffee"
+        },
+        {
+          "example_id": "gate_087",
+          "text": "4 yıllık bilgisayar mühendisliği eğitimimi dereceyle tamamlayıp mezun oldum. Emeği geçen herkese teşekkürler.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.28118694219494855,
+          "source_group": "none_status_graduation"
+        },
+        {
+          "example_id": "gate_088",
+          "text": "Yüksek lisans tez savunmamı başarıyla verdim. Yeni bir akademik sayfa başlıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3203567682195333,
+          "source_group": "none_status_graduation"
+        },
+        {
+          "example_id": "gate_089",
+          "text": "En iyi kod hiç yazılmamış koddur derler, sadelik her zaman karmaşıklıktan üstündür.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3019218825699428,
+          "source_group": "none_quote_philosophy"
+        },
+        {
+          "example_id": "gate_090",
+          "text": "Yazılımda mükemmellik eklenecek bir şey kalmadığında değil, çıkarılacak bir şey kalmadığında elde edilir.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3006438036312574,
+          "source_group": "none_quote_philosophy"
+        },
+        {
+          "example_id": "gate_091",
+          "text": "İyi bir dokümantasyon, saatlerce sürecek toplantıların önüne geçer. Yazılı iletişim kültürü çok kıymetli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.31177863998310884,
+          "source_group": "none_opinion_doc"
+        },
+        {
+          "example_id": "gate_092",
+          "text": "Bir yazılım ekibinde psikolojik güvenlik yoksa, en yetenekli mühendisler bile potansiyelini gösteremez.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3268274629462767,
+          "source_group": "none_opinion_doc"
+        },
+        {
+          "example_id": "gate_093",
+          "text": "Yapay zeka araçları geliştiricilerin yerini almayacak, sadece onları kullanan geliştiriciler öne geçecek.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3068910609471767,
+          "source_group": "none_opinion_ai_tools"
+        },
+        {
+          "example_id": "gate_094",
+          "text": "Büyük dil modelleri birer sihirli değnek değil; temel bilgisayar bilimleri bilgisi her zamankinden daha değerli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.289238476793739,
+          "source_group": "none_opinion_ai_tools"
+        },
+        {
+          "example_id": "gate_095",
+          "text": "Cuma akşamı canlıya (production) kod çıkmak cesaret değil deliliktir. Pazartesiyi bekleyin.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.2977415501279689,
+          "source_group": "none_humor_prod"
+        },
+        {
+          "example_id": "gate_096",
+          "text": "Kodum ilk seferde hatasız çalışınca sevinmek yerine nerede hata yaptım diye şüpheleniyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.36815293551156236,
+          "source_group": "none_humor_prod"
+        },
+        {
+          "example_id": "gate_097",
+          "text": "3D yazıcımla bastığım mekanik klavye kasasının montajını bitirdim, sesi harika oldu.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.44722899339059924,
+          "source_group": "none_hardware_case"
+        },
+        {
+          "example_id": "gate_098",
+          "text": "Kendi tasarladığım ahşap masaüstü kulaklık standı tamamlandı. Atölye işleri çok dinlendirici.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.46727229595296726,
+          "source_group": "none_hardware_case"
+        },
+        {
+          "example_id": "gate_099",
+          "text": "Hafta sonu doğa yürüyüşünde çektiğim gün doğumu manzarası. Doğanın huzuru paha biçilemez.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.46497434814413036,
+          "source_group": "none_nature_trip"
+        },
+        {
+          "example_id": "gate_100",
+          "text": "Şehrin kalabalığından uzaklaşıp ormanda kamp kurduk. Doğa insanı kendine getiriyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.45338702695479904,
+          "source_group": "none_nature_trip"
+        },
+        {
+          "example_id": "gate_101",
+          "text": "İstanbul'un tarihi sokaklarında kaybolmak her defasında ayrı bir ilham veriyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.48097898932316885,
+          "source_group": "none_travel_city"
+        },
+        {
+          "example_id": "gate_102",
+          "text": "Eski tren istasyonunun mimarisi gerçekten büyüleyici; tarihin izleri hala canlı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.41313514266270723,
+          "source_group": "none_travel_city"
+        },
+        {
+          "example_id": "gate_103",
+          "text": "Evde ekşi mayalı ekmek denemem bu sefer mükemmel kabardı. Kokusu tüm evi sardı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.42113932584300584,
+          "source_group": "none_cooking_recipe"
+        },
+        {
+          "example_id": "gate_104",
+          "text": "İtalyan usulü taze makarna yapımını denedim; pratik yaptıkça kıvamı oturuyor.",
+          "gold": "NONE",
+          "predicted": "RESPONSE",
+          "correct": false,
+          "probability": 0.5019133018816341,
+          "source_group": "none_cooking_recipe"
+        },
+        {
+          "example_id": "gate_105",
+          "text": "90'lar synth-wave müzikleri eşliğinde kod yazmak odaklanmayı iki katına çıkarıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4329148324410191,
+          "source_group": "none_music_listen"
+        },
+        {
+          "example_id": "gate_106",
+          "text": "Yeni keşfettiğim caz albümü gün boyu arka planda çaldı; sakin ve derin bir atmosfer yaratıyor.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.43455600748695183,
+          "source_group": "none_music_listen"
+        },
+        {
+          "example_id": "gate_107",
+          "text": "Dün akşam gerçekleşen yerel yazılım buluşmasında çok keyifli sohbetler ettik. Organizasyona teşekkürler.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4326649274847484,
+          "source_group": "none_event_recap"
+        },
+        {
+          "example_id": "gate_108",
+          "text": "Teknoloji zirvesindeki paneller ufkumu açtı; yeni bağlantılar kurmak harika bir deneyimdi.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3545594391413031,
+          "source_group": "none_event_recap"
+        },
+        {
+          "example_id": "gate_109",
+          "text": "Yarın başlayacak yapay zeka konferansında dinleyici olarak yerimi aldım. Merakla bekliyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.412484401972371,
+          "source_group": "none_conf_attend"
+        },
+        {
+          "example_id": "gate_110",
+          "text": "Yıllık açık kaynak sempozyumuna katıldım; harika sunumlar ve ilham verici konuşmacılar vardı.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.39692868979853874,
+          "source_group": "none_conf_attend"
+        },
+        {
+          "example_id": "gate_111",
+          "text": "Bilim kurgu seven herkese Vakıf serisini ısrarla tavsiye ederim. Başyapıt niteliğinde.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.458207835624792,
+          "source_group": "none_book_rec"
+        },
+        {
+          "example_id": "gate_112",
+          "text": "Kişisel verimlilik üzerine yazılmış bu kitabı herkesin okuması gerektiğini düşünüyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.44189618314915563,
+          "source_group": "none_book_rec"
+        },
+        {
+          "example_id": "gate_113",
+          "text": "Kedim klavyemin üzerine yatıp kod yazmama izin vermiyor, mesainin en tatlı engeli.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.43404206134449874,
+          "source_group": "none_pet_status"
+        },
+        {
+          "example_id": "gate_114",
+          "text": "Köpeğimle parkta sabah yürüyüşü yaptık; güne başlamanın en neşeli yolu.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.42519634094242786,
+          "source_group": "none_pet_status"
+        },
+        {
+          "example_id": "gate_115",
+          "text": "Ofisin penceresinden gün batımı manzarası böyle görünüyor. Yoğun günün ardından güzel bir mola.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4549971752184061,
+          "source_group": "none_office_view"
+        },
+        {
+          "example_id": "gate_116",
+          "text": "Çalışma masamın yeni düzenini kurdum; minimalist ve ferah bir alan oldu.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4296009054680851,
+          "source_group": "none_office_view"
+        },
+        {
+          "example_id": "gate_117",
+          "text": "Ekip olarak projenin ilk fazını planlanan tarihten önce bitirdik. Tüm ekibi kutluyorum.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4900458324764508,
+          "source_group": "none_celebration"
+        },
+        {
+          "example_id": "gate_118",
+          "text": "Şirketimizin 3. kuruluş yılını kutladık; küçük bir ekipten bu noktaya gelmek gurur verici.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.4857998356208968,
+          "source_group": "none_celebration"
+        },
+        {
+          "example_id": "gate_119",
+          "text": "Bugün 5 yıldır çalıştığım firmadaki son iş günümdü. Tüm çalışma arkadaşlarıma teşekkür ederim.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.45397856752540733,
+          "source_group": "none_farewell"
+        },
+        {
+          "example_id": "gate_120",
+          "text": "Uzun yıllar birlikte çalıştığım harika ekibime veda ettim; yeni maceralara doğru yola çıkma vakti.",
+          "gold": "NONE",
+          "predicted": "NONE",
+          "correct": true,
+          "probability": 0.3962228777935351,
+          "source_group": "none_farewell"
+        }
+      ]
+    }
+  },
+  "generated_at": "2026-10-25T14:56:56.309820+00:00",
+  "git_commit": "d8c19e4daebafc4af6b45cb5bb8c78e6ad87db8a"
+}
