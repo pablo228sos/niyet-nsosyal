@@ -17,6 +17,7 @@ This directory is the evidence trail behind the public README.
 11. [Allocation formulation](allocation_formulation.md) — capacity-aware assignment formulation.
 12. [UI design rationale](ui_design_rationale.md) — why DRSK is presented as a social capability rather than an AI dashboard.
 13. [Runtime provider setup](runtime_provider_setup.md) — Tavily/Brave evidence providers and Upstash shared state.
+14. [Accessible NIYET product flow](ACCESSIBLE_NIYET_PRODUCT_FLOW.md) — 7-stage interaction architecture and WCAG 2.1 AA accessibility contracts.
 
 ## Product proof
 
