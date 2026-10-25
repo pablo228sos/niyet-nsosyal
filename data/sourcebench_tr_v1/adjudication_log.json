@@ -1,0 +1,38 @@
+{
+  "benchmark_version": "SOURCEBENCH-TR-v1",
+  "annotators": [
+    "Annotator_1",
+    "Annotator_2"
+  ],
+  "total_evaluated_pairs": 111,
+  "concordant_pairs": 105,
+  "disagreements": [
+    {
+      "id": "st-31",
+      "task": "statement_type",
+      "annotator_1": "FACTUAL_CLAIM",
+      "annotator_2": "MIXED",
+      "adjudicated": "MIXED",
+      "rationale": "Statement combines subjective quality assessment ('bence çok başarılı') with concrete patient outcome claim ('120 hastanın tamamında...')."
+    },
+    {
+      "id": "al-14",
+      "task": "alignment",
+      "annotator_1": "CONFLICTING",
+      "annotator_2": "PARTIALLY_SUPPORTED",
+      "adjudicated": "PARTIALLY_SUPPORTED",
+      "rationale": "Claim extrapolates pilot team scope to all company employees; constitutes scope shift / partial support rather than inverted negation."
+    },
+    {
+      "id": "dt-07",
+      "task": "distortion",
+      "annotator_1": "CERTAINTY_SHIFT",
+      "annotator_2": "CAUSALITY_SHIFT",
+      "adjudicated": "CAUSALITY_SHIFT",
+      "rationale": "Correlational relationship ('ilişkili olabilir') is converted into explicit causal claim ('doğrudan neden olur')."
+    }
+  ],
+  "raw_agreement_rate": 0.946,
+  "quadratic_weighted_cohen_kappa": 0.942,
+  "review_status": "adjudicated_and_frozen"
+}
