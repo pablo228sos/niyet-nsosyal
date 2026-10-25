@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from .classifier import build_tfidf_baseline, load_labeled_texts
+from .response_gate import GateDecision, ResponseGate
 from .optimizer import global_allocate
 from .scoring import pair_score
 from .types import CandidateMatch, IntentType, Responder
@@ -37,6 +38,7 @@ class RouteDecision:
     development_utility: float | None
     retrieval_similarity: float | None
     request_id: str | None = None
+    gate_probability: float | None = None
 
 
 class NiyetRuntime:
@@ -53,7 +55,15 @@ class NiyetRuntime:
         root = Path(__file__).resolve().parents[2]
         self.data_dir = Path(data_dir) if data_dir is not None else root / "data"
 
-        gate_rows = load_labeled_texts(self.data_dir / "response_gate_seed_v1.csv")
+        v1_gate_csv = (
+            self.data_dir / "turkish_response_gate_v1" / "response_gate_dataset_v1.csv"
+        )
+        active_gate_csv = (
+            v1_gate_csv
+            if v1_gate_csv.exists()
+            else self.data_dir / "response_gate_seed_v1.csv"
+        )
+        gate_rows = load_labeled_texts(active_gate_csv)
         intent_rows = load_labeled_texts(self.data_dir / "intent_seed_v1.csv")
 
         self.gate_model = build_tfidf_baseline()
@@ -61,6 +71,7 @@ class NiyetRuntime:
             [row.text for row in gate_rows],
             [row.label for row in gate_rows],
         )
+        self.response_gate = ResponseGate.from_csv(active_gate_csv)
 
         self.intent_model = build_tfidf_baseline()
         self.intent_model.fit(
@@ -185,6 +196,8 @@ class NiyetRuntime:
         return normalized
 
     def classify_response_needed(self, text: str) -> bool:
+        if hasattr(self, "response_gate") and self.response_gate.is_fitted:
+            return self.response_gate.decide(text).response_needed
         prediction = str(self.gate_model.predict([text])[0]).upper()
         return prediction == "RESPONSE"
 
@@ -286,9 +299,17 @@ class NiyetRuntime:
 
             excluded = tuple(str(value) for value in raw.get("exclude_responder_ids", ()))
             manual_activation = intent_override is not None
+            gate_prob: float | None = None
+            if hasattr(self, "response_gate") and self.response_gate.is_fitted:
+                decision = self.response_gate.decide(clean_text)
+                gate_prob = decision.probability
+                gate_response = decision.response_needed
+            else:
+                gate_response = self.classify_response_needed(clean_text)
+
             response_needed = bool(clean_text) and (
                 manual_activation
-                or (len(clean_text) >= 8 and self.classify_response_needed(clean_text))
+                or (len(clean_text) >= 8 and gate_response)
             )
             intent_type = (
                 intent_override
@@ -304,6 +325,7 @@ class NiyetRuntime:
                     "response_needed": response_needed,
                     "intent_type": intent_type,
                     "excluded": excluded,
+                    "gate_probability": gate_prob,
                 }
             )
 
@@ -326,6 +348,7 @@ class NiyetRuntime:
                     development_utility=None,
                     retrieval_similarity=None,
                     request_id=item["id"],
+                    gate_probability=item.get("gate_probability"),
                 )
                 for item in prepared
             ]
@@ -385,6 +408,7 @@ class NiyetRuntime:
                         development_utility=None,
                         retrieval_similarity=None,
                         request_id=item["id"],
+                    gate_probability=item.get("gate_probability"),
                     )
                 )
                 continue
@@ -407,6 +431,7 @@ class NiyetRuntime:
                     development_utility=pair_score(chosen_match),
                     retrieval_similarity=similarity,
                     request_id=item["id"],
+                    gate_probability=item.get("gate_probability"),
                 )
             )
 
