@@ -1,0 +1,54 @@
+{
+  "benchmark_version": "TURKISH-INTENT-V1",
+  "total_examples": 120,
+  "raw_agreement_rate": 0.9583,
+  "cohens_kappa": 0.9444,
+  "disagreement_count": 5,
+  "disagreements": [
+    {
+      "example_id": "intent_007",
+      "source_group": "ask_math",
+      "text": "Bu olasılık sorusunda neden kombinasyon kullanıyoruz, mantığını biri açıklayabilir mi?",
+      "label_annotator_a": "ASK",
+      "label_annotator_b": "DISCUSS",
+      "final_adjudicated_label": "ASK",
+      "adjudication_rationale": "Annotator B considered DISCUSS due to 'mantığını açıklayabilir mi', but adjudicated as ASK because it is a concrete mathematics problem with a factual solution."
+    },
+    {
+      "example_id": "intent_039",
+      "source_group": "fb_api_design",
+      "text": "E-ticaret platformumuz için REST endpoint adlandırmalarını bu şekilde kurguladım. REST standartlarına uygun mu?",
+      "label_annotator_a": "FEEDBACK",
+      "label_annotator_b": "ASK",
+      "final_adjudicated_label": "FEEDBACK",
+      "adjudication_rationale": "Annotator B voted ASK interpreting 'uygun mu' as a technical rule check, but adjudicated as FEEDBACK because the author is requesting review of their designed architecture."
+    },
+    {
+      "example_id": "intent_043",
+      "source_group": "fb_license",
+      "text": "Kütüphanem için MIT yerine AGPL lisansı seçmeyi planlıyorum. Topluluk benimsemesi açısından bu kararı nasıl değerlendirirsiniz?",
+      "label_annotator_a": "FEEDBACK",
+      "label_annotator_b": "DISCUSS",
+      "final_adjudicated_label": "FEEDBACK",
+      "adjudication_rationale": "Annotator B chose DISCUSS due to open-ended licensing opinions, but adjudicated as FEEDBACK because it asks for critique of a specific pending project decision."
+    },
+    {
+      "example_id": "intent_081",
+      "source_group": "collab_a11y",
+      "text": "Kamu web sitelerinin erişilebilirliğini (WCAG 2.1) denetleyen açık bir çalışma grubu kurduk. Katılmak ister misiniz?",
+      "label_annotator_a": "COLLABORATE",
+      "label_annotator_b": "DISCUSS",
+      "final_adjudicated_label": "COLLABORATE",
+      "adjudication_rationale": "Annotator B considered DISCUSS because of 'katılmak ister misiniz' inviting open reaction, but adjudicated as COLLABORATE as it is recruiting working group participants."
+    },
+    {
+      "example_id": "intent_109",
+      "source_group": "disc_graphql_rest",
+      "text": "REST API mimarisi varken GraphQL'in getirdiği karmaşıklık ve önbellekleme (caching) zorluğu göze alınmaya değer mi?",
+      "label_annotator_a": "DISCUSS",
+      "label_annotator_b": "ASK",
+      "final_adjudicated_label": "DISCUSS",
+      "adjudication_rationale": "Annotator B voted ASK due to 'değer mi' seeking a practical verdict, but adjudicated as DISCUSS because it evaluates an open architectural tradeoff without a single correct answer."
+    }
+  ]
+}
