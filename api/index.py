@@ -12,16 +12,48 @@ SRC = os.path.join(ROOT, "src")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
+from typing import Any
+from drsk.state_store import state_store_from_environment  # noqa: E402
 from niyet.runtime import NiyetRuntime, RouteDecision  # noqa: E402
 from niyet.types import IntentType  # noqa: E402
 
 
 runtime = NiyetRuntime(os.path.join(ROOT, "data"))
+initial_state = {
+    "requests": {},
+    "responder_state": runtime.default_responder_state(),
+}
+state_store = state_store_from_environment(initial_state)
 MAX_REQUEST_BYTES = 32 * 1024
 MAX_TEXT_LENGTH = 1200
 MAX_REQUEST_ID_LENGTH = 80
 _DRSK = None
 _SAFE_EVIDENCE_METADATA = frozenset({"provider", "lexical_score"})
+
+
+def _get_central_responder_state() -> dict[str, dict[str, Any]]:
+    current = state_store.read().get("responder_state")
+    if not isinstance(current, dict):
+        return runtime.default_responder_state()
+    return {
+        responder_id: dict(val)
+        for responder_id, val in current.items()
+        if isinstance(val, dict)
+    }
+
+
+def _mutate_central_responder_state(responder_id: str, action: str) -> dict[str, dict[str, Any]]:
+    def _apply(state: dict[str, Any]) -> dict[str, dict[str, Any]]:
+        current = state.get("responder_state")
+        updated = runtime.update_responder_state(
+            current if isinstance(current, dict) else runtime.default_responder_state(),
+            responder_id,
+            action=action,
+        )
+        state["responder_state"] = updated
+        return updated
+
+    return state_store.mutate(_apply)
 
 
 def _drsk_orchestrator():
@@ -212,8 +244,15 @@ class handler(BaseHTTPRequestHandler):
                 "model_scope": "controlled Turkish development data",
                 "retrieval": "character TF-IDF deployment baseline",
                 "allocation": "capacity-constrained global assignment",
-                "state_model": "browser-session responder capacity",
+                "state_backend": state_store.backend_name,
+                "state_durable": state_store.durable,
+                "state_model": (
+                    "centralized transactional capacity"
+                    if state_store.durable
+                    else "process-local centralized capacity"
+                ),
                 "default_responder_state": runtime.default_responder_state(),
+                "responder_state": _get_central_responder_state(),
             },
         )
 
@@ -258,6 +297,11 @@ class handler(BaseHTTPRequestHandler):
         if not _valid_responder_state(responder_state):
             self._json(400, {"error": "invalid_responder_state"})
             return
+        effective_responder_state = (
+            responder_state
+            if responder_state is not None
+            else _get_central_responder_state()
+        )
 
         raw_action = payload.get("action", "")
         if not isinstance(raw_action, str):
@@ -285,7 +329,7 @@ class handler(BaseHTTPRequestHandler):
                 response = _drsk_orchestrator().analyze(
                     text,
                     ask_human=ask_human,
-                    responder_state=responder_state,
+                    responder_state=effective_responder_state,
                 )
             except Exception:
                 self._json(
@@ -314,10 +358,12 @@ class handler(BaseHTTPRequestHandler):
                 result["niyet"] = response["human_routing"]
             if include_niyet:
                 try:
-                    niyet_result = runtime.route(text, responder_state=responder_state)
+                    niyet_result = runtime.route(text, responder_state=effective_responder_state)
                     result["niyet"] = serialize_decision(niyet_result, "model")
-                    result["responder_state"] = runtime.normalize_responder_state(
-                        responder_state
+                    result["responder_state"] = (
+                        runtime.normalize_responder_state(responder_state)
+                        if responder_state is not None
+                        else _get_central_responder_state()
                     )
                 except Exception:
                     self._json(
@@ -338,11 +384,14 @@ class handler(BaseHTTPRequestHandler):
                 self._json(400, {"error": "responder_id_required"})
                 return
             try:
-                state = runtime.update_responder_state(
-                    responder_state,
-                    responder_id,
-                    action=action,
-                )
+                if responder_state is not None:
+                    state = runtime.update_responder_state(
+                        responder_state,
+                        responder_id,
+                        action=action,
+                    )
+                else:
+                    state = _mutate_central_responder_state(responder_id, action)
             except ValueError as exc:
                 self._json(400, {"error": str(exc)})
                 return
@@ -421,7 +470,7 @@ class handler(BaseHTTPRequestHandler):
             try:
                 decisions = runtime.route_many(
                     requests,
-                    responder_state=responder_state,
+                    responder_state=effective_responder_state,
                 )
             except Exception:
                 self._json(
@@ -443,8 +492,10 @@ class handler(BaseHTTPRequestHandler):
                         )
                         for result in decisions
                     ],
-                    "responder_state": runtime.normalize_responder_state(
-                        responder_state
+                    "responder_state": (
+                        runtime.normalize_responder_state(responder_state)
+                        if responder_state is not None
+                        else _get_central_responder_state()
                     ),
                     "model_scope": "Turkish controlled development model",
                 },
@@ -484,7 +535,7 @@ class handler(BaseHTTPRequestHandler):
             result = runtime.route(
                 text,
                 intent_override=intent_override,
-                responder_state=responder_state,
+                responder_state=effective_responder_state,
                 exclude_responder_ids=excluded,
             )
         except Exception:
@@ -501,8 +552,10 @@ class handler(BaseHTTPRequestHandler):
         response.update(
             {
                 "status": "ok",
-                "responder_state": runtime.normalize_responder_state(
-                    responder_state
+                "responder_state": (
+                    runtime.normalize_responder_state(responder_state)
+                    if responder_state is not None
+                    else _get_central_responder_state()
                 ),
                 "model_scope": "Turkish controlled development model",
             }

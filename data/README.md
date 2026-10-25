@@ -128,6 +128,16 @@ python scripts/summarize_usability.py usability_results.csv
 
 The summary reports task-level completion without hints, median task time and clarity ratings. Observed confusions should still be reviewed qualitatively before deciding UI changes.
 
+### `usability_results_drsk_v1.csv`
+
+12-participant usability evaluation results across desktop and mobile devices evaluating the DRSK production flow, evidence disclosure, conflict comprehension, Evidence-to-Human escalation, centralized capacity, and follower independence.
+
+Summarize with:
+
+```bash
+python scripts/summarize_usability.py data/usability_results_drsk_v1.csv
+```
+
 ## Label convention
 
 Intent labels are stored in uppercase in CSV annotation files: `ASK`, `FEEDBACK`, `COLLABORATE`, `DISCUSS`.
